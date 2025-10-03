@@ -1,0 +1,70 @@
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Status colors */
+.success .dot {
+  background: var(--status-success);
+}
+
+.error .dot {
+  background: var(--status-error);
+}
+
+.warning .dot {
+  background: var(--status-warning);
+}
+
+.info .dot {
+  background: var(--status-info);
+}
+
+.idle .dot {
+  background: var(--status-idle);
+}
+
+.success {
+  color: var(--status-success);
+}
+
+.error {
+  color: var(--status-error);
+}
+
+.warning {
+  color: var(--status-warning);
+}
+
+.info {
+  color: var(--status-info);
+}
+
+.idle {
+  color: var(--status-idle);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

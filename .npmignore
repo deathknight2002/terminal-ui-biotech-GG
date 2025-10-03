@@ -1,0 +1,40 @@
+# Source files (only dist/ should be published)
+src/
+public/
+
+# Config files
+.vscode/
+.idea/
+*.log
+*.lock
+.DS_Store
+.env
+.env.local
+
+# Build tools
+vite.config.ts
+tsconfig*.json
+vitest.config.ts
+.eslintrc.js
+eslint.config.js
+
+# Test files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+coverage/
+
+# Development
+node_modules/
+.git/
+.github/
+.husky/
+
+# Documentation (keep README.md and LICENSE)
+*.md
+!README.md
+CONTRIBUTING.md
+CHANGELOG.md
+docs/
