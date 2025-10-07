@@ -56,7 +56,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
 
       let currentAngle = -Math.PI / 2; // Start at top
 
-      data.forEach((segment, index) => {
+      data.forEach((segment) => {
         const segmentAngle = (segment.value / total) * Math.PI * 2;
         const endAngle = currentAngle + segmentAngle * (animate ? progress : 1);
 

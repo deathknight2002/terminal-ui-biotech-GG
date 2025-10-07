@@ -15,9 +15,7 @@ import {
 import { MetricCard } from '@/terminal/molecules/MetricCard';
 import { Panel } from '@/terminal/organisms/Panel';
 import type {
-  Asset,
   RoyaltyTier,
-  FinancialProjection,
   BiotechFinancialDashboardProps,
 } from '@/types/biotech';
 
@@ -94,10 +92,9 @@ export function BiotechFinancialDashboard({
       breakEvenYear: undefined
     };
 
-    const discountRate = projection.assumptions.discountRate;
-    let totalNPV = projection.npv;
-    let cumulativeRevenue = projections.reduce((sum, p) => sum + p.revenue, 0);
-    let peakRevenue = projection.peakSales;
+    const totalNPV = projection.npv;
+    const cumulativeRevenue = projections.reduce((sum, p) => sum + p.revenue, 0);
+    const peakRevenue = projection.peakSales;
     let breakEvenYear: number | undefined;
 
     // Recalculate breakEvenYear based on the new projections structure

@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 // import Table from '../../vendor/openbb/tables/components/Table';
 
 // Temporary placeholder component
-const Table = ({ ...props }: any) => <div>Table component placeholder</div>;
+const Table = (props: any) => <div>Table component placeholder</div>;
 
 export type OpenBBGridValue = string | number | boolean | null | undefined;
 
@@ -51,7 +51,7 @@ export const transformOpenBBTablePayload = (
       record[key] =
         value !== undefined && value !== null && value !== ''
           ? value
-          : value === 0
+          : (typeof value === 'number' && value === 0)
             ? 0
             : '';
     });
