@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import styles from './BioAuroraDashboard.module.css';
-import { AuroraBackdrop } from '@/terminal/organisms/AuroraBackdrop';
-import { Panel } from '@/terminal/organisms/Panel';
-import { DataTable, type Column } from '@/tables/DataTable';
-import { MonitoringTable } from '@/tables/MonitoringTable';
-import { Progress } from '@/terminal/atoms/Progress';
-import { Button } from '@/terminal/atoms/Button';
-import { Text } from '@/terminal/atoms/Text';
-import { Badge } from '@/terminal/atoms/Badge';
-import { SparkLine } from '@/terminal/visualizations/SparkLine';
-import { RadarChart } from '@/terminal/visualizations/RadarChart';
-import { ProgressCircle } from '@/terminal/visualizations/ProgressCircle';
+import { AuroraBackdrop } from '../../../terminal/organisms/AuroraBackdrop';
+import { Panel } from '../../../terminal/organisms/Panel';
+import { DataTable, type Column } from '../../../tables/DataTable';
+import { MonitoringTable } from '../../../tables/MonitoringTable';
+import { Progress } from '../../../terminal/atoms/Progress';
+import { Button } from '../../../terminal/atoms/Button';
+import { Text } from '../../../terminal/atoms/Text';
+import { Badge } from '../../../terminal/atoms/Badge';
+import { SparkLine } from '../../../terminal/visualizations/SparkLine';
+import { RadarChart } from '../../../terminal/visualizations/RadarChart';
+import { ProgressCircle } from '../../../terminal/visualizations/ProgressCircle';
 import { BioMetricGrid } from '../../molecules/BioMetricGrid';
 import { CatalystTicker } from '../../molecules/CatalystTicker';
 import type {
@@ -21,8 +21,8 @@ import type {
   ExposureSlice,
   PortfolioPosition,
   PipelineStage,
-} from '@/types/biotech';
-import type { MonitoringRow } from '@/tables/MonitoringTable';
+} from '../../../types/biotech';
+import type { MonitoringRow } from '../../../tables/MonitoringTable';
 
 type DashboardDataset = Required<
   Pick<
