@@ -7,6 +7,7 @@ import { Server as SocketServer } from 'socket.io';
 import { logger } from '../utils/logger.js';
 import { getChangeDetectionService } from '../services/change-detection-service.js';
 import { getPortfolioMonitor } from '../services/portfolio-monitor.js';
+import { getNewsMonitor } from '../services/news-monitor.js';
 
 export interface MonitoringWebSocketEvent {
   type: 'change:detected' | 'alert:created' | 'monitor:added' | 'monitor:removed' | 'monitor:updated';
@@ -20,6 +21,7 @@ export interface MonitoringWebSocketEvent {
 export function setupMonitoringWebSocket(io: SocketServer): void {
   const changeDetection = getChangeDetectionService();
   const portfolioMonitor = getPortfolioMonitor();
+  const newsMonitor = getNewsMonitor();
 
   logger.info('🔌 Setting up monitoring WebSocket handlers');
 
@@ -109,13 +111,40 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
     });
   });
 
+  // Subscribe to news monitor events
+  newsMonitor.on('news:alert', (alert) => {
+    io.to('monitoring:news').emit('news:alert', {
+      type: 'news:alert',
+      data: alert,
+      timestamp: Date.now(),
+    });
+    
+    logger.debug(`📡 Broadcast news alert: ${alert.article.title}`);
+  });
+
+  newsMonitor.on('news:article', (article) => {
+    io.to('monitoring:news').emit('news:article', {
+      type: 'news:article',
+      data: article,
+      timestamp: Date.now(),
+    });
+  });
+
+  newsMonitor.on('config:updated', (config) => {
+    io.to('monitoring:news').emit('news:config-updated', {
+      type: 'news:config-updated',
+      data: config,
+      timestamp: Date.now(),
+    });
+  });
+
   // Client connection handlers
   io.on('connection', (socket) => {
     logger.debug(`Client ${socket.id} connected to monitoring`);
 
     // Subscribe to monitoring updates
     socket.on('monitoring:subscribe', (options: { channels?: string[] }) => {
-      const channels = options.channels || ['changes', 'alerts', 'monitors', 'portfolio', 'errors'];
+      const channels = options.channels || ['changes', 'alerts', 'monitors', 'portfolio', 'news', 'errors'];
       
       channels.forEach(channel => {
         const room = `monitoring:${channel}`;
@@ -131,7 +160,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
 
     // Unsubscribe from monitoring updates
     socket.on('monitoring:unsubscribe', (options: { channels?: string[] }) => {
-      const channels = options.channels || ['changes', 'alerts', 'monitors', 'portfolio', 'errors'];
+      const channels = options.channels || ['changes', 'alerts', 'monitors', 'portfolio', 'news', 'errors'];
       
       channels.forEach(channel => {
         const room = `monitoring:${channel}`;
@@ -150,12 +179,14 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
       try {
         const changeStats = changeDetection.getStats();
         const portfolioStats = portfolioMonitor.getStats();
+        const newsStats = newsMonitor.getStats();
         
         socket.emit('monitoring:stats', {
           type: 'monitoring:stats',
           data: {
             changeDetection: changeStats,
             portfolio: portfolioStats,
+            news: newsStats,
           },
           timestamp: Date.now(),
         });
@@ -375,6 +406,45 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
         socket.emit('monitoring:error', {
           type: 'error',
           message: 'Failed to toggle company',
+          timestamp: Date.now(),
+        });
+      }
+    });
+
+    // Get news alerts
+    socket.on('monitoring:get-news-alerts', (options: { limit?: number }) => {
+      try {
+        const limit = options.limit || 50;
+        const alerts = newsMonitor.getAlerts(limit);
+        socket.emit('monitoring:news-alerts', {
+          type: 'monitoring:news-alerts',
+          data: alerts,
+          timestamp: Date.now(),
+        });
+      } catch (error) {
+        logger.error('Failed to get news alerts:', error);
+        socket.emit('monitoring:error', {
+          type: 'error',
+          message: 'Failed to get news alerts',
+          timestamp: Date.now(),
+        });
+      }
+    });
+
+    // Get news configuration
+    socket.on('monitoring:get-news-config', () => {
+      try {
+        const config = newsMonitor.getConfig();
+        socket.emit('monitoring:news-config', {
+          type: 'monitoring:news-config',
+          data: config,
+          timestamp: Date.now(),
+        });
+      } catch (error) {
+        logger.error('Failed to get news config:', error);
+        socket.emit('monitoring:error', {
+          type: 'error',
+          message: 'Failed to get news configuration',
           timestamp: Date.now(),
         });
       }
