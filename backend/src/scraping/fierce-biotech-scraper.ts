@@ -344,10 +344,9 @@ export class FierceBiotechScraper {
   /**
    * Extract tags from article element
    */
-  private extractTags($element: cheerio.Cheerio<cheerio.Element>): string[] {
+  private extractTags($element: any): string[] {
     const tags: string[] = [];
-    $element.find('.tag, .category-tag, .label').each((_, tag) => {
-      const tagText = cheerio.load(tag).text().trim();
+    $element.find('.tag, .category-tag, .label').each((_: any, tag: any) => {
       if (tagText) tags.push(tagText);
     });
     return tags;
@@ -372,7 +371,7 @@ export class FierceBiotechScraper {
       },
       rateLimiter: this.rateLimiter.getStats(),
       cache: {
-        size: this.cache.size(),
+        size: this.cache.getStats().size,
         stats: this.cache.getStats(),
       },
     };

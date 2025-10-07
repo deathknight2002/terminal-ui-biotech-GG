@@ -345,10 +345,9 @@ export class ScienceDailyScraper {
   /**
    * Extract topics from article
    */
-  private extractTopics($element: cheerio.Cheerio<cheerio.Element>): string[] {
+  private extractTopics($element: any): string[] {
     const topics: string[] = [];
-    $element.find('.topic, .tag, .category').each((_, topic) => {
-      const topicText = cheerio.load(topic).text().trim();
+    $element.find('.topic, .tag, .category').each((_: any, topic: any) => {
       if (topicText) topics.push(topicText);
     });
     return topics;
@@ -373,7 +372,7 @@ export class ScienceDailyScraper {
       },
       rateLimiter: this.rateLimiter.getStats(),
       cache: {
-        size: this.cache.size(),
+        size: this.cache.getStats().size,
         stats: this.cache.getStats(),
       },
     };
