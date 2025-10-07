@@ -463,26 +463,38 @@ export const BioAuroraDashboard: React.FC<BioAuroraDashboardProps> = ({
                 cornerBrackets
               >
                 <div className={styles.sparklinePanel}>
-                  {pipelineStages.map((stage) => (
-                    <div key={stage.name} className={styles.sparklineCard}>
-                      <Text as="div" variant="label" color="secondary" uppercase>
-                        {stage.name}
-                      </Text>
-                      <Text as="div" variant="heading" color="primary" tabularNums>
-                        {Math.round(stage.progress * 100)}%
-                      </Text>
-                      <Progress
-                        value={stage.progress * 100}
-                        variant={stage.progress > 0.7 ? 'success' : stage.progress > 0.4 ? 'info' : 'warning'}
-                      />
-                      <Text as="div" variant="body-sm" color="secondary">
-                        [
-                          stage.startDate ? `Start ${new Date(stage.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : null,
-                          stage.endDate ? `ETA ${new Date(stage.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : null,
-                        ].filter(Boolean).join(' | ')
-                      </Text>
-                    </div>
-                  ))}
+                  {pipelineStages.map((stage) => {
+                    const stageStart = stage.startDate;
+                    const stageEnd = stage.endDate;
+                    const stageDateText = [
+                      stageStart
+                        ? `Start ${new Date(stageStart).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                        : null,
+                      stageEnd
+                        ? `ETA ${new Date(stageEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                        : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' | ');
+
+                    return (
+                      <div key={stage.name} className={styles.sparklineCard}>
+                        <Text as="div" variant="label" color="secondary" uppercase>
+                          {stage.name}
+                        </Text>
+                        <Text as="div" variant="heading" color="primary" tabularNums>
+                          {Math.round(stage.progress * 100)}%
+                        </Text>
+                        <Progress
+                          value={stage.progress * 100}
+                          variant={stage.progress > 0.7 ? 'success' : stage.progress > 0.4 ? 'info' : 'warning'}
+                        />
+                        <Text as="div" variant="body-sm" color="secondary">
+                          {stageDateText}
+                        </Text>
+                      </div>
+                    );
+                  })}
                 </div>
               </Panel>
             </div>
