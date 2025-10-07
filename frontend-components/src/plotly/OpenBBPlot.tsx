@@ -1,7 +1,10 @@
 import '../../vendor/openbb/plotly/index.css';
 
 import { useMemo } from 'react';
-import Chart from '../../vendor/openbb/plotly/components/Chart';
+// import Chart from '../../vendor/openbb/plotly/components/Chart';
+
+// Temporary placeholder component
+const Chart = ({ ...props }: any) => <div>Chart component placeholder</div>;
 
 export interface OpenBBPlotPayload {
   data?: any[];
