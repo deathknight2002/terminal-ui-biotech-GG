@@ -1,0 +1,366 @@
+/* Clinical Trials Timeline Component Styles */
+
+.container {
+  max-width: 100%;
+  min-height: 500px;
+}
+
+.content {
+  padding: 16px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  gap: 16px;
+}
+
+.loadButton {
+  margin-top: 8px;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.filterSelect {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: var(--biotech-text-primary);
+  font-size: 14px;
+  min-width: 140px;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--biotech-cyan);
+  box-shadow: 0 0 0 2px rgba(34, 197, 196, 0.2);
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.timelineItem {
+  position: relative;
+  padding: 24px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timelineItem:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  margin: 0 -16px;
+  padding: 24px 16px;
+}
+
+.timelineMarker {
+  position: absolute;
+  left: -24px;
+  top: 24px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phaseIndicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.timelineConnector {
+  position: absolute;
+  left: -8px;
+  top: 72px;
+  bottom: -24px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+}
+
+.timelineContent {
+  margin-left: 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.timelineItem:hover .timelineContent {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.trialHeader {
+  margin-bottom: 16px;
+}
+
+.trialTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 16px;
+}
+
+.trialName {
+  font-weight: 600;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.trialBadges {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.trialMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Progress */
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.progressBar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  background: linear-gradient(90deg, currentColor, rgba(255, 255, 255, 0.8));
+  position: relative;
+}
+
+.progressFill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 50%,
+    transparent 75%,
+    rgba(255, 255, 255, 0.1) 75%
+  );
+  background-size: 12px 12px;
+  animation: progressStripes 1s linear infinite;
+}
+
+@keyframes progressStripes {
+  0% {
+    transform: translateX(-12px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.progressText {
+  min-width: 40px;
+  text-align: right;
+  font-weight: 600;
+}
+
+/* Trial Details */
+.trialDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sponsors,
+.locations {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Summary */
+.summary {
+  margin-top: 32px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summaryStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 24px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .filterGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .filterSelect {
+    width: 100%;
+  }
+
+  .timeline {
+    padding-left: 16px;
+  }
+
+  .timelineMarker {
+    left: -16px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .phaseIndicator {
+    width: 32px;
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .timelineContent {
+    margin-left: 24px;
+    padding: 16px;
+  }
+
+  .trialTitle {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .trialBadges {
+    align-self: flex-start;
+  }
+
+  .progressContainer {
+    gap: 8px;
+  }
+
+  .progressText {
+    min-width: 30px;
+  }
+
+  .trialDetails {
+    gap: 6px;
+  }
+
+  .sponsors,
+  .locations {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .summaryStats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .filterSelect {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .filterSelect:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .timelineContent {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .timelineItem:hover .timelineContent {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
