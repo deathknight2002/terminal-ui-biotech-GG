@@ -1,0 +1,89 @@
+{
+  "name": "@biotech-terminal/frontend-components",
+  "version": "1.0.0",
+  "description": "Frontend components for biotech terminal platform",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./terminal": {
+      "types": "./dist/terminal/index.d.ts", 
+      "import": "./dist/terminal/index.js"
+    },
+    "./tables": {
+      "types": "./dist/tables/index.d.ts",
+      "import": "./dist/tables/index.js"
+    },
+    "./plotly": {
+      "types": "./dist/plotly/index.d.ts",
+      "import": "./dist/plotly/index.js"
+    },
+    "./biotech": {
+      "types": "./dist/biotech/index.d.ts",
+      "import": "./dist/biotech/index.js"
+    },
+    "./styles": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-checkbox": "^1.0.3",
+    "@radix-ui/react-dialog": "^1.0.3",
+    "@radix-ui/react-dropdown-menu": "^2.0.4",
+    "@radix-ui/react-select": "^1.2.2",
+    "@radix-ui/react-toast": "^1.1.4",
+    "@tanstack/react-table": "^8.15.0",
+    "@tanstack/react-virtual": "^3.13.9",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.469.0",
+    "plotly.js-dist-min": "^3.0.1",
+    "react-plotly.js": "^2.6.0",
+    "recharts": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.36.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.22",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "biotech",
+    "pharmaceutical",
+    "terminal",
+    "bloomberg",
+    "ui",
+    "frontend"
+  ],
+  "author": "Biotech Terminal Team",
+  "license": "MIT"
+}
