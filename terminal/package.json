@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@biotech-terminal/frontend-components": "workspace:*",
+    "@biotech-terminal/frontend-components": "file:../frontend-components",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^6.20.1",
