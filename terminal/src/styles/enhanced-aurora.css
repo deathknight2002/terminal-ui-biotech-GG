@@ -1,0 +1,347 @@
+/* Enhanced Terminal Layout for Sophisticated BioAuroraDashboard Integration */
+
+.terminal-frame.aurora-shimmer {
+  background: var(--aurora-gradient);
+  min-height: 100vh;
+  padding: var(--spacing-glass);
+  animation: aurora-shimmer 8s ease-in-out infinite;
+}
+
+@keyframes aurora-shimmer {
+  0%, 100% {
+    background: linear-gradient(135deg, 
+      rgba(0, 212, 255, 0.05) 0%, 
+      rgba(255, 107, 107, 0.05) 25%,
+      rgba(78, 205, 196, 0.05) 50%,
+      rgba(155, 89, 182, 0.05) 75%,
+      rgba(52, 152, 219, 0.05) 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, 
+      rgba(255, 107, 107, 0.08) 0%, 
+      rgba(78, 205, 196, 0.08) 25%,
+      rgba(155, 89, 182, 0.08) 50%,
+      rgba(52, 152, 219, 0.08) 75%,
+      rgba(0, 212, 255, 0.08) 100%);
+  }
+}
+
+.terminal-headline {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.terminal-headline .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--aurora-primary);
+  margin-bottom: 0.5rem;
+}
+
+.terminal-headline h1 {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  background: linear-gradient(135deg, var(--aurora-primary), var(--aurora-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+.terminal-headline .subtitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+/* Enhanced Glass Panels for Aurora Integration */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.85);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--aurora-primary) 50%,
+    transparent
+  );
+  opacity: 0.6;
+}
+
+/* Enhanced Status Indicators */
+.status-connected {
+  color: var(--aurora-success);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(69, 183, 209, 0.5);
+}
+
+.status-operational {
+  color: var(--aurora-accent);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+}
+
+/* Grid Layout Helpers */
+.glass-panel-full-width {
+  grid-column: span 2;
+}
+
+/* Enhanced Aurora Button Styles */
+.glass-button {
+  background: rgba(15, 23, 42, 0.8);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-button:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--aurora-primary);
+  color: var(--aurora-primary);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.glass-button.active {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--aurora-primary);
+  color: var(--aurora-primary);
+  box-shadow: 
+    0 0 20px rgba(0, 212, 255, 0.4),
+    inset 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+/* Enhanced Loading States */
+.glass-loading {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid var(--aurora-primary);
+  border-radius: 50%;
+  animation: aurora-spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes aurora-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  display: block;
+}
+
+/* Responsive Glass Layout */
+@media (max-width: 768px) {
+  .terminal-frame.aurora-shimmer {
+    padding: 16px;
+  }
+  
+  .terminal-headline h1 {
+    font-size: 2rem;
+  }
+  
+  .glass-panel {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .glass-panel-full-width {
+    grid-column: span 1;
+  }
+}
+
+/* BioAuroraDashboard Integration Styles */
+.biotech-aurora-dashboard {
+  /* Ensure the sophisticated dashboard integrates seamlessly */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.biotech-aurora-dashboard .aurora-panel {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-glass);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Clinical Trials Timeline Glass Integration */
+.clinical-trials-timeline {
+  background: transparent;
+}
+
+.clinical-trials-timeline .glass-container {
+  margin-bottom: 24px;
+}
+
+/* Financial Dashboard Glass Integration */
+.biotech-financial-dashboard {
+  background: transparent;
+}
+
+.biotech-financial-dashboard .dashboard-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.biotech-financial-dashboard .tab-button {
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.biotech-financial-dashboard .tab-button.active {
+  background: var(--aurora-primary);
+  color: rgba(15, 23, 42, 0.9);
+  border-color: var(--aurora-primary);
+}
+
+/* Pipeline Phase Breakdown Styles */
+.pipeline-phase-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.phase-card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.phase-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--aurora-primary);
+}
+
+.phase-card.phase-2::before {
+  background: var(--aurora-accent);
+}
+
+.phase-card.phase-1::before {
+  background: var(--aurora-secondary);
+}
+
+.phase-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: var(--aurora-primary);
+}
+
+.phase-number {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--aurora-primary);
+  margin-bottom: 8px;
+}
+
+.phase-count {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 4px;
+}
+
+.phase-label {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.phase-value {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--aurora-accent);
+}
+
+/* Panel Title Styles */
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--aurora-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.biotech-financial-dashboard .tab-button:hover:not(.active) {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--aurora-primary);
+  color: var(--aurora-primary);
+}

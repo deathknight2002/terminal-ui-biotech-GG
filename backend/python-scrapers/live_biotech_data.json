@@ -1,0 +1,338 @@
+{
+  "summary": {
+    "total_trials": 0,
+    "total_companies": 17,
+    "total_market_cap": 583403336160,
+    "avg_price_change": -0.14,
+    "recent_approvals": 2,
+    "upcoming_catalysts": 3,
+    "data_quality": "LIVE",
+    "last_updated": "2025-10-07T00:12:03.445754",
+    "collection_time": 12.48
+  },
+  "clinical_trials": [],
+  "market_data": {
+    "positions": [
+      {
+        "symbol": "MRNA",
+        "company": "Moderna, Inc.",
+        "price": 27.54,
+        "change": -3.33,
+        "volume": 8348200,
+        "market_cap": 10715256832,
+        "sector": "Healthcare",
+        "beta": 2.007,
+        "pe_ratio": 0,
+        "52_week_high": 59.734,
+        "52_week_low": 23.15
+      },
+      {
+        "symbol": "BNTX",
+        "company": "BioNTech SE",
+        "price": 105.16,
+        "change": -0.31,
+        "volume": 441500,
+        "market_cap": 25280329728,
+        "sector": "Healthcare",
+        "beta": 1.462,
+        "pe_ratio": 0,
+        "52_week_high": 129.27,
+        "52_week_low": 81.2
+      },
+      {
+        "symbol": "GILD",
+        "company": "Gilead Sciences, Inc.",
+        "price": 113.58,
+        "change": 0.79,
+        "volume": 9089700,
+        "market_cap": 140930859008,
+        "sector": "Healthcare",
+        "beta": 0.354,
+        "pe_ratio": 22.535715,
+        "52_week_high": 121.83,
+        "52_week_low": 84.17
+      },
+      {
+        "symbol": "VRTX",
+        "company": "Vertex Pharmaceuticals Incorporated",
+        "price": 402.9,
+        "change": -0.1,
+        "volume": 1191100,
+        "market_cap": 103299792896,
+        "sector": "Healthcare",
+        "beta": 0.431,
+        "pe_ratio": 28.65576,
+        "52_week_high": 519.88,
+        "52_week_low": 362.5
+      },
+      {
+        "symbol": "REGN",
+        "company": "Regeneron Pharmaceuticals, Inc.",
+        "price": 585.48,
+        "change": -2.42,
+        "volume": 1071900,
+        "market_cap": 62053523456,
+        "sector": "Healthcare",
+        "beta": 0.307,
+        "pe_ratio": 14.747606,
+        "52_week_high": 1024.36,
+        "52_week_low": 476.49
+      },
+      {
+        "symbol": "BIIB",
+        "company": "Biogen Inc.",
+        "price": 154.05,
+        "change": -3.65,
+        "volume": 1817400,
+        "market_cap": 22585978880,
+        "sector": "Healthcare",
+        "beta": 0.125,
+        "pe_ratio": 14.755748,
+        "52_week_high": 194.13,
+        "52_week_low": 110.04
+      },
+      {
+        "symbol": "AMGN",
+        "company": "Amgen Inc.",
+        "price": 294.12,
+        "change": -1.27,
+        "volume": 1956500,
+        "market_cap": 158342987776,
+        "sector": "Healthcare",
+        "beta": 0.48,
+        "pe_ratio": 24.029411,
+        "52_week_high": 335.88,
+        "52_week_low": 253.3
+      },
+      {
+        "symbol": "ILMN",
+        "company": "Illumina, Inc.",
+        "price": 101.02,
+        "change": -1.08,
+        "volume": 1269200,
+        "market_cap": 15526773760,
+        "sector": "Healthcare",
+        "beta": 1.398,
+        "pe_ratio": 12.787341,
+        "52_week_high": 156.66,
+        "52_week_low": 68.7
+      },
+      {
+        "symbol": "INCY",
+        "company": "Incyte Corporation",
+        "price": 87.23,
+        "change": 0.44,
+        "volume": 1919000,
+        "market_cap": 17033938944,
+        "sector": "Healthcare",
+        "beta": 0.737,
+        "pe_ratio": 20.62175,
+        "52_week_high": 88.66,
+        "52_week_low": 53.56
+      },
+      {
+        "symbol": "BMRN",
+        "company": "BioMarin Pharmaceutical Inc.",
+        "price": 55.61,
+        "change": 0.32,
+        "volume": 1670800,
+        "market_cap": 10677932032,
+        "sector": "Healthcare",
+        "beta": 0.33,
+        "pe_ratio": 16.404129,
+        "52_week_high": 73.51,
+        "52_week_low": 52.48
+      },
+      {
+        "symbol": "SRPT",
+        "company": "Sarepta Therapeutics, Inc.",
+        "price": 23.26,
+        "change": 2.74,
+        "volume": 6162800,
+        "market_cap": 2434669312,
+        "sector": "Healthcare",
+        "beta": 0.5,
+        "pe_ratio": 0,
+        "52_week_high": 138.81,
+        "52_week_low": 10.42
+      },
+      {
+        "symbol": "FOLD",
+        "company": "Amicus Therapeutics, Inc.",
+        "price": 8.16,
+        "change": -0.49,
+        "volume": 4235200,
+        "market_cap": 2515233024,
+        "sector": "Healthcare",
+        "beta": 0.555,
+        "pe_ratio": 0,
+        "52_week_high": 12.65,
+        "52_week_low": 5.51
+      },
+      {
+        "symbol": "CRSP",
+        "company": "CRISPR Therapeutics AG",
+        "price": 70.19,
+        "change": 3.62,
+        "volume": 2475300,
+        "market_cap": 6383810560,
+        "sector": "Healthcare",
+        "beta": 1.835,
+        "pe_ratio": 0,
+        "52_week_high": 73.95,
+        "52_week_low": 30.04
+      },
+      {
+        "symbol": "EDIT",
+        "company": "Editas Medicine, Inc.",
+        "price": 3.8,
+        "change": -3.06,
+        "volume": 2509500,
+        "market_cap": 341696608,
+        "sector": "Healthcare",
+        "beta": 2.181,
+        "pe_ratio": 0,
+        "52_week_high": 4.07,
+        "52_week_low": 0.91
+      },
+      {
+        "symbol": "NTLA",
+        "company": "Intellia Therapeutics, Inc.",
+        "price": 20.54,
+        "change": 2.91,
+        "volume": 4659700,
+        "market_cap": 2204905216,
+        "sector": "Healthcare",
+        "beta": 2.376,
+        "pe_ratio": 0,
+        "52_week_high": 21.49,
+        "52_week_low": 5.9
+      },
+      {
+        "symbol": "BEAM",
+        "company": "Beam Therapeutics Inc.",
+        "price": 25.89,
+        "change": 0.54,
+        "volume": 2089500,
+        "market_cap": 2619084800,
+        "sector": "Healthcare",
+        "beta": 2.251,
+        "pe_ratio": 0,
+        "52_week_high": 35.25,
+        "52_week_low": 13.525
+      },
+      {
+        "symbol": "PACB",
+        "company": "Pacific Biosciences of California, Inc.",
+        "price": 1.52,
+        "change": 2.01,
+        "volume": 5798000,
+        "market_cap": 456563328,
+        "sector": "Healthcare",
+        "beta": 2.104,
+        "pe_ratio": 0,
+        "52_week_high": 2.72,
+        "52_week_low": 0.85
+      }
+    ],
+    "indices": {
+      "XBI": {
+        "price": 103.64,
+        "change": 0.04,
+        "volume": 7946500,
+        "market_cap": 5711242752
+      },
+      "IBB": {
+        "price": 150.52,
+        "change": -0.32,
+        "volume": 2411900,
+        "market_cap": 5940781568
+      },
+      "ARKG": {
+        "price": 30.38,
+        "change": 1.13,
+        "volume": 3637400,
+        "market_cap": 1085433600
+      }
+    },
+    "timestamp": "2025-10-07T00:11:51.518881"
+  },
+  "fda_approvals": [
+    {
+      "drug_name": "Aducanumab",
+      "brand_name": "Aduhelm",
+      "company": "Biogen",
+      "indication": "Alzheimer's Disease",
+      "approval_date": "2021-06-07",
+      "drug_type": "Biologic",
+      "therapeutic_area": "Neurology",
+      "scraped_at": "2025-10-07T00:12:03.445474"
+    },
+    {
+      "drug_name": "Tocilizumab",
+      "brand_name": "Actemra",
+      "company": "Roche",
+      "indication": "COVID-19",
+      "approval_date": "2021-06-24",
+      "drug_type": "Monoclonal Antibody",
+      "therapeutic_area": "Immunology",
+      "scraped_at": "2025-10-07T00:12:03.445486"
+    }
+  ],
+  "catalysts": [
+    {
+      "company": "Moderna",
+      "symbol": "MRNA",
+      "event": "Phase 3 Cancer Vaccine Results",
+      "date": "2024-01-15",
+      "type": "Clinical Data",
+      "phase": "Phase III",
+      "indication": "Melanoma",
+      "importance": "High",
+      "scraped_at": "2025-10-07T00:12:03.445621"
+    },
+    {
+      "company": "BioNTech",
+      "symbol": "BNTX",
+      "event": "CAR-T Therapy FDA Decision",
+      "date": "2024-02-28",
+      "type": "Regulatory",
+      "phase": "Filed",
+      "indication": "Blood Cancer",
+      "importance": "High",
+      "scraped_at": "2025-10-07T00:12:03.445625"
+    },
+    {
+      "company": "Vertex",
+      "symbol": "VRTX",
+      "event": "Cystic Fibrosis Triple Combo Data",
+      "date": "2024-03-10",
+      "type": "Clinical Data",
+      "phase": "Phase III",
+      "indication": "Cystic Fibrosis",
+      "importance": "Medium",
+      "scraped_at": "2025-10-07T00:12:03.445627"
+    }
+  ],
+  "phase_distribution": {},
+  "biotech_indices": {
+    "XBI": {
+      "price": 103.64,
+      "change": 0.04,
+      "volume": 7946500,
+      "market_cap": 5711242752
+    },
+    "IBB": {
+      "price": 150.52,
+      "change": -0.32,
+      "volume": 2411900,
+      "market_cap": 5940781568
+    },
+    "ARKG": {
+      "price": 30.38,
+      "change": 1.13,
+      "volume": 3637400,
+      "market_cap": 1085433600
+    }
+  }
+}
