@@ -6,17 +6,17 @@ Main terminal user interface application using Textual.
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Container, Horizontal, Vertical
-from textual.widgets import Header, Footer, Input, Static
+from textual.containers import Container, Vertical
 from textual.reactive import reactive
+from textual.widgets import Footer, Header, Input, Static
 
-from .services import WatchlistManager, RecentAssetsTracker, RefreshService
+from .services import RecentAssetsTracker, RefreshService, WatchlistManager
 from .services.refresh_service import RefreshStatus
 from .widgets import (
-    OnboardingWidget,
-    WatchlistSidebar,
-    RecentAssetsWidget,
     AssetDetailWidget,
+    OnboardingWidget,
+    RecentAssetsWidget,
+    WatchlistSidebar,
 )
 
 
@@ -259,7 +259,7 @@ class BiotechTerminalApp(App):
 
     async def _do_refresh(self) -> None:
         """Async refresh operation."""
-        success = await self.refresh_service.refresh()
+        await self.refresh_service.refresh()
         # Status update handled by callback
 
     def _on_refresh_status_change(self, status: RefreshStatus) -> None:
@@ -271,7 +271,7 @@ class BiotechTerminalApp(App):
             self._show_output("[green]✓ Data refresh completed successfully![/green]")
         elif status == RefreshStatus.ERROR:
             error = self.refresh_service.error_message or "Unknown error"
-            self._update_status(f"[red]✗ Refresh failed[/red]")
+            self._update_status("[red]✗ Refresh failed[/red]")
             self._show_output(
                 f"[red]✗ Data refresh failed:[/red]\n{error}\n\n"
                 "Please check your connection and try again."

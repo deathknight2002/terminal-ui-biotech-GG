@@ -2,7 +2,6 @@
 Tests for WatchlistManager Service
 """
 
-import pytest
 from platform.tui.services.watchlist_manager import WatchlistManager
 
 

@@ -4,8 +4,8 @@ Risk Metrics Helper Module
 Provides risk assessment data for biotech assets.
 """
 
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass

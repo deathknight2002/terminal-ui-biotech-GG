@@ -5,8 +5,8 @@ Manages data refresh operations with status updates.
 """
 
 import asyncio
-from typing import Callable, Optional
 from enum import Enum
+from typing import Callable, Optional
 
 
 class RefreshStatus(Enum):
