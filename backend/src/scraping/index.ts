@@ -29,6 +29,30 @@ export {
 } from './retry.js';
 export type { RetryConfig, RetryResult } from './retry.js';
 
+// Streaming
+export {
+  createStreamPipeline,
+  StreamPipelineBuilder,
+  BatchTransformStream,
+  FilterStream,
+  MapStream,
+  AggregateStream,
+  JSONLinesParser,
+  JSONLinesSerializer,
+  CSVParser,
+  RateLimitStream,
+  StreamUtils,
+} from './streaming.js';
+export type { StreamPipelineConfig } from './streaming.js';
+
+// HTTP/2
+export { HTTP2ConnectionPool, getHTTP2Pool, closeHTTP2Pool } from './http2-pool.js';
+export type { ConnectionPoolConfig, RequestOptions, PoolConnection } from './http2-pool.js';
+
+// Performance monitoring
+export { PerformanceMonitor, getPerformanceMonitor, shutdownPerformanceMonitor } from './performance-monitor.js';
+export type { PerformanceMetric, EndpointHealth, PerformanceSnapshot } from './performance-monitor.js';
+
 // Scrapers
 export { PubMedScraper } from './pubmed-scraper.js';
 export type { PubMedArticle, PubMedSearchParams } from './pubmed-scraper.js';
