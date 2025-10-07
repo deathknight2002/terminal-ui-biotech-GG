@@ -22,6 +22,13 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.venv/
+venv/
+env/
+ENV/
+*.db
+*.sqlite
+*.sqlite3
 
 # Build
 dist/
