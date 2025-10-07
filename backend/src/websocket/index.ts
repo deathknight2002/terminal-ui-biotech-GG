@@ -2,6 +2,7 @@ import { Server as SocketServer } from 'socket.io';
 import { logger } from '../utils/logger.js';
 import { config } from '../config/environment.js';
 import { setupScrapingWebSocket } from '../scraping/websocket-integration.js';
+import { setupMonitoringWebSocket } from './monitoring-websocket.js';
 
 interface ClientData {
   userId?: string;
@@ -16,6 +17,9 @@ export function setupWebSocket(io: SocketServer): void {
 
   // Setup scraping WebSocket handlers
   setupScrapingWebSocket(io);
+
+  // Setup monitoring WebSocket handlers
+  setupMonitoringWebSocket(io);
 
   io.on('connection', (socket) => {
     const clientId = socket.id;
