@@ -445,4 +445,26 @@ router.post('/circuit-breakers/reset', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/scraping/metrics
+ * Export metrics in Prometheus format
+ */
+router.get('/metrics', async (req, res) => {
+  try {
+    const { getPerformanceMonitor } = await import('../scraping/performance-monitor.js');
+    const monitor = getPerformanceMonitor();
+    
+    const metrics = monitor.exportPrometheusMetrics();
+    
+    res.set('Content-Type', 'text/plain; version=0.0.4');
+    res.send(metrics);
+  } catch (error) {
+    logger.error('Metrics export error:', error);
+    res.status(500).json({
+      error: 'Failed to export metrics',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 export { router as scrapingRouter };
