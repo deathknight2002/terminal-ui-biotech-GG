@@ -96,6 +96,36 @@ export type {
   EndpointsSearchParams,
 } from './endpoints-news-scraper.js';
 
+export { PharmaNewsWireScraper } from './pharmanewswire-scraper.js';
+export type {
+  PharmaNewsWireArticle,
+  PharmaNewsWireSearchParams,
+} from './pharmanewswire-scraper.js';
+
+export { GenEngNewsScraper } from './genengnews-scraper.js';
+export type {
+  GenEngNewsArticle,
+  GenEngNewsSearchParams,
+} from './genengnews-scraper.js';
+
+export { BioPharmaDigestScraper } from './biopharmadive-scraper.js';
+export type {
+  BioPharmaDigestArticle,
+  BioPharmaDigestSearchParams,
+} from './biopharmadive-scraper.js';
+
+export { FDANewsTrackerScraper } from './fda-news-scraper.js';
+export type {
+  FDANewsArticle,
+  FDANewsSearchParams,
+} from './fda-news-scraper.js';
+
+export { BioSpaceJobsScraper } from './biospace-jobs-scraper.js';
+export type {
+  BioSpaceJobPosting,
+  BioSpaceJobsSearchParams,
+} from './biospace-jobs-scraper.js';
+
 // Manager
 export {
   ScrapingManager,
