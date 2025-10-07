@@ -12,12 +12,12 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { MetricCard } from '@/terminal/molecules/MetricCard';
-import { Panel } from '@/terminal/organisms/Panel';
+import { MetricCard } from '../../../terminal/molecules/MetricCard';
+import { Panel } from '../../../terminal/organisms/Panel';
 import type {
   RoyaltyTier,
   BiotechFinancialDashboardProps,
-} from '@/types/biotech';
+} from '../../../types/biotech';
 
 
 
