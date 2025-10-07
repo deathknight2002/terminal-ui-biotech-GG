@@ -7,10 +7,12 @@ import { Router } from 'express';
 import { logger } from '../utils/logger.js';
 import { getChangeDetectionService } from '../services/change-detection-service.js';
 import { getPortfolioMonitor } from '../services/portfolio-monitor.js';
+import { getNewsMonitor } from '../services/news-monitor.js';
 
 const router = Router();
 const changeDetection = getChangeDetectionService();
 const portfolioMonitor = getPortfolioMonitor();
+const newsMonitor = getNewsMonitor();
 
 // ========== Change Detection Routes ==========
 
@@ -387,10 +389,173 @@ router.post('/portfolio/load-default', (req, res) => {
 router.post('/portfolio/setup-global', (req, res) => {
   try {
     portfolioMonitor.setupGlobalMonitoring();
-    res.json({ success: true, message: 'Global monitoring enabled' });
+    return res.json({ success: true, message: 'Global monitoring enabled' });
   } catch (error) {
     logger.error('Error setting up global monitoring:', error);
-    res.status(500).json({ error: 'Failed to setup global monitoring' });
+    return res.status(500).json({ error: 'Failed to setup global monitoring' });
+  }
+});
+
+// ========== News Monitoring Routes ==========
+
+/**
+ * Get news alerts
+ */
+router.get('/news/alerts', (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const alerts = newsMonitor.getAlerts(limit);
+    return res.json({
+      success: true,
+      count: alerts.length,
+      alerts,
+    });
+  } catch (error) {
+    logger.error('Error fetching news alerts:', error);
+    return res.status(500).json({ error: 'Failed to fetch news alerts' });
+  }
+});
+
+/**
+ * Get news alerts by source
+ */
+router.get('/news/alerts/:source', (req, res) => {
+  try {
+    const source = req.params.source as any;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const alerts = newsMonitor.getAlertsBySource(source, limit);
+    return res.json({
+      success: true,
+      count: alerts.length,
+      alerts,
+    });
+  } catch (error) {
+    logger.error('Error fetching news alerts by source:', error);
+    return res.status(500).json({ error: 'Failed to fetch news alerts' });
+  }
+});
+
+/**
+ * Get news monitoring configuration
+ */
+router.get('/news/config', (req, res) => {
+  try {
+    const config = newsMonitor.getConfig();
+    return res.json({ success: true, config });
+  } catch (error) {
+    logger.error('Error fetching news config:', error);
+    return res.status(500).json({ error: 'Failed to fetch news configuration' });
+  }
+});
+
+/**
+ * Update news monitoring configuration
+ */
+router.patch('/news/config', (req, res) => {
+  try {
+    newsMonitor.updateConfig(req.body);
+    return res.json({ success: true, message: 'Configuration updated' });
+  } catch (error) {
+    logger.error('Error updating news config:', error);
+    return res.status(500).json({ error: 'Failed to update configuration' });
+  }
+});
+
+/**
+ * Add keywords to a news source
+ */
+router.post('/news/keywords/:source', (req, res) => {
+  try {
+    const source = req.params.source as any;
+    const { keywords } = req.body;
+    
+    if (!keywords || !Array.isArray(keywords)) {
+      return res.status(400).json({ error: 'Keywords array is required' });
+    }
+
+    newsMonitor.addKeywords(source, keywords);
+    return res.json({
+      success: true,
+      message: `Added ${keywords.length} keywords to ${source}`,
+    });
+  } catch (error) {
+    logger.error('Error adding keywords:', error);
+    return res.status(500).json({ error: 'Failed to add keywords' });
+  }
+});
+
+/**
+ * Remove keywords from a news source
+ */
+router.delete('/news/keywords/:source', (req, res) => {
+  try {
+    const source = req.params.source as any;
+    const { keywords } = req.body;
+    
+    if (!keywords || !Array.isArray(keywords)) {
+      return res.status(400).json({ error: 'Keywords array is required' });
+    }
+
+    newsMonitor.removeKeywords(source, keywords);
+    return res.json({
+      success: true,
+      message: `Removed ${keywords.length} keywords from ${source}`,
+    });
+  } catch (error) {
+    logger.error('Error removing keywords:', error);
+    return res.status(500).json({ error: 'Failed to remove keywords' });
+  }
+});
+
+/**
+ * Get news monitoring statistics
+ */
+router.get('/news/stats', (req, res) => {
+  try {
+    const stats = newsMonitor.getStats();
+    return res.json({ success: true, stats });
+  } catch (error) {
+    logger.error('Error fetching news stats:', error);
+    return res.status(500).json({ error: 'Failed to fetch news statistics' });
+  }
+});
+
+/**
+ * Clear news alerts
+ */
+router.delete('/news/alerts', (req, res) => {
+  try {
+    newsMonitor.clearAlerts();
+    return res.json({ success: true, message: 'News alerts cleared' });
+  } catch (error) {
+    logger.error('Error clearing news alerts:', error);
+    return res.status(500).json({ error: 'Failed to clear news alerts' });
+  }
+});
+
+/**
+ * Start news monitoring
+ */
+router.post('/news/start', (req, res) => {
+  try {
+    newsMonitor.start();
+    return res.json({ success: true, message: 'News monitoring started' });
+  } catch (error) {
+    logger.error('Error starting news monitoring:', error);
+    return res.status(500).json({ error: 'Failed to start news monitoring' });
+  }
+});
+
+/**
+ * Stop news monitoring
+ */
+router.post('/news/stop', (req, res) => {
+  try {
+    newsMonitor.stop();
+    return res.json({ success: true, message: 'News monitoring stopped' });
+  } catch (error) {
+    logger.error('Error stopping news monitoring:', error);
+    return res.status(500).json({ error: 'Failed to stop news monitoring' });
   }
 });
 

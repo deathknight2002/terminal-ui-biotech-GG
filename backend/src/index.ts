@@ -17,6 +17,7 @@ import { userRouter } from './routes/user.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { scrapingRouter } from './routes/scraping.js';
 import { monitoringRouter } from './routes/monitoring.js';
+import { getNewsMonitor } from './services/news-monitor.js';
 
 async function startServer() {
   try {
@@ -30,6 +31,11 @@ async function startServer() {
       fdaApiKey: config.externalApis.fda,
     });
     logger.info('Scraping infrastructure initialized');
+
+    // Start news monitoring
+    const newsMonitor = getNewsMonitor();
+    newsMonitor.start();
+    logger.info('News monitoring started');
 
     // Create Express app
     const app = express();
