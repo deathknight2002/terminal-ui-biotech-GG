@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './MonitoringTable.module.css';
-import type { Status } from '../../../types';
+import type { Status } from '../../types';
 
 export interface MonitoringRow {
   id: string;
