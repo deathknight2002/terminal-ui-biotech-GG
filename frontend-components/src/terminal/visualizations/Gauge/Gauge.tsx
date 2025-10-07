@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import styles from './Gauge.module.css';
-import type { Status } from '../../../types';
+import type { Status } from '@/types';
 
 export interface GaugeProps {
   value: number; // 0-100

@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import type { Size } from '../../../types';
+import type { Size } from '@/types';
 import styles from './Spinner.module.css';
 
 export interface SpinnerProps {

@@ -1,32 +1,27 @@
 import React, { useState, useMemo } from 'react';
 import clsx from 'clsx';
-import { 
-  LineChart, 
-  Line, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts';
-import { MetricCard } from '../../../terminal/molecules/MetricCard';
-import { Panel } from '../../../terminal/organisms/Panel';
-import type { 
-  Asset, 
-  RoyaltyTier, 
-  FinancialProjection 
-} from '../../../types/biotech';
+import { MetricCard } from '@/terminal/molecules/MetricCard';
+import { Panel } from '@/terminal/organisms/Panel';
+import type {
+  Asset,
+  RoyaltyTier,
+  FinancialProjection,
+  BiotechFinancialDashboardProps,
+} from '@/types/biotech';
 
-// Simple icon components to replace lucide-react dependency
-const DollarSign = () => <span>$</span>;
-const TrendingUp = () => <span>↗</span>;
-const Calendar = () => <span>📅</span>;
-const LineChartIcon = () => <span>📊</span>;
 
-import type { BiotechFinancialDashboardProps } from '../../../types/biotech';
 
 
 // Utility functions for financial calculations
