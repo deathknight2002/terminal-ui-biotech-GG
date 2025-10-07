@@ -1,26 +1,13 @@
 {
-  "name": "@deaxu/terminal-ui",
+  "name": "biotech-terminal-platform",
   "version": "1.0.0",
-  "description": "Next-generation biotech terminal UI library with Bloomberg aesthetics, financial modeling, and pharmaceutical intelligence components",
+  "description": "Open-source biotech terminal platform with financial modeling and pharmaceutical intelligence",
   "type": "module",
-  "main": "./dist/terminal-ui.umd.cjs",
-  "module": "./dist/terminal-ui.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/terminal-ui.js",
-      "require": "./dist/terminal-ui.umd.cjs"
-    },
-    "./styles": "./dist/style.css"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "sideEffects": [
-    "*.css"
+  "private": true,
+  "workspaces": [
+    "frontend-components",
+    "terminal",
+    "examples"
   ],
   "keywords": [
     "react",
@@ -50,15 +37,25 @@
   },
   "homepage": "https://github.com/deaxu/terminal-ui#readme",
   "scripts": {
-    "dev": "cd examples && npm install && npm run dev",
-    "demo": "cd examples && npm run dev",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
-    "prepublishOnly": "npm run build"
+    "dev": "concurrently \"npm run dev:components\" \"npm run dev:terminal\"",
+    "dev:components": "cd frontend-components && npm run dev",
+    "dev:terminal": "cd terminal && npm run dev",
+    "dev:backend": "poetry run uvicorn platform.core.app:app --reload --port 8000",
+    "build": "npm run build:components && npm run build:terminal",
+    "build:components": "cd frontend-components && npm run build",
+    "build:terminal": "cd terminal && npm run build",
+    "build:all": "poetry build && npm run build",
+    "test": "npm run test:components && npm run test:terminal && poetry run pytest",
+    "test:components": "cd frontend-components && npm run test",
+    "test:terminal": "cd terminal && npm run test",
+    "lint": "npm run lint:components && npm run lint:terminal && poetry run ruff check platform/",
+    "lint:components": "cd frontend-components && npm run lint",
+    "lint:terminal": "cd terminal && npm run lint",
+    "setup": "chmod +x scripts/setup.sh && ./scripts/setup.sh",
+    "setup:python": "./scripts/setup.sh python",
+    "setup:nodejs": "./scripts/setup.sh nodejs",
+    "start:dev": "./scripts/setup.sh dev",
+    "start:prod": "poetry run uvicorn platform.core.app:app --host 0.0.0.0 --port 8000"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
