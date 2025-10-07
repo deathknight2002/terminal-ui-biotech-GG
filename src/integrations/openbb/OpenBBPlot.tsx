@@ -1,7 +1,7 @@
-import '../../vendor/openbb/plotly/index.css';
+import '../../../external/OpenBB/frontend-components/plotly/src/index.css';
 
 import { useMemo } from 'react';
-import Chart from '../../vendor/openbb/plotly/components/Chart';
+import Chart from '../../../external/OpenBB/frontend-components/plotly/src/components/Chart';
 
 export interface OpenBBPlotPayload {
   data?: any[];

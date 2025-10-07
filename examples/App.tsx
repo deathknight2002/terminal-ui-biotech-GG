@@ -85,32 +85,32 @@ function App() {
   ];
 
   // Visualization data
-  const mapMarkers: MapMarker[] = [
-    { id: '1', x: 25, y: 25, label: 'New York', status: 'success', pulse: true },
-    { id: '2', x: 48, y: 22, label: 'London', status: 'success', pulse: true },
-    { id: '3', x: 52, y: 50, label: 'Cairo', status: 'warning', pulse: true },
-    { id: '4', x: 70, y: 30, label: 'Tokyo', status: 'success', pulse: true },
-    { id: '5', x: 80, y: 65, label: 'Sydney', status: 'idle' },
-  ];
+  // const mapMarkers: MapMarker[] = [
+  //   { id: '1', x: 25, y: 25, label: 'New York', status: 'success', pulse: true },
+  //   { id: '2', x: 48, y: 22, label: 'London', status: 'success', pulse: true },
+  //   { id: '3', x: 52, y: 50, label: 'Cairo', status: 'warning', pulse: true },
+  //   { id: '4', x: 70, y: 30, label: 'Tokyo', status: 'success', pulse: true },
+  //   { id: '5', x: 80, y: 65, label: 'Sydney', status: 'idle' },
+  // ];
 
-  const radarData: RadarDataPoint[] = [
-    { label: 'Speed', value: 85 },
-    { label: 'Stealth', value: 70 },
-    { label: 'Combat', value: 90 },
-    { label: 'Tech', value: 75 },
-    { label: 'Intel', value: 95 },
-    { label: 'Endurance', value: 80 },
-  ];
+  // const radarData: RadarDataPoint[] = [
+  //   { label: 'Speed', value: 85 },
+  //   { label: 'Stealth', value: 70 },
+  //   { label: 'Combat', value: 90 },
+  //   { label: 'Tech', value: 75 },
+  //   { label: 'Intel', value: 95 },
+  //   { label: 'Endurance', value: 80 },
+  // ];
 
-  const activityData: ActivityDataPoint[] = Array.from({ length: 30 }, (_, i) => ({
-    timestamp: Date.now() - (29 - i) * 3600000,
-    value: 20 + Math.random() * 60 + Math.sin(i / 3) * 20,
-  }));
+  // const activityData: ActivityDataPoint[] = Array.from({ length: 30 }, (_, i) => ({
+  //   timestamp: Date.now() - (29 - i) * 3600000,
+  //   value: 20 + Math.random() * 60 + Math.sin(i / 3) * 20,
+  // }));
 
-  const heatmapData: HeatmapCell[] = Array.from({ length: 168 }, (_, i) => ({
-    id: `cell-${i}`,
-    value: Math.random() * 100,
-  }));
+  // const heatmapData: HeatmapCell[] = Array.from({ length: 168 }, (_, i) => ({
+  //   id: `cell-${i}`,
+  //   value: Math.random() * 100,
+  // }));
 
   const donutData: DonutSegment[] = [
     { label: 'Completed', value: 65, color: '#00d964' },

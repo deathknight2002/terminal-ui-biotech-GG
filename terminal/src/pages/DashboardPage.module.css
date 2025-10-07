@@ -1,0 +1,36 @@
+/* DashboardPage.module.css */
+.frame {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--accent-primary, #00d4ff);
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--accent-error, #ff4444);
+  font-family: var(--font-mono, monospace);
+  text-align: center;
+  padding: 2rem;
+}
+
+.errorMessage {
+  margin-top: 1rem;
+  font-size: 12px;
+  opacity: 0.8;
+  max-width: 400px;
+}
