@@ -1,0 +1,50 @@
+[
+  {
+    "name": "fonts",
+    "path": "frontend-components/fonts",
+    "sha": "ed01de918eaaf90623f42ec778f506d40fac28dd",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/fonts?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/fonts",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/ed01de918eaaf90623f42ec778f506d40fac28dd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/fonts?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/ed01de918eaaf90623f42ec778f506d40fac28dd",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/fonts"
+    }
+  },
+  {
+    "name": "plotly",
+    "path": "frontend-components/plotly",
+    "sha": "742aec985c2daa31ca45f0b7b952b9a0e69664a5",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/742aec985c2daa31ca45f0b7b952b9a0e69664a5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/742aec985c2daa31ca45f0b7b952b9a0e69664a5",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly"
+    }
+  },
+  {
+    "name": "tables",
+    "path": "frontend-components/tables",
+    "sha": "94341473fb00629a9c720ec3387141b3800dd122",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/94341473fb00629a9c720ec3387141b3800dd122",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/94341473fb00629a9c720ec3387141b3800dd122",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables"
+    }
+  }
+]

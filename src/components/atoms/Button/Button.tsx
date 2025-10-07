@@ -96,7 +96,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading ? (
-          <span className={styles.spinner} role="progressbar" aria-label="Loading" />
+          <progress className={styles.spinner} aria-label="Loading" />
         ) : (
           <>
             {icon && iconPosition === 'left' && (

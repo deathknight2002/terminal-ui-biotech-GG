@@ -1,0 +1,386 @@
+[
+  {
+    "name": ".codespell.ignore",
+    "path": ".codespell.ignore",
+    "sha": "5c79719a67ddfb39d785790e0ee6bef848372746",
+    "size": 234,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.codespell.ignore?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.codespell.ignore",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/5c79719a67ddfb39d785790e0ee6bef848372746",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.codespell.ignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.codespell.ignore?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/5c79719a67ddfb39d785790e0ee6bef848372746",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.codespell.ignore"
+    }
+  },
+  {
+    "name": ".codespell.skip",
+    "path": ".codespell.skip",
+    "sha": "7dd2b15053d95e5e6ec927427910034be85b8db8",
+    "size": 463,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.codespell.skip?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.codespell.skip",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/7dd2b15053d95e5e6ec927427910034be85b8db8",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.codespell.skip",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.codespell.skip?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/7dd2b15053d95e5e6ec927427910034be85b8db8",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.codespell.skip"
+    }
+  },
+  {
+    "name": ".coveragerc",
+    "path": ".coveragerc",
+    "sha": "081cc71dbc69631df4634a8bb31ab892fd795846",
+    "size": 89,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.coveragerc?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.coveragerc",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/081cc71dbc69631df4634a8bb31ab892fd795846",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.coveragerc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.coveragerc?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/081cc71dbc69631df4634a8bb31ab892fd795846",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.coveragerc"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "057442e5f490c131c98574f12bb63a9117867fdc",
+    "size": 61,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.gitattributes?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.gitattributes",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/057442e5f490c131c98574f12bb63a9117867fdc",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.gitattributes?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/057442e5f490c131c98574f12bb63a9117867fdc",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "e5502245e132d57c43f00199082e85c15309324d",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.github?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/.github",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/e5502245e132d57c43f00199082e85c15309324d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.github?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/e5502245e132d57c43f00199082e85c15309324d",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "2d7d3032562fa2f06c8274aaf929e01e4510105c",
+    "size": 761,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.gitignore?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.gitignore",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/2d7d3032562fa2f06c8274aaf929e01e4510105c",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.gitignore?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/2d7d3032562fa2f06c8274aaf929e01e4510105c",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.gitignore"
+    }
+  },
+  {
+    "name": ".markdownlintrc",
+    "path": ".markdownlintrc",
+    "sha": "accf18de22f2d3a3d9444b4191de56ef79f216ef",
+    "size": 182,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.markdownlintrc?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.markdownlintrc",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/accf18de22f2d3a3d9444b4191de56ef79f216ef",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.markdownlintrc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.markdownlintrc?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/accf18de22f2d3a3d9444b4191de56ef79f216ef",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.markdownlintrc"
+    }
+  },
+  {
+    "name": ".pre-commit-config.yaml",
+    "path": ".pre-commit-config.yaml",
+    "sha": "5e9a3a69797e85674e1d3fd276b126ff772bbc21",
+    "size": 3168,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.pre-commit-config.yaml?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.pre-commit-config.yaml",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/5e9a3a69797e85674e1d3fd276b126ff772bbc21",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.pre-commit-config.yaml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.pre-commit-config.yaml?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/5e9a3a69797e85674e1d3fd276b126ff772bbc21",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.pre-commit-config.yaml"
+    }
+  },
+  {
+    "name": ".pydocstyle.ini",
+    "path": ".pydocstyle.ini",
+    "sha": "a81922016fb463e4c1dc87e18d118abbbac29fe9",
+    "size": 157,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.pydocstyle.ini?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.pydocstyle.ini",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/a81922016fb463e4c1dc87e18d118abbbac29fe9",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.pydocstyle.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.pydocstyle.ini?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/a81922016fb463e4c1dc87e18d118abbbac29fe9",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.pydocstyle.ini"
+    }
+  },
+  {
+    "name": ".pylintrc",
+    "path": ".pylintrc",
+    "sha": "f0e5992984189c83773e9c54787957f49815182e",
+    "size": 15629,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.pylintrc?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.pylintrc",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/f0e5992984189c83773e9c54787957f49815182e",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.pylintrc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.pylintrc?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/f0e5992984189c83773e9c54787957f49815182e",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.pylintrc"
+    }
+  },
+  {
+    "name": ".secrets.baseline",
+    "path": ".secrets.baseline",
+    "sha": "78b9bf9855318cc35c7e7b8b7259d62d53a89a07",
+    "size": 3237,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.secrets.baseline?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.secrets.baseline",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/78b9bf9855318cc35c7e7b8b7259d62d53a89a07",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/.secrets.baseline",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/.secrets.baseline?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/78b9bf9855318cc35c7e7b8b7259d62d53a89a07",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/.secrets.baseline"
+    }
+  },
+  {
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "sha": "769f0f0e7330f9e4438e05ffcb38ad734e53e206",
+    "size": 5771,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/CODE_OF_CONDUCT.md?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/CODE_OF_CONDUCT.md",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/769f0f0e7330f9e4438e05ffcb38ad734e53e206",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/CODE_OF_CONDUCT.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/CODE_OF_CONDUCT.md?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/769f0f0e7330f9e4438e05ffcb38ad734e53e206",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/CODE_OF_CONDUCT.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "e07622137b2bcebcec8df47529dba2317a3f5a82",
+    "size": 34403,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/LICENSE?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/LICENSE",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/e07622137b2bcebcec8df47529dba2317a3f5a82",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/LICENSE?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/e07622137b2bcebcec8df47529dba2317a3f5a82",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "d3da00d32e8ebc3ec6d911725aee9e7359f64ff9",
+    "size": 10230,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/README.md?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/README.md",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/d3da00d32e8ebc3ec6d911725aee9e7359f64ff9",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/README.md?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/d3da00d32e8ebc3ec6d911725aee9e7359f64ff9",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/README.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "de061ad26dd444c41ea936ceaad68196bb8491ca",
+    "size": 373,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/SECURITY.md?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/SECURITY.md",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/de061ad26dd444c41ea936ceaad68196bb8491ca",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/SECURITY.md?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/de061ad26dd444c41ea936ceaad68196bb8491ca",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/SECURITY.md"
+    }
+  },
+  {
+    "name": "assets",
+    "path": "assets",
+    "sha": "52616fc594234af629115c3d0049011e5ebe2988",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/assets?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/assets",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/52616fc594234af629115c3d0049011e5ebe2988",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/assets?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/52616fc594234af629115c3d0049011e5ebe2988",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/assets"
+    }
+  },
+  {
+    "name": "build",
+    "path": "build",
+    "sha": "f5d399d2063e0483cccae5e5bb71b965a0843500",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/build?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/build",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/f5d399d2063e0483cccae5e5bb71b965a0843500",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/build?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/f5d399d2063e0483cccae5e5bb71b965a0843500",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/build"
+    }
+  },
+  {
+    "name": "cli",
+    "path": "cli",
+    "sha": "910f7d366a4e258d641cd5c6c85415b41dd32e6b",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/cli?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/cli",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/910f7d366a4e258d641cd5c6c85415b41dd32e6b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/cli?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/910f7d366a4e258d641cd5c6c85415b41dd32e6b",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/cli"
+    }
+  },
+  {
+    "name": "examples",
+    "path": "examples",
+    "sha": "36c30e49d38aed8ffc174bff98ed3979527ec3c1",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/examples?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/examples",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/36c30e49d38aed8ffc174bff98ed3979527ec3c1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/examples?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/36c30e49d38aed8ffc174bff98ed3979527ec3c1",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/examples"
+    }
+  },
+  {
+    "name": "frontend-components",
+    "path": "frontend-components",
+    "sha": "26eb3deb6b22d07e4e2470da7ab0480ed88d9564",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/26eb3deb6b22d07e4e2470da7ab0480ed88d9564",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/26eb3deb6b22d07e4e2470da7ab0480ed88d9564",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components"
+    }
+  },
+  {
+    "name": "images",
+    "path": "images",
+    "sha": "fa976bddd1d7a3c1d8082f19c036bb65a30a625e",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/images?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/images",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/fa976bddd1d7a3c1d8082f19c036bb65a30a625e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/images?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/fa976bddd1d7a3c1d8082f19c036bb65a30a625e",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/images"
+    }
+  },
+  {
+    "name": "openbb_platform",
+    "path": "openbb_platform",
+    "sha": "4e27c9f53906c43a546ec758376c6ac46b91373e",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/4e27c9f53906c43a546ec758376c6ac46b91373e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/4e27c9f53906c43a546ec758376c6ac46b91373e",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform"
+    }
+  },
+  {
+    "name": "pytest.ini",
+    "path": "pytest.ini",
+    "sha": "3edf92fc11baf5643222ac143f848f79ac46efac",
+    "size": 200,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/pytest.ini?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/pytest.ini",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/3edf92fc11baf5643222ac143f848f79ac46efac",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/pytest.ini",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/pytest.ini?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/3edf92fc11baf5643222ac143f848f79ac46efac",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/pytest.ini"
+    }
+  },
+  {
+    "name": "ruff.toml",
+    "path": "ruff.toml",
+    "sha": "21fb5ee31572db936d7565dcb44c6eaec7af72ec",
+    "size": 1094,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/ruff.toml?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/ruff.toml",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/21fb5ee31572db936d7565dcb44c6eaec7af72ec",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/ruff.toml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/ruff.toml?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/21fb5ee31572db936d7565dcb44c6eaec7af72ec",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/ruff.toml"
+    }
+  }
+]

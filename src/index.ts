@@ -1,12 +1,16 @@
 // Styles
 import './styles/global.css';
+import './styles/biotech-theme.css';
+
+// Types
+export type * from './types/biotech';
 
 // Atoms
 export { Button } from './components/atoms/Button';
 export type { ButtonProps } from './components/atoms/Button';
 
 export { Text } from './components/atoms/Text';
-export type { TextProps, TextVariant, TextColor } from './components/atoms/Text';
+export type { TextProps, TextVariant } from './components/atoms/Text';
 
 export { Input } from './components/atoms/Input';
 export type { InputProps } from './components/atoms/Input';
@@ -51,9 +55,22 @@ export type { ToastProps, ToastMessage } from './components/molecules/Toast';
 export { Accordion } from './components/molecules/Accordion';
 export type { AccordionProps, AccordionItem } from './components/molecules/Accordion';
 
+export { MetricCard } from './components/molecules/MetricCard';
+export type { MetricCardProps } from './components/molecules/MetricCard';
+
+export type { PanelProps } from './components/organisms/Panel';
+
+export type { AuroraBackdropProps } from './components/organisms/AuroraBackdrop';
+
+
+export { BioMetricGrid } from './components/molecules/BioMetricGrid';
+export type { BioMetricGridProps } from './components/molecules/BioMetricGrid';
+
+export { CatalystTicker } from './components/molecules/CatalystTicker';
+export type { CatalystTickerProps } from './components/molecules/CatalystTicker';
+
 // Organisms
 export { Panel } from './components/organisms/Panel';
-export type { PanelProps } from './components/organisms/Panel';
 
 export { DataTable } from './components/organisms/DataTable';
 export type { DataTableProps, Column } from './components/organisms/DataTable';
@@ -69,6 +86,25 @@ export type { MonitoringTableProps, MonitoringRow } from './components/organisms
 
 export { Modal } from './components/organisms/Modal';
 export type { ModalProps } from './components/organisms/Modal';
+
+export { AuroraBackdrop } from './components/organisms/AuroraBackdrop';
+
+export { BiotechFinancialDashboard } from './components/organisms/BiotechFinancialDashboard';
+
+export { BioAuroraDashboard } from './components/organisms/BioAuroraDashboard';
+
+export { OpenBBTable } from './integrations/openbb/OpenBBTable';
+export type {
+  OpenBBTableProps,
+  OpenBBTablePayload,
+  OpenBBGridValue,
+} from './integrations/openbb/OpenBBTable';
+
+export { OpenBBPlot } from './integrations/openbb/OpenBBPlot';
+export type { OpenBBPlotProps, OpenBBPlotPayload } from './integrations/openbb/OpenBBPlot';
+
+export { TerminalHome } from './features/home/TerminalHome';
+export type { TerminalHomeProps, TerminalHomeData } from './features/home/TerminalHome';
 
 // Visualizations
 export { WorldMap } from './components/visualizations/WorldMap';
@@ -97,6 +133,4 @@ export type { SparkLineProps } from './components/visualizations/SparkLine';
 
 export { ProgressCircle } from './components/visualizations/ProgressCircle';
 export type { ProgressCircleProps } from './components/visualizations/ProgressCircle';
-
-// Types
-export type { Theme, CVDMode, Size, Variant, Status } from './types';
+export type { Theme, CVDMode, Size, Variant, Status, TextColor } from './types/index';

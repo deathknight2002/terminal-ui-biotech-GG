@@ -144,6 +144,44 @@
   --accent-primary: var(--accent-blue);
 }
 
+/* Aurora Red Theme (Glass Aurora) */
+[data-theme='aurora-red'] {
+  --bg-primary: #08060f;
+  --bg-secondary: #0d0a18;
+  --bg-panel: rgba(24, 15, 38, 0.92);
+  --bg-elevated: rgba(30, 18, 46, 0.88);
+  --bg-hover: rgba(40, 21, 60, 0.95);
+  --bg-active: rgba(66, 28, 70, 0.9);
+  --bg-input: rgba(12, 8, 24, 0.9);
+
+  --border-subtle: rgba(232, 121, 249, 0.18);
+  --border-default: rgba(244, 63, 94, 0.35);
+  --border-strong: rgba(248, 113, 113, 0.55);
+  --border-focus: rgba(248, 113, 113, 0.9);
+
+  --text-primary: #ffe8ff;
+  --text-secondary: rgba(255, 188, 214, 0.86);
+  --text-tertiary: rgba(255, 188, 214, 0.56);
+  --text-disabled: rgba(255, 188, 214, 0.38);
+  --text-placeholder: rgba(255, 188, 214, 0.4);
+
+  --accent-primary: #f43f5e;
+  --status-success: #22d3ee;
+  --status-error: #fb7185;
+  --status-warning: #f97316;
+  --status-info: #38bdf8;
+  --status-idle: rgba(255, 188, 214, 0.4);
+
+  --data-positive: #22d3ee;
+  --data-negative: #f43f5e;
+  --data-neutral: #fbcfe8;
+
+  --glow-primary: 0 0 18px rgba(244, 63, 94, 0.7);
+  --glow-success: 0 0 14px rgba(34, 211, 238, 0.6);
+  --glow-error: 0 0 18px rgba(251, 113, 133, 0.75);
+  --text-glow: 0 0 12px rgba(255, 210, 255, 0.6);
+}
+
 /* CVD Theme - Deuteranopia */
 [data-theme='cvd-deuteranopia'] {
   --data-positive: #0080ff;

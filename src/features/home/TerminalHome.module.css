@@ -1,0 +1,457 @@
+.root {
+  position: relative;
+  min-height: 100vh;
+  padding: 72px 80px;
+  color: #fefcfe;
+  background: radial-gradient(circle at 20% 20%, rgba(244, 63, 94, 0.14), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.12), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(56, 189, 248, 0.12), transparent 55%),
+    #05030a;
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+
+.root::before {
+  content: "";
+  position: absolute;
+  inset: -40% -30%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(244, 63, 94, 0.42),
+    rgba(59, 130, 246, 0.18),
+    rgba(168, 85, 247, 0.32),
+    rgba(244, 63, 94, 0.36)
+  );
+  filter: blur(320px);
+  opacity: 0.55;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+}
+
+.headlineTitle {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.headlineTitle h1 {
+  margin: 0;
+  font-size: 48px;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+}
+
+.headlineTitle span {
+  font-size: 13px;
+  letter-spacing: 6px;
+  color: rgba(255, 255, 255, 0.62);
+  text-transform: uppercase;
+}
+
+.headline p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.watchlistCard {
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(12, 10, 26, 0.65));
+  padding: 28px 32px;
+  min-width: 340px;
+  box-shadow: 0 24px 60px rgba(10, 3, 20, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.watchlistHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.watchlistTable {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.watchlistRow {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr 0.6fr;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.watchlistRow span:last-child {
+  justify-self: end;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 32px;
+}
+
+.primaryColumn,
+.secondaryColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.glassCard {
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(9, 7, 20, 0.65));
+  backdrop-filter: blur(22px);
+  padding: 28px 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 32px 72px rgba(8, 4, 18, 0.6);
+}
+
+.glassCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 55%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.glassCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.cardTitle {
+  font-size: 13px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.quickAction {
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+  cursor: pointer;
+}
+
+.quickAction:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.quickActionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.quickActionDescription {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.stageHeatmap {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.stageCell {
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(8, 3, 16, 0.9);
+}
+
+.stageLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.86;
+}
+
+.stageValue {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.stageTrend {
+  font-size: 12px;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statTiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.statTile {
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statLabel {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+.resourceList {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.resourceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.resourceItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.resourceMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resourceMeta span {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.resourceMeta strong {
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.resourceAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.screenerTable {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.screenerRow {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 0.8fr 0.8fr;
+  gap: 14px;
+  align-items: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.regulatoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.regulatoryItem {
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.regulatoryMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.regulatoryMeta strong {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.regulatoryMeta span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1px;
+}
+
+.pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.trendPositive {
+  color: #10b981;
+}
+
+.trendNegative {
+  color: #ef4444;
+}
+
+.trendNeutral {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.gridFull {
+  grid-column: 1 / -1;
+}
+
+.glow {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(59, 130, 246, 0.18));
+  border-radius: 28px;
+  padding: 1px;
+}
+
+.glowInner {
+  border-radius: 27px;
+  background: rgba(4, 4, 11, 0.92);
+}
+
+@media (max-width: 1280px) {
+  .root {
+    padding: 56px 40px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .watchlistCard {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .root {
+    padding: 48px 24px;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .stageHeatmap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,5 +1,6 @@
 @import './variables.css';
 @import './reset.css';
+@import './biotech-theme.css';
 
 body {
   margin: 0;
