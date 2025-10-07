@@ -1,9 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './CatalystTicker.module.css';
-import { Text } from '@/terminal/atoms/Text';
-import { Badge } from '@/terminal/atoms/Badge';
-import type { Catalyst } from '@/types/biotech';
+import { Text } from '../../../terminal/atoms/Text';
+import { Badge } from '../../../terminal/atoms/Badge';
+import type { Catalyst } from '../../../types/biotech';
 
 export interface CatalystTickerProps {
   catalysts: Catalyst[];
