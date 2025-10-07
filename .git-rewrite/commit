@@ -1,8 +1,13 @@
-tree 99529ff7ea4e610170859aee8047435320efebdb
-parent dc7f07b158b9dac088f1c7d90abb059adfa16c0f
-author deathknight2002 <219362658+deathknight2002@users.noreply.github.com> 1759860771 -0700
-committer deathknight2002 <219362658+deathknight2002@users.noreply.github.com> 1759860771 -0700
+tree 63630546f12d1a5ea3309079f6796ea316571806
+parent 07dd34f3ca9fe708d430288c954f8b2bfc96a2b7
+author deathknight2002 <219362658+deathknight2002@users.noreply.github.com> 1759867794 -0700
+committer deathknight2002 <219362658+deathknight2002@users.noreply.github.com> 1759867794 -0700
 
-a
+Fix linting issues and frontend syntax errors
 
-a
+- Remove unused pandas and aiohttp imports from biotech_scraper.py
+- Convert async methods to synchronous in biotech scraper
+- Add constants for duplicate phase literals
+- Fix malformed template literals in DashboardPage.tsx
+- Update .gitignore to exclude virtual environments and nested repos
+- Remove .venv from Git tracking to resolve GitHub push size limit
