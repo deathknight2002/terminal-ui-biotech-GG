@@ -10,6 +10,7 @@ export interface BadgeProps {
   removable?: boolean;
   onRemove?: () => void;
   className?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
 }
 
@@ -20,6 +21,7 @@ export const Badge: React.FC<BadgeProps> = ({
   removable = false,
   onRemove,
   className,
+  style,
   children,
 }) => {
   return (
@@ -31,6 +33,7 @@ export const Badge: React.FC<BadgeProps> = ({
         removable && styles.removable,
         className
       )}
+      style={style}
     >
       {dot && <span className={styles.dot} />}
       {children}
