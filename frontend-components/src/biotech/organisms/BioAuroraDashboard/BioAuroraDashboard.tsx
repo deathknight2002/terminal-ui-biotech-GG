@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import clsx from 'clsx';
 import styles from './BioAuroraDashboard.module.css';
 import { AuroraBackdrop } from '@/terminal/organisms/AuroraBackdrop';
 import { Panel } from '@/terminal/organisms/Panel';
