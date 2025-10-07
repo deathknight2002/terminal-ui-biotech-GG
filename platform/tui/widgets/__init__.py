@@ -1,9 +1,9 @@
 """TUI Widgets Module"""
 
-from .onboarding import OnboardingWidget
-from .watchlist_sidebar import WatchlistSidebar
-from .recent_assets import RecentAssetsWidget
 from .asset_detail import AssetDetailWidget
+from .onboarding import OnboardingWidget
+from .recent_assets import RecentAssetsWidget
+from .watchlist_sidebar import WatchlistSidebar
 
 __all__ = [
     "OnboardingWidget",

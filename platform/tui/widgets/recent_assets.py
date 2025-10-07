@@ -4,16 +4,16 @@ Recent Assets Widget
 Displays recently accessed assets.
 """
 
+
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.widgets import Static
-from typing import List
 
 
 class RecentAssetsWidget(Container):
     """Widget showing recently accessed assets."""
 
-    def __init__(self, recent_assets: List[str], **kwargs) -> None:
+    def __init__(self, recent_assets: list[str], **kwargs) -> None:
         """
         Initialize recent assets widget.
 
@@ -42,7 +42,7 @@ class RecentAssetsWidget(Container):
                 classes="recent-empty",
             )
 
-    def update_recent(self, recent_assets: List[str]) -> None:
+    def update_recent(self, recent_assets: list[str]) -> None:
         """
         Update the recent assets display.
 

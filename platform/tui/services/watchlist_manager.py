@@ -4,7 +4,6 @@ Watchlist Manager Service
 Manages a session-based watchlist of biotech assets.
 """
 
-from typing import List, Optional, Set
 
 
 class WatchlistManager:
@@ -12,7 +11,7 @@ class WatchlistManager:
 
     def __init__(self) -> None:
         """Initialize watchlist manager with empty watchlist."""
-        self._watchlist: Set[str] = set()
+        self._watchlist: set[str] = set()
 
     def add(self, asset_id: str) -> bool:
         """
@@ -56,14 +55,14 @@ class WatchlistManager:
         """
         return asset_id in self._watchlist
 
-    def get_all(self) -> List[str]:
+    def get_all(self) -> list[str]:
         """
         Get all assets in the watchlist.
 
         Returns:
             List of asset IDs in watchlist (sorted for consistency)
         """
-        return sorted(list(self._watchlist))
+        return sorted(self._watchlist)
 
     def clear(self) -> None:
         """Clear all assets from the watchlist."""

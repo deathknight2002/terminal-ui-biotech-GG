@@ -4,16 +4,16 @@ Watchlist Sidebar Widget
 Displays the current watchlist of assets.
 """
 
+
 from textual.app import ComposeResult
 from textual.containers import Container, Vertical
 from textual.widgets import Static
-from typing import List
 
 
 class WatchlistSidebar(Container):
     """Sidebar widget showing watchlist items."""
 
-    def __init__(self, watchlist_items: List[str], **kwargs) -> None:
+    def __init__(self, watchlist_items: list[str], **kwargs) -> None:
         """
         Initialize watchlist sidebar.
 
@@ -34,7 +34,7 @@ class WatchlistSidebar(Container):
 
             if self.watchlist_items:
                 items_str = ""
-                for i, asset_id in enumerate(self.watchlist_items, 1):
+                for _i, asset_id in enumerate(self.watchlist_items, 1):
                     items_str += f"\n[yellow]▸[/yellow] {asset_id}"
                 yield Static(items_str, classes="watchlist-items")
                 yield Static(
@@ -47,7 +47,7 @@ class WatchlistSidebar(Container):
                     classes="watchlist-empty",
                 )
 
-    def update_watchlist(self, watchlist_items: List[str]) -> None:
+    def update_watchlist(self, watchlist_items: list[str]) -> None:
         """
         Update the watchlist display.
 

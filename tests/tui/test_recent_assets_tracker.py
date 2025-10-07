@@ -2,7 +2,6 @@
 Tests for RecentAssetsTracker Service
 """
 
-import pytest
 from platform.tui.services.recent_assets_tracker import RecentAssetsTracker
 
 

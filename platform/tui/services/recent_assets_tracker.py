@@ -4,7 +4,6 @@ Recent Assets Tracker Service
 Tracks the most recently accessed biotech assets (max 3).
 """
 
-from typing import List
 
 
 class RecentAssetsTracker:
@@ -14,7 +13,7 @@ class RecentAssetsTracker:
 
     def __init__(self) -> None:
         """Initialize tracker with empty list."""
-        self._recent: List[str] = []
+        self._recent: list[str] = []
 
     def add(self, asset_id: str) -> None:
         """
@@ -37,7 +36,7 @@ class RecentAssetsTracker:
         if len(self._recent) > self.MAX_RECENT:
             self._recent = self._recent[: self.MAX_RECENT]
 
-    def get_all(self) -> List[str]:
+    def get_all(self) -> list[str]:
         """
         Get all recent assets.
 

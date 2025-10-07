@@ -2,8 +2,7 @@
 Tests for Risk Metrics Helper
 """
 
-import pytest
-from platform.tui.helpers.risk_metrics import get_risk_metrics, RiskMetrics
+from platform.tui.helpers.risk_metrics import RiskMetrics, get_risk_metrics
 
 
 class TestRiskMetrics:

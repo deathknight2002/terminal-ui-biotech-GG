@@ -4,10 +4,11 @@ Asset Detail Widget
 Displays detailed information about a biotech asset including risk metrics.
 """
 
+from typing import Optional
+
 from textual.app import ComposeResult
 from textual.containers import Container, Vertical
 from textual.widgets import Static
-from typing import Optional
 
 from ..helpers.risk_metrics import RiskMetrics, get_risk_metrics
 

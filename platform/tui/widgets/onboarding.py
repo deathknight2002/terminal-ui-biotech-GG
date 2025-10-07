@@ -4,17 +4,17 @@ Onboarding Widget
 Displays usage instructions and recent assets.
 """
 
+
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.widgets import Static
-from typing import List
 
 
 class OnboardingWidget(Container):
     """Onboarding panel showing usage instructions and recent assets."""
 
     def __init__(
-        self, recent_assets: List[str], show_header: bool = True, **kwargs
+        self, recent_assets: list[str], show_header: bool = True, **kwargs
     ) -> None:
         """
         Initialize onboarding widget.
@@ -66,7 +66,7 @@ class OnboardingWidget(Container):
                 classes="recent-assets",
             )
 
-    def update_recent_assets(self, recent_assets: List[str]) -> None:
+    def update_recent_assets(self, recent_assets: list[str]) -> None:
         """
         Update the recent assets display.
 
