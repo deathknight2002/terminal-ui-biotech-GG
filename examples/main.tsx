@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@deaxu/terminal-ui/styles'
+import '../frontend-components/src/styles/index.ts'
 import App from './App.tsx'
 
 // Start MSW in development
