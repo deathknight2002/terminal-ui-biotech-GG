@@ -1,126 +1,305 @@
-# Biotech Terminal UI Library - Copilot Instructions
+# Biotech Terminal Platform - Copilot Instructions
 
 ## Project Overview
 
-This is a specialized React component library (`@deaxu/terminal-ui`) targeting **biotech/pharmaceutical data visualization** with Bloomberg Terminal aesthetics. The project combines:
+This is a **multi-workspace monorepo** combining Python FastAPI backend with React/TypeScript frontend for biotech/pharmaceutical intelligence. Architecture follows OpenBB platform patterns with Bloomberg Terminal aesthetics.
 
-- **Frontend**: Modern React/TypeScript UI component library with biotech-specific visualizations
-- **Backend**: Express.js API with PostgreSQL/QuestDB for time-series pharmaceutical data
-- **Integration**: OpenBB financial platform integration for market data
-- **Specialization**: Drug development pipelines, catalyst tracking, clinical trials, and pharmaceutical intelligence
+**Key Components:**
+- **Platform (Python)**: FastAPI backend with SQLAlchemy, DuckDB ingestion pipelines
+- **Frontend Components (React)**: Modular component library organized by function
+- **Backend (Node.js)**: Express.js API with WebSocket support for real-time data
+- **Terminal App (React)**: Full-featured pharmaceutical intelligence application
 
-## Architecture Patterns
+## Repository Architecture
 
-### Component Hierarchy (Atomic Design)
+### Workspace Structure (NPM Workspaces)
 ```
-src/components/
-├── atoms/          # Button, Input, Badge, Select (18 components)
-├── molecules/      # Metric, Card, Toast, BioMetricGrid (5 core + biotech)
-├── organisms/      # Panel, DataTable, Modal, BiotechFinancialDashboard (6 core + biotech)
-└── visualizations/ # Gauge, DonutChart, WorldMap, SparkLine (9 specialized charts)
-```
-
-### Key Design Principles
-- **Terminal Aesthetics**: Monospace fonts, sharp edges, high contrast (WCAG AAA)
-- **Bloomberg Style**: Data-dense interfaces with `cornerBrackets`, uppercase labels
-- **Multi-theme**: 5 accent colors (`amber`, `green`, `cyan`, `purple`, `blue`) via `data-theme`
-- **CVD Support**: Color-blind accessible via `data-cvd="deuteranopia"`
-
-### Backend Service Architecture
-```
-backend/src/
-├── routes/         # market-data, biotech-data, financial-modeling, analytics
-├── database/       # PostgreSQL + QuestDB time-series integration  
-├── websocket/      # Real-time market data streaming
-└── dagster/        # Data orchestration pipelines (planned)
+root/                           # Monorepo orchestration
+├── platform/                   # Python FastAPI backend (Poetry)
+│   ├── core/                   # app.py, database.py, routers.py
+│   ├── providers/              # Data provider implementations
+│   └── ingestion/              # DuckDB pipeline for data ingestion
+├── frontend-components/        # React component library (publishable)
+│   ├── src/terminal/           # Bloomberg-style UI primitives
+│   ├── src/tables/             # Data grid components  
+│   ├── src/plotly/             # Chart visualizations
+│   └── src/biotech/            # Domain-specific biotech widgets
+├── backend/                    # Node.js Express API (TypeScript)
+│   └── src/routes/             # market-data, biotech-data, analytics
+├── terminal/                   # Full terminal application
+│   └── src/                    # React app consuming frontend-components
+└── examples/                   # Component demos and documentation
 ```
 
-## Development Workflows
+### Dual Backend Architecture (Critical Understanding)
+**Two backends serve different purposes:**
+1. **Python FastAPI** (`platform/core/app.py` on port 8000): Data providers, database models, batch analytics
+2. **Node.js Express** (`backend/src/index.ts` on port 3001): Real-time WebSocket, market data streaming
 
-### Component Development
+### Component Organization (Atomic Design)
+```
+frontend-components/src/
+├── terminal/                   # Core UI atoms, molecules, organisms
+│   ├── atoms/                  # Button, Input, Badge (18 primitives)
+│   ├── molecules/              # Metric, Card, Toast, MetricCard
+│   ├── organisms/              # Panel, DataTable, Modal, AuroraBackdrop
+│   └── visualizations/         # Gauge, DonutChart, WorldMap, SparkLine
+├── tables/                     # OpenBB-style data grids
+├── plotly/                     # Financial chart wrappers
+└── biotech/                    # Drug pipeline, catalyst tracking widgets
+```
+
+### Design System Principles
+- **Terminal Aesthetics**: Monospace fonts, sharp edges, WCAG AAA contrast
+- **Bloomberg Inspired**: `cornerBrackets` prop, uppercase labels, data density
+- **Multi-theme**: 5 themes via `data-theme="amber|green|cyan|purple|blue"`
+- **CVD Support**: Color-blind modes via `data-cvd="deuteranopia|protanomaly"`
+
+## Critical Developer Workflows
+
+### One-Command Setup (First Time)
 ```bash
-# Library development with live demo
-npm run dev          # Starts examples/demo at localhost:5173
-npm run build        # Builds library for distribution
-npm run test         # Vitest unit tests
-```
+# macOS/Linux
+./scripts/setup.sh
 
-### Backend Development  
+# Windows
+.\scripts\setup.ps1
+```
+**What it does**: Installs Poetry, Node.js dependencies for all workspaces, builds frontend-components, creates .env file
+
+### Development Mode (All Services)
 ```bash
-cd backend
-npm run dev          # tsx watch with hot reload
-npm run db:migrate   # Database migrations
-npm run db:seed      # Seed pharmaceutical data
+# Start everything (Python API + Node.js API + Terminal App)
+npm run start:dev     # or ./scripts/setup.sh dev
+
+# Individual services
+npm run dev:backend      # Python FastAPI at :8000 (poetry run uvicorn)
+npm run dev:components   # Vite dev server at :5173 (frontend-components)
+npm run dev:terminal     # Vite dev server at :3000 (terminal app)
 ```
 
-### Key Commands
-- **Demo**: `npm run demo` - Live component showcase
-- **Full Stack**: Start both frontend demo + backend API
-- **Tests**: `npm run test:coverage` - Component + API test coverage
+### Backend Workflows
+```bash
+# Python backend (platform/)
+poetry run uvicorn platform.core.app:app --reload
+poetry run pytest                    # Run tests
+poetry run ruff check platform/      # Linting
 
-## Biotech-Specific Patterns
+# Node.js backend (backend/)
+cd backend && npm run dev            # tsx watch mode
+npm run db:seed                      # Seed pharmaceutical data
+```
 
-### Type System (Critical for AI Understanding)
-The project's core types in `src/types/biotech.ts` define pharmaceutical domain models:
+### Component Library Development
+```bash
+cd frontend-components
+npm run dev           # Vite dev server with HMR
+npm run build         # Build for distribution
+npm run typecheck     # TypeScript validation (catches errors before build)
+npm run lint          # ESLint checking
+```
 
+### Testing Strategy
+```bash
+npm run test                  # All workspaces (components + terminal + platform)
+npm run test:components       # Vitest in frontend-components/
+npm run test:terminal         # Vitest in terminal/
+poetry run pytest             # Python backend tests
+poetry run pytest --cov       # With coverage report
+```
+
+### Building for Production
+```bash
+npm run build:all             # Poetry build + npm build (all workspaces)
+npm run build:components      # Just frontend-components (for npm publish)
+npm run build:terminal        # Terminal app static build
+```
+
+## Project-Specific Conventions
+
+### Type System (Critical for Biotech Domain)
+All pharmaceutical types in `src/types/biotech.ts` (root level, NOT in frontend-components):
 ```typescript
-// Drug Development Pipeline
+// Pipeline and Development
 PhaseType: "Preclinical" | "Phase I" | "Phase II" | "Phase III" | "Filed" | "Approved"
 TherapeuticArea: "Oncology" | "Immunology" | "Neurology" | "Rare Disease"
 CompanyType: "Big Pharma" | "SMid" | "Biotech" | "China Pharma"
 
-// Financial Modeling
+// Financial Modeling (used by BiotechFinancialDashboard)
 Asset, DevelopmentMilestone, SalesMilestone, RoyaltyTier, GlobalParameters
 
-// Intelligence Tracking  
-Catalyst, Indication, Competitor, LauraDoc, RagAnswer
+// Intelligence Tracking
+Catalyst, Indication, Competitor, LauraDoc, RagAnswer, AuroraAdapters
+```
+
+### Component Naming Conventions
+- **Bio-prefix**: `BioMetricGrid`, `BioAuroraDashboard` for pharmaceutical-specific components
+- **Terminal Style**: `cornerBrackets` prop, ALL CAPS labels in titles
+- **Status Variants**: Consistent `success|warning|error|info` across all status-aware components
+- **Modular Exports**: Import from subpaths `@biotech-terminal/frontend-components/terminal`
+
+### CSS Architecture (Pure CSS, No CSS-in-JS)
+```typescript
+// Import pattern for consuming apps
+import '@biotech-terminal/frontend-components/styles';
+
+// CSS modules for component-specific styles
+import styles from './MyComponent.module.css';
+
+// Design tokens in frontend-components/src/styles/variables.css
+--accent-primary, --bg-terminal, --font-mono
+```
+
+### Python Backend Patterns
+```python
+# Provider pattern for data sources (platform/providers/)
+class MyProvider(Provider):
+    async def fetch_data(self, **kwargs):
+        return {"data": ...}
+
+# Endpoint registration (platform/core/routers.py)
+api_router = APIRouter()
+api_router.include_router(biotech_router, prefix="/biotech")
+
+# Database models (platform/core/database.py)
+# SQLAlchemy async with SQLite (dev) / PostgreSQL (prod)
 ```
 
 ### OpenBB Integration Pattern
-Financial market data flows through `src/integrations/openbb/`:
-- `OpenBBTable` - Transforms financial data grids
-- `OpenBBPlot` - Plotly.js chart integration
-- Backend routes at `/api/market` provide real-time biotech market data
+Financial data flows through `src/integrations/openbb/`:
+- `OpenBBTable` - Transforms OpenBB data grids to terminal tables
+- `OpenBBPlot` - Wraps Plotly.js charts with terminal styling
+- Backend routes at `/api/v1/biotech/*` (Python) or `/api/market/*` (Node.js)
 
-### Component Naming Conventions
-- **Bio-prefixed**: `BioMetricGrid`, `BioAuroraDashboard` for pharmaceutical-specific components
-- **Terminal Style**: ALL CAPS labels, `cornerBrackets` props, monospace typography
-- **Status-driven**: Components use `success|warning|error|info` status variants consistently
-
-## Integration Points
+## Integration Points & Data Flow
 
 ### External Dependencies
-- **OpenBB Platform**: Financial data integration via `external/OpenBB/` submodule
-- **Radix UI**: Headless component primitives (`@radix-ui/react-*`)
-- **TanStack**: Virtual scrolling (`@tanstack/react-virtual`), data tables (`@tanstack/react-table`)
-- **Plotly.js**: Scientific/financial charting (`plotly.js-dist-min`)
+- **OpenBB Platform**: Financial data via `external/OpenBB/` submodule (Git submodule)
+- **Radix UI**: Headless primitives (`@radix-ui/react-dialog`, `@radix-ui/react-select`)
+- **TanStack**: Virtual scrolling (`@tanstack/react-virtual`), tables (`@tanstack/react-table`), queries (`@tanstack/react-query` in terminal app)
+- **Plotly.js**: Scientific/financial charting (`plotly.js-dist-min`, wrapped in `src/plotly/`)
+- **Framer Motion**: Aurora effects and animations
+- **Recharts**: Simpler chart components in visualizations
 
 ### Data Flow Architecture
-1. **Backend APIs** (`/api/*`) aggregate pharmaceutical data
-2. **WebSocket** (`/websocket`) streams real-time market updates  
-3. **OpenBB Tables/Plots** render financial data with terminal styling
-4. **Aurora Adapters** interface provides RAG search and document intelligence
+```
+1. External APIs → Python Providers → FastAPI Endpoints → Terminal App
+2. Real-time data → Node.js WebSocket → Terminal App (live updates)
+3. DuckDB Pipeline → Ingestion → SQLite/PostgreSQL → FastAPI
+4. Terminal App → React Query → Zustand State → Components
+```
 
-### Cross-Component Communication
-- **Toast System**: `useToast()` hook for global notifications
-- **Theme Provider**: `data-theme` attributes cascade styling
-- **WebSocket Client**: Real-time data updates via `src/services/websocket-client.ts`
+### Cross-Workspace Communication
+**Terminal App Consumes Frontend Components:**
+```typescript
+// terminal/package.json
+"@biotech-terminal/frontend-components": "file:../frontend-components"
 
-## Common Gotchas
+// terminal/src/pages/Dashboard.tsx
+import { Panel, Metric } from '@biotech-terminal/frontend-components/terminal';
+import { DrugPipeline } from '@biotech-terminal/frontend-components/biotech';
+```
 
-### Library vs Application Context
-- **Library Build**: Components export for npm distribution
-- **Demo Application**: `examples/` directory showcases all components
-- **Backend Services**: Separate Node.js API in `backend/` directory
+**Python Backend → Node.js Backend:**
+- Python handles batch data processing, database models
+- Node.js handles real-time WebSocket streaming
+- Both can be run simultaneously in development
 
-### Styling Architecture
-- Import styles: `import '@deaxu/terminal-ui/styles'` 
-- CSS Variables: `--accent-primary`, `--font-mono` for theming
-- **No CSS-in-JS**: Pure CSS with design tokens in `src/styles/variables.css`
+### WebSocket Communication Pattern
+```typescript
+// backend/src/websocket/index.ts - Node.js WebSocket server
+io.on('connection', (socket) => {
+  socket.on('subscribe:market', ...)
+  socket.emit('market_data', data)
+})
 
-### Data Requirements
-- **Mock Data**: `src/mocks/handlers.ts` provides MSW service worker responses
-- **Real Data**: Backend APIs require PostgreSQL + QuestDB setup
-- **Financial Data**: OpenBB integration requires separate API keys/setup
+// terminal/src/hooks/useWebSocket.ts - Consumer
+const { data } = useWebSocket('ws://localhost:3001');
+```
 
-When building new biotech components, follow the atomic design pattern, use the established type system from `biotech.ts`, and maintain terminal aesthetic consistency with existing components.
+## Common Gotchas & Critical Knowledge
+
+### Multi-Workspace Build Dependencies
+**CRITICAL**: Components must be built before terminal can develop:
+```bash
+cd frontend-components && npm run build  # Required first
+cd ../terminal && npm run dev             # Now works
+```
+Reason: Terminal imports `@biotech-terminal/frontend-components` via `file:../` workspace link
+
+### Two src/ Directories (Confusing!)
+- `src/` (root) - Legacy library code, types, integrations (still used for types)
+- `frontend-components/src/` - Actual component library (the real source)
+- When adding components, use `frontend-components/src/terminal/` path
+
+### Python Environment Management
+```bash
+poetry install           # Installs dependencies in .venv
+poetry run <command>     # Always prefix Python commands with poetry run
+poetry shell             # OR activate shell to omit poetry run prefix
+```
+
+### TypeScript Build Errors vs Runtime
+- Build fails don't always mean code is wrong (especially WorldMap component)
+- Run `npm run typecheck` in workspace before building to catch issues early
+- Check `tsconfig.json` paths - workspace references can cause confusion
+
+### CSS Import Order Matters
+```typescript
+// Correct order in terminal app
+import '@biotech-terminal/frontend-components/styles';  // First
+import './App.css';                                      // Then app styles
+```
+
+### DuckDB Ingestion Pipeline
+Located in `platform/ingestion/` - separate from FastAPI app:
+```bash
+cd platform/ingestion
+python -m platform.ingestion  # Run pipeline manually
+```
+Ingests parquet/CSV → DuckDB → SQLite for analysis
+
+### Mock Data Strategy
+- **Development**: `src/mocks/handlers.ts` (MSW) for frontend-only dev
+- **Real Data**: Requires both Python backend (port 8000) + Node.js backend (port 3001)
+- Terminal app can run standalone with mocks, or connect to backends
+
+### Common Import Errors
+```typescript
+// ❌ Wrong (imports from dist, not src)
+import { Panel } from '@biotech-terminal/frontend-components';
+
+// ✅ Correct (explicit subpath)
+import { Panel } from '@biotech-terminal/frontend-components/terminal';
+```
+
+## Key Files to Understand
+
+### Entry Points
+- `platform/core/app.py` - Python FastAPI application entry
+- `backend/src/index.ts` - Node.js Express application entry
+- `frontend-components/src/index.ts` - Component library main export
+- `terminal/src/main.tsx` - Terminal application entry
+
+### Configuration Files
+- `pyproject.toml` - Python dependencies and Poetry config
+- `package.json` (root) - Workspace configuration and scripts
+- `frontend-components/package.json` - Component library dependencies
+- `backend/package.json` - Node.js backend dependencies
+- `tsconfig.json` (multiple) - TypeScript configs per workspace
+
+### Type Definitions
+- `src/types/biotech.ts` - Pharmaceutical domain models (root level)
+- `frontend-components/src/types/` - Component prop types
+
+### Styling System
+- `frontend-components/src/styles/variables.css` - Design tokens
+- `frontend-components/src/styles/biotech-theme.css` - Aurora theme
+- `frontend-components/src/styles/global.css` - Base styles
+
+### Example Components
+- `frontend-components/src/terminal/organisms/Panel/` - Panel component example
+- `frontend-components/src/biotech/BiotechFinancialDashboard/` - Complex biotech component
+- `examples/` - Component demonstrations
+
+When adding new biotech components: follow atomic design, use types from `src/types/biotech.ts`, maintain terminal aesthetics with `cornerBrackets` and uppercase labels, and test in both component library and terminal app contexts.
