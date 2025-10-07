@@ -1,11 +1,16 @@
-# Terminal UI Library
+# Biotech Terminal Platform
 
-> Modern terminal-themed React component library with Bloomberg Terminal aesthetics
+> Open-source biotech terminal platform with financial modeling, pharmaceutical intelligence, and terminal-style data visualization
 
-[![npm version](https://img.shields.io/npm/v/@deaxu/terminal-ui.svg)](https://www.npmjs.com/package/@deaxu/terminal-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
 
-A comprehensive UI component library featuring a dark terminal aesthetic, perfect for building data-dense dashboards, operational interfaces, and monitoring systems.
+A comprehensive biotech intelligence platform featuring:
+- **Terminal UI Components**: Bloomberg-style React components for pharmaceutical data
+- **Data Platform**: Self-contained backend with biotech data providers
+- **Financial Modeling**: Drug development ROI and NPV calculations
+- **Real-time Analytics**: Market data streaming and catalyst tracking
 
 ## 🚀 Quick Start
 

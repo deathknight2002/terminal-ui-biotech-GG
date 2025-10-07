@@ -140,7 +140,7 @@ export const ClinicalTrialsTimeline: React.FC<ClinicalTrialsTimelineProps> = ({
     return (
       <Panel title={`Clinical Trials Timeline - ${symbol}`} className={clsx(styles.container, className)}>
         <div className={styles.emptyState}>
-          <Text variant="body" color="muted">
+          <Text variant="body" color="secondary">
             No clinical trials data available for {symbol}
           </Text>
           <Button variant="primary" size="sm" className={styles.loadButton}>
@@ -217,7 +217,7 @@ export const ClinicalTrialsTimeline: React.FC<ClinicalTrialsTimelineProps> = ({
                       </Text>
                       <div className={styles.trialBadges}>
                         <Badge 
-                          variant="outline" 
+                          variant="default" 
                           style={{ 
                             borderColor: phaseColors[trial.phase],
                             color: phaseColors[trial.phase]
@@ -226,7 +226,7 @@ export const ClinicalTrialsTimeline: React.FC<ClinicalTrialsTimelineProps> = ({
                           {trial.phase}
                         </Badge>
                         <Badge 
-                          variant="outline"
+                          variant="default"
                           style={{ 
                             borderColor: statusColors[trial.status],
                             color: statusColors[trial.status]
@@ -313,3 +313,10 @@ export const ClinicalTrialsTimeline: React.FC<ClinicalTrialsTimelineProps> = ({
 };
 
 export default ClinicalTrialsTimeline;
+
+
+
+
+
+
+
