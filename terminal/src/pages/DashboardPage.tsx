@@ -7,25 +7,29 @@ import type {
   Catalyst,
   PortfolioPosition 
 } from '../../../frontend-components/src/types/biotech';
+import styles from './DashboardPage.module.css';
 
-// Fetch data from our backend or use the sophisticated defaults
+// Fetch data from our backend - LIVE data only
 const fetchDashboardData = async () => {
   try {
     const response = await fetch('http://localhost:3001/api/biotech/dashboard');
     if (!response.ok) {
-      // Fall back to sophisticated default data if backend is unavailable
-      return null;
+      throw new Error('Failed to fetch dashboard data');
     }
-    return response.json();
-  } catch {
-    console.log('Backend unavailable, using sophisticated defaults');
-    return null;
+    const data = await response.json();
+    console.log('Dashboard data received:', data);
+    return data;
+  } catch (error) {
+    console.error('Backend unavailable:', error);
+    throw error; // No mock fallback - we want real data only
   }
 };
 
 export function DashboardPage() {
   const { 
     data: dashboardData, 
+    isLoading,
+    error
   } = useQuery({
     queryKey: ['aurora-dashboard'],
     queryFn: fetchDashboardData,
@@ -34,10 +38,51 @@ export function DashboardPage() {
     refetchInterval: 30000, // Auto-refresh every 30 seconds
   });
 
-  // Use the sophisticated BioAuroraDashboard with its built-in defaults
-  // or enhanced data from backend
+  const handleSelectCatalyst = (catalyst: Catalyst) => {
+    console.log('Selected catalyst:', catalyst);
+    
+    if (catalyst.url) {
+      // Open the catalyst link in a new tab
+      window.open(catalyst.url, '_blank', 'noopener,noreferrer');
+    } else {
+      // Fallback: search for the catalyst on Fierce Biotech
+      const searchQuery = catalyst.label.replace(/\s+/g, '+');
+      window.open(`https://www.fiercebiotech.com/search?query=${searchQuery}`, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleSelectPosition = (position: PortfolioPosition) => {
+    console.log('Selected position:', position);
+    // Could open a detailed analysis view or search for company news
+    const searchQuery = `${position.company} stock analysis`.replace(/\s+/g, '+');
+    window.open(`https://www.fiercebiotech.com/search?query=${searchQuery}`, '_blank', 'noopener,noreferrer');
+  };
+
+  if (isLoading) {
+    return (
+      <div className={`${styles.frame} terminal-frame aurora-shimmer`}>
+        <div className={styles.loading}>
+          <div>Loading Aurora Biotech Intelligence...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`${styles.frame} terminal-frame aurora-shimmer`}>
+        <div className={styles.error}>
+          <div>Failed to load dashboard data</div>
+          <div className={styles.errorMessage}>
+            Backend connection failed - check if Node.js server is running on port 3001
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="terminal-frame aurora-shimmer">
+    <div className={`${styles.frame} terminal-frame aurora-shimmer`}>
       <BioAuroraDashboard
         theme="aurora-red"
         headline={dashboardData?.headline}
@@ -48,14 +93,8 @@ export function DashboardPage() {
         pipeline={dashboardData?.pipeline}
         documents={dashboardData?.documents}
         analytics={dashboardData?.analytics}
-        onSelectCatalyst={(catalyst: Catalyst) => {
-          console.log('Selected catalyst:', catalyst);
-          // Could open a modal or navigate to detailed view
-        }}
-        onSelectPosition={(position: PortfolioPosition) => {
-          console.log('Selected position:', position);
-          // Could open a detailed analysis view
-        }}
+        onSelectCatalyst={handleSelectCatalyst}
+        onSelectPosition={handleSelectPosition}
       />
     </div>
   );

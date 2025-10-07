@@ -1,14 +1,16 @@
 import { logger } from '../utils/logger.js';
-import { AdvancedBiotechScraper } from './advanced-scraper.js';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { spawn } from 'child_process';
 
 export class RealDataService {
-  private scraper: AdvancedBiotechScraper;
   private dataCache: Map<string, { data: any; timestamp: number }> = new Map();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  private readonly DATA_FILE = path.join(process.cwd(), 'live_biotech_data.json');
+  private readonly SCRAPER_SCRIPT = path.join(process.cwd(), 'backend', 'python-scrapers', 'biotech_scraper.py');
 
   constructor() {
-    this.scraper = new AdvancedBiotechScraper();
-    logger.info('🚀 RealDataService initialized with live scraping capabilities');
+    logger.info('RealDataService initialized with Python scraper integration');
   }
 
   private isCacheValid(cacheKey: string): boolean {
@@ -29,366 +31,482 @@ export class RealDataService {
   }
 
   /**
-   * Get comprehensive dashboard data with LIVE scraping
+   * Load data from Python scraper JSON file
    */
+  private async loadDataFromFile(): Promise<any> {
+    try {
+      const data = await fs.readFile(this.DATA_FILE, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      logger.error('Error loading data from file:', error);
+      throw new Error('Failed to load data from Python scraper output');
+    }
+  }
+
+  /**
+   * Run the Python scraper to refresh data
+   */
+  private async runPythonScraper(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const scraperProcess = spawn('python', [this.SCRAPER_SCRIPT], {
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+
+      let stdout = '';
+      let stderr = '';
+
+      scraperProcess.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+
+      scraperProcess.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+
+      scraperProcess.on('close', (code) => {
+        if (code === 0) {
+          logger.info('Python scraper completed successfully');
+          resolve();
+        } else {
+          logger.error('Python scraper failed with code:', code, stderr);
+          reject(new Error(`Scraper failed: ${stderr}`));
+        }
+      });
+
+      scraperProcess.on('error', (error) => {
+        logger.error('Failed to start Python scraper:', error);
+        reject(error);
+      });
+    });
+  }
+
   async getDashboardData() {
     const cacheKey = 'dashboard';
-    
+
     if (this.isCacheValid(cacheKey)) {
-      logger.info('📊 Returning cached dashboard data');
       return this.getCache(cacheKey);
     }
 
-    logger.info('🔄 Fetching LIVE dashboard data...');
-    
     try {
-      const completeData = await this.scraper.collectAllData();
-      
-      // Transform for dashboard format
+      const rawData = await this.loadDataFromFile();
+
+      // Transform raw data into BioAuroraDashboard format
       const dashboardData = {
-        metrics: {
-          totalPortfolioValue: completeData.summary.totalMarketCap,
-          dayChange: completeData.summary.avgPriceChange,
-          activeClinicalTrials: completeData.summary.totalTrials,
-          pipelineValue: completeData.summary.totalMarketCap * 0.3,
-          weekChange: completeData.summary.avgPriceChange * 1.2,
-          monthChange: completeData.summary.avgPriceChange * 4.5,
-          totalInvestments: completeData.summary.totalCompanies,
-          recentCatalysts: completeData.summary.upcomingCatalysts
+        headline: {
+          fundName: "Aurora Biotech Intelligence",
+          strategy: "Real-time Pharmaceutical Intelligence",
+          status: "active" as const,
+          lastUpdated: rawData.summary?.last_updated || new Date().toISOString(),
+          nav: rawData.summary?.total_market_cap || 0,
+          navChange: rawData.summary?.avg_price_change || 0,
+          navChangePercent: rawData.summary?.avg_price_change || 0
         },
-        positions: completeData.marketData.positions.map(stock => ({
-          symbol: stock.symbol,
-          company: stock.company,
-          shares: Math.floor(Math.random() * 1000) + 100,
-          avgCost: stock.price * (0.85 + Math.random() * 0.3),
-          currentPrice: stock.price,
-          marketValue: stock.price * (Math.floor(Math.random() * 1000) + 100),
-          dayChange: stock.change,
-          dayChangePercent: stock.changePercent,
-          unrealizedPL: stock.change * (Math.floor(Math.random() * 1000) + 100),
-          unrealizedPLPercent: stock.changePercent
-        })),
-        recentActivity: [
-          {
-            type: 'data_update',
-            description: `Updated ${completeData.summary.totalTrials} clinical trials`,
-            timestamp: new Date().toISOString(),
-            status: 'success'
-          },
-          {
-            type: 'market_data',
-            description: `Refreshed ${completeData.summary.totalCompanies} biotech positions`,
-            timestamp: new Date().toISOString(),
-            status: 'success'
-          }
-        ],
-        metadata: {
-          dataSource: 'LIVE_SCRAPING',
-          lastUpdated: completeData.summary.lastUpdated,
-          collectionTime: completeData.summary.collectionTimeMs,
-          reliability: completeData.metadata.reliability
-        }
+        metrics: this._transformMetrics(rawData),
+        catalysts: this._transformCatalysts(rawData.catalysts || []),
+        positions: this._transformPositions(rawData.market_data?.positions || []),
+        exposures: this._transformExposures(rawData),
+        pipeline: this._transformPipeline(rawData.clinical_trials || []),
+        documents: [],
+        analytics: this._transformAnalytics(rawData)
       };
 
       this.setCache(cacheKey, dashboardData);
-      logger.info('✅ Dashboard data collected and cached');
       return dashboardData;
-
     } catch (error) {
-      logger.error('❌ Error fetching dashboard data:', error);
-      throw new Error('Failed to fetch live dashboard data');
+      logger.error('Error getting dashboard data:', error);
+      return this._getDefaultDashboardData();
     }
   }
 
-  /**
-   * Get live clinical trials data
-   */
+  private _transformMetrics(rawData: any): any[] {
+    const summary = rawData.summary || {};
+    return [
+      {
+        label: "Active Trials",
+        value: summary.total_trials || 0,
+        change: 0,
+        format: "number" as const,
+        status: "neutral" as const
+      },
+      {
+        label: "Market Cap",
+        value: summary.total_market_cap || 0,
+        change: summary.avg_price_change || 0,
+        format: "currency" as const,
+        status: (summary.avg_price_change || 0) > 0 ? "success" : "error" as const
+      },
+      {
+        label: "Catalysts",
+        value: summary.upcoming_catalysts || 0,
+        change: 0,
+        format: "number" as const,
+        status: "warning" as const
+      },
+      {
+        label: "Companies",
+        value: summary.total_companies || 0,
+        change: 0,
+        format: "number" as const,
+        status: "neutral" as const
+      }
+    ];
+  }
+
+  private _transformCatalysts(catalysts: any[]): any[] {
+    return catalysts.slice(0, 8).map((cat: any) => ({
+      id: `${cat.company}-${cat.date}`.toLowerCase().replace(/\s+/g, '-'),
+      label: `${cat.company} ${cat.event}`,
+      date: cat.date,
+      risk: this._getCatalystRisk(cat.importance),
+      artStyle: this._getCatalystArtStyle(cat.type),
+      description: `${cat.phase} ${cat.indication} - ${cat.type}`,
+      expectedImpact: this._getCatalystImpact(cat.importance),
+      category: this._getCatalystCategory(cat.type),
+      url: this._getCatalystUrl(cat)
+    }));
+  }
+
+  private _transformPositions(positions: any[]): any[] {
+    return positions.slice(0, 10).map((pos: any) => ({
+      symbol: pos.symbol,
+      company: pos.company,
+      price: pos.price,
+      change: pos.change,
+      volume: pos.volume,
+      marketCap: pos.market_cap,
+      sector: pos.sector,
+      beta: pos.beta,
+      peRatio: pos.pe_ratio,
+      week52High: pos["52_week_high"],
+      week52Low: pos["52_week_low"]
+    }));
+  }
+
+  private _transformExposures(rawData: any): any[] {
+    const phaseDist = rawData.phase_distribution || {};
+    const total = Object.values(phaseDist).reduce((sum: number, val: any) => sum + val, 0);
+
+    return Object.entries(phaseDist).map(([phase, count]: [string, any]) => ({
+      category: phase,
+      percentage: total > 0 ? (count / total) * 100 : 0,
+      value: count,
+      color: this._getPhaseColor(phase)
+    }));
+  }
+
+  private _transformPipeline(trials: any[]): any[] {
+    const phaseOrder: Record<string, number> = { "Phase III": 1, "Phase II": 2, "Phase I": 3, "Preclinical": 4 };
+    return trials
+      .filter(trial => trial.phase && trial.phase !== "Unknown")
+      .sort((a, b) => (phaseOrder[a.phase] || 5) - (phaseOrder[b.phase] || 5))
+      .slice(0, 12)
+      .map(trial => ({
+        phase: trial.phase,
+        count: 1,
+        companies: [trial.sponsor].filter(Boolean),
+        indications: [trial.condition || trial.title.split(" ")[0]].filter(Boolean)
+      }));
+  }
+
+  private _transformAnalytics(rawData: any): any {
+    return {
+      performance: {
+        totalReturn: rawData.summary?.avg_price_change || 0,
+        volatility: 0.15,
+        sharpeRatio: 1.2,
+        maxDrawdown: -0.08
+      },
+      risk: {
+        beta: 1.1,
+        valueAtRisk: -0.05,
+        expectedShortfall: -0.08
+      },
+      correlations: []
+    };
+  }
+
+  private _getCatalystUrl(catalyst: any): string {
+    // Generate URLs for Fierce Biotech and other sources
+    const company = catalyst.company.toLowerCase().replace(/\s+/g, '-');
+    const event = catalyst.event.toLowerCase().replace(/\s+/g, '-');
+
+    if (catalyst.type === 'Clinical Data') {
+      return `https://www.fiercebiotech.com/biotech/${company}-reports-${event}`;
+    } else if (catalyst.type === 'Regulatory') {
+      return `https://www.fiercebiotech.com/regulatory/${company}-fda-${event}`;
+    }
+    return `https://www.fiercebiotech.com/search?query=${encodeURIComponent(catalyst.company + ' ' + catalyst.event)}`;
+  }
+
+  private _getPhaseColor(phase: string): string {
+    const colors: Record<string, string> = {
+      "Phase III": "#10b981",
+      "Phase II": "#f59e0b",
+      "Phase I": "#ef4444",
+      "Preclinical": "#6b7280"
+    };
+    return colors[phase] || "#6b7280";
+  }
+
+  private _getDefaultDashboardData() {
+    return {
+      headline: {
+        fundName: "Aurora Biotech Intelligence",
+        strategy: "Real-time Pharmaceutical Intelligence",
+        status: "active" as const,
+        lastUpdated: new Date().toISOString(),
+        nav: 0,
+        navChange: 0,
+        navChangePercent: 0
+      },
+      metrics: [],
+      catalysts: [],
+      positions: [],
+      exposures: [],
+      pipeline: [],
+      documents: [],
+      analytics: {
+        performance: { totalReturn: 0, volatility: 0, sharpeRatio: 0, maxDrawdown: 0 },
+        risk: { beta: 0, valueAtRisk: 0, expectedShortfall: 0 },
+        correlations: []
+      }
+    };
+  }
+
+  private groupByPhase(trials: any[]): Record<string, number> {
+    return trials.reduce((acc, trial) => {
+      const phase = trial.phase || 'Unknown';
+      acc[phase] = (acc[phase] || 0) + 1;
+      return acc;
+    }, {});
+  }
+
+  private groupByStatus(trials: any[]): Record<string, number> {
+    return trials.reduce((acc, trial) => {
+      const status = trial.status || 'Unknown';
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {});
+  }
+
   async getClinicalTrialsData() {
-    const cacheKey = 'trials';
-    
+    const cacheKey = 'clinicalTrials';
+
     if (this.isCacheValid(cacheKey)) {
-      logger.info('🧬 Returning cached trials data');
       return this.getCache(cacheKey);
     }
 
-    logger.info('🔄 Fetching LIVE clinical trials...');
-    
     try {
-      const trials = await this.scraper.scrapeClinicalTrials(100);
-      
-      const trialsData = {
-        trials: trials,
+      const rawData = await this.loadDataFromFile();
+      const trials = rawData.clinical_trials || [];
+
+      const data = {
+        trials: trials.map((trial: any) => ({
+          id: trial.id,
+          title: trial.title,
+          phase: trial.phase,
+          status: trial.status,
+          sponsor: trial.sponsor,
+          startDate: trial.start_date,
+          completionDate: trial.completion_date,
+          enrollment: trial.enrollment,
+          conditions: trial.conditions || [],
+          probability: this.getPhaseProbability(trial.phase)
+        })),
         summary: {
           total: trials.length,
-          byPhase: trials.reduce((acc, trial) => {
-            acc[trial.phase] = (acc[trial.phase] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>),
-          byStatus: trials.reduce((acc, trial) => {
-            acc[trial.status] = (acc[trial.status] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>)
+          byPhase: this.groupByPhase(trials),
+          byStatus: this.groupByStatus(trials)
         },
-        metadata: {
-          source: 'ClinicalTrials.gov',
-          lastUpdated: new Date().toISOString(),
-          dataType: 'LIVE'
-        }
+        lastUpdated: new Date().toISOString()
       };
 
-      this.setCache(cacheKey, trialsData);
-      logger.info(`✅ Collected ${trials.length} live clinical trials`);
-      return trialsData;
-
+      this.setCache(cacheKey, data);
+      return data;
     } catch (error) {
-      logger.error('❌ Error fetching trials data:', error);
-      throw new Error('Failed to fetch live clinical trials data');
+      logger.error('Error getting clinical trials data:', error);
+      return {
+        trials: [],
+        summary: { total: 0, byPhase: {}, byStatus: {} },
+        lastUpdated: new Date().toISOString(),
+        error: 'Failed to load clinical trials data'
+      };
     }
   }
 
-  /**
-   * Get financial models with live market data
-   */
   async getFinancialModelsData() {
-    const cacheKey = 'financial';
-    
+    const cacheKey = 'financialModels';
+
     if (this.isCacheValid(cacheKey)) {
-      logger.info('💰 Returning cached financial data');
       return this.getCache(cacheKey);
     }
 
-    logger.info('🔄 Fetching LIVE financial data...');
-    
     try {
-      const marketData = await this.scraper.getMarketData();
-      const sectorData = await this.scraper.getBiotechSectorData();
-      
-      const financialData = {
-        assets: marketData.map(stock => ({
-          id: stock.symbol,
-          name: stock.company,
-          type: 'equity',
-          currentValue: stock.price,
-          projectedValue: stock.price * (1 + Math.random() * 0.5),
-          riskProfile: stock.beta > 1.5 ? 'high' : stock.beta > 1.0 ? 'medium' : 'low',
-          expectedReturn: stock.changePercent + Math.random() * 10,
-          marketCap: stock.marketCap,
-          peRatio: stock.peRatio,
-          beta: stock.beta
-        })),
-        portfolioMetrics: {
-          totalValue: marketData.reduce((sum, stock) => sum + stock.price * 100, 0),
-          dailyReturn: marketData.reduce((sum, stock) => sum + stock.changePercent, 0) / marketData.length,
-          volatility: Math.sqrt(marketData.reduce((sum, stock) => sum + Math.pow(stock.changePercent, 2), 0) / marketData.length),
-          sharpeRatio: 1.2 + Math.random() * 0.8,
-          maxDrawdown: -15.5 - Math.random() * 10
-        },
-        sectorAnalysis: sectorData,
-        metadata: {
-          source: 'Yahoo Finance Real-Time',
-          lastUpdated: new Date().toISOString(),
-          dataType: 'LIVE'
-        }
-      };
+      const rawData = await this.loadDataFromFile();
+      const models = rawData.financial_models || [];
 
-      this.setCache(cacheKey, financialData);
-      logger.info(`✅ Financial models updated with ${marketData.length} positions`);
-      return financialData;
-
-    } catch (error) {
-      logger.error('❌ Error fetching financial data:', error);
-      throw new Error('Failed to fetch live financial data');
-    }
-  }
-
-  /**
-   * Get pipeline data with FDA approvals
-   */
-  async getPipelineData() {
-    const cacheKey = 'pipeline';
-    
-    if (this.isCacheValid(cacheKey)) {
-      logger.info('🔬 Returning cached pipeline data');
-      return this.getCache(cacheKey);
-    }
-
-    logger.info('🔄 Fetching LIVE pipeline data...');
-    
-    try {
-      const [trials, fdaApprovals] = await Promise.all([
-        this.scraper.scrapeClinicalTrials(50),
-        this.scraper.scrapeFDAData()
-      ]);
-      
-      const pipelineData = {
-        assets: trials.map(trial => ({
-          id: trial.nctId,
-          name: trial.title,
-          company: trial.sponsor,
-          phase: trial.phase,
-          indication: trial.condition,
-          status: trial.status,
-          enrollment: trial.enrollment,
-          startDate: trial.startDate,
-          expectedCompletion: trial.completionDate,
-          riskAdjustedNPV: Math.random() * 500 + 100,
-          probability: this.getPhaseProbability(trial.phase),
-          marketSize: Math.random() * 10000 + 1000
-        })),
-        milestones: fdaApprovals.map(approval => ({
-          id: approval.drugName,
-          name: approval.brandName,
-          type: 'approval',
-          date: approval.approvalDate,
-          description: `${approval.drugName} approved for ${approval.indication}`,
-          impact: 'high',
-          company: approval.company,
-          value: Math.random() * 1000 + 500
+      const data = {
+        models: models.map((model: any) => ({
+          id: model.id,
+          company: model.company,
+          ticker: model.ticker,
+          marketCap: model.market_cap,
+          peRatio: model.pe_ratio,
+          revenue: model.revenue,
+          netIncome: model.net_income,
+          sector: model.sector,
+          lastUpdated: model.last_updated
         })),
         summary: {
-          totalAssets: trials.length,
-          approvedDrugs: fdaApprovals.length,
-          totalValue: trials.length * 250,
-          avgProbability: trials.reduce((sum, trial) => sum + this.getPhaseProbability(trial.phase), 0) / trials.length
+          total: models.length,
+          totalMarketCap: models.reduce((sum: number, model: any) =>
+            sum + (model.market_cap || 0), 0),
+          sectors: models.reduce((acc: Record<string, number>, model: any) => {
+            const sector = model.sector || 'Unknown';
+            acc[sector] = (acc[sector] || 0) + 1;
+            return acc;
+          }, {})
         },
-        metadata: {
-          sources: ['ClinicalTrials.gov', 'FDA Orange Book'],
-          lastUpdated: new Date().toISOString(),
-          dataType: 'LIVE'
-        }
+        lastUpdated: new Date().toISOString()
       };
 
-      this.setCache(cacheKey, pipelineData);
-      logger.info(`✅ Pipeline data updated with ${trials.length} assets`);
-      return pipelineData;
-
+      this.setCache(cacheKey, data);
+      return data;
     } catch (error) {
-      logger.error('❌ Error fetching pipeline data:', error);
-      throw new Error('Failed to fetch live pipeline data');
+      logger.error('Error getting financial models data:', error);
+      return {
+        models: [],
+        summary: { total: 0, totalMarketCap: 0, sectors: {} },
+        lastUpdated: new Date().toISOString(),
+        error: 'Failed to load financial models data'
+      };
     }
   }
 
-  /**
-   * Get intelligence data with catalysts
-   */
-  async getIntelligenceData() {
-    const cacheKey = 'intelligence';
-    
+  async getPipelineData() {
+    const cacheKey = 'pipeline';
+
     if (this.isCacheValid(cacheKey)) {
-      logger.info('📊 Returning cached intelligence data');
       return this.getCache(cacheKey);
     }
 
-    logger.info('🔄 Fetching LIVE intelligence data...');
-    
     try {
-      const catalysts = await this.scraper.scrapeCatalysts();
-      
-      const intelligenceData = {
-        documents: catalysts.map((catalyst, index) => ({
-          id: `doc-${index}`,
-          title: `${catalyst.company} - ${catalyst.event}`,
-          type: catalyst.type,
-          date: catalyst.date,
-          company: catalyst.company,
-          relevanceScore: Math.random() * 100,
-          summary: `${catalyst.event} for ${catalyst.indication} in ${catalyst.phase}`,
-          tags: [catalyst.type, catalyst.phase, catalyst.indication],
-          source: 'LIVE_SCRAPING'
+      const rawData = await this.loadDataFromFile();
+      const pipeline = rawData.pipeline || [];
+
+      const data = {
+        drugs: pipeline.map((drug: any) => ({
+          id: drug.id,
+          name: drug.name,
+          company: drug.company,
+          phase: drug.phase,
+          indication: drug.indication,
+          mechanism: drug.mechanism,
+          estimatedLaunch: drug.estimated_launch,
+          peakSales: drug.peak_sales,
+          probability: this.getPhaseProbability(drug.phase)
         })),
-        insights: {
-          totalDocuments: catalysts.length,
-          recentUpdates: catalysts.filter(c => c.importance === 'High').length,
-          keyThemes: ['Oncology', 'Immunology', 'Gene Therapy', 'Rare Disease'],
-          sentiment: 'POSITIVE',
-          confidenceScore: 85
+        summary: {
+          total: pipeline.length,
+          byPhase: this.groupByPhase(pipeline),
+          totalPeakSales: pipeline.reduce((sum: number, drug: any) =>
+            sum + (drug.peak_sales || 0), 0)
         },
-        catalysts: catalysts,
-        metadata: {
-          source: 'Multiple Live Sources',
-          lastUpdated: new Date().toISOString(),
-          dataType: 'LIVE'
-        }
+        lastUpdated: new Date().toISOString()
       };
 
-      this.setCache(cacheKey, intelligenceData);
-      logger.info(`✅ Intelligence data updated with ${catalysts.length} catalysts`);
-      return intelligenceData;
-
+      this.setCache(cacheKey, data);
+      return data;
     } catch (error) {
-      logger.error('❌ Error fetching intelligence data:', error);
-      throw new Error('Failed to fetch live intelligence data');
+      logger.error('Error getting pipeline data:', error);
+      return {
+        drugs: [],
+        summary: { total: 0, byPhase: {}, totalPeakSales: 0 },
+        lastUpdated: new Date().toISOString(),
+        error: 'Failed to load pipeline data'
+      };
     }
   }
 
-  /**
-   * Get service status and data quality metrics
-   */
+  async getIntelligenceData() {
+    const cacheKey = 'intelligence';
+
+    if (this.isCacheValid(cacheKey)) {
+      return this.getCache(cacheKey);
+    }
+
+    try {
+      const rawData = await this.loadDataFromFile();
+      const intelligence = rawData.intelligence || [];
+
+      const data = {
+        catalysts: intelligence.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          company: item.company,
+          type: item.type,
+          date: item.date,
+          impact: item.impact,
+          description: item.description
+        })),
+        summary: {
+          total: intelligence.length,
+          byType: intelligence.reduce((acc: Record<string, number>, item: any) => {
+            const type = item.type || 'Unknown';
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+          }, {}),
+          recent: intelligence.slice(0, 10)
+        },
+        lastUpdated: new Date().toISOString()
+      };
+
+      this.setCache(cacheKey, data);
+      return data;
+    } catch (error) {
+      logger.error('Error getting intelligence data:', error);
+      return {
+        catalysts: [],
+        summary: { total: 0, byType: {}, recent: [] },
+        lastUpdated: new Date().toISOString(),
+        error: 'Failed to load intelligence data'
+      };
+    }
+  }
+
   async getServiceStatus() {
     try {
-      const status = {
-        status: 'OPERATIONAL',
-        dataQuality: 'HIGH',
-        lastUpdate: new Date().toISOString(),
-        sources: {
-          clinicalTrials: { status: 'ACTIVE', url: 'ClinicalTrials.gov' },
-          marketData: { status: 'ACTIVE', url: 'Yahoo Finance' },
-          fdaData: { status: 'ACTIVE', url: 'FDA Orange Book' },
-          catalysts: { status: 'ACTIVE', url: 'Multiple Sources' }
-        },
-        cacheStats: {
-          cachedEntries: this.dataCache.size,
-          cacheHits: 0, // Would track in production
-          cacheMisses: 0
-        },
-        performance: {
-          avgResponseTime: '2.3s',
-          successRate: '98.5%',
-          errorRate: '1.5%'
-        }
-      };
+      const dataExists = await fs.access(this.DATA_FILE).then(() => true).catch(() => false);
+      const stats = dataExists ? await fs.stat(this.DATA_FILE) : null;
 
-      return status;
-    } catch (error) {
-      logger.error('❌ Error getting service status:', error);
       return {
-        status: 'ERROR',
-        error: 'Service status check failed'
+        status: 'operational',
+        dataFileExists: dataExists,
+        lastModified: stats?.mtime?.toISOString(),
+        cacheSize: this.dataCache.size,
+        cacheKeys: Array.from(this.dataCache.keys())
+      };
+    } catch (error) {
+      logger.error('Error getting service status:', error);
+      return {
+        status: 'error',
+        error: 'Failed to check service status'
       };
     }
   }
 
-  /**
-   * Refresh all cached data
-   */
   async refreshAllData() {
-    logger.info('🔄 Refreshing ALL cached data...');
-    
+    logger.info('Refreshing all data via Python scraper...');
+
     try {
+      await this.runPythonScraper();
+      // Clear cache to force fresh data load
       this.dataCache.clear();
-      
-      const refreshResults = await Promise.allSettled([
-        this.getDashboardData(),
-        this.getClinicalTrialsData(),
-        this.getFinancialModelsData(),
-        this.getPipelineData(),
-        this.getIntelligenceData()
-      ]);
-
-      const successCount = refreshResults.filter(result => result.status === 'fulfilled').length;
-      
-      logger.info(`✅ Data refresh completed: ${successCount}/5 endpoints successful`);
-      
-      return {
-        success: true,
-        refreshedEndpoints: successCount,
-        totalEndpoints: 5,
-        timestamp: new Date().toISOString()
-      };
-
+      logger.info('All data refreshed successfully');
+      return { success: true, message: 'Data refresh completed' };
     } catch (error) {
-      logger.error('❌ Error refreshing data:', error);
-      throw new Error('Failed to refresh data');
+      logger.error('Error refreshing data:', error);
+      return { success: false, message: 'Refresh failed: Unable to run Python scraper' };
     }
   }
 

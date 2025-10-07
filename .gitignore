@@ -29,6 +29,9 @@ dist/
 
 # Env
 .env*
+.venv/
+venv/
+ENV/
 
 # IDE
 .vscode/
@@ -42,3 +45,6 @@ dist/
 
 # Coverage
 coverage/
+
+# Nested repositories
+OLD OVERHAU;/
