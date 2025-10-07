@@ -34,7 +34,8 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 **Platform will be running at:**
 - 🔧 **Backend API**: http://localhost:8000
 - 📖 **API Documentation**: http://localhost:8000/docs
-- 🖥️ **Terminal Application**: http://localhost:3000
+- 🖥️ **Web Terminal Application**: http://localhost:3000
+- 💻 **CLI Terminal (TUI)**: `python3 -m platform.tui`
 
 ## � Platform Architecture
 
@@ -45,13 +46,14 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 ├── 🐍 platform/           # Python FastAPI backend
 │   ├── core/              # Main application and database
 │   ├── providers/         # Data source integrations
-│   └── routers/           # API endpoints
+│   ├── routers/           # API endpoints
+│   └── tui/               # Terminal User Interface (CLI)
 ├── 🎨 frontend-components/ # React component library
 │   ├── terminal/          # Terminal UI components
 │   ├── tables/            # Data grid components
 │   ├── plotly/           # Chart visualizations
 │   └── biotech/          # Domain-specific components
-├── 🖥️ terminal/           # Full terminal application
+├── 🖥️ terminal/           # Web terminal application
 ├── 📚 examples/           # Component demos
 └── 📖 docs/              # Documentation
 ```
@@ -93,6 +95,17 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 - 🔍 **Market Intelligence** - Competitor analysis
 - 📊 **Clinical Trial Tracker** - Real-time trial data
 - 🧬 **Biotech Data Explorer** - Interactive data discovery
+
+### TUI - Command Line Interface (`platform/tui/`)
+
+**Interactive terminal user interface** for biotech portfolio analysis:
+- 🎯 **Onboarding Panel** - Usage instructions and recent assets
+- 📊 **Watchlist Management** - Track assets of interest
+- 🕒 **Recent Assets Tracking** - Last 3 accessed assets
+- 📈 **Risk Metrics Display** - Success probability, burn rate, runway
+- 🔄 **Data Refresh** - Manual refresh with status updates
+
+See [docs/TUI.md](docs/TUI.md) for detailed usage instructions.
 
 ## 🛠️ Development
 
