@@ -1,0 +1,84 @@
+.card {
+  min-width: 320px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(12, 10, 26, 0.65));
+  padding: 28px 32px;
+  box-shadow: 0 24px 60px rgba(10, 3, 20, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 0.9fr 0.8fr 0.7fr 1.2fr;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.symbol {
+  font-weight: 600;
+}
+
+.price {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.change {
+  justify-self: end;
+}
+
+.meta {
+  color: rgba(255, 255, 255, 0.65);
+  text-align: right;
+}
+
+.trendUp {
+  color: #10b981;
+}
+
+.trendDown {
+  color: #ef4444;
+}
+
+.trendNeutral {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 640px) {
+  .card {
+    width: 100%;
+    min-width: 0;
+    padding: 24px;
+  }
+
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 10px;
+  }
+
+  .meta {
+    justify-self: start;
+    text-align: left;
+  }
+}

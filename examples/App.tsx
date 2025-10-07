@@ -1,6 +1,6 @@
-import { Button, Text, Input, Metric, Panel, Badge, Spinner, StatusIndicator, DataTable, Checkbox, Switch, Tabs, Progress, Card, Gauge, DonutChart, BarChart, SparkLine, ProgressCircle, Section, MonitoringTable, Select, Modal, Toast, useToast, Tooltip, Accordion, Breadcrumbs } from '@deaxu/terminal-ui';
-import type { Column, Tab, DonutSegment, BarDataPoint, MonitoringRow, SelectOption, AccordionItem, BreadcrumbItem } from '@deaxu/terminal-ui';
-import { useState } from 'react';
+import { Button, Text, Input, Metric, Panel, Badge, Spinner, StatusIndicator, DataTable, Checkbox, Switch, Tabs, Progress, Card, Gauge, DonutChart, BarChart, SparkLine, ProgressCircle, Section, MonitoringTable, Select, Modal, Toast, useToast, Tooltip, Accordion, Breadcrumbs, ClinicalTrialsTimeline } from '@deaxu/terminal-ui';
+import type { Column, Tab, DonutSegment, BarDataPoint, MonitoringRow, SelectOption, AccordionItem, BreadcrumbItem, ClinicalTrial } from '@deaxu/terminal-ui';
+import { useState, useEffect, useCallback } from 'react';
 
 interface AgentData {
   id: string;
@@ -10,12 +10,71 @@ interface AgentData {
   missions: number;
 }
 
+interface ClinicalTrialsApiResponse {
+  studies?: ClinicalTrial[];
+}
+
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [autoUpdate, setAutoUpdate] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { messages, notify, remove } = useToast();
+  const [selectedTrialSymbol, setSelectedTrialSymbol] = useState('AMGN');
+  const [clinicalTrials, setClinicalTrials] = useState<ClinicalTrial[]>([]);
+  const [isLoadingTrials, setIsLoadingTrials] = useState(true);
+  const [trialsError, setTrialsError] = useState<string | null>(null);
+
+  const trialSymbolOptions: SelectOption[] = [
+    { value: 'AMGN', label: 'Amgen (AMGN)' },
+    { value: 'GILD', label: 'Gilead Sciences (GILD)' },
+    { value: 'BIIB', label: 'Biogen (BIIB)' },
+    { value: 'REGN', label: 'Regeneron (REGN)' },
+  ];
+
+  const loadClinicalTrials = useCallback(async (symbol: string, options: { signal?: AbortSignal } = {}) => {
+    setIsLoadingTrials(true);
+    setTrialsError(null);
+
+    try {
+      const response = await fetch(`https://clinicaltrials.gov/api/v2/studies?query.spons=${symbol}`, {
+        signal: options.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      const payload = (await response.json()) as ClinicalTrialsApiResponse;
+      setClinicalTrials(payload.studies ?? []);
+    } catch (error) {
+      if (options.signal?.aborted) {
+        return;
+      }
+
+      console.error('Failed to load clinical trials timeline data', error);
+      setClinicalTrials([]);
+      setTrialsError('Unable to load clinical trials right now. Please try again.');
+    } finally {
+      if (!options.signal?.aborted) {
+        setIsLoadingTrials(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    loadClinicalTrials(selectedTrialSymbol, { signal: controller.signal });
+    return () => controller.abort();
+  }, [loadClinicalTrials, selectedTrialSymbol]);
+
+  const handleTrialSymbolChange = (value: string) => {
+    setSelectedTrialSymbol(value);
+  };
+
+  const handleRefreshTrials = () => {
+    void loadClinicalTrials(selectedTrialSymbol);
+  };
 
   const sampleData: AgentData[] = [
     { id: 'G-078W', name: 'VENGEFUL SPIRIT', status: 'success', location: 'Berlin', missions: 23 },
@@ -725,6 +784,59 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Clinical Trials Timeline */}
+      <Section title="CLINICAL TRIALS TIMELINE" variant="info">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+          <div style={{ minWidth: '220px' }}>
+            <Select
+              options={trialSymbolOptions}
+              value={selectedTrialSymbol}
+              onChange={handleTrialSymbolChange}
+            />
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRefreshTrials}
+            disabled={isLoadingTrials}
+          >
+            {isLoadingTrials ? 'REFRESHING...' : 'REFRESH'}
+          </Button>
+          <Badge variant="primary">
+            {selectedTrialSymbol}
+          </Badge>
+          <Text variant="body-sm" color="secondary">
+            Mocked via MSW to emulate OpenBB and ClinicalTrials.gov responses.
+          </Text>
+        </div>
+
+        <div style={{ marginTop: '16px' }}>
+          {isLoadingTrials ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '32px' }}>
+              <Spinner size="lg" />
+              <Text variant="body-sm" color="secondary">
+                Loading clinical trials for {selectedTrialSymbol}...
+              </Text>
+            </div>
+          ) : trialsError ? (
+            <Panel title="Clinical Trials Unavailable" style={{ background: 'rgba(239, 68, 68, 0.08)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+              <Text variant="body-sm" color="secondary">
+                {trialsError}
+              </Text>
+              <Button variant="primary" size="sm" style={{ marginTop: '12px' }} onClick={handleRefreshTrials}>
+                RETRY
+              </Button>
+            </Panel>
+          ) : (
+            <ClinicalTrialsTimeline
+              symbol={selectedTrialSymbol}
+              trials={clinicalTrials}
+              onTrialSelect={(trial) => notify(`Tracking ${trial.title} (${trial.phase})`, 'info', 4000)}
+            />
+          )}
+        </div>
+      </Section>
 
       {/* Modal */}
       <Modal

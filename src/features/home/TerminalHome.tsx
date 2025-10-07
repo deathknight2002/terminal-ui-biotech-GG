@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import {
-  ArrowRight,
   ArrowUpRight,
   BarChart3,
   BookOpen,
@@ -11,13 +10,17 @@ import {
   ShieldCheck,
   Sparkles,
 } from 'lucide-react';
+
 import styles from './TerminalHome.module.css';
+import { TerminalFrame } from './components/TerminalFrame';
+import { WatchlistPanel } from './components/WatchlistPanel';
+import { StageMixCard } from './components/StageMixCard';
 
-type TrendState = 'up' | 'down' | 'flat';
+export type TrendState = 'up' | 'down' | 'flat';
 
-type IconComponent = React.ComponentType<{ size?: number }>;
+export type IconComponent = React.ComponentType<{ size?: number }>;
 
-type QuickAction = {
+export type QuickAction = {
   label: string;
   description: string;
   icon: IconComponent;
@@ -26,7 +29,7 @@ type QuickAction = {
   shortcut?: string;
 };
 
-type StageMetric = {
+export type StageMetric = {
   stage: string;
   value: number;
   change: number;
@@ -34,7 +37,7 @@ type StageMetric = {
   palette: [string, string];
 };
 
-type StatMetric = {
+export type StatMetric = {
   label: string;
   value: string;
   sublabel?: string;
@@ -42,7 +45,7 @@ type StatMetric = {
   delta?: string;
 };
 
-type WatchlistRow = {
+export type WatchlistRow = {
   symbol: string;
   label: string;
   price: string;
@@ -50,7 +53,7 @@ type WatchlistRow = {
   changeState: TrendState;
 };
 
-type ScreenerRow = {
+export type ScreenerRow = {
   name: string;
   focus: string;
   stage: string;
@@ -58,14 +61,14 @@ type ScreenerRow = {
   signal: TrendState;
 };
 
-type RegulatoryItem = {
+export type RegulatoryItem = {
   agency: string;
   action: string;
   timeline: string;
   status: 'approved' | 'pending' | 'review';
 };
 
-type ResourceLink = {
+export type ResourceLink = {
   name: string;
   summary: string;
   href: string;
@@ -160,45 +163,23 @@ const DEFAULT_HOME_DATA: TerminalHomeData = {
     },
     {
       stage: 'Phase III',
-      value: 9,
-      change: 0,
-      trend: 'flat',
-      palette: ['rgba(56,189,248,0.85)', 'rgba(56,189,248,0.42)'],
+      value: 11,
+      change: -1,
+      trend: 'down',
+      palette: ['rgba(59,130,246,0.85)', 'rgba(59,130,246,0.48)'],
     },
     {
-      stage: 'Filed',
-      value: 6,
-      change: 0,
-      trend: 'flat',
-      palette: ['rgba(34,211,238,0.85)', 'rgba(34,211,238,0.45)'],
+      stage: 'Commercial',
+      value: 8,
+      change: 2,
+      trend: 'up',
+      palette: ['rgba(14,165,233,0.82)', 'rgba(14,165,233,0.42)'],
     },
   ],
   stats: [
-    {
-      label: '24H Alpha',
-      value: '+182 bps',
-      delta: '+36 bps',
-      trend: 'up',
-    },
-    {
-      label: 'AUM',
-      value: '$2.54B',
-      sublabel: 'Net asset value',
-      trend: 'up',
-      delta: '+$62M',
-    },
-    {
-      label: 'Runway',
-      value: '19.6 mo',
-      sublabel: 'Median cash runway',
-      trend: 'flat',
-    },
-    {
-      label: 'Regulatory',
-      value: '7 filings',
-      sublabel: 'Active with FDA/EMA',
-      trend: 'up',
-    },
+    { label: 'Pipeline Velocity', value: '↑ 8.2%', delta: '+1.4% QoQ', trend: 'up' },
+    { label: 'Runway Coverage', value: '14.8 mo', delta: '+0.6 mo', trend: 'up' },
+    { label: 'Regulatory Risk', value: 'Moderate', delta: 'Stable', trend: 'flat' },
   ],
   watchlist: [
     { symbol: 'SRPT', label: 'Sarepta', price: '$162.40', change: '+3.2%', changeState: 'up' },
@@ -265,39 +246,6 @@ const TrendValue: React.FC<{ trend?: TrendState; value?: string }> = ({ trend, v
   return <span className={trendClassName(trend)}>{value}</span>;
 };
 
-const StageHeatmap: React.FC<{ stages: StageMetric[] }> = ({ stages }) => (
-  <div className={styles.stageHeatmap}>
-    {stages.map((stage) => (
-      <div
-        key={stage.stage}
-        className={styles.stageCell}
-        style={{
-          background: `linear-gradient(135deg, ${stage.palette[0]}, ${stage.palette[1]})`,
-        }}
-      >
-        <span className={styles.stageLabel}>{stage.stage}</span>
-        <span className={styles.stageValue}>{stage.value}</span>
-        <span className={clsx(styles.stageTrend, trendClassName(stage.trend))}>
-          {stage.trend === 'up' ? '▲' : stage.trend === 'down' ? '▼' : '◆'} {stage.change}% QoQ
-        </span>
-      </div>
-    ))}
-  </div>
-);
-
-const StatTiles: React.FC<{ stats: StatMetric[] }> = ({ stats }) => (
-  <div className={styles.statTiles}>
-    {stats.map((stat) => (
-      <div key={stat.label} className={styles.statTile}>
-        <span className={styles.statLabel}>{stat.label}</span>
-        <span className={styles.statValue}>{stat.value}</span>
-        {stat.sublabel && <span className={styles.quickActionDescription}>{stat.sublabel}</span>}
-        {stat.delta && <TrendValue trend={stat.trend} value={stat.delta} />}
-      </div>
-    ))}
-  </div>
-);
-
 const QuickActions: React.FC<{
   actions: QuickAction[];
   onNavigate?: (module: string) => void;
@@ -351,19 +299,6 @@ const QuickActions: React.FC<{
     </div>
   );
 };
-
-const Watchlist: React.FC<{ rows: WatchlistRow[] }> = ({ rows }) => (
-  <div className={styles.watchlistTable}>
-    {rows.map((row) => (
-      <div key={row.symbol} className={styles.watchlistRow}>
-        <span>{row.symbol}</span>
-        <span>{row.price}</span>
-        <span className={trendClassName(row.changeState)}>{row.change}</span>
-        <span>{row.label}</span>
-      </div>
-    ))}
-  </div>
-);
 
 const Screener: React.FC<{ rows: ScreenerRow[] }> = ({ rows }) => (
   <div className={styles.screenerTable}>
@@ -447,99 +382,87 @@ export const TerminalHome: React.FC<TerminalHomeProps> = ({
   const headline = mergedData.headline;
 
   return (
-    <section className={clsx(styles.root, className)}>
-      <div className={styles.content}>
-        <header className={styles.header}>
-          <div className={styles.headline}>
-            <div className={styles.headlineTitle}>
-              <h1>{headline?.title ?? 'Biotech Command'}</h1>
-              <span>Human + Machine Ops</span>
+    <TerminalFrame
+      className={className}
+      headline={{
+        title: headline?.title ?? 'Biotech Command',
+        subtitle: headline?.subtitle,
+        eyebrow: 'Human + Machine Ops',
+      }}
+      watchlistSlot={<WatchlistPanel rows={mergedData.watchlist} />}
+    >
+      <div className={styles.grid}>
+        <div className={styles.primaryColumn}>
+          <article className={styles.glassCard}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardTitle}>Command Shortcuts</span>
+              <span className={styles.badge}>Always On</span>
             </div>
-            {headline?.subtitle && <p>{headline.subtitle}</p>}
-          </div>
+            <QuickActions
+              actions={mergedData.quickActions}
+              onNavigate={onNavigate}
+              onOpenLink={onOpenLink}
+            />
+          </article>
 
-          <aside className={styles.watchlistCard}>
-            <div className={styles.watchlistHeader}>
-              <span>Watchlist</span>
-              <span>Change</span>
+          <StageMixCard
+            stages={mergedData.stageMix}
+            stats={mergedData.stats}
+            actionLabel="Full Analytics"
+            onAction={onNavigate ? () => onNavigate('analytics') : undefined}
+          />
+
+          <article className={styles.glassCard}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardTitle}>Catalyst Screener</span>
+              <span className={styles.badge}>60 Day Horizon</span>
             </div>
-            <Watchlist rows={mergedData.watchlist} />
-          </aside>
-        </header>
+            <Screener rows={mergedData.screener} />
+          </article>
+        </div>
 
-        <div className={styles.grid}>
-          <div className={styles.primaryColumn}>
-            <article className={styles.glassCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardTitle}>Command Shortcuts</span>
-                <span className={styles.badge}>Always On</span>
-              </div>
-              <QuickActions actions={mergedData.quickActions} onNavigate={onNavigate} onOpenLink={onOpenLink} />
-            </article>
+        <div className={styles.secondaryColumn}>
+          <article className={styles.glassCard}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardTitle}>Regulatory Signals</span>
+              <ShieldCheck size={18} />
+            </div>
+            <Regulatory rows={mergedData.regulatory} />
+          </article>
 
-            <article className={styles.glassCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardTitle}>Stage Mix Intelligence</span>
-                <span className={styles.resourceAction}>
-                  Full Analytics <ArrowRight size={16} />
-                </span>
-              </div>
-              <StageHeatmap stages={mergedData.stageMix} />
-              <StatTiles stats={mergedData.stats} />
-            </article>
+          <article className={styles.glassCard}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardTitle}>Ops Resources</span>
+              <Mic size={18} />
+            </div>
+            <Resources links={mergedData.resources} onOpenLink={onOpenLink} />
+          </article>
 
-            <article className={styles.glassCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardTitle}>Catalyst Screener</span>
-                <span className={styles.badge}>60 Day Horizon</span>
+          <article className={styles.glassCard}>
+            <div className={styles.cardHeader}>
+              <span className={styles.cardTitle}>Runway Focus</span>
+              <CalendarClock size={18} />
+            </div>
+            <p className={styles.quickActionDescription}>
+              72% of tracked programs maintain &gt; 14 month runway. 5 critical assets require financing
+              actions within the next quarter.
+            </p>
+            <div className={styles.statTiles}>
+              <div className={styles.statTile}>
+                <span className={styles.statLabel}>Median Burn</span>
+                <span className={styles.statValue}>$4.8M</span>
+                <TrendValue trend="down" value="-0.6M MoM" />
               </div>
-              <Screener rows={mergedData.screener} />
-            </article>
-          </div>
-
-          <div className={styles.secondaryColumn}>
-            <article className={styles.glassCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardTitle}>Regulatory Signals</span>
-                <ShieldCheck size={18} />
+              <div className={styles.statTile}>
+                <span className={styles.statLabel}>Financing Window</span>
+                <span className={styles.statValue}>89 Days</span>
+                <TrendValue trend="flat" value="Monitoring" />
               </div>
-              <Regulatory rows={mergedData.regulatory} />
-            </article>
-
-            <article className={styles.glassCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardTitle}>Ops Resources</span>
-                <Mic size={18} />
-              </div>
-              <Resources links={mergedData.resources} onOpenLink={onOpenLink} />
-            </article>
-
-            <article className={styles.glassCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardTitle}>Runway Focus</span>
-                <CalendarClock size={18} />
-              </div>
-              <p className={styles.quickActionDescription}>
-                72% of tracked programs maintain &gt; 14 month runway. 5 critical assets require financing actions within
-                the next quarter.
-              </p>
-              <div className={styles.statTiles}>
-                <div className={styles.statTile}>
-                  <span className={styles.statLabel}>Median Burn</span>
-                  <span className={styles.statValue}>$4.8M</span>
-                  <TrendValue trend="down" value="-0.6M MoM" />
-                </div>
-                <div className={styles.statTile}>
-                  <span className={styles.statLabel}>Financing Window</span>
-                  <span className={styles.statValue}>89 Days</span>
-                  <TrendValue trend="flat" value="Monitoring" />
-                </div>
-              </div>
-            </article>
-          </div>
+            </div>
+          </article>
         </div>
       </div>
-    </section>
+    </TerminalFrame>
   );
 };
 

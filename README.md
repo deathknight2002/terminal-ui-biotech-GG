@@ -56,7 +56,78 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 └── 📖 docs/              # Documentation
 ```
 
-## 📦 Components
+### Backend Platform (`platform/`)
+
+**Python FastAPI** backend with:
+- **Async SQLAlchemy ORM** for data modeling
+- **Provider pattern** for pluggable data sources
+- **OpenAPI/Swagger** automatic documentation
+- **SQLite** database (production-ready PostgreSQL support)
+- **Built-in seed data** for pharmaceutical datasets
+
+**Key Models:**
+- `Drug` - Development pipeline tracking
+- `ClinicalTrial` - Trial data and outcomes
+- `Company` - Biotech/pharma company profiles
+- `Catalyst` - Market-moving events
+
+### Frontend Components (`frontend-components/`)
+
+**Reusable React components** organized by function:
+- **Terminal**: Bloomberg-style UI primitives
+- **Tables**: Advanced data grids with virtualization
+- **Plotly**: Scientific/financial charting
+- **Biotech**: Domain-specific visualizations
+
+**Design System:**
+- 🎨 **5 accent themes**: amber, green, cyan, purple, blue
+- ♿ **Accessibility**: WCAG AAA + colorblind support
+- 🖥️ **Terminal aesthetics**: Monospace fonts, sharp edges
+- � **Data density**: Bloomberg Terminal-inspired layouts
+
+### Terminal Application (`terminal/`)
+
+**Full-featured biotech terminal** with:
+- 📈 **Drug Development Dashboard** - Pipeline visualization
+- 💰 **Financial Modeling** - DCF, risk-adjusted NPV
+- 🔍 **Market Intelligence** - Competitor analysis
+- 📊 **Clinical Trial Tracker** - Real-time trial data
+- 🧬 **Biotech Data Explorer** - Interactive data discovery
+
+## 🛠️ Development
+
+### Prerequisites
+
+- **Python 3.9+** with Poetry
+- **Node.js 18+** with npm
+- **Git** for version control
+
+### Setup Development Environment
+
+1. **Clone and setup:**
+
+   ```bash
+   git clone <repository-url>
+   cd biotech-terminal-platform
+   
+   # Windows
+   .\scripts\setup.ps1
+   
+   # macOS/Linux  
+   ./scripts/setup.sh
+   ```
+
+2. **Start development servers:**
+
+   ```bash
+   # Windows
+   .\scripts\setup.ps1 dev
+   
+   # macOS/Linux
+   ./scripts/setup.sh dev
+   ```
+
+## 📊 Features
 
 ### Atoms (18 components)
 
