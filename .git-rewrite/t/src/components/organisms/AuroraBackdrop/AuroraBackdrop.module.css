@@ -1,0 +1,136 @@
+.aurora-backdrop {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at center,
+    var(--eclipse-nebula) 0%,
+    var(--eclipse-void) 70%
+  );
+}
+
+.aurora-backdrop__particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.aurora-backdrop__aurora {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, var(--eclipse-aurora) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--eclipse-plasma) 0%, transparent 50%),
+    radial-gradient(circle at 60% 20%, var(--eclipse-corona) 0%, transparent 50%);
+  opacity: 0.4;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.aurora-backdrop__nebula {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 40% 80%, var(--eclipse-stellar) 0%, transparent 40%),
+    radial-gradient(circle at 90% 10%, var(--eclipse-ring) 0%, transparent 60%);
+  opacity: 0.2;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.aurora-backdrop__content {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+}
+
+/* Intensity variations */
+.aurora-backdrop--low .aurora-backdrop__aurora {
+  opacity: 0.2;
+}
+
+.aurora-backdrop--low .aurora-backdrop__nebula {
+  opacity: 0.1;
+}
+
+.aurora-backdrop--medium .aurora-backdrop__aurora {
+  opacity: 0.4;
+}
+
+.aurora-backdrop--medium .aurora-backdrop__nebula {
+  opacity: 0.2;
+}
+
+.aurora-backdrop--high .aurora-backdrop__aurora {
+  opacity: 0.6;
+  animation: aurora-pulse 8s ease-in-out infinite;
+}
+
+.aurora-backdrop--high .aurora-backdrop__nebula {
+  opacity: 0.3;
+  animation: nebula-drift 12s ease-in-out infinite;
+}
+
+@keyframes aurora-pulse {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes nebula-drift {
+  0%, 100% { 
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% { 
+    transform: translate3d(-5px, -10px, 0) rotate(1deg);
+  }
+  50% { 
+    transform: translate3d(10px, -5px, 0) rotate(-1deg);
+  }
+  75% { 
+    transform: translate3d(-8px, 8px, 0) rotate(0.5deg);
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-backdrop__aurora,
+  .aurora-backdrop__nebula {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .aurora-backdrop__aurora {
+    opacity: 0.3;
+  }
+  
+  .aurora-backdrop__nebula {
+    opacity: 0.15;
+  }
+  
+  .aurora-backdrop--high .aurora-backdrop__aurora {
+    opacity: 0.4;
+  }
+  
+  .aurora-backdrop--high .aurora-backdrop__nebula {
+    opacity: 0.2;
+  }
+}

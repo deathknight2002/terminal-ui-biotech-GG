@@ -1,0 +1,114 @@
+[
+  {
+    "name": "App.tsx",
+    "path": "frontend-components/tables/src/App.tsx",
+    "sha": "75c92ee6c2a7bce02109574e78f00303d8eb6c7b",
+    "size": 2839,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/App.tsx?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/App.tsx",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/75c92ee6c2a7bce02109574e78f00303d8eb6c7b",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/tables/src/App.tsx",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/App.tsx?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/75c92ee6c2a7bce02109574e78f00303d8eb6c7b",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/App.tsx"
+    }
+  },
+  {
+    "name": "components",
+    "path": "frontend-components/tables/src/components",
+    "sha": "83f576dbc42513e1b0f229dc29b1d0588ad4a7c5",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/components?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables/src/components",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/83f576dbc42513e1b0f229dc29b1d0588ad4a7c5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/components?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/83f576dbc42513e1b0f229dc29b1d0588ad4a7c5",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables/src/components"
+    }
+  },
+  {
+    "name": "data",
+    "path": "frontend-components/tables/src/data",
+    "sha": "171a110bf49aec6a1cdee47df3e4fc29dc27cb6d",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/data?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables/src/data",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/171a110bf49aec6a1cdee47df3e4fc29dc27cb6d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/data?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/171a110bf49aec6a1cdee47df3e4fc29dc27cb6d",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables/src/data"
+    }
+  },
+  {
+    "name": "index.css",
+    "path": "frontend-components/tables/src/index.css",
+    "sha": "16e09d8f2957287371a14a38f7bb6c19e73be9d5",
+    "size": 4527,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/index.css?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/index.css",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/16e09d8f2957287371a14a38f7bb6c19e73be9d5",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/tables/src/index.css",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/index.css?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/16e09d8f2957287371a14a38f7bb6c19e73be9d5",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/index.css"
+    }
+  },
+  {
+    "name": "main.tsx",
+    "path": "frontend-components/tables/src/main.tsx",
+    "sha": "6da14a4ab64ff22e8e48679de3e2f384d65a6017",
+    "size": 274,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/main.tsx?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/main.tsx",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/6da14a4ab64ff22e8e48679de3e2f384d65a6017",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/tables/src/main.tsx",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/main.tsx?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/6da14a4ab64ff22e8e48679de3e2f384d65a6017",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/main.tsx"
+    }
+  },
+  {
+    "name": "utils",
+    "path": "frontend-components/tables/src/utils",
+    "sha": "c36d82cd33a9aa22176bfd37ff343644a85cca20",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/utils?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables/src/utils",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/c36d82cd33a9aa22176bfd37ff343644a85cca20",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/utils?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/c36d82cd33a9aa22176bfd37ff343644a85cca20",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/tables/src/utils"
+    }
+  },
+  {
+    "name": "vite-env.d.ts",
+    "path": "frontend-components/tables/src/vite-env.d.ts",
+    "sha": "11f02fe2a0061d6e6e1f271b21da95423b448b32",
+    "size": 38,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/vite-env.d.ts?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/vite-env.d.ts",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/11f02fe2a0061d6e6e1f271b21da95423b448b32",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/tables/src/vite-env.d.ts",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/tables/src/vite-env.d.ts?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/11f02fe2a0061d6e6e1f271b21da95423b448b32",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/tables/src/vite-env.d.ts"
+    }
+  }
+]

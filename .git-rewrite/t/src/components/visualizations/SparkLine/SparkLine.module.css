@@ -1,0 +1,9 @@
+.sparkLine {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sparkLine canvas {
+  display: block;
+}

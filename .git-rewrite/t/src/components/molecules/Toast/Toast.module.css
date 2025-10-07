@@ -1,0 +1,116 @@
+.toastContainer {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.toastContainer.top-right {
+  top: 0;
+  right: 0;
+}
+
+.toastContainer.top-left {
+  top: 0;
+  left: 0;
+}
+
+.toastContainer.bottom-right {
+  bottom: 0;
+  right: 0;
+}
+
+.toastContainer.bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.toastContainer.top-center {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toastContainer.bottom-center {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast {
+  pointer-events: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  min-width: 300px;
+  max-width: 500px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  animation: slideIn 0.3s ease-out;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.toast.success {
+  border-left: 3px solid var(--status-success);
+  background: rgba(0, 217, 100, 0.05);
+}
+
+.toast.warning {
+  border-left: 3px solid var(--status-warning);
+  background: rgba(255, 184, 0, 0.05);
+}
+
+.toast.error {
+  border-left: 3px solid var(--status-error);
+  background: rgba(255, 59, 48, 0.05);
+}
+
+.toast.info {
+  border-left: 3px solid var(--accent-primary);
+  background: rgba(0, 212, 255, 0.05);
+}
+
+.toast.exiting {
+  opacity: 0;
+  transform: translateX(100px);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.content {
+  flex: 1;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  padding: var(--space-1);
+  line-height: 1;
+  transition: color var(--transition-fast);
+  font-family: var(--font-mono);
+}
+
+.closeButton:hover {
+  color: var(--status-error);
+}

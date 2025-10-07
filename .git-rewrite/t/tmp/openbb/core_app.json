@@ -1,0 +1,226 @@
+[
+  {
+    "name": "__init__.py",
+    "path": "openbb_platform/core/openbb_core/app/__init__.py",
+    "sha": "6b3de9cda26af37519313b63d2559d2c0753c9f0",
+    "size": 30,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/__init__.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/__init__.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/6b3de9cda26af37519313b63d2559d2c0753c9f0",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/__init__.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/__init__.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/6b3de9cda26af37519313b63d2559d2c0753c9f0",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/__init__.py"
+    }
+  },
+  {
+    "name": "command_runner.py",
+    "path": "openbb_platform/core/openbb_core/app/command_runner.py",
+    "sha": "7692ce5e9c37cb947657764217fbe84865cae0dc",
+    "size": 18725,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/command_runner.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/command_runner.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/7692ce5e9c37cb947657764217fbe84865cae0dc",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/command_runner.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/command_runner.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/7692ce5e9c37cb947657764217fbe84865cae0dc",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/command_runner.py"
+    }
+  },
+  {
+    "name": "constants.py",
+    "path": "openbb_platform/core/openbb_core/app/constants.py",
+    "sha": "91996980b238973e142bc83a2298214e58e02013",
+    "size": 293,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/constants.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/constants.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/91996980b238973e142bc83a2298214e58e02013",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/constants.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/constants.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/91996980b238973e142bc83a2298214e58e02013",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/constants.py"
+    }
+  },
+  {
+    "name": "deprecation.py",
+    "path": "openbb_platform/core/openbb_core/app/deprecation.py",
+    "sha": "a771589913a8588ddeba5e8998391759e9427586",
+    "size": 2563,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/deprecation.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/deprecation.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/a771589913a8588ddeba5e8998391759e9427586",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/deprecation.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/deprecation.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/a771589913a8588ddeba5e8998391759e9427586",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/deprecation.py"
+    }
+  },
+  {
+    "name": "extension_loader.py",
+    "path": "openbb_platform/core/openbb_core/app/extension_loader.py",
+    "sha": "9dd9bb1dc6bb08ff94928fbf6c7dac3fabcc0af2",
+    "size": 6256,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/extension_loader.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/extension_loader.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/9dd9bb1dc6bb08ff94928fbf6c7dac3fabcc0af2",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/extension_loader.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/extension_loader.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/9dd9bb1dc6bb08ff94928fbf6c7dac3fabcc0af2",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/extension_loader.py"
+    }
+  },
+  {
+    "name": "logs",
+    "path": "openbb_platform/core/openbb_core/app/logs",
+    "sha": "e5addf13ba7878e2618997d42438651a27fd666a",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/logs?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/logs",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/e5addf13ba7878e2618997d42438651a27fd666a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/logs?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/e5addf13ba7878e2618997d42438651a27fd666a",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/logs"
+    }
+  },
+  {
+    "name": "model",
+    "path": "openbb_platform/core/openbb_core/app/model",
+    "sha": "4fcefeb037838ef6458979dd05ad565c58bb27d7",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/model?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/model",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/4fcefeb037838ef6458979dd05ad565c58bb27d7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/model?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/4fcefeb037838ef6458979dd05ad565c58bb27d7",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/model"
+    }
+  },
+  {
+    "name": "provider_interface.py",
+    "path": "openbb_platform/core/openbb_core/app/provider_interface.py",
+    "sha": "fc2ae1cd7a4fa2ed297546c431c34d2c8e29a001",
+    "size": 22895,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/provider_interface.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/provider_interface.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/fc2ae1cd7a4fa2ed297546c431c34d2c8e29a001",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/provider_interface.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/provider_interface.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/fc2ae1cd7a4fa2ed297546c431c34d2c8e29a001",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/provider_interface.py"
+    }
+  },
+  {
+    "name": "query.py",
+    "path": "openbb_platform/core/openbb_core/app/query.py",
+    "sha": "84d7a9aa03e59a21bfb0e184e348233fa3df05d9",
+    "size": 2798,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/query.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/query.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/84d7a9aa03e59a21bfb0e184e348233fa3df05d9",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/query.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/query.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/84d7a9aa03e59a21bfb0e184e348233fa3df05d9",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/query.py"
+    }
+  },
+  {
+    "name": "router.py",
+    "path": "openbb_platform/core/openbb_core/app/router.py",
+    "sha": "e7f62251d14ba176d4f1ece231b8244e4fbc8183",
+    "size": 17731,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/router.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/router.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/e7f62251d14ba176d4f1ece231b8244e4fbc8183",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/router.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/router.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/e7f62251d14ba176d4f1ece231b8244e4fbc8183",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/router.py"
+    }
+  },
+  {
+    "name": "service",
+    "path": "openbb_platform/core/openbb_core/app/service",
+    "sha": "2c4bc6d81f53718d44e6e8061435bceb748aea38",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/service?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/service",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/2c4bc6d81f53718d44e6e8061435bceb748aea38",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/service?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/2c4bc6d81f53718d44e6e8061435bceb748aea38",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/service"
+    }
+  },
+  {
+    "name": "static",
+    "path": "openbb_platform/core/openbb_core/app/static",
+    "sha": "ae432286e122fc28238f94d06278136b6ef93d50",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/static?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/static",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/ae432286e122fc28238f94d06278136b6ef93d50",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/static?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/ae432286e122fc28238f94d06278136b6ef93d50",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/openbb_platform/core/openbb_core/app/static"
+    }
+  },
+  {
+    "name": "utils.py",
+    "path": "openbb_platform/core/openbb_core/app/utils.py",
+    "sha": "4a46b30dd584de1addd7ab2a0d4cd9946fcefe10",
+    "size": 6693,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/utils.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/utils.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/4a46b30dd584de1addd7ab2a0d4cd9946fcefe10",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/utils.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/utils.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/4a46b30dd584de1addd7ab2a0d4cd9946fcefe10",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/utils.py"
+    }
+  },
+  {
+    "name": "version.py",
+    "path": "openbb_platform/core/openbb_core/app/version.py",
+    "sha": "84bf3f555598772351b05dd6edc9ae69716c4fd4",
+    "size": 1794,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/version.py?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/version.py",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/84bf3f555598772351b05dd6edc9ae69716c4fd4",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/openbb_platform/core/openbb_core/app/version.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/openbb_platform/core/openbb_core/app/version.py?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/84bf3f555598772351b05dd6edc9ae69716c4fd4",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/openbb_platform/core/openbb_core/app/version.py"
+    }
+  }
+]

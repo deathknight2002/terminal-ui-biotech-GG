@@ -1,0 +1,309 @@
+/**
+ * Biotech Aurora Theme System
+ * Advanced glassmorphism theme with eclipse gradients and atmospheric effects
+ * Designed for pharmaceutical intelligence and financial modeling interfaces
+ */
+
+:root {
+  /* Eclipse gradient core system */
+  --eclipse-void: #0C0A1A;
+  --eclipse-nebula: #1E1B4B;
+  --eclipse-core: #2D1B69;
+  --eclipse-ring: #4338CA;
+  --eclipse-corona: #6366F1;
+  --eclipse-plasma: #8B5CF6;
+  --eclipse-aurora: #A855F7;
+  --eclipse-stellar: #C084FC;
+  
+  /* Biotech accent palette */
+  --biotech-cyan: #06B6D4;
+  --biotech-teal: #14B8A6;
+  --biotech-emerald: #10B981;
+  --biotech-amber: #F59E0B;
+  --biotech-orange: #EA580C;
+  --biotech-rose: #E11D48;
+  --biotech-crimson: #DC2626;
+  
+  /* Glass surface tokens with multi-layer support */
+  --glass-primary-bg: linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(99,102,241,0.08) 50%, rgba(45,27,105,0.12) 100%);
+  --glass-primary-border: rgba(196,132,252,0.2);
+  --glass-primary-highlight: rgba(255,255,255,0.1);
+  --glass-primary-shadow: 0 24px 48px rgba(12,10,26,0.6), 0 8px 16px rgba(139,92,246,0.25);
+  
+  --glass-secondary-bg: linear-gradient(140deg, rgba(255,255,255,0.12) 0%, rgba(196,132,252,0.06) 100%);
+  --glass-secondary-border: rgba(255,255,255,0.15);
+  --glass-secondary-highlight: rgba(255,255,255,0.08);
+  --glass-secondary-shadow: 0 16px 32px rgba(12,10,26,0.4), 0 4px 8px rgba(139,92,246,0.15);
+  
+  --glass-accent-bg: linear-gradient(120deg, rgba(6,182,212,0.18) 0%, rgba(139,92,246,0.12) 100%);
+  --glass-accent-border: rgba(6,182,212,0.25);
+  --glass-accent-highlight: rgba(255,255,255,0.12);
+  --glass-accent-shadow: 0 20px 40px rgba(6,182,212,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  
+  /* Motion and animation tokens */
+  --motion-eclipse: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --motion-glass: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-particle: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-reveal: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  --duration-fast: 200ms;
+  --duration-normal: 400ms;
+  --duration-slow: 800ms;
+  --duration-choreograph: 1200ms;
+  
+  /* Biotech-specific gradients */
+  --gradient-catalyst: linear-gradient(135deg, var(--biotech-emerald) 0%, var(--biotech-cyan) 100%);
+  --gradient-risk-high: linear-gradient(135deg, var(--biotech-rose) 0%, var(--biotech-crimson) 100%);
+  --gradient-risk-medium: linear-gradient(135deg, var(--biotech-amber) 0%, var(--biotech-orange) 100%);
+  --gradient-risk-low: linear-gradient(135deg, var(--biotech-emerald) 0%, var(--biotech-teal) 100%);
+  
+  /* Financial metrics colors */
+  --metric-revenue: var(--biotech-emerald);
+  --metric-expense: var(--biotech-rose);
+  --metric-milestone: var(--biotech-amber);
+  --metric-royalty: var(--biotech-cyan);
+  --metric-trend-up: var(--biotech-emerald);
+  --metric-trend-down: var(--biotech-rose);
+  --metric-trend-flat: var(--eclipse-stellar);
+}
+
+/* Aurora backdrop base */
+.aurora-backdrop {
+  background: radial-gradient(
+    ellipse at center,
+    var(--eclipse-nebula) 0%,
+    var(--eclipse-void) 70%
+  );
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.aurora-backdrop::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, var(--eclipse-aurora) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--eclipse-plasma) 0%, transparent 50%),
+    radial-gradient(circle at 60% 20%, var(--eclipse-corona) 0%, transparent 50%);
+  opacity: 0.4;
+  animation: aurora-drift 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes aurora-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(-10px, -20px, 0) scale(1.05); }
+  50% { transform: translate3d(20px, -10px, 0) scale(0.95); }
+  75% { transform: translate3d(-15px, 15px, 0) scale(1.02); }
+}
+
+/* Glass panel system */
+.glass-panel {
+  background: var(--glass-primary-bg);
+  border: 1px solid var(--glass-primary-border);
+  box-shadow: var(--glass-primary-shadow);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border-radius: 16px;
+  position: relative;
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--glass-primary-highlight);
+  border-radius: 16px 16px 0 0;
+}
+
+.glass-panel-secondary {
+  background: var(--glass-secondary-bg);
+  border: 1px solid var(--glass-secondary-border);
+  box-shadow: var(--glass-secondary-shadow);
+  backdrop-filter: blur(16px);
+  border-radius: 12px;
+}
+
+.glass-panel-accent {
+  background: var(--glass-accent-bg);
+  border: 1px solid var(--glass-accent-border);
+  box-shadow: var(--glass-accent-shadow);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+}
+
+/* Biotech metric styles */
+.metric-card {
+  background: var(--glass-secondary-bg);
+  border: 1px solid var(--glass-secondary-border);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all var(--duration-normal) var(--motion-glass);
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-primary-shadow);
+  border-color: var(--glass-accent-border);
+}
+
+.metric-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--eclipse-stellar) 0%, var(--eclipse-aurora) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.metric-trend-up {
+  color: var(--metric-trend-up);
+}
+
+.metric-trend-down {
+  color: var(--metric-trend-down);
+}
+
+.metric-trend-flat {
+  color: var(--metric-trend-flat);
+}
+
+/* Catalyst chip styles */
+.catalyst-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--duration-fast) var(--motion-glass);
+}
+
+.catalyst-chip-high {
+  background: var(--gradient-risk-high);
+  color: white;
+}
+
+.catalyst-chip-medium {
+  background: var(--gradient-risk-medium);
+  color: white;
+}
+
+.catalyst-chip-low {
+  background: var(--gradient-risk-low);
+  color: white;
+}
+
+.catalyst-chip:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Pipeline progress styles */
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--glass-secondary-bg);
+  border: 1px solid var(--glass-secondary-border);
+  border-radius: 8px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.pipeline-progress {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pipeline-progress-fill {
+  height: 100%;
+  background: var(--gradient-catalyst);
+  border-radius: 4px;
+  transition: width var(--duration-slow) var(--motion-eclipse);
+}
+
+/* Financial chart styles */
+.chart-container {
+  background: var(--glass-panel-bg);
+  border: 1px solid var(--glass-panel-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.chart-tooltip {
+  background: var(--eclipse-void);
+  border: 1px solid var(--eclipse-aurora);
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Animation utilities */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(139, 92, 246, 0); }
+  50% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .glass-panel {
+    border-radius: 12px;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  
+  .metric-value {
+    font-size: 1.875rem;
+  }
+  
+  .aurora-backdrop::before {
+    animation-duration: 30s;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-backdrop::before,
+  .animate-float,
+  .animate-pulse-glow {
+    animation: none;
+  }
+  
+  .catalyst-chip:hover,
+  .metric-card:hover {
+    transform: none;
+  }
+}

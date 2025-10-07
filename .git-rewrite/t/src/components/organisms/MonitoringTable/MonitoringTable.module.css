@@ -1,0 +1,146 @@
+.monitoringTable {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border-default);
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-panel);
+  transition: background-color var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.row:hover {
+  background: var(--bg-elevated);
+}
+
+.row.success {
+  border-left-color: var(--status-success);
+}
+
+.row.warning {
+  border-left-color: var(--status-warning);
+}
+
+.row.error {
+  border-left-color: var(--status-error);
+}
+
+.row.info {
+  border-left-color: var(--status-info);
+}
+
+.row.idle {
+  border-left-color: var(--text-secondary);
+}
+
+.main {
+  flex: 1;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.description {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.progressBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: var(--space-1);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--accent-primary);
+  transition: width var(--transition-normal);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  margin: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.actionButton:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+.actionButton.action-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+.actionButton.action-primary:hover {
+  opacity: 0.9;
+}
+
+.actionButton.action-secondary {
+  background: transparent;
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.actionButton.action-secondary:hover {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+}
+
+.actionButton.action-danger {
+  background: transparent;
+  border-color: var(--status-error);
+  color: var(--status-error);
+}
+
+.actionButton.action-danger:hover {
+  background: var(--status-error);
+  color: var(--text-primary);
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "name": "App.tsx",
+    "path": "frontend-components/plotly/src/App.tsx",
+    "sha": "4360b6444c77c2eda4fba0680630dbf4a2bc41b8",
+    "size": 3916,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/App.tsx?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/plotly/src/App.tsx",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/4360b6444c77c2eda4fba0680630dbf4a2bc41b8",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/plotly/src/App.tsx",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/App.tsx?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/4360b6444c77c2eda4fba0680630dbf4a2bc41b8",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/plotly/src/App.tsx"
+    }
+  },
+  {
+    "name": "components",
+    "path": "frontend-components/plotly/src/components",
+    "sha": "1f1b7442a752d057065dd0825205bb95d8629d7a",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/components?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly/src/components",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/1f1b7442a752d057065dd0825205bb95d8629d7a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/components?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/1f1b7442a752d057065dd0825205bb95d8629d7a",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly/src/components"
+    }
+  },
+  {
+    "name": "data",
+    "path": "frontend-components/plotly/src/data",
+    "sha": "5a2bdd16c229e2a6a017b85b45a585536863eb31",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/data?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly/src/data",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/5a2bdd16c229e2a6a017b85b45a585536863eb31",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/data?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/5a2bdd16c229e2a6a017b85b45a585536863eb31",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly/src/data"
+    }
+  },
+  {
+    "name": "index.css",
+    "path": "frontend-components/plotly/src/index.css",
+    "sha": "59eb4d6a3b49ba1502ec56dcb3c9a3761902cdd8",
+    "size": 11239,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/index.css?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/plotly/src/index.css",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/59eb4d6a3b49ba1502ec56dcb3c9a3761902cdd8",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/plotly/src/index.css",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/index.css?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/59eb4d6a3b49ba1502ec56dcb3c9a3761902cdd8",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/plotly/src/index.css"
+    }
+  },
+  {
+    "name": "main.tsx",
+    "path": "frontend-components/plotly/src/main.tsx",
+    "sha": "2e3b7c31099c73d72ad64d543b8fe084051a8437",
+    "size": 212,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/main.tsx?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/plotly/src/main.tsx",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/2e3b7c31099c73d72ad64d543b8fe084051a8437",
+    "download_url": "https://raw.githubusercontent.com/OpenBB-finance/OpenBB/develop/frontend-components/plotly/src/main.tsx",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/main.tsx?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/blobs/2e3b7c31099c73d72ad64d543b8fe084051a8437",
+      "html": "https://github.com/OpenBB-finance/OpenBB/blob/develop/frontend-components/plotly/src/main.tsx"
+    }
+  },
+  {
+    "name": "utils",
+    "path": "frontend-components/plotly/src/utils",
+    "sha": "0abf6006bbbe884243297430302cea557e89c4f5",
+    "size": 0,
+    "url": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/utils?ref=develop",
+    "html_url": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly/src/utils",
+    "git_url": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/0abf6006bbbe884243297430302cea557e89c4f5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/OpenBB-finance/OpenBB/contents/frontend-components/plotly/src/utils?ref=develop",
+      "git": "https://api.github.com/repos/OpenBB-finance/OpenBB/git/trees/0abf6006bbbe884243297430302cea557e89c4f5",
+      "html": "https://github.com/OpenBB-finance/OpenBB/tree/develop/frontend-components/plotly/src/utils"
+    }
+  }
+]
