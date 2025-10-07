@@ -87,6 +87,7 @@
     "react-hotkeys-hook": "^4.4.0",
     "react-plotly.js": "^2.6.0",
     "recharts": "^3.2.1",
+    "socket.io-client": "^4.8.1",
     "xss": "^1.0.15"
   },
   "devDependencies": {
