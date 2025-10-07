@@ -5,7 +5,7 @@
 
 import axios, { AxiosInstance } from 'axios';
 import * as cheerio from 'cheerio';
-import Parser from 'rss-parser';
+import * as Parser from 'rss-parser';
 import { logger } from '../utils/logger.js';
 import { CircuitBreaker } from './circuit-breaker.js';
 import { AdaptiveRateLimiter } from './rate-limiter.js';
@@ -59,7 +59,7 @@ export class ScienceDailyScraper {
       },
     });
 
-    this.rssParser = new Parser({
+    this.rssParser = new Parser.default({
       customFields: {
         item: ['description', 'content:encoded', 'dc:creator'],
       },
@@ -406,7 +406,7 @@ export class ScienceDailyScraper {
    */
   private cleanHTML(html: string): string {
     const $ = cheerio.load(html);
-    return $.text().trim();
+    return $('body').text().trim();
   }
 
   /**

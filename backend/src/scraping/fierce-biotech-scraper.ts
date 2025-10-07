@@ -391,12 +391,12 @@ export class FierceBiotechScraper {
   /**
    * Extract categories from article element
    */
-  private extractCategories($article: cheerio.Cheerio<any>): string[] {
+  private extractCategories($article: cheerio.AnyNode): string[] {
     const categories: string[] = [];
     
-    $article.find('.category, .tag, .article-category, [data-category]').each((_, el) => {
-      const cat = cheerio.load(el)('*').text().trim() || 
-                  cheerio.load(el)('*').attr('data-category');
+    const $ = cheerio.load($article);
+    $('[class*="category"], [class*="tag"], [data-category]').each((_, el) => {
+      const cat = $(el).text().trim() || $(el).attr('data-category');
       if (cat) categories.push(cat);
     });
 

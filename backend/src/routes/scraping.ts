@@ -467,4 +467,411 @@ router.get('/metrics', async (req, res) => {
   }
 });
 
+// ============================================================================
+// NEWS SCRAPER ROUTES
+// ============================================================================
+
+/**
+ * GET /api/scraping/news/fierce-biotech/latest
+ * Get latest Fierce Biotech news
+ */
+router.get('/news/fierce-biotech/latest', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getFierceBiotechScraper();
+
+    const articles = await scraper.getLatestNews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'Fierce Biotech',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Fierce Biotech latest news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch Fierce Biotech news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * POST /api/scraping/news/fierce-biotech/search
+ * Search Fierce Biotech articles
+ */
+router.post('/news/fierce-biotech/search', async (req, res) => {
+  try {
+    const { query, category, limit } = req.body;
+    const manager = getScrapingManager();
+    const scraper = manager.getFierceBiotechScraper();
+
+    const articles = await scraper.search({ query, category, limit });
+
+    res.json({
+      status: 'ok',
+      source: 'Fierce Biotech',
+      data: articles,
+      count: articles.length,
+      query,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Fierce Biotech search error:', error);
+    res.status(500).json({
+      error: 'Failed to search Fierce Biotech',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/science-daily/latest
+ * Get latest Science Daily biotech news
+ */
+router.get('/news/science-daily/latest', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getScienceDailyScraper();
+
+    const articles = await scraper.getLatestBiotechNews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'Science Daily',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Science Daily latest news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch Science Daily news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/science-daily/category/:category
+ * Get Science Daily news by category
+ */
+router.get('/news/science-daily/category/:category', async (req, res) => {
+  try {
+    const { category } = req.params;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getScienceDailyScraper();
+
+    const validCategories = ['biotechnology', 'health-medicine', 'biology', 'all'];
+    if (!validCategories.includes(category)) {
+      res.status(400).json({
+        error: 'Invalid category',
+        validCategories,
+      });
+      return;
+    }
+
+    const articles = await scraper.getNewsByCategory(category as any, limit);
+
+    res.json({
+      status: 'ok',
+      source: 'Science Daily',
+      category,
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Science Daily category news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch Science Daily category news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/biospace/latest
+ * Get latest BioSpace news
+ */
+router.get('/news/biospace/latest', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getBioSpaceScraper();
+
+    const articles = await scraper.getLatestNews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'BioSpace',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('BioSpace latest news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch BioSpace news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * POST /api/scraping/news/biospace/search
+ * Search BioSpace articles
+ */
+router.post('/news/biospace/search', async (req, res) => {
+  try {
+    const { query, type, limit } = req.body;
+    const manager = getScrapingManager();
+    const scraper = manager.getBioSpaceScraper();
+
+    const articles = await scraper.search({ query, type: type as any, limit });
+
+    res.json({
+      status: 'ok',
+      source: 'BioSpace',
+      data: articles,
+      count: articles.length,
+      query,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('BioSpace search error:', error);
+    res.status(500).json({
+      error: 'Failed to search BioSpace',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/endpoints/latest
+ * Get latest Endpoints News
+ */
+router.get('/news/endpoints/latest', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getEndpointsNewsScraper();
+
+    const articles = await scraper.getLatestNews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'Endpoints News',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Endpoints News latest error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch Endpoints News',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/endpoints/fda
+ * Get FDA-related news from Endpoints
+ */
+router.get('/news/endpoints/fda', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getEndpointsNewsScraper();
+
+    const articles = await scraper.getFDANews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'Endpoints News',
+      category: 'FDA',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Endpoints FDA news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch Endpoints FDA news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/endpoints/clinical-trials
+ * Get clinical trial news from Endpoints
+ */
+router.get('/news/endpoints/clinical-trials', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getEndpointsNewsScraper();
+
+    const articles = await scraper.getClinicalTrialNews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'Endpoints News',
+      category: 'Clinical Trials',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Endpoints clinical trials news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch Endpoints clinical trials news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/biopharma-dive/latest
+ * Get latest BioPharma Dive news
+ */
+router.get('/news/biopharma-dive/latest', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getBioPharmDiveScraper();
+
+    const articles = await scraper.getLatestNews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'BioPharma Dive',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('BioPharma Dive latest news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch BioPharma Dive news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/biopharma-dive/pipeline
+ * Get pipeline updates from BioPharma Dive
+ */
+router.get('/news/biopharma-dive/pipeline', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getBioPharmDiveScraper();
+
+    const articles = await scraper.getPipelineUpdates(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'BioPharma Dive',
+      category: 'Pipeline',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('BioPharma Dive pipeline news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch BioPharma Dive pipeline news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/biopharma-dive/ma
+ * Get M&A news from BioPharma Dive
+ */
+router.get('/news/biopharma-dive/ma', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const manager = getScrapingManager();
+    const scraper = manager.getBioPharmDiveScraper();
+
+    const articles = await scraper.getMandANews(limit);
+
+    res.json({
+      status: 'ok',
+      source: 'BioPharma Dive',
+      category: 'M&A',
+      data: articles,
+      count: articles.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('BioPharma Dive M&A news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch BioPharma Dive M&A news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/scraping/news/all
+ * Aggregate news from all sources
+ */
+router.get('/news/all', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+    const manager = getScrapingManager();
+
+    // Fetch from all sources in parallel
+    const [
+      fierceBiotech,
+      scienceDaily,
+      bioSpace,
+      endpoints,
+      bioPharmDive,
+    ] = await Promise.allSettled([
+      manager.getFierceBiotechScraper().getLatestNews(limit),
+      manager.getScienceDailyScraper().getLatestBiotechNews(limit),
+      manager.getBioSpaceScraper().getLatestNews(limit),
+      manager.getEndpointsNewsScraper().getLatestNews(limit),
+      manager.getBioPharmDiveScraper().getLatestNews(limit),
+    ]);
+
+    const aggregated = {
+      fierceBiotech: fierceBiotech.status === 'fulfilled' ? fierceBiotech.value : [],
+      scienceDaily: scienceDaily.status === 'fulfilled' ? scienceDaily.value : [],
+      bioSpace: bioSpace.status === 'fulfilled' ? bioSpace.value : [],
+      endpoints: endpoints.status === 'fulfilled' ? endpoints.value : [],
+      bioPharmDive: bioPharmDive.status === 'fulfilled' ? bioPharmDive.value : [],
+    };
+
+    const totalCount = Object.values(aggregated).reduce((sum, arr) => sum + arr.length, 0);
+
+    res.json({
+      status: 'ok',
+      data: aggregated,
+      totalCount,
+      sources: 5,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Aggregated news error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch aggregated news',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 export { router as scrapingRouter };
