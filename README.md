@@ -1,48 +1,59 @@
-# Biotech Terminal Platform
+# 🧬 Biotech Terminal Platform
 
-> Open-source biotech terminal platform with financial modeling, pharmaceutical intelligence, and terminal-style data visualization
+> **Open-source biotech data intelligence platform** with Bloomberg Terminal aesthetics, built on OpenBB architecture patterns.
+
+A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platform for pharmaceutical data visualization, drug development pipeline tracking, and biotech market intelligence.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
-
-A comprehensive biotech intelligence platform featuring:
-- **Terminal UI Components**: Bloomberg-style React components for pharmaceutical data
-- **Data Platform**: Self-contained backend with biotech data providers
-- **Financial Modeling**: Drug development ROI and NPV calculations
-- **Real-time Analytics**: Market data streaming and catalyst tracking
+[![Node.js 18+](https://img.shields.io/badge/node.js-18+-green.svg)](https://nodejs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![React 18](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
 
 ## 🚀 Quick Start
 
-### Installation
-
-```bash
-npm install @deaxu/terminal-ui
-# or
-yarn add @deaxu/terminal-ui
-# or
-pnpm add @deaxu/terminal-ui
+**One-command setup for Windows:**
+```powershell
+.\scripts\setup.ps1
 ```
 
-### Basic Usage
+**One-command setup for macOS/Linux:**
+```bash
+./scripts/setup.sh
+```
 
-```tsx
-import { Button, Panel, Metric, DataTable } from '@deaxu/terminal-ui';
-import '@deaxu/terminal-ui/styles';
+**Start development:**
+```bash
+# Windows
+.\scripts\setup.ps1 dev
 
-function App() {
-  return (
-    <Panel title="SYSTEM METRICS" cornerBrackets>
-      <Metric
-        label="ACTIVE AGENTS"
-        value={190}
-        trend="up"
-        change={5.2}
-      />
-      <Button variant="primary">EXECUTE COMMAND</Button>
-    </Panel>
-  );
-}
+# macOS/Linux
+./scripts/setup.sh dev
+```
+
+**Platform will be running at:**
+- 🔧 **Backend API**: http://localhost:8000
+- 📖 **API Documentation**: http://localhost:8000/docs
+- 🖥️ **Terminal Application**: http://localhost:3000
+
+## � Platform Architecture
+
+This repository is organized as a **multi-package workspace** following OpenBB platform patterns:
+
+```
+📦 biotech-terminal-platform/
+├── 🐍 platform/           # Python FastAPI backend
+│   ├── core/              # Main application and database
+│   ├── providers/         # Data source integrations
+│   └── routers/           # API endpoints
+├── 🎨 frontend-components/ # React component library
+│   ├── terminal/          # Terminal UI components
+│   ├── tables/            # Data grid components
+│   ├── plotly/           # Chart visualizations
+│   └── biotech/          # Domain-specific components
+├── 🖥️ terminal/           # Full terminal application
+├── 📚 examples/           # Component demos
+└── 📖 docs/              # Documentation
 ```
 
 ## 📦 Components
