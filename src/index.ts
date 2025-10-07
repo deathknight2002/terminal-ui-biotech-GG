@@ -69,6 +69,9 @@ export type { BioMetricGridProps } from './components/molecules/BioMetricGrid';
 export { CatalystTicker } from './components/molecules/CatalystTicker';
 export type { CatalystTickerProps } from './components/molecules/CatalystTicker';
 
+export { ClinicalTrialsTimeline } from './components/molecules/ClinicalTrialsTimeline';
+export type { ClinicalTrialsTimelineProps, ClinicalTrial } from './components/molecules/ClinicalTrialsTimeline';
+
 // Organisms
 export { Panel } from './components/organisms/Panel';
 
