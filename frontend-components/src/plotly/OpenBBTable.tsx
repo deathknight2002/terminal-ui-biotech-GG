@@ -1,12 +1,18 @@
-import '../../vendor/openbb/tables/index.css';
-
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 // import Table from '../../vendor/openbb/tables/components/Table';
 
+interface TableProps {
+  title?: string;
+  data?: Record<string, OpenBBGridValue>[];
+  columns?: string[];
+  initialTheme?: 'light' | 'dark';
+  cmd?: string;
+}
+
 // Temporary placeholder component
-const Table = (props: any) => <div>Table component placeholder</div>;
+const Table: React.FC<TableProps> = () => <div>Table component placeholder</div>;
 
 export type OpenBBGridValue = string | number | boolean | null | undefined;
 
