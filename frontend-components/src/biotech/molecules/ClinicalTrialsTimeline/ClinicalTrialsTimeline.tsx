@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import styles from './ClinicalTrialsTimeline.module.css';
-import { Panel } from '../../../terminal/organisms/Panel';
-import { Badge } from '../../../terminal/atoms/Badge';
-import { Text } from '../../../terminal/atoms/Text';
-import { Button } from '../../../terminal/atoms/Button';
+import { Panel } from '@/terminal/organisms/Panel';
+import { Badge } from '@/terminal/atoms/Badge';
+import { Text } from '@/terminal/atoms/Text';
+import { Button } from '@/terminal/atoms/Button';
 
 export interface ClinicalTrial {
   id: string;
