@@ -1,0 +1,89 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  height: var(--input-height);
+  padding: 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  transition: all var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--border-strong);
+}
+
+.input:focus {
+  outline: none;
+  background: var(--bg-panel);
+  border-color: var(--accent-primary);
+}
+
+.input:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input:read-only {
+  cursor: default;
+}
+
+/* Error state */
+.error .input {
+  border-color: var(--status-error);
+}
+
+.error .input:focus {
+  border-color: var(--status-error);
+}
+
+/* With prefix/suffix */
+.hasPrefix .input {
+  padding-left: calc(var(--prefix-width, 0px) + var(--space-2));
+}
+
+.hasSuffix .input {
+  padding-right: calc(var(--suffix-width, 0px) + var(--space-2));
+}
+
+.prefix,
+.suffix {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  color: var(--text-secondary);
+  pointer-events: none;
+  user-select: none;
+}
+
+.prefix {
+  left: var(--space-3);
+}
+
+.suffix {
+  right: var(--space-3);
+}
+
+/* Tabular numbers */
+.tabularNums .input {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Full width */
+.fullWidth {
+  width: 100%;
+}

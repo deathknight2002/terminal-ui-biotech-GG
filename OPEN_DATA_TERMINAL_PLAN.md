@@ -65,4 +65,15 @@ All datasets remain optional; the component backfills them with `DEFAULT_HOME_DA
 2. Add responsive snapshots (≤768px) to ensure Avalonia shell mobile embeds render correctly.
 3. Introduce theming tokens so Avalonia can toggle between dark/black glass palettes without React rebuilds.
 
-See Section 5 (Ingestion Scaffold) for backend tasks. Update this document as new components or data flows come online.
+## 5. Ingestion Scaffold
+
+- Python entrypoint: `python -m platform.ingestion --example` seeds DuckDB/parquet with placeholder watchlist + stage data for UI smoke tests.
+- Core modules:
+  - `platform/ingestion/config.py` — derives paths from `settings`.
+  - `platform/ingestion/duckdb_manager.py` — handles DuckDB sessions + Parquet exports.
+  - `platform/ingestion/pipeline.py` — orchestrates market / pipeline / regulatory ingest and Awesome Quant analytics.
+- Dependencies added: `duckdb`, `polars`, `pyportfolioopt`, `quantstats`, `pyarrow`.
+- Default storage layout: `data/lake/biotech.duckdb` + `data/lake/parquet/*`.
+- Metrics output: `biotech_portfolio_metrics` table appended with each analytics run.
+
+Update this document as new components or data flows come online.

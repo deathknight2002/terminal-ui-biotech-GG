@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     FDA_API_KEY: str = ""
     CLINICALTRIALS_API_KEY: str = ""
     PUBMED_API_KEY: str = ""
+
+    # Data Lake / Ingestion
+    DATA_LAKE_DIR: str = os.path.join("data", "lake")
+    PARQUET_DIR: str = os.path.join("data", "lake", "parquet")
+    DUCKDB_PATH: str = os.path.join("data", "lake", "biotech.duckdb")
     
     # Security
     SECRET_KEY: str = "biotech-terminal-secret-key-change-in-production"
