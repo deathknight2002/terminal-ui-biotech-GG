@@ -1,5 +1,5 @@
-import { Button, Text, Input, Metric, Panel, Badge, Spinner, StatusIndicator, DataTable, Checkbox, Switch, Tabs, Progress, Card, Gauge, DonutChart, BarChart, SparkLine, ProgressCircle, Section, MonitoringTable, Select, Modal, Toast, useToast, Tooltip, Accordion, Breadcrumbs, ClinicalTrialsTimeline } from '@deaxu/terminal-ui';
-import type { Column, Tab, DonutSegment, BarDataPoint, MonitoringRow, SelectOption, AccordionItem, BreadcrumbItem, ClinicalTrial } from '@deaxu/terminal-ui';
+import { Button, Text, Input, Metric, Panel, Badge, Spinner, StatusIndicator, DataTable, Checkbox, Switch, Tabs, Progress, Card, Gauge, DonutChart, BarChart, SparkLine, ProgressCircle, Section, MonitoringTable, Select, Modal, Toast, useToast, Tooltip, Accordion, Breadcrumbs, ClinicalTrialsTimeline } from '../frontend-components/src/index';
+import type { Column, Tab, DonutSegment, BarDataPoint, MonitoringRow, SelectOption, AccordionItem, BreadcrumbItem, ClinicalTrial } from '../frontend-components/src/index';
 import { useState, useEffect, useCallback } from 'react';
 
 interface AgentData {
