@@ -359,10 +359,9 @@ export class EndpointsNewsScraper {
   /**
    * Extract tags from article
    */
-  private extractTags($element: cheerio.Cheerio<cheerio.Element>): string[] {
+  private extractTags($element: any): string[] {
     const tags: string[] = [];
-    $element.find('.tag, .tag-links a, .post-tags a').each((_, tag) => {
-      const tagText = cheerio.load(tag).text().trim();
+    $element.find('.tag, .tag-links a, .post-tags a').each((_: any, tag: any) => {
       if (tagText) tags.push(tagText);
     });
     return tags;
@@ -387,7 +386,7 @@ export class EndpointsNewsScraper {
       },
       rateLimiter: this.rateLimiter.getStats(),
       cache: {
-        size: this.cache.size(),
+        size: this.cache.getStats().size,
         stats: this.cache.getStats(),
       },
     };
