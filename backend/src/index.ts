@@ -16,6 +16,8 @@ import { financialModelingRouter } from './routes/financial-modeling.js';
 import { userRouter } from './routes/user.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { scrapingRouter } from './routes/scraping.js';
+import { monitoringRouter } from './routes/monitoring.js';
+import { getNewsMonitor } from './services/news-monitor.js';
 
 async function startServer() {
   try {
@@ -29,6 +31,11 @@ async function startServer() {
       fdaApiKey: config.externalApis.fda,
     });
     logger.info('Scraping infrastructure initialized');
+
+    // Start news monitoring
+    const newsMonitor = getNewsMonitor();
+    newsMonitor.start();
+    logger.info('News monitoring started');
 
     // Create Express app
     const app = express();
@@ -67,6 +74,7 @@ async function startServer() {
     app.use('/api/user', userRouter);
     app.use('/api/analytics', analyticsRouter);
     app.use('/api/scraping', scrapingRouter);
+    app.use('/api/monitoring', monitoringRouter);
 
     // Setup WebSocket handlers
     setupWebSocket(io);
