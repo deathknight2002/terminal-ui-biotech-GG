@@ -5,8 +5,9 @@ import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import { config } from './config/environment.js';
 import { logger } from './utils/logger.js';
-import { connectDatabases } from './database/connection.js';
+import { connectDatabases } from './database/connection-simple.js';
 import { setupWebSocket } from './websocket/index.js';
+import { initializeScrapingManager } from './scraping/index.js';
 
 // Import route handlers
 import { marketDataRouter } from './routes/market-data.js';
@@ -14,12 +15,20 @@ import { biotechDataRouter } from './routes/biotech-data.js';
 import { financialModelingRouter } from './routes/financial-modeling.js';
 import { userRouter } from './routes/user.js';
 import { analyticsRouter } from './routes/analytics.js';
+import { scrapingRouter } from './routes/scraping.js';
 
 async function startServer() {
   try {
     // Connect to databases
     await connectDatabases();
     logger.info('Database connections established');
+
+    // Initialize scraping manager
+    await initializeScrapingManager({
+      pubmedApiKey: config.externalApis.openbb, // Reuse if available
+      fdaApiKey: config.externalApis.fda,
+    });
+    logger.info('Scraping infrastructure initialized');
 
     // Create Express app
     const app = express();
@@ -57,6 +66,7 @@ async function startServer() {
     app.use('/api/financial', financialModelingRouter);
     app.use('/api/user', userRouter);
     app.use('/api/analytics', analyticsRouter);
+    app.use('/api/scraping', scrapingRouter);
 
     // Setup WebSocket handlers
     setupWebSocket(io);

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --aurora-bg: radial-gradient(circle at 20% 20%, #1e3a8a, #111827 60%);
+  --glass-border: rgba(255,255,255,0.15);
+  --glass-bg: rgba(255,255,255,0.05);
+  --glass-bg-heavy: rgba(255,255,255,0.12);
+  --gradient-1: linear-gradient(135deg,#60a5fa,#6366f1 40%,#8b5cf6);
+  --gradient-2: linear-gradient(120deg,#0ea5e9,#6366f1,#9333ea);
+}
+.dark {
+  --aurora-bg: radial-gradient(circle at 70% 30%, #0f172a, #020617 70%);
+}
+
+html, body, #__next { height: 100%; }
+body { @apply bg-black text-white font-sans antialiased; background: var(--aurora-bg); }
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+}
+.glass-heavy {
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(22px) saturate(180%);
+}
+
+.gradient-text { background: var(--gradient-2); -webkit-background-clip: text; color: transparent; }
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
