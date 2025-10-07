@@ -17,10 +17,7 @@ import { Panel } from '../../../terminal/organisms/Panel';
 import type {
   RoyaltyTier,
   BiotechFinancialDashboardProps,
-} from '../../../types/biotech';
-
-
-
+} from '@/types/biotech';
 
 // Utility functions for financial calculations
 const formatToMillions = (value: number): string => {

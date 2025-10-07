@@ -477,8 +477,8 @@ export const BioAuroraDashboard: React.FC<BioAuroraDashboardProps> = ({
                       />
                       <Text as="div" variant="body-sm" color="secondary">
                         [
-                          stage.startDate ? `Start ${new Date(stage.startDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : null,
-                          stage.endDate ? `ETA ${new Date(stage.endDate!).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : null,
+                          stage.startDate ? `Start ${new Date(stage.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : null,
+                          stage.endDate ? `ETA ${new Date(stage.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : null,
                         ].filter(Boolean).join(' | ')
                       </Text>
                     </div>
