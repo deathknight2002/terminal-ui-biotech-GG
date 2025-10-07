@@ -81,6 +81,7 @@ function Install-PythonEnvironment {
     
     # Initialize database
     Write-Host "🗄️ Initializing database..." -ForegroundColor Yellow
+    $env:PYTHONPATH = (Get-Location).Path
     poetry run python -c @"
 import asyncio
 from platform.core.database import init_db
@@ -173,6 +174,7 @@ function Start-DevServices {
     Write-Host "🔧 Starting backend platform..." -ForegroundColor Yellow
     $backendJob = Start-Job -ScriptBlock {
         Set-Location $using:PWD
+        $env:PYTHONPATH = $using:PWD
         poetry run uvicorn platform.core.app:app --reload --port 8000
     }
     

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Panel, Button } from '@biotech-terminal/frontend-components/terminal';
+import '../styles/glass-theme.css';
 
 interface TerminalLayoutProps {
   children: React.ReactNode;
@@ -21,20 +21,24 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
   return (
     <div className="terminal-layout">
       <header className="terminal-header">
-        <Panel title="BIOTECH TERMINAL PLATFORM v2.0" cornerBrackets>
+        <div className="glass-container">
+          <div className="terminal-headline">
+            <div className="eyebrow">BIOTECH INTELLIGENCE PLATFORM</div>
+            <h1>AURORA TERMINAL</h1>
+            <div className="subtitle">Real-time pharmaceutical intelligence & market analysis</div>
+          </div>
           <nav className="terminal-nav">
             {navigation.map((item) => (
               <Link key={item.path} to={item.path} className="nav-link">
-                <Button
-                  variant={location.pathname === item.path ? 'primary' : 'ghost'}
-                  size="sm"
+                <button
+                  className={`glass-button ${location.pathname === item.path ? 'active' : ''}`}
                 >
                   {item.icon} {item.label}
-                </Button>
+                </button>
               </Link>
             ))}
           </nav>
-        </Panel>
+        </div>
       </header>
 
       <main className="terminal-main">
@@ -42,14 +46,14 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
       </main>
 
       <footer className="terminal-footer">
-        <Panel>
+        <div className="glass-container">
           <div className="footer-content">
             <span>🧬 BIOTECH TERMINAL</span>
-            <span>STATUS: OPERATIONAL</span>
-            <span>API: CONNECTED</span>
-            <span>{new Date().toISOString()}</span>
+            <span>STATUS: <span className="status-operational">OPERATIONAL</span></span>
+            <span>API: <span className="status-connected">CONNECTED</span></span>
+            <span>LIVE: {new Date().toLocaleTimeString()}</span>
           </div>
-        </Panel>
+        </div>
       </footer>
     </div>
   );

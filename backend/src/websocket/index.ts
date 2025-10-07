@@ -1,6 +1,7 @@
 import { Server as SocketServer } from 'socket.io';
 import { logger } from '../utils/logger.js';
 import { config } from '../config/environment.js';
+import { setupScrapingWebSocket } from '../scraping/websocket-integration.js';
 
 interface ClientData {
   userId?: string;
@@ -12,6 +13,9 @@ const connectedClients = new Map<string, ClientData>();
 
 export function setupWebSocket(io: SocketServer): void {
   logger.info('🔌 Setting up WebSocket server');
+
+  // Setup scraping WebSocket handlers
+  setupScrapingWebSocket(io);
 
   io.on('connection', (socket) => {
     const clientId = socket.id;
