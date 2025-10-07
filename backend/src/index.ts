@@ -16,6 +16,7 @@ import { financialModelingRouter } from './routes/financial-modeling.js';
 import { userRouter } from './routes/user.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { scrapingRouter } from './routes/scraping.js';
+import { monitoringRouter } from './routes/monitoring.js';
 
 async function startServer() {
   try {
@@ -67,6 +68,7 @@ async function startServer() {
     app.use('/api/user', userRouter);
     app.use('/api/analytics', analyticsRouter);
     app.use('/api/scraping', scrapingRouter);
+    app.use('/api/monitoring', monitoringRouter);
 
     // Setup WebSocket handlers
     setupWebSocket(io);
