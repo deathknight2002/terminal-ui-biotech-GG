@@ -14,6 +14,11 @@ import { FierceBiotechScraper } from './fierce-biotech-scraper.js';
 import { ScienceDailyScraper } from './science-daily-scraper.js';
 import { BioSpaceScraper } from './biospace-scraper.js';
 import { EndpointsNewsScraper } from './endpoints-news-scraper.js';
+import { PharmaNewsWireScraper } from './pharmanewswire-scraper.js';
+import { GenEngNewsScraper } from './genengnews-scraper.js';
+import { BioPharmaDigestScraper } from './biopharmadive-scraper.js';
+import { FDANewsTrackerScraper } from './fda-news-scraper.js';
+import { BioSpaceJobsScraper } from './biospace-jobs-scraper.js';
 
 export interface ScraperHealth {
   pubmed: {
@@ -51,6 +56,31 @@ export interface ScraperHealth {
     lastCheck: number;
     stats: any;
   };
+  pharmaNewsWire: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  genEngNews: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  bioPharmaDigest: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  fdaNewsTracker: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  bioSpaceJobs: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
   workerPool: {
     stats: any;
   };
@@ -66,6 +96,11 @@ export class ScrapingManager extends EventEmitter {
   private scienceDailyScraper: ScienceDailyScraper;
   private bioSpaceScraper: BioSpaceScraper;
   private endpointsNewsScraper: EndpointsNewsScraper;
+  private pharmaNewsWireScraper: PharmaNewsWireScraper;
+  private genEngNewsScraper: GenEngNewsScraper;
+  private bioPharmaDigestScraper: BioPharmaDigestScraper;
+  private fdaNewsTrackerScraper: FDANewsTrackerScraper;
+  private bioSpaceJobsScraper: BioSpaceJobsScraper;
   
   private healthCheckInterval?: NodeJS.Timeout;
   private readonly healthCheckIntervalMs: number = 60000; // 1 minute
@@ -101,11 +136,16 @@ export class ScrapingManager extends EventEmitter {
     this.scienceDailyScraper = new ScienceDailyScraper();
     this.bioSpaceScraper = new BioSpaceScraper();
     this.endpointsNewsScraper = new EndpointsNewsScraper();
+    this.pharmaNewsWireScraper = new PharmaNewsWireScraper();
+    this.genEngNewsScraper = new GenEngNewsScraper();
+    this.bioPharmaDigestScraper = new BioPharmaDigestScraper();
+    this.fdaNewsTrackerScraper = new FDANewsTrackerScraper();
+    this.bioSpaceJobsScraper = new BioSpaceJobsScraper();
 
     // Setup event listeners
     this.setupEventListeners();
 
-    logger.info('🚀 Scraping Manager initialized with 7 scrapers');
+    logger.info('🚀 Scraping Manager initialized with 12 scrapers');
   }
 
   /**
@@ -206,6 +246,41 @@ export class ScrapingManager extends EventEmitter {
   }
 
   /**
+   * Get PharmaNewsWire scraper
+   */
+  getPharmaNewsWireScraper(): PharmaNewsWireScraper {
+    return this.pharmaNewsWireScraper;
+  }
+
+  /**
+   * Get GEN News scraper
+   */
+  getGenEngNewsScraper(): GenEngNewsScraper {
+    return this.genEngNewsScraper;
+  }
+
+  /**
+   * Get BioPharma Digest scraper
+   */
+  getBioPharmaDigestScraper(): BioPharmaDigestScraper {
+    return this.bioPharmaDigestScraper;
+  }
+
+  /**
+   * Get FDA News Tracker scraper
+   */
+  getFDANewsTrackerScraper(): FDANewsTrackerScraper {
+    return this.fdaNewsTrackerScraper;
+  }
+
+  /**
+   * Get BioSpace Jobs scraper
+   */
+  getBioSpaceJobsScraper(): BioSpaceJobsScraper {
+    return this.bioSpaceJobsScraper;
+  }
+
+  /**
    * Get worker pool
    */
   getWorkerPool(): WorkerPool {
@@ -243,6 +318,11 @@ export class ScrapingManager extends EventEmitter {
       if (health.scienceDaily.status !== 'healthy') unhealthyServices.push('Science Daily');
       if (health.bioSpace.status !== 'healthy') unhealthyServices.push('BioSpace');
       if (health.endpointsNews.status !== 'healthy') unhealthyServices.push('Endpoints News');
+      if (health.pharmaNewsWire.status !== 'healthy') unhealthyServices.push('PharmaNewsWire');
+      if (health.genEngNews.status !== 'healthy') unhealthyServices.push('GEN News');
+      if (health.bioPharmaDigest.status !== 'healthy') unhealthyServices.push('BioPharma Digest');
+      if (health.fdaNewsTracker.status !== 'healthy') unhealthyServices.push('FDA News Tracker');
+      if (health.bioSpaceJobs.status !== 'healthy') unhealthyServices.push('BioSpace Jobs');
 
       if (unhealthyServices.length > 0) {
         logger.warn(`⚠️ Unhealthy scraping services: ${unhealthyServices.join(', ')}`);
@@ -294,6 +374,31 @@ export class ScrapingManager extends EventEmitter {
         lastCheck: now,
         stats: this.endpointsNewsScraper.getHealth(),
       },
+      pharmaNewsWire: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.pharmaNewsWireScraper.getHealth(),
+      },
+      genEngNews: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.genEngNewsScraper.getHealth(),
+      },
+      bioPharmaDigest: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.bioPharmaDigestScraper.getHealth(),
+      },
+      fdaNewsTracker: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.fdaNewsTrackerScraper.getHealth(),
+      },
+      bioSpaceJobs: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.bioSpaceJobsScraper.getHealth(),
+      },
       workerPool: {
         stats: this.workerPool.getStats(),
       },
@@ -322,7 +427,7 @@ export class ScrapingManager extends EventEmitter {
       health.clinicalTrials.status = 'degraded';
     }
 
-    // Check new scrapers (they have getHealth methods)
+    // Check news scrapers (they have getHealth methods)
     const fbHealth = this.fierceBiotechScraper.getHealth();
     health.fierceBiotech.status = fbHealth.status;
 
@@ -334,6 +439,21 @@ export class ScrapingManager extends EventEmitter {
 
     const enHealth = this.endpointsNewsScraper.getHealth();
     health.endpointsNews.status = enHealth.status;
+
+    const pnwHealth = this.pharmaNewsWireScraper.getHealth();
+    health.pharmaNewsWire.status = pnwHealth.status;
+
+    const genHealth = this.genEngNewsScraper.getHealth();
+    health.genEngNews.status = genHealth.status;
+
+    const bpdHealth = this.bioPharmaDigestScraper.getHealth();
+    health.bioPharmaDigest.status = bpdHealth.status;
+
+    const fdaHealth = this.fdaNewsTrackerScraper.getHealth();
+    health.fdaNewsTracker.status = fdaHealth.status;
+
+    const jobsHealth = this.bioSpaceJobsScraper.getHealth();
+    health.bioSpaceJobs.status = jobsHealth.status;
 
     return health;
   }
@@ -352,6 +472,11 @@ export class ScrapingManager extends EventEmitter {
       scienceDaily: this.scienceDailyScraper.getHealth(),
       bioSpace: this.bioSpaceScraper.getHealth(),
       endpointsNews: this.endpointsNewsScraper.getHealth(),
+      pharmaNewsWire: this.pharmaNewsWireScraper.getHealth(),
+      genEngNews: this.genEngNewsScraper.getHealth(),
+      bioPharmaDigest: this.bioPharmaDigestScraper.getHealth(),
+      fdaNewsTracker: this.fdaNewsTrackerScraper.getHealth(),
+      bioSpaceJobs: this.bioSpaceJobsScraper.getHealth(),
     };
   }
 
@@ -366,6 +491,11 @@ export class ScrapingManager extends EventEmitter {
     this.scienceDailyScraper.clearCache();
     this.bioSpaceScraper.clearCache();
     this.endpointsNewsScraper.clearCache();
+    this.pharmaNewsWireScraper.clearCache();
+    this.genEngNewsScraper.clearCache();
+    this.bioPharmaDigestScraper.clearCache();
+    this.fdaNewsTrackerScraper.clearCache();
+    this.bioSpaceJobsScraper.clearCache();
     
     logger.info('🗑️ All scraper caches cleared');
   }
