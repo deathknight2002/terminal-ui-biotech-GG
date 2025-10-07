@@ -1,81 +1,62 @@
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { 
-  TerminalFrame,
-  Panel, 
-  Metric, 
-  Gauge, 
-  DonutChart,
-  DataTable
-} from '@biotech-terminal/frontend-components/terminal';
-import { 
-  BioMetricGrid,
-  CatalystTicker 
-} from '@biotech-terminal/frontend-components/biotech';
+  BioAuroraDashboard,
+} from '../../../frontend-components/src/biotech';
+import type { 
+  Catalyst,
+  PortfolioPosition 
+} from '../../../frontend-components/src/types/biotech';
+
+// Fetch data from our backend or use the sophisticated defaults
+const fetchDashboardData = async () => {
+  try {
+    const response = await fetch('http://localhost:3001/api/biotech/dashboard');
+    if (!response.ok) {
+      // Fall back to sophisticated default data if backend is unavailable
+      return null;
+    }
+    return response.json();
+  } catch {
+    console.log('Backend unavailable, using sophisticated defaults');
+    return null;
+  }
+};
 
 export function DashboardPage() {
-  // Mock data - will be replaced with real API calls
-  const metrics = [
-    { label: 'ACTIVE DRUGS', value: 2847, trend: 'up' as const, change: 12.3 },
-    { label: 'PHASE III', value: 342, trend: 'up' as const, change: 8.1 },
-    { label: 'FDA APPROVALS', value: 89, trend: 'down' as const, change: -2.4 },
-    { label: 'MARKET CAP', value: '$2.4T', trend: 'up' as const, change: 15.7 },
-  ];
+  const { 
+    data: dashboardData, 
+  } = useQuery({
+    queryKey: ['aurora-dashboard'],
+    queryFn: fetchDashboardData,
+    staleTime: 30000, // 30 seconds
+    gcTime: 60000, // 1 minute
+    refetchInterval: 30000, // Auto-refresh every 30 seconds
+  });
 
-  const pipelineData = [
-    { phase: 'Preclinical', value: 45, color: '#FF9500' },
-    { phase: 'Phase I', value: 28, color: '#00D4FF' },
-    { phase: 'Phase II', value: 18, color: '#00FF00' },
-    { phase: 'Phase III', value: 9, color: '#A855F7' },
-  ];
-
+  // Use the sophisticated BioAuroraDashboard with its built-in defaults
+  // or enhanced data from backend
   return (
-    <TerminalFrame
-      headline={{
-        title: 'BIOTECH INTELLIGENCE DASHBOARD',
-        subtitle: 'Real-time pharmaceutical market overview',
-        eyebrow: 'MAIN TERMINAL'
-      }}
-    >
-      <div className="dashboard-grid">
-        {/* Key Metrics */}
-        <Panel title="SYSTEM METRICS" cornerBrackets>
-          <div className="metrics-grid">
-            {metrics.map((metric, index) => (
-              <Metric key={index} {...metric} />
-            ))}
-          </div>
-        </Panel>
-
-        {/* Pipeline Overview */}
-        <Panel title="PIPELINE DISTRIBUTION">
-          <div className="pipeline-viz">
-            <DonutChart 
-              data={pipelineData}
-              centerLabel="TOTAL PIPELINE"
-              centerValue="2,847"
-            />
-          </div>
-        </Panel>
-
-        {/* Market Activity */}
-        <Panel title="MARKET ACTIVITY">
-          <Gauge 
-            value={78} 
-            label="MARKET SENTIMENT"
-            status="success"
-          />
-        </Panel>
-
-        {/* Biotech Metrics */}
-        <Panel title="BIOTECH INTELLIGENCE" fullWidth>
-          <BioMetricGrid />
-        </Panel>
-
-        {/* Recent Catalysts */}
-        <Panel title="RECENT CATALYSTS" fullWidth>
-          <CatalystTicker />
-        </Panel>
-      </div>
-    </TerminalFrame>
+    <div className="terminal-frame aurora-shimmer">
+      <BioAuroraDashboard
+        theme="aurora-red"
+        headline={dashboardData?.headline}
+        metrics={dashboardData?.metrics}
+        catalysts={dashboardData?.catalysts}
+        positions={dashboardData?.positions}
+        exposures={dashboardData?.exposures}
+        pipeline={dashboardData?.pipeline}
+        documents={dashboardData?.documents}
+        analytics={dashboardData?.analytics}
+        onSelectCatalyst={(catalyst: Catalyst) => {
+          console.log('Selected catalyst:', catalyst);
+          // Could open a modal or navigate to detailed view
+        }}
+        onSelectPosition={(position: PortfolioPosition) => {
+          console.log('Selected position:', position);
+          // Could open a detailed analysis view
+        }}
+      />
+    </div>
   );
 }

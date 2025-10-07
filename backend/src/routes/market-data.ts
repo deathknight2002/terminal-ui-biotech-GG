@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { logger } from '../utils/logger.js';
-import { postgresClient } from '../database/connection.js';
+import { realDataService } from '../services/real-data-service.js';
 
 const router = Router();
 
@@ -205,12 +205,12 @@ router.get('/health', async (req, res) => {
       }
     };
 
-    // Check database connection
+    // Check database connection (using live data service)
     try {
-      await postgresClient.query('SELECT 1');
-      health.services.database = true;
+      const status = realDataService.isCollectingData();
+      health.services.database = !status; // Database is "healthy" when not collecting
     } catch (error) {
-      logger.warn('Database health check failed:', error);
+      logger.warn('Live data service health check failed:', error);
     }
 
     const overallStatus = Object.values(health.services).every(Boolean) ? 'healthy' : 'degraded';

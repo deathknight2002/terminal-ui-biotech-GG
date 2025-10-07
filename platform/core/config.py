@@ -6,7 +6,13 @@ Environment-based configuration for the biotech terminal platform.
 
 import os
 from typing import List
-from pydantic import BaseSettings
+
+try:
+    # Preferred import for Pydantic v2+
+    from pydantic_settings import BaseSettings  # type: ignore
+except ModuleNotFoundError:
+    # Fallback for environments without pydantic-settings installed
+    from pydantic.v1 import BaseSettings  # type: ignore
 
 
 class Settings(BaseSettings):

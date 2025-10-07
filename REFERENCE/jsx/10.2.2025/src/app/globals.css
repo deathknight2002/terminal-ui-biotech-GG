@@ -1,0 +1,2 @@
+/* Re-export to keep Next.js default location satisfied; actual theme in styles/global.css */
+@import './styles-reset.css';

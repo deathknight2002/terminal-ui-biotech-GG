@@ -1,0 +1,19 @@
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+.aurora-layer {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  top: -20%;
+  left: -20%;
+  background: conic-gradient(from 90deg at 50% 50%, rgba(96,165,250,0.25), rgba(139,92,246,0.25), rgba(14,165,233,0.25), rgba(96,165,250,0.25));
+  mix-blend-mode: screen;
+  animation: aurora-spin 40s linear infinite;
+  filter: blur(80px) saturate(140%);
+}
+@keyframes aurora-spin { to { transform: rotate(360deg); } }

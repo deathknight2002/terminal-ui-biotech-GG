@@ -1,0 +1,6 @@
+import React from 'react';
+import { GlassCard } from '@/components/ui/GlassCard';
+import { GradientText } from '@/components/ui/GradientText';
+export interface LegacySection { heading: string; body: string; aside?: string; }
+interface Props { title: string; summary?: string; sections: LegacySection[]; }
+export const LegacyModuleTemplate: React.FC<Props> = ({ title, summary, sections }) => (<div className="space-y-10"><header className="space-y-3"><h1 className="text-4xl font-bold"><GradientText>{title}</GradientText></h1>{summary && <p className="text-sm text-white/60 max-w-2xl">{summary}</p>}</header><div className="space-y-12">{sections.map((s,i)=>(<section key={i} className="space-y-4"><h2 className="text-xl font-semibold gradient-text">{s.heading}</h2><div className="grid md:grid-cols-3 gap-6 items-start"><div className="prose prose-invert md:col-span-2 text-sm leading-relaxed max-w-none whitespace-pre-line">{s.body}</div><div>{s.aside && <GlassCard heading="Note">{s.aside}</GlassCard>}</div></div></section>))}</div></div>);

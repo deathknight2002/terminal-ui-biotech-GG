@@ -1,5 +1,5 @@
 import React from 'react';
-import { TerminalFrame, Panel } from '@biotech-terminal/frontend-components/terminal';
+import { TerminalFrame, Panel } from '../../../frontend-components/src/terminal';
 
 export function DataExplorerPage() {
   return (

@@ -5,7 +5,7 @@ import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import { config } from './config/environment.js';
 import { logger } from './utils/logger.js';
-import { connectDatabases } from './database/connection.js';
+import { connectDatabases } from './database/connection-simple.js';
 import { setupWebSocket } from './websocket/index.js';
 import { initializeScrapingManager } from './scraping/index.js';
 
