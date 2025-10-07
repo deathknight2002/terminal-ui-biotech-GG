@@ -10,6 +10,11 @@ import { CircuitBreakerManager } from './circuit-breaker.js';
 import { PubMedScraper } from './pubmed-scraper.js';
 import { FDAScraper } from './fda-scraper.js';
 import { ClinicalTrialsScraper } from './clinical-trials-scraper.js';
+import { FierceBiotechScraper } from './fierce-biotech-scraper.js';
+import { ScienceDailyScraper } from './science-daily-scraper.js';
+import { BioSpaceScraper } from './biospace-scraper.js';
+import { EndpointsNewsScraper } from './endpoints-scraper.js';
+import { BioPharmDiveScraper } from './biopharma-dive-scraper.js';
 
 export interface ScraperHealth {
   pubmed: {
@@ -27,6 +32,31 @@ export interface ScraperHealth {
     lastCheck: number;
     stats: any;
   };
+  fierceBiotech: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  scienceDaily: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  bioSpace: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  endpointsNews: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
+  bioPharmDive: {
+    status: 'healthy' | 'degraded' | 'down';
+    lastCheck: number;
+    stats: any;
+  };
   workerPool: {
     stats: any;
   };
@@ -38,6 +68,11 @@ export class ScrapingManager extends EventEmitter {
   private pubmedScraper: PubMedScraper;
   private fdaScraper: FDAScraper;
   private clinicalTrialsScraper: ClinicalTrialsScraper;
+  private fierceBiotechScraper: FierceBiotechScraper;
+  private scienceDailyScraper: ScienceDailyScraper;
+  private bioSpaceScraper: BioSpaceScraper;
+  private endpointsNewsScraper: EndpointsNewsScraper;
+  private bioPharmDiveScraper: BioPharmDiveScraper;
   
   private healthCheckInterval?: NodeJS.Timeout;
   private readonly healthCheckIntervalMs: number = 60000; // 1 minute
@@ -69,11 +104,16 @@ export class ScrapingManager extends EventEmitter {
     this.pubmedScraper = new PubMedScraper(config?.pubmedApiKey);
     this.fdaScraper = new FDAScraper(config?.fdaApiKey);
     this.clinicalTrialsScraper = new ClinicalTrialsScraper();
+    this.fierceBiotechScraper = new FierceBiotechScraper();
+    this.scienceDailyScraper = new ScienceDailyScraper();
+    this.bioSpaceScraper = new BioSpaceScraper();
+    this.endpointsNewsScraper = new EndpointsNewsScraper();
+    this.bioPharmDiveScraper = new BioPharmDiveScraper();
 
     // Setup event listeners
     this.setupEventListeners();
 
-    logger.info('🚀 Scraping Manager initialized');
+    logger.info('🚀 Scraping Manager initialized with 8 news sources');
   }
 
   /**
@@ -146,6 +186,41 @@ export class ScrapingManager extends EventEmitter {
   }
 
   /**
+   * Get Fierce Biotech scraper
+   */
+  getFierceBiotechScraper(): FierceBiotechScraper {
+    return this.fierceBiotechScraper;
+  }
+
+  /**
+   * Get Science Daily scraper
+   */
+  getScienceDailyScraper(): ScienceDailyScraper {
+    return this.scienceDailyScraper;
+  }
+
+  /**
+   * Get BioSpace scraper
+   */
+  getBioSpaceScraper(): BioSpaceScraper {
+    return this.bioSpaceScraper;
+  }
+
+  /**
+   * Get Endpoints News scraper
+   */
+  getEndpointsNewsScraper(): EndpointsNewsScraper {
+    return this.endpointsNewsScraper;
+  }
+
+  /**
+   * Get BioPharma Dive scraper
+   */
+  getBioPharmDiveScraper(): BioPharmDiveScraper {
+    return this.bioPharmDiveScraper;
+  }
+
+  /**
    * Get worker pool
    */
   getWorkerPool(): WorkerPool {
@@ -210,6 +285,31 @@ export class ScrapingManager extends EventEmitter {
         lastCheck: now,
         stats: this.clinicalTrialsScraper.getStats(),
       },
+      fierceBiotech: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.fierceBiotechScraper.getStats(),
+      },
+      scienceDaily: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.scienceDailyScraper.getStats(),
+      },
+      bioSpace: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.bioSpaceScraper.getStats(),
+      },
+      endpointsNews: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.endpointsNewsScraper.getStats(),
+      },
+      bioPharmDive: {
+        status: 'healthy',
+        lastCheck: now,
+        stats: this.bioPharmDiveScraper.getStats(),
+      },
       workerPool: {
         stats: this.workerPool.getStats(),
       },
@@ -238,6 +338,23 @@ export class ScrapingManager extends EventEmitter {
       health.clinicalTrials.status = 'degraded';
     }
 
+    // Check news scrapers (they don't have circuit breakers in manager yet)
+    if (health.fierceBiotech.stats.rateLimiter.errorRate > 0.2) {
+      health.fierceBiotech.status = 'degraded';
+    }
+    if (health.scienceDaily.stats.rateLimiter.errorRate > 0.2) {
+      health.scienceDaily.status = 'degraded';
+    }
+    if (health.bioSpace.stats.rateLimiter.errorRate > 0.2) {
+      health.bioSpace.status = 'degraded';
+    }
+    if (health.endpointsNews.stats.rateLimiter.errorRate > 0.2) {
+      health.endpointsNews.status = 'degraded';
+    }
+    if (health.bioPharmDive.stats.rateLimiter.errorRate > 0.2) {
+      health.bioPharmDive.status = 'degraded';
+    }
+
     return health;
   }
 
@@ -251,6 +368,11 @@ export class ScrapingManager extends EventEmitter {
       pubmed: this.pubmedScraper.getStats(),
       fda: this.fdaScraper.getStats(),
       clinicalTrials: this.clinicalTrialsScraper.getStats(),
+      fierceBiotech: this.fierceBiotechScraper.getStats(),
+      scienceDaily: this.scienceDailyScraper.getStats(),
+      bioSpace: this.bioSpaceScraper.getStats(),
+      endpointsNews: this.endpointsNewsScraper.getStats(),
+      bioPharmDive: this.bioPharmDiveScraper.getStats(),
     };
   }
 
@@ -261,6 +383,11 @@ export class ScrapingManager extends EventEmitter {
     this.pubmedScraper.clearCache();
     this.fdaScraper.clearCache();
     this.clinicalTrialsScraper.clearCache();
+    this.fierceBiotechScraper.clearCache();
+    this.scienceDailyScraper.clearCache();
+    this.bioSpaceScraper.clearCache();
+    this.endpointsNewsScraper.clearCache();
+    this.bioPharmDiveScraper.clearCache();
     
     logger.info('🗑️ All scraper caches cleared');
   }

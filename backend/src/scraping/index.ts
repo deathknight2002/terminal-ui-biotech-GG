@@ -72,6 +72,22 @@ export type {
   TrialSearchParams,
 } from './clinical-trials-scraper.js';
 
+// News scrapers
+export { FierceBiotechScraper } from './fierce-biotech-scraper.js';
+export type { FierceBiotechArticle, FierceBiotechSearchParams } from './fierce-biotech-scraper.js';
+
+export { ScienceDailyScraper } from './science-daily-scraper.js';
+export type { ScienceDailyArticle, ScienceDailySearchParams } from './science-daily-scraper.js';
+
+export { BioSpaceScraper } from './biospace-scraper.js';
+export type { BioSpaceArticle, BioSpaceSearchParams } from './biospace-scraper.js';
+
+export { EndpointsNewsScraper } from './endpoints-scraper.js';
+export type { EndpointsArticle, EndpointsSearchParams } from './endpoints-scraper.js';
+
+export { BioPharmDiveScraper } from './biopharma-dive-scraper.js';
+export type { BioPharmDiveArticle, BioPharmDiveSearchParams } from './biopharma-dive-scraper.js';
+
 // Manager
 export {
   ScrapingManager,
