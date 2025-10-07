@@ -1,0 +1,83 @@
+/* Terminal Application Styles */
+
+.terminal-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary, #000000);
+  color: var(--text-primary, #00FF00);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+.terminal-header {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--accent-primary, #00FF00);
+}
+
+.terminal-nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+}
+
+.terminal-main {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.terminal-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--accent-primary, #00FF00);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+/* Dashboard specific styles */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.pipeline-viz {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .terminal-nav {
+    flex-direction: column;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
