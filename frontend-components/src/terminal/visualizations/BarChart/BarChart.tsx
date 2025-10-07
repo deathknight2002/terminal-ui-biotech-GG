@@ -14,7 +14,6 @@ export interface BarChartProps {
   showValues?: boolean;
   showGrid?: boolean;
   animate?: boolean;
-  horizontal?: boolean;
   color?: string;
   className?: string;
 }
@@ -25,7 +24,6 @@ export const BarChart: React.FC<BarChartProps> = ({
   showValues = true,
   showGrid = true,
   animate = true,
-  horizontal = false,
   color = 'var(--accent-cyan)',
   className,
 }) => {
