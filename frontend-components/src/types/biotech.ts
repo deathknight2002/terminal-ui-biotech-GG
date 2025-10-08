@@ -395,3 +395,124 @@ export interface ApiError {
   message: string;
   details?: Record<string, any>;
 }
+
+// Epidemiology Types
+export type DiseaseAreaType = 
+  | "DMD" // Duchenne Muscular Dystrophy
+  | "nSCLC" // Non-Small Cell Lung Cancer
+  | "T2D" // Type 2 Diabetes
+  | "COVID19" // COVID-19
+  | "SCD" // Sickle Cell Disease
+  | "Rare Disease"
+  | "Chronic Disease"
+  | "Infectious Disease"
+  | "Other";
+
+export type GeographicRegion = 
+  | "North America"
+  | "Europe"
+  | "Asia Pacific"
+  | "Latin America"
+  | "Middle East & Africa"
+  | "Global";
+
+export type CohortStratification = 
+  | "Age"
+  | "Gender"
+  | "Ethnicity"
+  | "Severity"
+  | "Stage"
+  | "Treatment History"
+  | "Biomarker"
+  | "Geographic";
+
+// Survival Analysis Types
+export interface SurvivalData {
+  time: number;
+  survival: number;
+  atRisk: number;
+  events: number;
+  censored: number;
+  ci_lower?: number;
+  ci_upper?: number;
+}
+
+export interface SurvivalCurve {
+  id: string;
+  label: string;
+  cohort: string;
+  data: SurvivalData[];
+  medianSurvival: number;
+  hazardRatio?: number;
+  pValue?: number;
+  color?: string;
+}
+
+// Hazard Ratio Types
+export interface HazardRatioData {
+  intervention: string;
+  control: string;
+  hazardRatio: number;
+  ci_lower: number;
+  ci_upper: number;
+  pValue: number;
+  events_intervention: number;
+  events_control: number;
+  n_intervention: number;
+  n_control: number;
+}
+
+// Cohort Stratification Types
+export interface CohortData {
+  id: string;
+  stratification: CohortStratification;
+  category: string;
+  population: number;
+  percentage: number;
+  prevalence?: number;
+  incidence?: number;
+  mortality?: number;
+}
+
+// Geospatial Disease Data
+export interface GeospatialDiseaseData {
+  region: GeographicRegion;
+  country: string;
+  prevalence: number;
+  incidence: number;
+  mortality: number;
+  population: number;
+  cases: number;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
+
+// Treatment Pattern Types
+export interface TreatmentPattern {
+  id: string;
+  name: string;
+  lineOfTherapy: number;
+  percentage: number;
+  duration: number;
+  cost: number;
+  effectiveness: number;
+}
+
+// Disease Model Interface
+export interface DiseaseModel {
+  id: string;
+  name: string;
+  diseaseArea: DiseaseAreaType;
+  description: string;
+  prevalence: number;
+  incidence: number;
+  mortality: number;
+  targetPopulation: number;
+  averageAge: number;
+  genderRatio?: number;
+  geographicDistribution?: Record<GeographicRegion, number>;
+  lastUpdated: string;
+}
+

@@ -8,5 +8,7 @@ export type {
   OpenBBGridValue,
 } from './OpenBBTable';
 
-export { OpenBBPlot } from './OpenBBPlot';
+// Temporarily disabled due to missing OpenBB external dependency
+// export { OpenBBPlot } from './OpenBBPlot';
 export type { OpenBBPlotProps, OpenBBPlotPayload } from './openbb-plot-types';
+

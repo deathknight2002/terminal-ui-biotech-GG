@@ -1,0 +1,41 @@
+.survivalChart {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.statsPanel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statValue {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+}
+
+.hazardRatio {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}

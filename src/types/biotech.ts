@@ -394,3 +394,250 @@ export interface ApiError {
   message: string;
   details?: Record<string, any>;
 }
+
+// Epidemiology Types
+export type DiseaseAreaType = 
+  | "DMD" // Duchenne Muscular Dystrophy
+  | "nSCLC" // Non-Small Cell Lung Cancer
+  | "T2D" // Type 2 Diabetes
+  | "COVID19" // COVID-19
+  | "SCD" // Sickle Cell Disease
+  | "Rare Disease"
+  | "Chronic Disease"
+  | "Infectious Disease"
+  | "Other";
+
+export type EpidemiologicModelType = 
+  | "Survival"
+  | "Hazard"
+  | "Incidence"
+  | "Prevalence"
+  | "Mortality"
+  | "Progression";
+
+export type GeographicRegion = 
+  | "North America"
+  | "Europe"
+  | "Asia Pacific"
+  | "Latin America"
+  | "Middle East & Africa"
+  | "Global";
+
+export type CohortStratification = 
+  | "Age"
+  | "Gender"
+  | "Ethnicity"
+  | "Severity"
+  | "Stage"
+  | "Treatment History"
+  | "Biomarker"
+  | "Geographic";
+
+export type InterventionType = 
+  | "Treatment"
+  | "Prevention"
+  | "Screening"
+  | "Policy"
+  | "Behavioral"
+  | "Combination";
+
+// Disease Model Interfaces
+export interface DiseaseModel {
+  id: string;
+  name: string;
+  diseaseArea: DiseaseAreaType;
+  description: string;
+  prevalence: number; // per 100,000 population
+  incidence: number; // per 100,000 population per year
+  mortality: number; // annual mortality rate
+  targetPopulation: number; // total addressable population
+  averageAge: number;
+  genderRatio?: number; // male-to-female ratio
+  geographicDistribution?: Record<GeographicRegion, number>;
+  lastUpdated: string;
+}
+
+// Survival Analysis Types
+export interface SurvivalData {
+  time: number; // time in months or years
+  survival: number; // survival probability (0-1)
+  atRisk: number; // number at risk
+  events: number; // number of events (deaths/progressions)
+  censored: number; // number censored
+  ci_lower?: number; // confidence interval lower bound
+  ci_upper?: number; // confidence interval upper bound
+}
+
+export interface SurvivalCurve {
+  id: string;
+  label: string;
+  cohort: string;
+  data: SurvivalData[];
+  medianSurvival: number; // in months/years
+  hazardRatio?: number;
+  pValue?: number;
+  color?: string;
+}
+
+// Hazard Ratio Types
+export interface HazardRatioData {
+  intervention: string;
+  control: string;
+  hazardRatio: number;
+  ci_lower: number;
+  ci_upper: number;
+  pValue: number;
+  events_intervention: number;
+  events_control: number;
+  n_intervention: number;
+  n_control: number;
+}
+
+// Incidence and Prevalence Types
+export interface EpidemiologyMetric {
+  year: number;
+  value: number;
+  region: GeographicRegion;
+  ageGroup?: string;
+  gender?: "Male" | "Female" | "All";
+  ci_lower?: number;
+  ci_upper?: number;
+}
+
+// Cohort Stratification Types
+export interface CohortData {
+  id: string;
+  stratification: CohortStratification;
+  category: string;
+  population: number;
+  percentage: number;
+  prevalence?: number;
+  incidence?: number;
+  mortality?: number;
+}
+
+// Geospatial Disease Data
+export interface GeospatialDiseaseData {
+  region: GeographicRegion;
+  country: string;
+  prevalence: number;
+  incidence: number;
+  mortality: number;
+  population: number;
+  cases: number;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
+
+// Treatment Pattern Types
+export interface TreatmentPattern {
+  id: string;
+  name: string;
+  lineOfTherapy: number;
+  percentage: number; // percentage of patients receiving this treatment
+  duration: number; // average duration in months
+  cost: number; // average annual cost
+  effectiveness: number; // relative effectiveness (0-1)
+}
+
+export interface TreatmentPatternEvolution {
+  year: number;
+  patterns: TreatmentPattern[];
+}
+
+// Intervention Scenario Types
+export interface InterventionScenario {
+  id: string;
+  name: string;
+  type: InterventionType;
+  description: string;
+  targetPopulation: number;
+  penetrationRate: number; // 0-1
+  effectiveness: number; // relative risk reduction (0-1)
+  costPerPatient: number;
+  implementationYear: number;
+  duration: number; // years
+}
+
+export interface InterventionOutcome {
+  scenario: InterventionScenario;
+  casesAvoided: number;
+  deathsAvoided: number;
+  qualityAdjustedLifeYears: number; // QALYs gained
+  totalCost: number;
+  costEffectiveness: number; // cost per QALY
+  returnOnInvestment: number;
+}
+
+// Population Health Impact Types
+export interface PopulationHealthMetric {
+  metric: string;
+  baseline: number;
+  projected: number;
+  change: number;
+  changePercent: number;
+  unit: string;
+}
+
+export interface PopulationHealthImpact {
+  year: number;
+  population: number;
+  cases: number;
+  deaths: number;
+  disabilityAdjustedLifeYears: number; // DALYs
+  healthcareCost: number;
+  productivityLoss: number;
+  totalBurden: number;
+}
+
+// Policy Outcome Types
+export interface PolicyOutcome {
+  id: string;
+  policyName: string;
+  targetDisease: DiseaseAreaType;
+  implementationDate: string;
+  outcomes: {
+    year: number;
+    metrics: PopulationHealthMetric[];
+  }[];
+  budgetImpact: number;
+  costSavings: number;
+  netBenefit: number;
+}
+
+// Cross-Disease Burden Comparison
+export interface DiseaseBurden {
+  disease: DiseaseAreaType;
+  diseaseName: string;
+  prevalence: number;
+  incidence: number;
+  mortality: number;
+  disabilityAdjustedLifeYears: number;
+  healthcareCost: number;
+  totalBurden: number;
+  rank?: number;
+}
+
+// Simulation Parameters
+export interface EpidemiologySimulationParams {
+  diseaseModel: DiseaseModel;
+  timeHorizon: number; // years
+  discountRate: number; // for costs and benefits
+  populationGrowth: number; // annual growth rate
+  baselineScenario: boolean;
+  interventions: InterventionScenario[];
+  stratifications: CohortStratification[];
+}
+
+export interface EpidemiologySimulationResult {
+  params: EpidemiologySimulationParams;
+  timeSeries: PopulationHealthImpact[];
+  interventionOutcomes: InterventionOutcome[];
+  costEffectiveness: {
+    icer: number; // Incremental Cost-Effectiveness Ratio
+    inb: number; // Incremental Net Benefit
+    probabilityCostEffective: number;
+  };
+}
