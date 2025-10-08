@@ -1,6 +1,6 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import type { CohortData } from '../../../src/types/biotech';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import type { CohortData } from '../../types/biotech';
 import styles from './CohortStratificationChart.module.css';
 
 export interface CohortStratificationChartProps {
@@ -127,7 +127,7 @@ export const CohortStratificationChart: React.FC<CohortStratificationChartProps>
                   formatter={(value: number) => [formatValue(value), getMetricLabel()]}
                 />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                  {chartData.map((entry, index) => (
+                  {chartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Bar>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
-import type { SurvivalCurve } from '../../../src/types/biotech';
+import type { Layout, Config } from 'plotly.js';
+import type { SurvivalCurve } from '../../types/biotech';
 import styles from './SurvivalCurveChart.module.css';
 
 export interface SurvivalCurveChartProps {
@@ -79,7 +80,7 @@ export const SurvivalCurveChart: React.FC<SurvivalCurveChartProps> = ({
 
   const data = [...ciTraces, ...mainTraces];
 
-  const layout = {
+  const layout: Partial<Layout> = {
     title: {
       text: title,
       font: {
@@ -89,22 +90,22 @@ export const SurvivalCurveChart: React.FC<SurvivalCurveChartProps> = ({
       },
     },
     xaxis: {
-      title: xAxisLabel,
+      title: { text: xAxisLabel },
       gridcolor: '#334155',
       zerolinecolor: '#475569',
       color: '#cbd5e1',
-      font: {
+      tickfont: {
         family: 'JetBrains Mono, monospace',
       },
     },
     yaxis: {
-      title: yAxisLabel,
+      title: { text: yAxisLabel },
       gridcolor: '#334155',
       zerolinecolor: '#475569',
       color: '#cbd5e1',
       tickformat: '.0%',
       range: [0, 1],
-      font: {
+      tickfont: {
         family: 'JetBrains Mono, monospace',
       },
     },
@@ -126,10 +127,10 @@ export const SurvivalCurveChart: React.FC<SurvivalCurveChartProps> = ({
     margin: { l: 60, r: 40, t: 50, b: 60 },
   };
 
-  const config = {
+  const config: Partial<Config> = {
     displayModeBar: true,
     displaylogo: false,
-    modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+    modeBarButtonsToRemove: ['lasso2d', 'select2d'] as any,
     responsive: true,
   };
 

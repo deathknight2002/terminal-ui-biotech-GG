@@ -1,6 +1,7 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
-import type { HazardRatioData } from '../../../src/types/biotech';
+import type { Layout, Config } from 'plotly.js';
+import type { HazardRatioData } from '../../types/biotech';
 import styles from './HazardRatioChart.module.css';
 
 export interface HazardRatioChartProps {
@@ -74,7 +75,7 @@ export const HazardRatioChart: React.FC<HazardRatioChartProps> = ({
     },
   ];
 
-  const layout = {
+  const layout: Partial<Layout> = {
     title: {
       text: title,
       font: {
@@ -84,19 +85,19 @@ export const HazardRatioChart: React.FC<HazardRatioChartProps> = ({
       },
     },
     xaxis: {
-      title: 'Hazard Ratio (95% CI)',
+      title: { text: 'Hazard Ratio (95% CI)' },
       type: 'log' as const,
       gridcolor: '#334155',
       zerolinecolor: '#475569',
       color: '#cbd5e1',
-      font: {
+      tickfont: {
         family: 'JetBrains Mono, monospace',
       },
     },
     yaxis: {
       gridcolor: '#334155',
       color: '#cbd5e1',
-      font: {
+      tickfont: {
         family: 'JetBrains Mono, monospace',
         size: 11,
       },
@@ -138,10 +139,10 @@ export const HazardRatioChart: React.FC<HazardRatioChartProps> = ({
     ],
   };
 
-  const config = {
+  const config: Partial<Config> = {
     displayModeBar: true,
     displaylogo: false,
-    modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+    modeBarButtonsToRemove: ['lasso2d', 'select2d'] as any,
     responsive: true,
   };
 
