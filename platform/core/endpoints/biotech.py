@@ -117,7 +117,7 @@ async def get_dashboard(db: Session = Depends(get_db)):
     )
     total_market_cap = sum(company.market_cap or 0 for company in companies) or 1
 
-    nav_base = 100 + (total_market_cap / 1_000_000_000) * 0.03
+    nav_base = total_market_cap or 1.0
     nav_change_percent = round((avg_probability - 0.5) * 8, 2)
     nav_change = round(nav_base * nav_change_percent / 100, 2)
 
@@ -145,8 +145,9 @@ async def get_dashboard(db: Session = Depends(get_db)):
     positions = []
     for company in companies:
         market_cap = company.market_cap or 0
-        weight = round((market_cap / total_market_cap) * 100, 2) if total_market_cap else 0
-        pnl = round(((market_cap / total_market_cap) - 0.25) * 12, 2) if total_market_cap else 0.0
+        weight = round((market_cap / total_market_cap), 4) if total_market_cap else 0.0
+        relative_weight = (market_cap / total_market_cap) if total_market_cap else 0.0
+        pnl = round((relative_weight - (1 / max(len(companies), 1))) * (nav_base * 0.02), 0)
         matching_catalyst = next((c for c in upcoming_catalysts if c.company == company.name), None)
 
         positions.append(
@@ -173,7 +174,7 @@ async def get_dashboard(db: Session = Depends(get_db)):
         {
             "id": f"exp-{company_type.lower().replace(' ', '-')}",
             "label": company_type.upper(),
-            "weight": round((count / total_companies) * 100, 2),
+            "weight": round(count / total_companies, 4),
             "performance": round(((count / total_companies) - 0.25) * 6, 2),
         }
         for company_type, count in type_counts
@@ -247,7 +248,7 @@ async def get_dashboard(db: Session = Depends(get_db)):
         {
             "id": "pipeline-depth",
             "label": "PIPELINE PROGRAMS",
-            "value": total_drugs,
+            "value": str(total_drugs),
             "change": round(total_drugs * 0.12, 2) if total_drugs else 0.0,
             "trend": "up" if total_drugs else "neutral",
             "variant": "primary",
@@ -256,7 +257,7 @@ async def get_dashboard(db: Session = Depends(get_db)):
         {
             "id": "upcoming-catalysts",
             "label": "UPCOMING CATALYSTS",
-            "value": len(upcoming_catalysts),
+            "value": str(len(upcoming_catalysts)),
             "change": len(upcoming_catalysts),
             "trend": "up" if upcoming_catalysts else "neutral",
             "variant": "accent",
@@ -265,7 +266,7 @@ async def get_dashboard(db: Session = Depends(get_db)):
         {
             "id": "active-trials",
             "label": "ACTIVE TRIALS",
-            "value": active_trials,
+            "value": str(active_trials),
             "change": 1.2 if active_trials else 0.0,
             "trend": "up" if active_trials else "neutral",
             "variant": "secondary",
