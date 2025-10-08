@@ -142,6 +142,12 @@ export class ScienceDailyScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to fetch Science Daily articles');
+    }
   }
 
   /**
@@ -192,6 +198,12 @@ export class ScienceDailyScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to search articles');
+    }
   }
 
   /**
@@ -240,6 +252,12 @@ export class ScienceDailyScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to fetch top stories');
+    }
   }
 
   /**

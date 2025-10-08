@@ -15,6 +15,10 @@
     "jsx": "react-jsx",
     "declaration": true,
     "outDir": "dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
 
     /* Linting */
     "strict": true,
@@ -23,5 +27,6 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": ["**/*.test.tsx", "**/*.test.ts", "src/tests"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

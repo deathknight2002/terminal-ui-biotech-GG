@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import type { Status } from '../../../types';
+import type { Status } from '@/types';
 import styles from './Badge.module.css';
 
 export interface BadgeProps {

@@ -305,10 +305,10 @@ export class PharmaNewsWireScraper {
         stats: this.circuitBreaker.getStats(),
       },
       rateLimiter: {
-        currentRate: this.rateLimiter.getCurrentRate(),
+        currentRate: this.rateLimiter.getStats().currentRate,
       },
       cache: {
-        size: this.cache.size(),
+        size: this.cache.size,
       },
     };
   }

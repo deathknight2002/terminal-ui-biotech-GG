@@ -1,33 +1,23 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import clsx from 'clsx';
-import { 
-  LineChart, 
-  Line, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts';
-import { MetricCard } from '../../molecules/MetricCard';
-import { Panel } from '../../organisms/Panel';
-import type { 
-  Asset, 
-  RoyaltyTier, 
-  FinancialProjection 
-} from '../../../types/biotech';
-
-// Simple icon components to replace lucide-react dependency
-const DollarSign = () => <span>$</span>;
-const TrendingUp = () => <span>↗</span>;
-const Calendar = () => <span>📅</span>;
-const LineChartIcon = () => <span>📊</span>;
-
-import type { BiotechFinancialDashboardProps } from '../../../types/biotech';
-
+import { MetricCard } from '../../../terminal/molecules/MetricCard';
+import { Panel } from '../../../terminal/organisms/Panel';
+import type {
+  RoyaltyTier,
+  BiotechFinancialDashboardProps,
+} from '@/types/biotech';
 
 // Utility functions for financial calculations
 const formatToMillions = (value: number): string => {
@@ -99,10 +89,9 @@ export function BiotechFinancialDashboard({
       breakEvenYear: undefined
     };
 
-    const discountRate = projection.assumptions.discountRate;
-    let totalNPV = projection.npv;
-    let cumulativeRevenue = projections.reduce((sum, p) => sum + p.revenue, 0);
-    let peakRevenue = projection.peakSales;
+    const totalNPV = projection.npv;
+    const cumulativeRevenue = projections.reduce((sum, p) => sum + p.revenue, 0);
+    const peakRevenue = projection.peakSales;
     let breakEvenYear: number | undefined;
 
     // Recalculate breakEvenYear based on the new projections structure

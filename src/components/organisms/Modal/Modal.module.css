@@ -4,7 +4,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background:
+    radial-gradient(circle at top, rgba(102, 249, 255, 0.25), transparent 55%),
+    radial-gradient(circle at bottom, rgba(255, 88, 249, 0.25), transparent 55%),
+    rgba(4, 6, 18, 0.85);
+  backdrop-filter: blur(28px) saturate(135%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,14 +27,34 @@
 }
 
 .modal {
-  background: var(--bg-panel);
-  border: 1px solid var(--accent-primary);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  position: relative;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  background:
+    linear-gradient(var(--glass-primary-bg), var(--glass-primary-bg)),
+    linear-gradient(140deg, rgba(102, 249, 255, 0.55), rgba(181, 123, 255, 0.35));
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent;
+  border-radius: 26px;
+  box-shadow: var(--shadow-elevated), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+  backdrop-filter: blur(28px) saturate(150%);
+  overflow: hidden;
   animation: slideUp 0.3s ease-out;
-  position: relative;
+  isolation: isolate;
+}
+
+.modal::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(26px - 1px);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
 }
 
 @keyframes slideUp {
@@ -64,9 +88,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--border-default);
-  background: var(--bg-elevated);
+  padding: calc(var(--space-4) + 2px) var(--space-5);
+  border-bottom: 1px solid rgba(132, 162, 255, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  backdrop-filter: blur(18px) saturate(130%);
+  position: relative;
+  z-index: 1;
 }
 
 .title {
@@ -74,33 +101,51 @@
   font-family: var(--font-mono);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  color: var(--accent-primary);
+  background: linear-gradient(135deg, rgba(102, 249, 255, 0.95), rgba(181, 123, 255, 0.75));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  text-shadow: var(--text-glow);
 }
 
 .closeButton {
-  background: transparent;
-  border: none;
+  position: relative;
+  background: rgba(8, 12, 28, 0.35);
+  border: 1px solid rgba(102, 249, 255, 0.35);
   color: var(--text-secondary);
   font-size: var(--font-size-xl);
   cursor: pointer;
   padding: var(--space-2);
   line-height: 1;
-  transition: color var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
   font-family: var(--font-mono);
+  border-radius: 999px;
 }
 
 .closeButton:hover {
   color: var(--status-error);
+  border-color: rgba(255, 79, 136, 0.6);
+  transform: scale(1.05);
+}
+
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(102, 249, 255, 0.45), 0 0 0 6px rgba(102, 249, 255, 0.2);
 }
 
 .body {
   flex: 1;
-  padding: var(--space-4);
+  padding: var(--space-5);
   overflow-y: auto;
   font-family: var(--font-mono);
   color: var(--text-primary);
+  background: linear-gradient(180deg, rgba(8, 12, 28, 0.45) 0%, rgba(8, 12, 28, 0.25) 100%);
+  position: relative;
+  z-index: 1;
 }
 
 .body::-webkit-scrollbar {
@@ -108,19 +153,22 @@
 }
 
 .body::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: rgba(8, 12, 28, 0.4);
 }
 
 .body::-webkit-scrollbar-thumb {
-  background: var(--accent-primary);
+  background: linear-gradient(180deg, rgba(102, 249, 255, 0.6), rgba(181, 123, 255, 0.45));
   border-radius: 4px;
 }
 
 .footer {
-  padding: var(--space-4);
-  border-top: 1px solid var(--border-default);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid rgba(132, 162, 255, 0.18);
   display: flex;
   gap: var(--space-3);
   justify-content: flex-end;
-  background: var(--bg-elevated);
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+  backdrop-filter: blur(18px) saturate(130%);
+  position: relative;
+  z-index: 1;
 }

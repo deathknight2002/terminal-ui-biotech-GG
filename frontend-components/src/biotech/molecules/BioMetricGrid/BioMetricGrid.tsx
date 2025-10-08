@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import styles from './BioMetricGrid.module.css';
 import { Metric } from '../../../terminal/molecules/Metric';
 import { Text } from '../../../terminal/atoms/Text';
-import type { BioAuroraMetric } from '../../../types/biotech';
+import type { BioAuroraMetric } from '@/types/biotech';
 
 export interface BioMetricGridProps {
   metrics: BioAuroraMetric[];

@@ -77,6 +77,7 @@ export interface Catalyst {
   description?: string;
   expectedImpact?: ImpactLevel;
   category?: "Clinical" | "Regulatory" | "Commercial" | "Corporate";
+  url?: string;
 }
 
 export interface PipelineStage {

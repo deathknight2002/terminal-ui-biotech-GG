@@ -9,4 +9,4 @@ export type {
 } from './OpenBBTable';
 
 export { OpenBBPlot } from './OpenBBPlot';
-export type { OpenBBPlotProps, OpenBBPlotPayload } from './OpenBBPlot';
+export type { OpenBBPlotProps, OpenBBPlotPayload } from './openbb-plot-types';

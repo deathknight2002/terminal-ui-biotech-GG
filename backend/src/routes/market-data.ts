@@ -229,4 +229,52 @@ router.get('/health', async (req, res) => {
   }
 });
 
+// GET /api/market/openbb/chart
+router.get('/openbb/chart', async (req, res) => {
+  try {
+    const symbol = (req.query.symbol as string) || 'BCRX';
+    const timeframe = (req.query.timeframe as string) || '1d';
+
+    // Mock OpenBB chart data in the format expected by OpenBBPlot
+    const chartData = {
+      data: [{
+        x: Array.from({length: 100}, (_, i) => new Date(Date.now() - (100 - i) * 24 * 60 * 60 * 1000).toISOString()),
+        y: Array.from({length: 100}, () => Math.random() * 50 + 100 + Math.sin(Math.random() * Math.PI * 2) * 10),
+        type: 'scatter',
+        mode: 'lines',
+        name: symbol,
+        line: { color: '#00ff88' }
+      }],
+      layout: {
+        title: `${symbol} Price Chart`,
+        xaxis: { title: 'Date' },
+        yaxis: { title: 'Price ($)' },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#00ff88' }
+      },
+      frames: [],
+      config: {
+        displayModeBar: true,
+        displaylogo: false,
+        modeBarButtonsToRemove: ['pan2d', 'lasso2d']
+      },
+      theme: 'dark',
+      command_location: 'terminal',
+      python_version: '3.11',
+      pywry_version: '0.1.0',
+      terminal_version: '1.0.0'
+    };
+
+    res.json(chartData);
+
+  } catch (error) {
+    logger.error('OpenBB chart error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch OpenBB chart data',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 export { router as marketDataRouter };

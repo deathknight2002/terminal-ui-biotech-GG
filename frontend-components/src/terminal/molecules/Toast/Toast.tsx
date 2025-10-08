@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import styles from './Toast.module.css';
-import type { Status } from '../../../types';
+import type { Status } from '@/types';
 
 export interface ToastMessage {
   id: string;

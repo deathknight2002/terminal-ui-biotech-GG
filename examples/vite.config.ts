@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@deaxu/terminal-ui': path.resolve(__dirname, '../src/index.ts'),
-      '@deaxu/terminal-ui/styles': path.resolve(__dirname, '../src/styles/global.css'),
+      '@deaxu/terminal-ui': path.resolve(__dirname, '../frontend-components/src/index.ts'),
+      '@deaxu/terminal-ui/styles': path.resolve(__dirname, '../frontend-components/src/styles/index.ts'),
     },
   },
 });

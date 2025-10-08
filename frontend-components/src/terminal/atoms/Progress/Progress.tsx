@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import type { Status, Size } from '../../../types';
+import type { Status, Size } from '@/types';
 import styles from './Progress.module.css';
 
 export interface ProgressProps {

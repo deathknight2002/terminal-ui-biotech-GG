@@ -98,7 +98,7 @@ export class BioSpaceScraper {
         logger.info(`🔍 Fetching latest ${maxResults} articles from BioSpace...`);
         
         const response = await this.circuitBreaker.execute(async () => {
-          return this.client.get('/articles', {
+          return this.client.get('/news', {
             headers: {
               'User-Agent': this.getRandomUserAgent(),
             },
@@ -125,6 +125,12 @@ export class BioSpaceScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to fetch BioSpace articles');
+    }
   }
 
   /**
@@ -175,6 +181,12 @@ export class BioSpaceScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to search articles');
+    }
   }
 
   /**
@@ -224,6 +236,12 @@ export class BioSpaceScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to fetch company news');
+    }
   }
 
   /**

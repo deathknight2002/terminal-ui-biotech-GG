@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import styles from './ProgressCircle.module.css';
-import type { Status } from '../../../types';
+import type { Status } from '@/types';
 
 export interface ProgressCircleProps {
   value: number; // 0-100

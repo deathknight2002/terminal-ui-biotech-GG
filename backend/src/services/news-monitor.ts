@@ -354,7 +354,7 @@ export class NewsMonitoringService extends EventEmitter {
   private async checkScienceDaily(): Promise<void> {
     try {
       const scraper = this.scrapingManager.getScienceDailyScraper();
-      const articles = await scraper.getTopHealthNews(20);
+      const articles = await scraper.getHealthNews(20);
 
       let newCount = 0;
       for (const article of articles) {

@@ -125,6 +125,12 @@ export class EndpointsNewsScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to fetch Endpoints articles');
+    }
   }
 
   /**
@@ -195,6 +201,12 @@ export class EndpointsNewsScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to fetch category articles');
+    }
   }
 
   /**
@@ -245,6 +257,12 @@ export class EndpointsNewsScraper {
         },
       }
     );
+
+    if (result.success) {
+      return result.data!;
+    } else {
+      throw result.error || new Error('Failed to search articles');
+    }
   }
 
   /**

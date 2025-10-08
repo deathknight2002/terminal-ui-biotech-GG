@@ -22,10 +22,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.venv/
-venv/
-env/
-ENV/
 *.db
 *.sqlite
 *.sqlite3
@@ -33,9 +29,14 @@ ENV/
 # Build
 dist/
 *.tsbuildinfo
+.next/
 
 # Env
 .env*
+.venv/
+venv/
+env/
+ENV/
 
 # IDE
 .vscode/
@@ -43,9 +44,13 @@ dist/
 
 # OS
 .DS_Store
+desktop.ini
 
 # Logs
 *.log
 
 # Coverage
 coverage/
+
+# Nested repositories
+OLD OVERHAU;/
