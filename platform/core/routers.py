@@ -5,7 +5,7 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics
+from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin
 
 # Main API router
 api_router = APIRouter()
@@ -33,4 +33,41 @@ api_router.include_router(
     analytics.router,
     prefix="/analytics",
     tags=["analytics"]
+)
+
+# New routers for Aurora Taskbar features
+api_router.include_router(
+    search.router,
+    prefix="/search",
+    tags=["search"]
+)
+
+api_router.include_router(
+    news.router,
+    prefix="/news",
+    tags=["news"]
+)
+
+api_router.include_router(
+    insights.router,
+    prefix="/insights",
+    tags=["insights"]
+)
+
+api_router.include_router(
+    catalysts.router,
+    prefix="/catalysts",
+    tags=["catalysts"]
+)
+
+api_router.include_router(
+    competition.router,
+    prefix="/competition",
+    tags=["competition"]
+)
+
+api_router.include_router(
+    admin.router,
+    prefix="/admin",
+    tags=["admin"]
 )
