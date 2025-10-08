@@ -641,3 +641,198 @@ export interface EpidemiologySimulationResult {
     probabilityCostEffective: number;
   };
 }
+
+// Terminal-Grade Features (Bloomberg/FactSet/LSEG patterns)
+
+// Context Groups - Linked Workspaces (Bloomberg Launchpad pattern)
+export type ContextChannel = "A" | "B" | "C" | "NONE";
+
+export interface ContextGroup {
+  channel: ContextChannel;
+  activeEntity: ContextEntity | null;
+  subscribers: string[]; // Panel IDs subscribed to this channel
+}
+
+export interface ContextEntity {
+  type: "disease" | "company" | "trial" | "drug" | "catalyst" | "therapeutic";
+  id: string;
+  name: string;
+  metadata?: Record<string, any>;
+}
+
+// Command Palette - Function Codes (Bloomberg command line pattern)
+export interface FunctionCode {
+  code: string; // e.g., "CO", "DI", "TR", "CA"
+  label: string;
+  description: string;
+  path: string;
+  keywords?: string[];
+  shortcut?: string;
+  category: "navigation" | "action" | "data" | "tool";
+}
+
+export interface CommandPaletteItem {
+  id: string;
+  type: "function" | "entity" | "action" | "recent";
+  label: string;
+  subtitle?: string;
+  icon?: string;
+  action: () => void;
+  keywords?: string[];
+  metadata?: Record<string, any>;
+}
+
+// Layout Manager - Saved Layouts (Launchpad/Workspace pattern)
+export interface WorkspaceLayout {
+  id: string;
+  name: string;
+  description?: string;
+  category: "starter" | "custom" | "shared";
+  panels: PanelConfig[];
+  contextGroups?: Record<ContextChannel, ContextGroup>;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt: string;
+  shareToken?: string;
+  thumbnail?: string;
+}
+
+export interface PanelConfig {
+  id: string;
+  type: string; // "news", "calendar", "trials", "spiderweb", etc.
+  position: PanelPosition;
+  size: PanelSize;
+  contextChannel?: ContextChannel;
+  settings?: Record<string, any>;
+  minimized?: boolean;
+}
+
+export interface PanelPosition {
+  x: number;
+  y: number;
+  col?: number;
+  row?: number;
+}
+
+export interface PanelSize {
+  width: number | string;
+  height: number | string;
+  cols?: number;
+  rows?: number;
+}
+
+// App Library - Launchable Modules
+export interface AppModule {
+  id: string;
+  name: string;
+  description: string;
+  category: "news" | "science" | "catalysts" | "trials" | "companies" | "analytics" | "data" | "tools";
+  icon: string;
+  path: string;
+  functionCode?: string;
+  requiresEntitlement?: string[];
+  favorited?: boolean;
+  recentlyUsed?: boolean;
+  lastUsedAt?: string;
+}
+
+// Entitlements & Roles - Permission System (FactSet/LSEG pattern)
+export type UserRole = "admin" | "analyst" | "viewer" | "guest";
+export type FeatureEntitlement = 
+  | "data_export"
+  | "manual_refresh"
+  | "layout_management"
+  | "admin_tools"
+  | "premium_data"
+  | "api_access"
+  | "audit_log_view"
+  | "user_management";
+
+export interface UserPermissions {
+  userId: string;
+  role: UserRole;
+  entitlements: FeatureEntitlement[];
+  customPermissions?: Record<string, boolean>;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName?: string;
+  action: "ingest" | "export" | "view" | "edit" | "delete" | "share";
+  entityType?: string;
+  entityId?: string;
+  metadata?: Record<string, any>;
+  ipAddress?: string;
+  userAgent?: string;
+  status: "success" | "failure" | "warning";
+  details?: string;
+}
+
+// Data Freshness & Diff System
+export interface DataFreshness {
+  source: string;
+  lastRefreshed: string;
+  recordCount: number;
+  status: "fresh" | "stale" | "error";
+  nextRefreshAvailable?: string;
+}
+
+export interface DataDiff {
+  source: string;
+  lastCheck: string;
+  changes: {
+    added: number;
+    updated: number;
+    deleted: number;
+  };
+  highlights: DiffHighlight[];
+}
+
+export interface DiffHighlight {
+  type: "new" | "updated" | "deleted";
+  entity: string;
+  summary: string;
+  timestamp: string;
+}
+
+// Office Exports
+export type ExportFormat = "csv" | "excel" | "powerpoint" | "pdf" | "json";
+
+export interface ExportConfig {
+  format: ExportFormat;
+  filename?: string;
+  includeCharts?: boolean;
+  includeMetadata?: boolean;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  filters?: Record<string, any>;
+}
+
+export interface ExportResult {
+  id: string;
+  filename: string;
+  format: ExportFormat;
+  size: number;
+  downloadUrl: string;
+  expiresAt: string;
+  createdAt: string;
+  status: "ready" | "processing" | "failed";
+}
+
+// UI Density & Accessibility
+export type UIDensity = "compact" | "comfortable" | "spacious";
+export type CVDMode = "normal" | "deuteranopia" | "protanomaly" | "tritanopia";
+
+export interface UIPreferences {
+  theme: Theme;
+  density: UIDensity;
+  cvdMode: CVDMode;
+  keyboardNavigation: boolean;
+  highContrast: boolean;
+  reduceMotion: boolean;
+  fontSize: "small" | "medium" | "large";
+}
