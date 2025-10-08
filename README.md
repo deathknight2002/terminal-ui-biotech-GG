@@ -431,6 +431,20 @@ src/
 └── index.ts             # Main export
 ```
 
+## 📚 Documentation
+
+**Complete documentation index**: See [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
+
+**Key documents:**
+- **[INSTALLATION.md](INSTALLATION.md)** - Detailed installation guide
+- **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)** - Development environment setup
+- **[docs/MIGRATION.md](docs/MIGRATION.md)** - Migration guide from v1.x
+- **[docs/VERSION_CONTROL.md](docs/VERSION_CONTROL.md)** - Documentation & version control best practices
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
+
+📖 **Can't find what you're looking for?** Check the [complete documentation index](DOCUMENTATION_INDEX.md) which organizes all 25+ documentation files by category and purpose.
+
 ## 🤝 Contributing
 
 Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
