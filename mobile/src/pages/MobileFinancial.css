@@ -1,0 +1,78 @@
+/* Mobile Financial Styles */
+
+.mobile-financial {
+  width: 100%;
+}
+
+.mobile-valuation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-valuation-item:last-child {
+  border-bottom: none;
+  padding-top: 16px;
+  margin-top: 8px;
+  border-top: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.mobile-valuation-label {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mobile-valuation-value {
+  font-family: var(--ios-font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.mobile-valuation-highlight {
+  font-size: 20px;
+  color: var(--ios-green);
+}
+
+.mobile-chart-placeholder {
+  padding: 20px 0;
+}
+
+.mobile-chart-info {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.mobile-chart-bars {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 150px;
+  gap: 12px;
+}
+
+.mobile-chart-bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.mobile-chart-bar {
+  width: 100%;
+  background: linear-gradient(to top, var(--ios-green), var(--ios-teal));
+  border-radius: 8px 8px 0 0;
+  transition: height 0.5s ease;
+}
+
+.mobile-chart-label {
+  font-size: 12px;
+  font-family: var(--ios-font-mono);
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8px;
+}

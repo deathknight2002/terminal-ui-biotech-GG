@@ -1,0 +1,193 @@
+/* Mobile Pipeline Styles */
+
+.mobile-pipeline {
+  width: 100%;
+}
+
+.mobile-filter-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0 24px 0;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.mobile-filter-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-pill {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mobile-pill:active {
+  transform: scale(0.95);
+}
+
+.mobile-pill.active {
+  background: var(--ios-blue);
+  border-color: var(--ios-blue);
+  color: white;
+  font-weight: 600;
+}
+
+/* Stats Grid */
+.mobile-stat-box {
+  text-align: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.mobile-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: var(--ios-font-mono);
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+}
+
+.mobile-stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Drug Cards */
+.mobile-pipeline-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-drug-card {
+  padding: 20px;
+}
+
+.mobile-drug-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.mobile-drug-name {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--ios-font-mono);
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 6px;
+}
+
+.mobile-drug-indication {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+.mobile-drug-phase-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-drug-phase-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mobile-phase-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.mobile-drug-target-date {
+  font-size: 13px;
+  font-family: var(--ios-font-mono);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mobile-drug-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mobile-drug-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mobile-drug-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.mobile-drug-progress-text {
+  font-family: var(--ios-font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  min-width: 50px;
+  text-align: right;
+}
+
+.mobile-drug-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-drug-actions .ios-button-glass {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 15px;
+}
+
+/* Empty State */
+.mobile-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.mobile-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.mobile-empty-text {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+}
