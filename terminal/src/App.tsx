@@ -12,6 +12,7 @@ import { ClinicalTrialsPage } from './pages/ClinicalTrialsPage';
 import { DataExplorerPage } from './pages/DataExplorerPage';
 import { EpidemiologyPage } from './pages/EpidemiologyPage';
 import { NewsPage } from './pages/NewsPage';
+import { TerminalFeaturesDemo } from './pages/TerminalFeaturesDemo';
 
 // Import layout components
 import { TerminalLayout } from './components/TerminalLayout';
@@ -51,6 +52,7 @@ export function App() {
           <Routes>
             {/* Home */}
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/demo" element={<TerminalFeaturesDemo />} />
             <Route path="/recents" element={<PlaceholderPage title="RECENTS" />} />
             <Route path="/favorites" element={<PlaceholderPage title="FAVORITES" />} />
 
