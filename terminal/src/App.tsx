@@ -9,6 +9,7 @@ import { FinancialModelingPage } from './pages/FinancialModelingPage';
 import { MarketIntelligencePage } from './pages/MarketIntelligencePage';
 import { ClinicalTrialsPage } from './pages/ClinicalTrialsPage';
 import { DataExplorerPage } from './pages/DataExplorerPage';
+import { EpidemiologyPage } from './pages/EpidemiologyPage';
 
 // Import layout components
 import { TerminalLayout } from './components/TerminalLayout';
@@ -41,6 +42,7 @@ export function App() {
             <Route path="/intelligence" element={<MarketIntelligencePage />} />
             <Route path="/trials" element={<ClinicalTrialsPage />} />
             <Route path="/explorer" element={<DataExplorerPage />} />
+            <Route path="/epidemiology" element={<EpidemiologyPage />} />
           </Routes>
         </TerminalLayout>
       </Router>
