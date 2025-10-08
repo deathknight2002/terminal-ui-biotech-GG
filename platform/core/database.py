@@ -80,15 +80,19 @@ class Catalyst(Base):
     __tablename__ = "catalysts"
     
     id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)  # Name of the catalyst
     title = Column(String, index=True)
     company = Column(String, index=True)
     drug = Column(String, index=True)
+    kind = Column(String, index=True)  # Type: FDA, Clinical, M&A, etc.
     event_type = Column(String, index=True)  # FDA Approval, Data Readout, etc.
+    date = Column(DateTime, index=True)  # Event date
     event_date = Column(DateTime, index=True)
     probability = Column(Float)  # 0.0 - 1.0
     impact = Column(String)  # High, Medium, Low
     description = Column(Text)
     status = Column(String, default="Upcoming")
+    source_url = Column(String)  # Source URL for the catalyst
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -105,6 +109,152 @@ class MarketData(Base):
     close_price = Column(Float)
     volume = Column(Integer)
     market_cap = Column(Float)
+
+
+# ============================================================================
+# NEWS AND ARTICLES MODELS
+# ============================================================================
+
+class Article(Base):
+    """News article model with sentiment and verification"""
+    __tablename__ = "articles"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False, index=True)
+    url = Column(String, nullable=False, unique=True, index=True)
+    summary = Column(Text)
+    source = Column(String, index=True)  # FierceBiotech, ScienceDaily, etc.
+    published_at = Column(DateTime, index=True)
+    tags = Column(JSON)  # List of tags
+    hash = Column(String, unique=True, index=True)  # Content hash for deduplication
+    link_valid = Column(Boolean, default=True)  # Validated link status
+    ingested_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    sentiments = relationship("Sentiment", back_populates="article", cascade="all, delete-orphan")
+    
+    __table_args__ = (
+        Index('idx_article_source_date', 'source', 'published_at'),
+        Index('idx_article_hash', 'hash'),
+    )
+
+
+class Sentiment(Base):
+    """Sentiment analysis for articles by domain"""
+    __tablename__ = "sentiments"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False, index=True)
+    domain = Column(String, nullable=False, index=True)  # regulatory, clinical, mna
+    score = Column(Float, nullable=False)  # -1.0 to 1.0
+    rationale = Column(Text)  # Explanation of sentiment
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationship
+    article = relationship("Article", back_populates="sentiments")
+    
+    __table_args__ = (
+        Index('idx_sentiment_article_domain', 'article_id', 'domain'),
+    )
+
+
+class Therapeutic(Base):
+    """Therapeutic/drug asset model"""
+    __tablename__ = "therapeutics"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False, index=True)
+    modality = Column(String, index=True)  # Small molecule, antibody, gene therapy, etc.
+    phase = Column(String, index=True)  # Preclinical, Phase I, II, III, Filed, Approved
+    company_id = Column(Integer, ForeignKey('companies.id'), index=True)
+    disease_id = Column(Integer, ForeignKey('epidemiology_diseases.id'), index=True)
+    indication = Column(Text)
+    mechanism = Column(String)
+    target = Column(String)
+    status = Column(String, default="Active")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_therapeutic_company_phase', 'company_id', 'phase'),
+        Index('idx_therapeutic_disease', 'disease_id'),
+    )
+
+
+class CompetitionEdge(Base):
+    """Competitive edge analysis between therapeutics or companies"""
+    __tablename__ = "competition_edges"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    from_id = Column(Integer, nullable=False, index=True)
+    to_id = Column(Integer, nullable=False, index=True)
+    scope = Column(String, nullable=False, index=True)  # THERAPEUTIC or COMPANY
+    
+    # Six-axis competitive metrics (0-100 scale)
+    safety = Column(Float)
+    efficacy = Column(Float)
+    regulatory = Column(Float)
+    modality_fit = Column(Float)
+    clinical_maturity = Column(Float)
+    differentiation = Column(Float)
+    
+    justification = Column(Text)  # Explanation of scores
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_competition_from_to', 'from_id', 'to_id', 'scope'),
+    )
+
+
+# ============================================================================
+# MANY-TO-MANY LINK TABLES
+# ============================================================================
+
+class ArticleDisease(Base):
+    """Link table between articles and diseases"""
+    __tablename__ = "article_diseases"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False, index=True)
+    disease_id = Column(Integer, ForeignKey('epidemiology_diseases.id'), nullable=False, index=True)
+    relevance = Column(Float)  # 0-1 relevance score
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_article_disease', 'article_id', 'disease_id'),
+    )
+
+
+class ArticleCompany(Base):
+    """Link table between articles and companies"""
+    __tablename__ = "article_companies"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False, index=True)
+    relevance = Column(Float)  # 0-1 relevance score
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_article_company', 'article_id', 'company_id'),
+    )
+
+
+class ArticleCatalyst(Base):
+    """Link table between articles and catalysts"""
+    __tablename__ = "article_catalysts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    relevance = Column(Float)  # 0-1 relevance score
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_article_catalyst', 'article_id', 'catalyst_id'),
+    )
 
 
 # ============================================================================
