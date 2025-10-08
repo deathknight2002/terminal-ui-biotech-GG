@@ -13,8 +13,15 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "tsx src/database/migrate.ts",
-    "db:seed": "tsx src/database/seed.ts"
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:seed": "tsx src/etl/seed.ts",
+    "db:studio": "prisma studio",
+    "etl:all": "tsx src/etl/run_all.ts",
+    "etl:seer": "tsx src/etl/run_all.ts seer",
+    "etl:who": "tsx src/etl/run_all.ts who",
+    "etl:cdc": "tsx src/etl/run_all.ts cdc"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.35",
