@@ -73,7 +73,9 @@ async def health_check():
 
 
 # Include routers
+# Expose versioned and legacy routes for compatibility
 app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api")
 app.include_router(websocket_router)
 
 
