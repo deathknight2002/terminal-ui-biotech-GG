@@ -8,6 +8,7 @@
  */
 
 import { logger } from '../utils/logger';
+import { getExtendedDiseaseData } from './extended-disease-data';
 
 // Data source enumeration
 export enum DataSource {
@@ -142,6 +143,12 @@ export class DiseaseDataService {
     // CDC Chronic Disease Data
     const cdcDiseases = this.getCDCDiseaseData();
     cdcDiseases.forEach(disease => {
+      this.diseaseDatabase.set(disease.id, disease);
+    });
+    
+    // Extended Disease Dataset (30+ additional diseases)
+    const extendedDiseases = getExtendedDiseaseData();
+    extendedDiseases.forEach(disease => {
       this.diseaseDatabase.set(disease.id, disease);
     });
 
