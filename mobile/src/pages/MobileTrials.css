@@ -1,0 +1,72 @@
+/* Mobile Trials Styles */
+
+.mobile-trials {
+  width: 100%;
+}
+
+.mobile-trials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-trial-card {
+  padding: 20px;
+}
+
+.mobile-trial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mobile-trial-id {
+  font-family: var(--ios-font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ios-blue);
+}
+
+.mobile-trial-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 6px;
+}
+
+.mobile-trial-phase {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 16px;
+}
+
+.mobile-trial-enrollment {
+  margin-bottom: 12px;
+}
+
+.mobile-trial-enrollment-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.mobile-trial-enrollment-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mobile-trial-enrollment-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ios-blue), var(--ios-purple));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.mobile-trial-completion {
+  font-size: 13px;
+  font-family: var(--ios-font-mono);
+  color: rgba(255, 255, 255, 0.7);
+}

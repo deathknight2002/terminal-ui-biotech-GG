@@ -1,0 +1,204 @@
+/* Mobile Dashboard Styles */
+
+.mobile-dashboard {
+  width: 100%;
+}
+
+.mobile-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.mobile-page-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.mobile-page-time {
+  font-family: var(--ios-font-mono);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.mobile-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.mobile-panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+/* Catalysts List */
+.mobile-catalysts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-catalyst-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.mobile-catalyst-item:active {
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(0.98);
+}
+
+.mobile-catalyst-content {
+  flex: 1;
+}
+
+.mobile-catalyst-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+}
+
+.mobile-catalyst-company {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mobile-catalyst-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.mobile-catalyst-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--ios-font-mono);
+}
+
+/* Quick Actions Grid */
+.mobile-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.mobile-action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-action-button:active {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.95);
+}
+
+.mobile-action-icon {
+  font-size: 28px;
+}
+
+.mobile-action-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Pipeline List */
+.mobile-pipeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-pipeline-item {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.mobile-pipeline-info {
+  margin-bottom: 12px;
+}
+
+.mobile-pipeline-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+}
+
+.mobile-pipeline-phase {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mobile-pipeline-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-pipeline-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mobile-pipeline-progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--ios-purple) 0%,
+    var(--ios-blue) 100%
+  );
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.mobile-pipeline-progress-text {
+  font-family: var(--ios-font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  min-width: 45px;
+  text-align: right;
+}
+
+/* Responsive adjustments */
+@media (max-width: 375px) {
+  .mobile-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .mobile-page-title {
+    font-size: 28px;
+  }
+}

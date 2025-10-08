@@ -1,0 +1,64 @@
+/* Mobile Layout Styles */
+
+.mobile-app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--eclipse-void, #0a0a0f);
+  overflow-x: hidden;
+  position: relative;
+}
+
+.mobile-aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at 50% 20%,
+    rgba(139, 92, 246, 0.15) 0%,
+    transparent 50%
+  ),
+  radial-gradient(
+    ellipse at 80% 60%,
+    rgba(99, 102, 241, 0.1) 0%,
+    transparent 50%
+  ),
+  radial-gradient(
+    ellipse at 20% 80%,
+    rgba(6, 182, 212, 0.08) 0%,
+    transparent 50%
+  );
+  animation: aurora-shift 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes aurora-shift {
+  0%, 100% {
+    opacity: 0.4;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    opacity: 0.6;
+    filter: hue-rotate(30deg);
+  }
+}
+
+.mobile-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  padding: 20px 16px;
+  padding-top: calc(20px + var(--ios-safe-area-top, 44px));
+  padding-bottom: calc(80px + var(--ios-safe-area-bottom, 34px));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scrolling */
+.mobile-content {
+  scroll-behavior: smooth;
+}

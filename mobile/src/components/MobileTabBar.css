@@ -1,0 +1,95 @@
+/* iOS-style Bottom Tab Bar */
+
+.mobile-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 15, 0.9);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-tab-bar-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  padding-bottom: calc(8px + var(--ios-safe-area-bottom, 0px));
+}
+
+.mobile-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 64px;
+}
+
+.mobile-tab-item:active {
+  transform: scale(0.95);
+}
+
+.mobile-tab-icon {
+  font-size: 24px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-tab-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+/* Active state */
+.mobile-tab-item.active .mobile-tab-icon {
+  transform: scale(1.1);
+}
+
+.mobile-tab-item.active .mobile-tab-label {
+  color: var(--ios-blue);
+  font-weight: 600;
+}
+
+/* Glass effect on active */
+.mobile-tab-item.active {
+  background: rgba(0, 122, 255, 0.15);
+}
+
+/* Hover effect for devices that support it */
+@media (hover: hover) {
+  .mobile-tab-item:hover .mobile-tab-label {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Animation for tab switching */
+@keyframes tab-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.mobile-tab-item.active .mobile-tab-icon {
+  animation: tab-pop 0.3s ease;
+}

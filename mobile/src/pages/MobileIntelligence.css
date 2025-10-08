@@ -1,0 +1,135 @@
+/* Mobile Intelligence Styles */
+
+.mobile-intelligence {
+  width: 100%;
+}
+
+.mobile-news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-news-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.mobile-news-item:active {
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(0.98);
+}
+
+.mobile-news-type-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.mobile-news-content {
+  flex: 1;
+}
+
+.mobile-news-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.mobile-news-meta {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Competitors */
+.mobile-competitors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-competitor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.mobile-competitor-info {
+  flex: 1;
+}
+
+.mobile-competitor-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+}
+
+.mobile-competitor-cap {
+  font-family: var(--ios-font-mono);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mobile-competitor-change {
+  font-family: var(--ios-font-mono);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mobile-competitor-change.positive {
+  color: var(--ios-green);
+}
+
+.mobile-competitor-change.negative {
+  color: var(--ios-red);
+}
+
+/* AI Insights Panel */
+.mobile-ai-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.15) 0%,
+    rgba(99, 102, 241, 0.1) 100%
+  );
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.mobile-ai-header {
+  margin-bottom: 16px;
+}
+
+.mobile-ai-insight {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.mobile-ai-insight:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-ai-insight-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 8px;
+}
+
+.mobile-ai-insight-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
