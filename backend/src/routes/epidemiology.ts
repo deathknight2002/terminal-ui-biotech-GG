@@ -1,200 +1,423 @@
 import { Router } from 'express';
+import { diseaseDataService, DataSource, type DiseaseCategory } from '../services/disease-data-service';
+import { logger } from '../utils/logger';
 
 const router = Router();
 
-// Sample epidemiology data
-const DISEASE_MODELS = {
-  DMD: {
-    id: 'dmd-001',
-    name: 'Duchenne Muscular Dystrophy',
-    diseaseArea: 'DMD',
-    prevalence: 1.5,
-    incidence: 0.05,
-    mortality: 0.03,
-    targetPopulation: 15000,
-  },
-  nSCLC: {
-    id: 'nsclc-001',
-    name: 'Non-Small Cell Lung Cancer',
-    diseaseArea: 'nSCLC',
-    prevalence: 65,
-    incidence: 42,
-    mortality: 0.35,
-    targetPopulation: 215000,
-  },
-  T2D: {
-    id: 't2d-001',
-    name: 'Type 2 Diabetes Mellitus',
-    diseaseArea: 'T2D',
-    prevalence: 10500,
-    incidence: 550,
-    mortality: 0.015,
-    targetPopulation: 34600000,
-  },
-  COVID19: {
-    id: 'covid19-001',
-    name: 'COVID-19 (SARS-CoV-2)',
-    diseaseArea: 'COVID19',
-    prevalence: 450,
-    incidence: 1200,
-    mortality: 0.008,
-    targetPopulation: 1485000,
-  },
-  SCD: {
-    id: 'scd-001',
-    name: 'Sickle Cell Disease',
-    diseaseArea: 'SCD',
-    prevalence: 30,
-    incidence: 0.9,
-    mortality: 0.02,
-    targetPopulation: 100000,
-  },
-};
+// Search diseases with filters
+router.get('/search', (req, res) => {
+  try {
+    const { 
+      query = '', 
+      category, 
+      dataSource,
+      minPrevalence,
+      maxPrevalence
+    } = req.query;
+
+    const filters: any = {};
+    
+    if (category) {
+      filters.category = Array.isArray(category) ? category : [category];
+    }
+    
+    if (dataSource) {
+      filters.dataSource = Array.isArray(dataSource) ? dataSource : [dataSource];
+    }
+    
+    if (minPrevalence) {
+      filters.minPrevalence = parseFloat(minPrevalence as string);
+    }
+    
+    if (maxPrevalence) {
+      filters.maxPrevalence = parseFloat(maxPrevalence as string);
+    }
+
+    const results = diseaseDataService.searchDiseases(query as string, filters);
+
+    logger.info(`Disease search: query="${query}", results=${results.length}`);
+
+    res.json({
+      success: true,
+      data: results,
+      count: results.length,
+      message: 'Disease search completed successfully',
+    });
+  } catch (error) {
+    logger.error('Disease search error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error searching diseases',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
 
 // Get all disease models
 router.get('/models', (req, res) => {
-  res.json({
-    success: true,
-    data: Object.values(DISEASE_MODELS),
-    message: 'Disease models retrieved successfully',
-  });
-});
-
-// Get specific disease model
-router.get('/models/:diseaseArea', (req, res) => {
-  const { diseaseArea } = req.params;
-  const model = DISEASE_MODELS[diseaseArea as keyof typeof DISEASE_MODELS];
-  
-  if (!model) {
-    return res.status(404).json({
+  try {
+    const diseases = diseaseDataService.getAllDiseases();
+    
+    res.json({
+      success: true,
+      data: diseases,
+      count: diseases.length,
+      message: 'Disease models retrieved successfully',
+    });
+  } catch (error) {
+    logger.error('Error fetching disease models:', error);
+    res.status(500).json({
       success: false,
-      message: 'Disease model not found',
+      message: 'Error fetching disease models',
     });
   }
-  
-  res.json({
-    success: true,
-    data: model,
-  });
+});
+
+// Get specific disease model by ID
+router.get('/models/:diseaseId', (req, res) => {
+  try {
+    const { diseaseId } = req.params;
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: disease,
+    });
+  } catch (error) {
+    logger.error('Error fetching disease:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching disease model',
+    });
+  }
+});
+
+// Get diseases by category
+router.get('/categories/:category', (req, res) => {
+  try {
+    const { category } = req.params;
+    const diseases = diseaseDataService.getDiseasesByCategory(category as DiseaseCategory);
+    
+    res.json({
+      success: true,
+      data: diseases,
+      count: diseases.length,
+      category,
+    });
+  } catch (error) {
+    logger.error('Error fetching diseases by category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching diseases by category',
+    });
+  }
+});
+
+// Get diseases by data source
+router.get('/sources/:source', (req, res) => {
+  try {
+    const { source } = req.params;
+    const diseases = diseaseDataService.getDiseasesBySource(source as DataSource);
+    
+    res.json({
+      success: true,
+      data: diseases,
+      count: diseases.length,
+      source,
+    });
+  } catch (error) {
+    logger.error('Error fetching diseases by source:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching diseases by source',
+    });
+  }
+});
+
+// Get available categories
+router.get('/metadata/categories', (req, res) => {
+  try {
+    const categories = diseaseDataService.getCategories();
+    
+    res.json({
+      success: true,
+      data: categories,
+    });
+  } catch (error) {
+    logger.error('Error fetching categories:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching categories',
+    });
+  }
+});
+
+// Get database statistics
+router.get('/metadata/statistics', (req, res) => {
+  try {
+    const stats = diseaseDataService.getStatistics();
+    
+    res.json({
+      success: true,
+      data: stats,
+    });
+  } catch (error) {
+    logger.error('Error fetching statistics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching statistics',
+    });
+  }
 });
 
 // Get survival data for a disease
-router.get('/survival/:diseaseArea', (req, res) => {
-  const { diseaseArea } = req.params;
-  
-  // Placeholder - would fetch from database
-  res.json({
-    success: true,
-    data: {
-      diseaseArea,
-      curves: [],
-    },
-    message: 'Survival data endpoint - data available from frontend models',
-  });
+router.get('/survival/:diseaseId', (req, res) => {
+  try {
+    const { diseaseId } = req.params;
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+
+    // Return SEER survival data if available
+    res.json({
+      success: true,
+      data: {
+        diseaseId,
+        diseaseName: disease.name,
+        seerData: disease.seerData,
+        fiveYearSurvival: disease.seerData?.fiveYearSurvival,
+      },
+    });
+  } catch (error) {
+    logger.error('Error fetching survival data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching survival data',
+    });
+  }
 });
 
 // Get cohort stratification data
-router.get('/cohorts/:diseaseArea', (req, res) => {
-  const { diseaseArea } = req.params;
-  
-  res.json({
-    success: true,
-    data: {
-      diseaseArea,
-      cohorts: [],
-    },
-    message: 'Cohort data endpoint - data available from frontend models',
-  });
+router.get('/cohorts/:diseaseId', (req, res) => {
+  try {
+    const { diseaseId } = req.params;
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+    
+    // Return demographic data from CDC/SEER if available
+    const cohortData = disease.cdcData?.demographics || disease.seerData?.raceEthnicity;
+    
+    res.json({
+      success: true,
+      data: {
+        diseaseId,
+        diseaseName: disease.name,
+        demographics: disease.cdcData?.demographics,
+        raceEthnicity: disease.seerData?.raceEthnicity,
+      },
+    });
+  } catch (error) {
+    logger.error('Error fetching cohort data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching cohort data',
+    });
+  }
 });
 
 // Calculate intervention outcomes
 router.post('/intervention/calculate', (req, res) => {
-  const { diseaseArea, interventionType, targetPopulation, effectivenessRate } = req.body;
-  
-  // Placeholder calculation
-  const casesAvoided = Math.round(targetPopulation * effectivenessRate * 0.3);
-  const deathsAvoided = Math.round(casesAvoided * 0.15);
-  const qalysGained = casesAvoided * 2.5;
-  
-  res.json({
-    success: true,
-    data: {
-      diseaseArea,
-      interventionType,
-      casesAvoided,
-      deathsAvoided,
-      qualityAdjustedLifeYears: qalysGained,
-      costEffectiveness: 45000, // $ per QALY
-    },
-  });
+  try {
+    const { diseaseId, interventionType, targetPopulation, effectivenessRate } = req.body;
+    
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+    
+    // Calculation based on disease mortality and effectiveness
+    const casesAvoided = Math.round(targetPopulation * effectivenessRate * 0.3);
+    const deathsAvoided = Math.round(casesAvoided * disease.mortality);
+    const qalysGained = casesAvoided * 2.5;
+    
+    res.json({
+      success: true,
+      data: {
+        diseaseId,
+        diseaseName: disease.name,
+        interventionType,
+        casesAvoided,
+        deathsAvoided,
+        qualityAdjustedLifeYears: qalysGained,
+        costEffectiveness: 45000, // $ per QALY
+      },
+    });
+  } catch (error) {
+    logger.error('Error calculating intervention:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error calculating intervention outcomes',
+    });
+  }
 });
 
 // Get geospatial disease data
-router.get('/geospatial/:diseaseArea', (req, res) => {
-  const { diseaseArea } = req.params;
-  
-  res.json({
-    success: true,
-    data: {
-      diseaseArea,
-      regions: [],
-    },
-    message: 'Geospatial data endpoint - data available from frontend models',
-  });
+router.get('/geospatial/:diseaseId', (req, res) => {
+  try {
+    const { diseaseId } = req.params;
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+    
+    // Return WHO regional data and CDC state data if available
+    res.json({
+      success: true,
+      data: {
+        diseaseId,
+        diseaseName: disease.name,
+        geographicDistribution: disease.geographicDistribution,
+        whoRegionalData: disease.whoData?.regionalData,
+        cdcStateData: disease.cdcData?.stateData,
+      },
+    });
+  } catch (error) {
+    logger.error('Error fetching geospatial data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching geospatial data',
+    });
+  }
 });
 
 // Get treatment patterns
-router.get('/treatment-patterns/:diseaseArea', (req, res) => {
-  const { diseaseArea } = req.params;
-  
-  res.json({
-    success: true,
-    data: {
-      diseaseArea,
-      patterns: [],
-    },
-    message: 'Treatment patterns endpoint - data available from frontend models',
-  });
+router.get('/treatment-patterns/:diseaseId', (req, res) => {
+  try {
+    const { diseaseId } = req.params;
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        diseaseId,
+        diseaseName: disease.name,
+        patterns: [], // Would come from additional data sources
+      },
+      message: 'Treatment patterns endpoint - integrate with clinical data',
+    });
+  } catch (error) {
+    logger.error('Error fetching treatment patterns:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching treatment patterns',
+    });
+  }
 });
 
 // Simulate population health impact
 router.post('/simulation/population-impact', (req, res) => {
-  const { diseaseArea, timeHorizon, interventions } = req.body;
-  
-  // Placeholder simulation results
-  const years = Array.from({ length: timeHorizon || 10 }, (_, i) => ({
-    year: 2025 + i,
-    population: 330000000 + i * 1000000,
-    cases: 100000 - i * 500,
-    deaths: 5000 - i * 100,
-    healthcareCost: 5000000000 + i * 100000000,
-  }));
-  
-  res.json({
-    success: true,
-    data: {
-      diseaseArea,
-      timeSeries: years,
-    },
-  });
+  try {
+    const { diseaseId, timeHorizon, interventions } = req.body;
+    
+    const disease = diseaseDataService.getDiseaseById(diseaseId);
+    if (!disease) {
+      return res.status(404).json({
+        success: false,
+        message: 'Disease not found',
+      });
+    }
+    
+    // Simulation based on disease data
+    const years = Array.from({ length: timeHorizon || 10 }, (_, i) => ({
+      year: 2025 + i,
+      population: 330000000 + i * 1000000,
+      cases: Math.round(disease.targetPopulation * (1 - i * 0.02)),
+      deaths: Math.round(disease.targetPopulation * disease.mortality * (1 - i * 0.03)),
+      healthcareCost: 5000000000 + i * 100000000,
+    }));
+    
+    res.json({
+      success: true,
+      data: {
+        diseaseId,
+        diseaseName: disease.name,
+        timeSeries: years,
+      },
+    });
+  } catch (error) {
+    logger.error('Error simulating population impact:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error simulating population health impact',
+    });
+  }
 });
 
 // Compare disease burden across diseases
 router.get('/burden/comparison', (req, res) => {
-  const comparisons = Object.entries(DISEASE_MODELS).map(([key, model]) => ({
-    disease: model.diseaseArea,
-    diseaseName: model.name,
-    prevalence: model.prevalence,
-    incidence: model.incidence,
-    mortality: model.mortality,
-    targetPopulation: model.targetPopulation,
-    totalBurden: model.targetPopulation * model.mortality * 10, // Simplified calculation
-  }));
-  
-  res.json({
-    success: true,
-    data: comparisons.sort((a, b) => b.totalBurden - a.totalBurden),
-  });
+  try {
+    const diseases = diseaseDataService.getAllDiseases();
+    
+    const comparisons = diseases.map(disease => ({
+      diseaseId: disease.id,
+      diseaseName: disease.name,
+      category: disease.category,
+      prevalence: disease.prevalence,
+      incidence: disease.incidence,
+      mortality: disease.mortality,
+      targetPopulation: disease.targetPopulation,
+      totalBurden: disease.targetPopulation * disease.mortality * 10,
+      dalys: disease.whoData?.dalys || 0,
+      dataSources: disease.dataSources,
+    }));
+    
+    // Sort by total burden
+    comparisons.sort((a, b) => b.totalBurden - a.totalBurden);
+    
+    res.json({
+      success: true,
+      data: comparisons,
+      count: comparisons.length,
+    });
+  } catch (error) {
+    logger.error('Error comparing disease burden:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error comparing disease burden',
+    });
+  }
 });
 
 export { router as epidemiologyRouter };
