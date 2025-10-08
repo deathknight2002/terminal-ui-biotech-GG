@@ -1,0 +1,977 @@
+/**
+ * Enhanced Glass UI System for Biotech Terminal Platform
+ * October 2025 Glass UI Concept Implementation
+ * 
+ * Features:
+ * - Neural Glass Dashboard with multi-layered depth perception
+ * - Data-driven adaptive transparency
+ * - Molecular structure overlays
+ * - Real-time data flow animations
+ * - Biotech-specific glass components
+ */
+
+:root {
+  /* Glass Transparency Levels - Adaptive based on data importance */
+  --glass-transparency-critical: 0.15;
+  --glass-transparency-high: 0.25;
+  --glass-transparency-medium: 0.45;
+  --glass-transparency-low: 0.65;
+  --glass-transparency-minimal: 0.85;
+  
+  /* Glass Blur Intensity - Gaussian blur for depth perception */
+  --glass-blur-intense: 24px;
+  --glass-blur-strong: 16px;
+  --glass-blur-medium: 12px;
+  --glass-blur-light: 8px;
+  --glass-blur-minimal: 4px;
+  
+  /* Glass Surface Textures */
+  --glass-texture-neural: linear-gradient(135deg, 
+    rgba(139,92,246,0.15) 0%, 
+    rgba(99,102,241,0.08) 50%, 
+    rgba(45,27,105,0.12) 100%);
+  --glass-texture-molecular: radial-gradient(circle at center,
+    rgba(6,182,212,0.18) 0%,
+    rgba(139,92,246,0.12) 50%,
+    rgba(16,185,129,0.10) 100%);
+  --glass-texture-crystalline: conic-gradient(from 45deg,
+    rgba(196,132,252,0.15) 0deg,
+    rgba(139,92,246,0.12) 90deg,
+    rgba(99,102,241,0.10) 180deg,
+    rgba(139,92,246,0.12) 270deg,
+    rgba(196,132,252,0.15) 360deg);
+    
+  /* Glass Border System */
+  --glass-border-critical: rgba(220,38,38,0.4);
+  --glass-border-warning: rgba(245,158,11,0.4);
+  --glass-border-success: rgba(16,185,129,0.4);
+  --glass-border-info: rgba(6,182,212,0.4);
+  --glass-border-neutral: rgba(196,132,252,0.2);
+  
+  /* Glass Shadow System with depth layers */
+  --glass-shadow-deep: 0 32px 64px rgba(12,10,26,0.8), 0 16px 32px rgba(139,92,246,0.35);
+  --glass-shadow-elevated: 0 24px 48px rgba(12,10,26,0.6), 0 8px 16px rgba(139,92,246,0.25);
+  --glass-shadow-raised: 0 16px 32px rgba(12,10,26,0.4), 0 4px 8px rgba(139,92,246,0.15);
+  --glass-shadow-subtle: 0 8px 16px rgba(12,10,26,0.3), 0 2px 4px rgba(139,92,246,0.1);
+  
+  /* Biotech Sector Aurora Colors */
+  --aurora-oncology: #8B5CF6;
+  --aurora-cardiology: #3B82F6;
+  --aurora-neurology: #10B981;
+  --aurora-immunology: #F59E0B;
+  --aurora-rare-disease: #EC4899;
+  
+  /* Data Flow Animation Speeds */
+  --flow-realtime: 2s;
+  --flow-streaming: 4s;
+  --flow-batch: 8s;
+  
+  /* Glass Ripple Effect */
+  --ripple-duration: 0.6s;
+  --ripple-color: rgba(139,92,246,0.4);
+}
+
+/* ==================================================
+   NEURAL GLASS DASHBOARD - Core Architecture
+   ================================================== */
+
+.neural-glass-dashboard {
+  position: relative;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at center, var(--eclipse-nebula) 0%, var(--eclipse-void) 70%);
+  overflow: hidden;
+}
+
+.neural-glass-dashboard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, var(--aurora-oncology) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--aurora-cardiology) 0%, transparent 50%),
+    radial-gradient(circle at 60% 20%, var(--aurora-neurology) 0%, transparent 50%);
+  opacity: 0.3;
+  animation: aurora-neural-drift 25s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes aurora-neural-drift {
+  0%, 100% { 
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translate3d(-15px, -25px, 0) scale(1.08);
+    opacity: 0.4;
+  }
+  50% { 
+    transform: translate3d(25px, -15px, 0) scale(0.92);
+    opacity: 0.35;
+  }
+  75% { 
+    transform: translate3d(-20px, 20px, 0) scale(1.05);
+    opacity: 0.38;
+  }
+}
+
+/* ==================================================
+   ADAPTIVE GLASS PANELS - Data-Driven Transparency
+   ================================================== */
+
+.glass-panel-adaptive {
+  position: relative;
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Urgency-based glass styling */
+.glass-panel-adaptive[data-urgency="critical"] {
+  background: rgba(var(--eclipse-core), var(--glass-transparency-critical));
+  border: 1px solid var(--glass-border-critical);
+  box-shadow: var(--glass-shadow-deep), 0 0 40px rgba(220,38,38,0.3);
+  backdrop-filter: blur(var(--glass-blur-intense));
+}
+
+.glass-panel-adaptive[data-urgency="high"] {
+  background: rgba(var(--eclipse-core), var(--glass-transparency-high));
+  border: 1px solid var(--glass-border-warning);
+  box-shadow: var(--glass-shadow-elevated);
+  backdrop-filter: blur(var(--glass-blur-strong));
+}
+
+.glass-panel-adaptive[data-urgency="medium"] {
+  background: rgba(var(--eclipse-core), var(--glass-transparency-medium));
+  border: 1px solid var(--glass-border-neutral);
+  box-shadow: var(--glass-shadow-raised);
+  backdrop-filter: blur(var(--glass-blur-medium));
+}
+
+.glass-panel-adaptive[data-urgency="low"] {
+  background: rgba(var(--eclipse-core), var(--glass-transparency-low));
+  border: 1px solid var(--glass-border-neutral);
+  box-shadow: var(--glass-shadow-subtle);
+  backdrop-filter: blur(var(--glass-blur-light));
+}
+
+/* Surface texture variants */
+.glass-panel-adaptive[data-texture="neural"] {
+  background: var(--glass-texture-neural);
+}
+
+.glass-panel-adaptive[data-texture="molecular"] {
+  background: var(--glass-texture-molecular);
+}
+
+.glass-panel-adaptive[data-texture="crystalline"] {
+  background: var(--glass-texture-crystalline);
+}
+
+/* Glass highlight line */
+.glass-panel-adaptive::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.3) 50%, 
+    transparent 100%);
+  opacity: 0.6;
+}
+
+/* ==================================================
+   MOLECULAR GLASS GRID - 3D Structure Backgrounds
+   ================================================== */
+
+.molecular-glass-grid {
+  position: relative;
+  padding: 32px;
+  background: var(--glass-texture-molecular);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(6,182,212,0.25);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.molecular-glass-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(6,182,212,0.15) 2px, transparent 2px),
+    radial-gradient(circle at 40% 60%, rgba(139,92,246,0.15) 2px, transparent 2px),
+    radial-gradient(circle at 70% 40%, rgba(16,185,129,0.15) 2px, transparent 2px),
+    radial-gradient(circle at 80% 80%, rgba(245,158,11,0.15) 2px, transparent 2px);
+  background-size: 100px 100px, 150px 150px, 120px 120px, 180px 180px;
+  background-position: 0 0, 50px 50px, 30px 80px, 100px 20px;
+  animation: molecular-drift 30s linear infinite;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@keyframes molecular-drift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-50px, -50px); }
+}
+
+/* Connection lines between molecules */
+.molecular-glass-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(6,182,212,0.1) 49%, rgba(6,182,212,0.1) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(139,92,246,0.1) 49%, rgba(139,92,246,0.1) 51%, transparent 52%);
+  background-size: 200px 200px, 180px 180px;
+  animation: molecular-pulse 8s ease-in-out infinite;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+@keyframes molecular-pulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.4; }
+}
+
+/* ==================================================
+   CLINICAL TRIAL GLASS TIMELINE - Phase Progression
+   ================================================== */
+
+.clinical-trial-glass-timeline {
+  display: flex;
+  gap: 16px;
+  padding: 24px;
+  background: rgba(15,23,42,0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.trial-phase-tube {
+  flex: 1;
+  min-height: 200px;
+  position: relative;
+  background: linear-gradient(180deg, 
+    rgba(139,92,246,0.1) 0%, 
+    rgba(99,102,241,0.05) 100%);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trial-phase-tube:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139,92,246,0.4);
+  box-shadow: 0 8px 32px rgba(139,92,246,0.3);
+}
+
+/* Liquid-like data flow animation */
+.trial-phase-tube::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--fill-level, 50%);
+  background: linear-gradient(180deg,
+    rgba(6,182,212,0.3) 0%,
+    rgba(139,92,246,0.4) 50%,
+    rgba(16,185,129,0.3) 100%);
+  animation: liquid-flow 4s ease-in-out infinite;
+  transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes liquid-flow {
+  0%, 100% { 
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* Phase progression indicator */
+.trial-phase-tube[data-phase="preclinical"] { --fill-level: 20%; }
+.trial-phase-tube[data-phase="phase-1"] { --fill-level: 35%; }
+.trial-phase-tube[data-phase="phase-2"] { --fill-level: 55%; }
+.trial-phase-tube[data-phase="phase-3"] { --fill-level: 80%; }
+.trial-phase-tube[data-phase="filed"] { --fill-level: 90%; }
+.trial-phase-tube[data-phase="approved"] { --fill-level: 100%; }
+
+/* FDA Milestone Glass Markers */
+.fda-milestone-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(245,158,11,0.2);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(245,158,11,0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: milestone-pulse 3s ease-in-out infinite;
+}
+
+@keyframes milestone-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(245,158,11,0.4);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 0 16px rgba(245,158,11,0);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+/* Approval probability halo */
+.fda-milestone-marker::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: radial-gradient(circle,
+    rgba(245,158,11,0.3) 0%,
+    transparent 70%);
+  animation: probability-rotate 10s linear infinite;
+}
+
+@keyframes probability-rotate {
+  0% { transform: rotate(0deg); opacity: 0.6; }
+  100% { transform: rotate(360deg); opacity: 0.6; }
+}
+
+/* ==================================================
+   DRUG DEVELOPMENT GLASS PIPELINE
+   ================================================== */
+
+.drug-pipeline-glass {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 24px;
+}
+
+.pipeline-stage-glass {
+  position: relative;
+  padding: 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(148,163,184,0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Stage-based opacity (Discovery: 90% → Phase III: 20%) */
+.pipeline-stage-glass[data-stage="discovery"] {
+  background: rgba(139,92,246,0.9);
+  opacity: 0.9;
+}
+
+.pipeline-stage-glass[data-stage="preclinical"] {
+  background: rgba(139,92,246,0.7);
+  opacity: 0.85;
+}
+
+.pipeline-stage-glass[data-stage="phase-1"] {
+  background: rgba(139,92,246,0.5);
+  opacity: 0.75;
+}
+
+.pipeline-stage-glass[data-stage="phase-2"] {
+  background: rgba(139,92,246,0.35);
+  opacity: 0.65;
+}
+
+.pipeline-stage-glass[data-stage="phase-3"] {
+  background: rgba(139,92,246,0.2);
+  opacity: 0.55;
+}
+
+.pipeline-stage-glass:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(139,92,246,0.5);
+  box-shadow: 0 12px 32px rgba(139,92,246,0.4);
+}
+
+/* Success probability glass coloring */
+.pipeline-stage-glass[data-probability="high"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(16,185,129,0.3) 0%, 
+    transparent 100%);
+  pointer-events: none;
+}
+
+.pipeline-stage-glass[data-probability="medium"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(245,158,11,0.3) 0%, 
+    transparent 100%);
+  pointer-events: none;
+}
+
+.pipeline-stage-glass[data-probability="low"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(220,38,38,0.3) 0%, 
+    transparent 100%);
+  pointer-events: none;
+}
+
+/* ==================================================
+   REAL-TIME GLASS RIPPLE EFFECTS
+   ================================================== */
+
+@keyframes glass-ripple {
+  0% {
+    box-shadow: 0 0 0 0 var(--ripple-color),
+                0 0 0 0 var(--ripple-color);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(139,92,246,0),
+                0 0 0 10px var(--ripple-color);
+  }
+  100% {
+    box-shadow: 0 0 0 40px rgba(139,92,246,0),
+                0 0 0 20px rgba(139,92,246,0);
+  }
+}
+
+.glass-ripple-active {
+  animation: glass-ripple var(--ripple-duration) ease-out;
+}
+
+/* WebSocket data update ripple */
+.glass-data-update {
+  position: relative;
+}
+
+.glass-data-update::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid var(--biotech-cyan);
+  animation: data-update-pulse 1.5s ease-out;
+  pointer-events: none;
+}
+
+@keyframes data-update-pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+/* ==================================================
+   CATALYST EVENT GLASS ALERTS
+   ================================================== */
+
+.catalyst-glass-alert {
+  position: relative;
+  padding: 16px 20px;
+  background: rgba(15,23,42,0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  border-left: 4px solid;
+  margin-bottom: 12px;
+  animation: slide-in-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Priority-based opacity and styling */
+.catalyst-glass-alert[data-priority="critical"] {
+  border-left-color: var(--biotech-crimson);
+  background: rgba(220,38,38,0.15);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(220,38,38,0.4);
+  --glass-transparency: 0.15;
+}
+
+.catalyst-glass-alert[data-priority="high"] {
+  border-left-color: var(--biotech-orange);
+  background: rgba(245,158,11,0.25);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px rgba(245,158,11,0.3);
+  --glass-transparency: 0.25;
+}
+
+.catalyst-glass-alert[data-priority="medium"] {
+  border-left-color: var(--biotech-amber);
+  background: rgba(245,158,11,0.35);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 16px rgba(245,158,11,0.2);
+  --glass-transparency: 0.35;
+}
+
+.catalyst-glass-alert[data-priority="low"] {
+  border-left-color: var(--biotech-cyan);
+  background: rgba(6,182,212,0.45);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(6,182,212,0.1);
+  --glass-transparency: 0.45;
+}
+
+/* ==================================================
+   CONTEXTUAL GLASS TOOLTIPS
+   ================================================== */
+
+.glass-tooltip {
+  position: absolute;
+  padding: 12px 16px;
+  background: rgba(15,23,42,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139,92,246,0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.9);
+  pointer-events: none;
+  z-index: 1000;
+  animation: tooltip-fade-in 0.2s ease-out;
+  max-width: 300px;
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(139,92,246,0.6) 50%,
+    transparent);
+}
+
+/* Pharmaceutical data tooltip variants */
+.glass-tooltip[data-type="regulatory"] {
+  border-color: rgba(245,158,11,0.4);
+}
+
+.glass-tooltip[data-type="financial"] {
+  border-color: rgba(16,185,129,0.4);
+}
+
+.glass-tooltip[data-type="risk"] {
+  border-color: rgba(220,38,38,0.4);
+}
+
+/* ==================================================
+   AURORA SECTOR BACKGROUNDS
+   ================================================== */
+
+.aurora-sector-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.aurora-sector-background[data-sector="oncology"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    var(--aurora-oncology) 0%, 
+    transparent 60%);
+  opacity: 0.2;
+  animation: sector-pulse 8s ease-in-out infinite;
+}
+
+.aurora-sector-background[data-sector="cardiology"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    var(--aurora-cardiology) 0%, 
+    transparent 60%);
+  opacity: 0.2;
+  animation: sector-pulse 8s ease-in-out infinite;
+}
+
+.aurora-sector-background[data-sector="neurology"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, 
+    var(--aurora-neurology) 0%, 
+    transparent 60%);
+  opacity: 0.2;
+  animation: sector-pulse 8s ease-in-out infinite;
+}
+
+@keyframes sector-pulse {
+  0%, 100% { 
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+}
+
+/* Market sentiment aurora intensity */
+.aurora-sentiment[data-sentiment="bull"] {
+  --aurora-intensity: 1.2;
+  filter: brightness(var(--aurora-intensity));
+}
+
+.aurora-sentiment[data-sentiment="neutral"] {
+  --aurora-intensity: 1;
+  filter: brightness(var(--aurora-intensity));
+}
+
+.aurora-sentiment[data-sentiment="bear"] {
+  --aurora-intensity: 0.7;
+  filter: brightness(var(--aurora-intensity));
+}
+
+/* ==================================================
+   PERFORMANCE OPTIMIZATIONS - Adaptive Quality
+   ================================================== */
+
+/* Mobile devices - reduced quality */
+@media (max-width: 768px) {
+  :root {
+    --glass-blur-intense: 8px;
+    --glass-blur-strong: 6px;
+    --glass-blur-medium: 4px;
+    --glass-blur-light: 2px;
+  }
+  
+  .molecular-glass-grid::before,
+  .molecular-glass-grid::after {
+    display: none;
+  }
+  
+  .glass-panel-adaptive {
+    padding: 16px;
+  }
+}
+
+/* Tablet devices - medium quality */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --glass-blur-intense: 16px;
+    --glass-blur-strong: 12px;
+    --glass-blur-medium: 8px;
+    --glass-blur-light: 6px;
+  }
+}
+
+/* Desktop devices - high quality */
+@media (min-width: 1025px) and (max-width: 1920px) {
+  :root {
+    --glass-blur-intense: 24px;
+    --glass-blur-strong: 16px;
+    --glass-blur-medium: 12px;
+    --glass-blur-light: 8px;
+  }
+}
+
+/* High-end workstations - maximum quality */
+@media (min-width: 1921px) {
+  :root {
+    --glass-blur-intense: 32px;
+    --glass-blur-strong: 24px;
+    --glass-blur-medium: 16px;
+    --glass-blur-light: 12px;
+  }
+  
+  .neural-glass-dashboard::before {
+    opacity: 0.4;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .aurora-neural-drift,
+  .molecular-drift,
+  .liquid-flow,
+  .glass-ripple,
+  .sector-pulse {
+    animation: none !important;
+  }
+}
+
+/* ==================================================
+   UTILITY CLASSES
+   ================================================== */
+
+.glass-surface-neural {
+  background: var(--glass-texture-neural) !important;
+}
+
+.glass-surface-molecular {
+  background: var(--glass-texture-molecular) !important;
+}
+
+.glass-surface-crystalline {
+  background: var(--glass-texture-crystalline) !important;
+}
+
+.glass-depth-1 {
+  box-shadow: var(--glass-shadow-subtle);
+}
+
+.glass-depth-2 {
+  box-shadow: var(--glass-shadow-raised);
+}
+
+.glass-depth-3 {
+  box-shadow: var(--glass-shadow-elevated);
+}
+
+.glass-depth-4 {
+  box-shadow: var(--glass-shadow-deep);
+}
+
+.glass-blur-light {
+  backdrop-filter: blur(var(--glass-blur-light));
+}
+
+.glass-blur-medium {
+  backdrop-filter: blur(var(--glass-blur-medium));
+}
+
+.glass-blur-strong {
+  backdrop-filter: blur(var(--glass-blur-strong));
+}
+
+.glass-blur-intense {
+  backdrop-filter: blur(var(--glass-blur-intense));
+}
+
+/* Data flow animations */
+.data-flow-realtime {
+  animation: data-pulse var(--flow-realtime) ease-in-out infinite;
+}
+
+.data-flow-streaming {
+  animation: data-pulse var(--flow-streaming) ease-in-out infinite;
+}
+
+.data-flow-batch {
+  animation: data-pulse var(--flow-batch) ease-in-out infinite;
+}
+
+@keyframes data-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ==================================================
+   COMPONENT SPECIFIC STYLES
+   ================================================== */
+
+/* Clinical Trial Timeline Component Styles */
+.clinical-trial-glass-timeline .phase-content {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  text-align: center;
+}
+
+.clinical-trial-glass-timeline .phase-label {
+  font-family: var(--font-mono, 'monospace');
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 8px;
+}
+
+.clinical-trial-glass-timeline .phase-completion {
+  font-family: var(--font-mono, 'monospace');
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--biotech-cyan);
+  margin-bottom: 4px;
+}
+
+.clinical-trial-glass-timeline .phase-status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(6,182,212,0.2);
+  border: 1px solid rgba(6,182,212,0.4);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--biotech-cyan);
+}
+
+.clinical-trial-glass-timeline .milestone-date {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(245,158,11,0.9);
+  white-space: nowrap;
+}
+
+.clinical-trial-glass-timeline .milestone-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--biotech-amber);
+}
+
+/* Catalyst Alert Component Styles */
+.catalyst-glass-alert .alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(148,163,184,0.2);
+}
+
+.catalyst-glass-alert .alert-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.catalyst-glass-alert .alert-title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+  color: rgba(255,255,255,0.95);
+}
+
+.catalyst-glass-alert .alert-ticker {
+  padding: 2px 8px;
+  background: rgba(139,92,246,0.2);
+  border: 1px solid rgba(139,92,246,0.4);
+  border-radius: 4px;
+  font-family: var(--font-mono, 'monospace');
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--eclipse-aurora);
+}
+
+.catalyst-glass-alert .alert-dismiss {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.catalyst-glass-alert .alert-dismiss:hover {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.9);
+}
+
+.catalyst-glass-alert .alert-body {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.catalyst-glass-alert .alert-message {
+  margin: 0 0 12px 0;
+  color: rgba(255,255,255,0.85);
+}
+
+.catalyst-glass-alert .alert-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.catalyst-glass-alert .alert-timestamp {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font-mono, 'monospace');
+}
+
+.catalyst-glass-alert .alert-action {
+  padding: 6px 12px;
+  background: rgba(139,92,246,0.2);
+  border: 1px solid rgba(139,92,246,0.4);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--eclipse-aurora);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.catalyst-glass-alert .alert-action:hover {
+  background: rgba(139,92,246,0.3);
+  border-color: rgba(139,92,246,0.6);
+  transform: translateY(-1px);
+}

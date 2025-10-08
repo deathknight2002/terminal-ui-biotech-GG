@@ -70,6 +70,10 @@ export type { ModalProps } from './organisms/Modal';
 export { AuroraBackdrop } from './organisms/AuroraBackdrop';
 export type { AuroraBackdropProps } from './organisms/AuroraBackdrop';
 
+// Glass UI Components - October 2025 Concept
+export { GlassPanel } from './organisms/GlassPanel';
+export type { GlassPanelProps } from './organisms/GlassPanel';
+
 // Features - High-level terminal components
 export { TerminalFrame } from './features/TerminalFrame';
 export type { TerminalFrameProps } from './features/TerminalFrame';

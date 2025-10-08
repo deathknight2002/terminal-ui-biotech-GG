@@ -3,6 +3,7 @@
 
 import './global.css';
 import './biotech-theme.css';
+import './glass-ui-enhanced.css';
 import './variables.css';
 import './reset.css';
 
