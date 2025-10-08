@@ -1,0 +1,213 @@
+version: '1.0'
+
+# Scraper Registry
+# Groups: news_press, regulators, registries, exchanges, company_sites
+# All sources are public and non-paywalled
+
+scrapers:
+  news_press:
+    - source_key: fierce_biotech
+      name: FierceBiotech
+      base_url: https://www.fiercebiotech.com
+      enabled: true
+      rate_limit:
+        max_rps: 0.5  # 1 request per 2 seconds
+        max_concurrent: 2
+      discovery:
+        has_rss: true
+        rss_url: https://www.fiercebiotech.com/rss/xml
+        has_archive: true
+        archive_url: https://www.fiercebiotech.com/biotech
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        timezone: "America/New_York"
+        
+    - source_key: fierce_pharma
+      name: FiercePharma
+      base_url: https://www.fiercepharma.com
+      enabled: true
+      rate_limit:
+        max_rps: 0.5
+        max_concurrent: 2
+      discovery:
+        has_rss: true
+        rss_url: https://www.fiercepharma.com/rss/xml
+        has_archive: true
+        archive_url: https://www.fiercepharma.com/pharma
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        timezone: "America/New_York"
+    
+    - source_key: businesswire
+      name: Business Wire
+      base_url: https://www.businesswire.com
+      enabled: true
+      rate_limit:
+        max_rps: 2.0
+        max_concurrent: 4
+      discovery:
+        has_rss: true
+        rss_url: https://www.businesswire.com/portal/site/home/news/
+        has_archive: true
+        archive_url: https://www.businesswire.com/portal/site/home/news/
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        categories: ["healthcare", "pharmaceutical", "biotech"]
+        
+    - source_key: globenewswire
+      name: GlobeNewswire
+      base_url: https://www.globenewswire.com
+      enabled: true
+      rate_limit:
+        max_rps: 2.0
+        max_concurrent: 4
+      discovery:
+        has_rss: true
+        rss_url: https://www.globenewswire.com/RssFeed/sector/Healthcare/feedTitle/GlobeNewswire%20-%20Healthcare
+        has_archive: true
+        archive_url: https://www.globenewswire.com/news-releases
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        sectors: ["healthcare", "biotechnology"]
+        
+    - source_key: prnewswire
+      name: PR Newswire
+      base_url: https://www.prnewswire.com
+      enabled: true
+      rate_limit:
+        max_rps: 2.0
+        max_concurrent: 4
+      discovery:
+        has_rss: true
+        rss_url: https://www.prnewswire.com/rss/health-and-medicine-latest-news.rss
+        has_archive: true
+        archive_url: https://www.prnewswire.com/news-releases/health-care-latest-news
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        categories: ["health-care", "medical-pharmaceuticals"]
+
+  regulators:
+    - source_key: fda
+      name: FDA
+      base_url: https://www.fda.gov
+      enabled: true
+      rate_limit:
+        max_rps: 1.0
+        max_concurrent: 2
+      discovery:
+        has_rss: true
+        rss_url: https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/drugs/rss.xml
+        has_archive: true
+        archive_url: https://www.fda.gov/drugs/news-events-human-drugs
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        sections: ["approvals", "safety-alerts", "news"]
+        timezone: "America/New_York"
+        
+    - source_key: ema
+      name: EMA (European Medicines Agency)
+      base_url: https://www.ema.europa.eu
+      enabled: true
+      rate_limit:
+        max_rps: 1.0
+        max_concurrent: 2
+      discovery:
+        has_rss: true
+        rss_url: https://www.ema.europa.eu/en/news/rss.xml
+        has_archive: true
+        archive_url: https://www.ema.europa.eu/en/news
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        timezone: "Europe/London"
+        
+    - source_key: mhra
+      name: MHRA (UK)
+      base_url: https://www.gov.uk/government/organisations/medicines-and-healthcare-products-regulatory-agency
+      enabled: true
+      rate_limit:
+        max_rps: 1.0
+        max_concurrent: 2
+      discovery:
+        has_rss: true
+        rss_url: https://www.gov.uk/government/organisations/medicines-and-healthcare-products-regulatory-agency.atom
+        has_archive: true
+        archive_url: https://www.gov.uk/search/news-and-communications?organisations%5B%5D=medicines-and-healthcare-products-regulatory-agency
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        timezone: "Europe/London"
+
+  registries:
+    - source_key: clinicaltrials
+      name: ClinicalTrials.gov
+      base_url: https://clinicaltrials.gov
+      enabled: true
+      rate_limit:
+        max_rps: 1.0
+        max_concurrent: 2
+      discovery:
+        has_rss: true
+        rss_url: https://clinicaltrials.gov/ct2/results/rss.xml
+        has_archive: false
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        api_version: "v2"
+        search_terms: ["biotech", "pharmaceutical"]
+
+  exchanges:
+    - source_key: edgar
+      name: SEC EDGAR
+      base_url: https://www.sec.gov
+      enabled: true
+      rate_limit:
+        max_rps: 0.1  # SEC is strict - max 10 requests per second, we go slower
+        max_concurrent: 1
+      discovery:
+        has_rss: true
+        rss_url: https://www.sec.gov/cgi-bin/browse-edgar
+        has_archive: true
+        archive_url: https://www.sec.gov/cgi-bin/browse-edgar
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        filing_types: ["8-K", "10-Q", "10-K"]
+        items: ["8.01", "7.01"]  # Material events, press releases
+        timezone: "America/New_York"
+
+  company_sites:
+    # Company sites are dynamically added per company
+    # Template configuration:
+    - source_key: company_template
+      name: Company IR Template
+      base_url: ""
+      enabled: false
+      rate_limit:
+        max_rps: 1.0
+        max_concurrent: 2
+      discovery:
+        has_rss: false
+        has_archive: true
+        archive_url: "/investors/news"
+      robots:
+        respect: true
+        user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
+      extra:
+        ir_sections: ["news", "press-releases", "events"]
