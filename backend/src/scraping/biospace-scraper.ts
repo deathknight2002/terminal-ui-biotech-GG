@@ -98,7 +98,7 @@ export class BioSpaceScraper {
         logger.info(`🔍 Fetching latest ${maxResults} articles from BioSpace...`);
         
         const response = await this.circuitBreaker.execute(async () => {
-          return this.client.get('/articles', {
+          return this.client.get('/news', {
             headers: {
               'User-Agent': this.getRandomUserAgent(),
             },

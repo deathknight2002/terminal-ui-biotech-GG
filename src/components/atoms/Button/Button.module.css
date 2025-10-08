@@ -1,79 +1,133 @@
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   height: var(--button-height);
-  padding: 0 var(--space-4);
+  padding: 0 calc(var(--space-5) + 2px);
   font-family: var(--font-mono);
   font-size: var(--font-size-base);
-  font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-medium);
   color: var(--text-primary);
-  background: transparent;
-  border: 1px solid var(--border-default);
+  background:
+    linear-gradient(var(--glass-secondary-bg), var(--glass-secondary-bg)),
+    linear-gradient(130deg, rgba(102, 249, 255, 0.65), rgba(181, 123, 255, 0.35));
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(4, 6, 18, 0.65), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-position var(--transition-normal);
   user-select: none;
   white-space: nowrap;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 55%);
+  opacity: 0.4;
+  transform: translateX(-45%);
+  transition: transform var(--transition-normal), opacity var(--transition-normal);
+  pointer-events: none;
 }
 
 .button:hover:not(:disabled) {
-  background: var(--bg-hover);
-  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(4, 6, 18, 0.75), 0 0 24px rgba(102, 249, 255, 0.35);
+}
+
+.button:hover::before {
+  transform: translateX(5%);
+  opacity: 0.65;
 }
 
 .button:active:not(:disabled) {
-  background: var(--bg-active);
+  transform: translateY(0);
+  box-shadow: 0 10px 24px rgba(4, 6, 18, 0.6);
 }
 
 .button:disabled {
-  color: var(--text-disabled);
-  border-color: var(--border-default);
+  color: rgba(195, 207, 255, 0.5);
   cursor: not-allowed;
-  opacity: 0.5;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  opacity: 0.45;
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--accent-primary);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--shadow-focus);
 }
 
 /* Variants */
 .primary {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: var(--bg-primary);
+  background:
+    linear-gradient(rgba(6, 18, 34, 0.35), rgba(6, 18, 34, 0.35)),
+    linear-gradient(135deg, rgba(88, 241, 255, 0.95), rgba(255, 88, 249, 0.85));
+  color: #05141f;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.65);
+  box-shadow: 0 16px 38px rgba(88, 241, 255, 0.32), 0 0 22px rgba(255, 88, 249, 0.4);
+}
+
+.primary::before {
+  opacity: 0.55;
 }
 
 .primary:hover:not(:disabled) {
-  opacity: 0.9;
+  box-shadow: 0 20px 48px rgba(88, 241, 255, 0.46), 0 0 32px rgba(255, 88, 249, 0.5);
 }
 
 .primary:active:not(:disabled) {
-  opacity: 0.8;
+  box-shadow: 0 12px 28px rgba(88, 241, 255, 0.32);
 }
 
 .secondary {
-  /* default styles already applied */
+  background:
+    linear-gradient(var(--glass-secondary-bg), var(--glass-secondary-bg)),
+    linear-gradient(140deg, rgba(102, 249, 255, 0.4), rgba(181, 123, 255, 0.22));
 }
 
 .ghost {
-  border-color: transparent;
+  background: rgba(8, 12, 28, 0.35);
+  border: 1px solid rgba(102, 249, 255, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(102, 249, 255, 0.15);
+  color: var(--accent-primary);
+}
+
+.ghost::before {
+  opacity: 0.2;
 }
 
 .ghost:hover:not(:disabled) {
-  border-color: var(--border-default);
-  background: var(--bg-hover);
+  background: rgba(12, 18, 40, 0.55);
+  border-color: rgba(102, 249, 255, 0.55);
 }
 
 .danger {
-  border-color: var(--status-error);
-  color: var(--status-error);
+  background:
+    linear-gradient(rgba(26, 4, 12, 0.45), rgba(26, 4, 12, 0.45)),
+    linear-gradient(135deg, rgba(255, 111, 168, 0.82), rgba(255, 79, 136, 0.9));
+  border: 1px solid transparent;
+  color: #26040d;
+  box-shadow: 0 16px 36px rgba(255, 79, 136, 0.32);
+}
+
+.danger::before {
+  opacity: 0.4;
 }
 
 .danger:hover:not(:disabled) {
-  background: var(--status-error);
-  color: var(--bg-primary);
+  box-shadow: 0 22px 48px rgba(255, 79, 136, 0.45);
 }
 
 /* Sizes */

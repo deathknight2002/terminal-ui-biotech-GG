@@ -8,46 +8,64 @@
 .input {
   width: 100%;
   height: var(--input-height);
-  padding: 0 var(--space-3);
+  padding: 0 calc(var(--space-4) + 2px);
   font-family: var(--font-mono);
   font-size: var(--font-size-base);
   color: var(--text-primary);
-  background: var(--bg-input);
-  border: 1px solid var(--border-default);
-  transition: all var(--transition-fast);
+  background:
+    linear-gradient(rgba(18, 20, 48, 0.85), rgba(18, 20, 48, 0.85)),
+    linear-gradient(135deg, rgba(102, 249, 255, 0.4), rgba(181, 123, 255, 0.22));
+  background-clip: padding-box, border-box;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 12px 24px rgba(4, 6, 18, 0.45);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
 .input::placeholder {
-  color: var(--text-placeholder);
+  color: rgba(195, 207, 255, 0.5);
+  letter-spacing: 0.04em;
 }
 
 .input:hover:not(:disabled):not(:focus) {
-  border-color: var(--border-strong);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 16px 28px rgba(4, 6, 18, 0.55);
 }
 
 .input:focus {
   outline: none;
-  background: var(--bg-panel);
-  border-color: var(--accent-primary);
+  background:
+    linear-gradient(rgba(10, 16, 32, 0.9), rgba(10, 16, 32, 0.9)),
+    linear-gradient(135deg, rgba(88, 241, 255, 0.6), rgba(181, 123, 255, 0.32));
+  box-shadow: var(--shadow-focus);
 }
 
 .input:disabled {
   color: var(--text-disabled);
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.45;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .input:read-only {
   cursor: default;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 /* Error state */
 .error .input {
-  border-color: var(--status-error);
+  background:
+    linear-gradient(rgba(26, 4, 12, 0.65), rgba(26, 4, 12, 0.65)),
+    linear-gradient(135deg, rgba(255, 111, 168, 0.6), rgba(255, 79, 136, 0.45));
+  box-shadow: inset 0 0 0 1px rgba(255, 79, 136, 0.4), 0 12px 28px rgba(255, 79, 136, 0.25);
 }
 
 .error .input:focus {
-  border-color: var(--status-error);
+  box-shadow: 0 0 0 2px rgba(255, 79, 136, 0.4), 0 12px 28px rgba(255, 79, 136, 0.4);
 }
 
 /* With prefix/suffix */
@@ -65,7 +83,8 @@
   display: flex;
   align-items: center;
   height: 100%;
-  color: var(--text-secondary);
+  color: rgba(195, 207, 255, 0.75);
+  text-shadow: 0 0 6px rgba(102, 249, 255, 0.25);
   pointer-events: none;
   user-select: none;
 }
