@@ -1,0 +1,162 @@
+# Git Attributes for Biotech Terminal Platform
+# This file helps prevent merge conflicts and ensures consistent handling of files
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Markdown files - Use union merge strategy to reduce conflicts
+*.md merge=union
+
+# Documentation files
+*.txt text
+*.pdf binary
+*.doc binary
+*.docx binary
+
+# Source code files
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.py text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.svg text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+
+# PowerShell scripts
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+
+# Windows batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Configuration files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+.eslintrc* text eol=lf
+.prettierrc* text eol=lf
+*.config.js text eol=lf
+*.config.ts text eol=lf
+
+# Lock files - never merge, prefer ours or theirs
+package-lock.json binary merge=binary
+poetry.lock binary merge=binary
+yarn.lock binary merge=binary
+pnpm-lock.yaml binary merge=binary
+
+# Build outputs - don't track in detail
+dist/* binary
+build/* binary
+*.min.js binary
+*.min.css binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+
+# Fonts
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.otf binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.7z binary
+*.rar binary
+
+# Videos
+*.mp4 binary
+*.mov binary
+*.avi binary
+*.webm binary
+
+# Audio
+*.mp3 binary
+*.wav binary
+*.ogg binary
+
+# Other binaries
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.pdf binary
+
+# Git merge strategies for specific files
+# Union merge for documentation keeps both versions
+CHANGELOG.md merge=union
+CONTRIBUTING.md merge=union
+README.md merge=union
+DOCUMENTATION_INDEX.md merge=union
+
+# Keep our version for these files during merge
+.gitignore merge=ours
+.gitattributes merge=ours
+.npmrc merge=ours
+
+# Diff settings for specific file types
+*.py diff=python
+*.js diff=javascript
+*.jsx diff=javascript
+*.ts diff=typescript
+*.tsx diff=typescript
+*.md diff=markdown
+*.json diff=json
+
+# Export-ignore - exclude from archives
+.git* export-ignore
+.vscode/ export-ignore
+.idea/ export-ignore
+node_modules/ export-ignore
+__pycache__/ export-ignore
+*.pyc export-ignore
+.pytest_cache/ export-ignore
+.coverage export-ignore
+*.log export-ignore
+tmp/ export-ignore
+.DS_Store export-ignore
+
+# Language-specific settings
+*.java text eol=lf diff=java
+*.rb text eol=lf diff=ruby
+*.go text eol=lf diff=golang
+*.rs text eol=lf diff=rust
+
+# Database files
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+
+# Jupyter notebooks - merge as text but handle carefully
+*.ipynb text merge=union
+
+# Environment files - never merge, keep ours
+.env merge=ours
+.env.* merge=ours
+*.env merge=ours
+
+# VSCode settings - prefer union merge
+.vscode/*.json merge=union
+
+# ESLint cache
+.eslintcache binary
