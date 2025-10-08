@@ -11,6 +11,7 @@ const navigation = [
   { path: '/pipeline', label: 'PIPELINE', icon: '🧬' },
   { path: '/financial', label: 'FINANCIAL', icon: '💰' },
   { path: '/intelligence', label: 'INTELLIGENCE', icon: '🔍' },
+  { path: '/epidemiology', label: 'EPIDEMIOLOGY', icon: '🏥' },
   { path: '/trials', label: 'TRIALS', icon: '📋' },
   { path: '/explorer', label: 'EXPLORER', icon: '🗃️' },
 ];
