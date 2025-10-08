@@ -197,11 +197,36 @@
   line-height: 1.3;
 }
 
-/* Refresh Button */
+/* Action Buttons */
 .aurora-bar-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(var(--accent-rgb, 0, 255, 0), 0.05);
+  border: 1px solid rgba(var(--accent-rgb, 0, 255, 0), 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--accent-primary, #00ff00);
+}
+
+.action-button:hover {
+  background: rgba(var(--accent-rgb, 0, 255, 0), 0.15);
+  border-color: var(--accent-primary, #00ff00);
+  box-shadow: 0 0 16px rgba(var(--accent-rgb, 0, 255, 0), 0.3);
+  transform: translateY(-1px);
+}
+
+.action-button svg {
+  color: inherit;
 }
 
 .refresh-wrapper {

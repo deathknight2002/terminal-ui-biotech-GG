@@ -57,6 +57,9 @@ export type { MetricCardProps } from './molecules/MetricCard';
 export { GlobalSearch } from './molecules/GlobalSearch';
 export type { GlobalSearchProps, SearchResult, SearchResults } from './molecules/GlobalSearch';
 
+export { ContextChannelSelector } from './molecules/ContextChannelSelector';
+export type { ContextChannelSelectorProps } from './molecules/ContextChannelSelector';
+
 // Organisms - Complex layout components
 export { Panel } from './organisms/Panel';
 export type { PanelProps } from './organisms/Panel';
@@ -75,6 +78,12 @@ export type { AuroraBackdropProps } from './organisms/AuroraBackdrop';
 
 export { AuroraTopBar } from './organisms/AuroraTopBar';
 export type { AuroraTopBarProps, MenuItem, SubMenuItem } from './organisms/AuroraTopBar';
+
+export { CommandPalette } from './organisms/CommandPalette';
+export type { CommandPaletteProps } from './organisms/CommandPalette';
+
+export { AppLibrary } from './organisms/AppLibrary';
+export type { AppLibraryProps } from './organisms/AppLibrary';
 
 // Glass UI Components - October 2025 Concept
 export { GlassPanel } from './organisms/GlassPanel';

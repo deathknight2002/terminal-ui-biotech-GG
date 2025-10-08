@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ContextGroupProvider } from '../../src/contexts/ContextGroupContext';
 
 // Import page components
 import { DashboardPage } from './pages/DashboardPage';
@@ -11,6 +12,7 @@ import { ClinicalTrialsPage } from './pages/ClinicalTrialsPage';
 import { DataExplorerPage } from './pages/DataExplorerPage';
 import { EpidemiologyPage } from './pages/EpidemiologyPage';
 import { NewsPage } from './pages/NewsPage';
+import { TerminalFeaturesDemo } from './pages/TerminalFeaturesDemo';
 
 // Import layout components
 import { TerminalLayout } from './components/TerminalLayout';
@@ -44,11 +46,13 @@ const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <TerminalLayout>
+      <ContextGroupProvider>
+        <Router>
+          <TerminalLayout>
           <Routes>
             {/* Home */}
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/demo" element={<TerminalFeaturesDemo />} />
             <Route path="/recents" element={<PlaceholderPage title="RECENTS" />} />
             <Route path="/favorites" element={<PlaceholderPage title="FAVORITES" />} />
 
@@ -133,6 +137,7 @@ export function App() {
           </Routes>
         </TerminalLayout>
       </Router>
+      </ContextGroupProvider>
     </QueryClientProvider>
   );
 }

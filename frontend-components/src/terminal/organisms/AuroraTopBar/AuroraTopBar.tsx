@@ -19,6 +19,8 @@ export interface AuroraTopBarProps {
   menuItems: MenuItem[];
   onNavigate?: (path: string) => void;
   onRefresh?: (source: string) => Promise<{ success: boolean; message: string }>;
+  onOpenCommandPalette?: () => void;
+  onOpenAppLibrary?: () => void;
   cornerBrackets?: boolean;
   className?: string;
 }
@@ -27,6 +29,8 @@ export const AuroraTopBar: React.FC<AuroraTopBarProps> = ({
   menuItems,
   onNavigate,
   onRefresh,
+  onOpenCommandPalette,
+  onOpenAppLibrary,
   cornerBrackets = true,
   className = ''
 }) => {
@@ -178,6 +182,37 @@ export const AuroraTopBar: React.FC<AuroraTopBarProps> = ({
         </nav>
 
         <div className="aurora-bar-actions">
+          {/* Command Palette Button */}
+          {onOpenCommandPalette && (
+            <button
+              className="action-button"
+              onClick={onOpenCommandPalette}
+              aria-label="Open command palette"
+              title="Command Palette (⌘+K)"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+              </svg>
+            </button>
+          )}
+
+          {/* App Library Button */}
+          {onOpenAppLibrary && (
+            <button
+              className="action-button"
+              onClick={onOpenAppLibrary}
+              aria-label="Open app library"
+              title="App Library"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+          )}
+
           <div className="refresh-wrapper" ref={refreshMenuRef}>
             <button
               className={`refresh-button ${refreshing ? 'refreshing' : ''}`}
