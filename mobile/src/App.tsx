@@ -7,6 +7,7 @@ import { MobilePipeline } from './pages/MobilePipeline';
 import { MobileTrials } from './pages/MobileTrials';
 import { MobileFinancial } from './pages/MobileFinancial';
 import { MobileIntelligence } from './pages/MobileIntelligence';
+import { MobileNews } from './pages/MobileNews';
 
 // Import mobile layout
 import { MobileLayout } from './components/MobileLayout';
@@ -33,6 +34,7 @@ export function App() {
             <Route path="/trials" element={<MobileTrials />} />
             <Route path="/financial" element={<MobileFinancial />} />
             <Route path="/intelligence" element={<MobileIntelligence />} />
+            <Route path="/news" element={<MobileNews />} />
           </Routes>
         </MobileLayout>
       </Router>

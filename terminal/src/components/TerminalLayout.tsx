@@ -1,46 +1,67 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { AuroraTopBar } from '../../../frontend-components/src/terminal/organisms/AuroraTopBar/AuroraTopBar';
+import { useToast } from '../../../frontend-components/src/terminal/molecules/Toast';
+import { menuStructure } from '../config/menuStructure';
 import '../styles/glass-theme.css';
 
 interface TerminalLayoutProps {
   children: React.ReactNode;
 }
 
-const navigation = [
-  { path: '/', label: 'DASHBOARD', icon: '📊' },
-  { path: '/pipeline', label: 'PIPELINE', icon: '🧬' },
-  { path: '/financial', label: 'FINANCIAL', icon: '💰' },
-  { path: '/intelligence', label: 'INTELLIGENCE', icon: '🔍' },
-  { path: '/epidemiology', label: 'EPIDEMIOLOGY', icon: '🏥' },
-  { path: '/trials', label: 'TRIALS', icon: '📋' },
-  { path: '/explorer', label: 'EXPLORER', icon: '🗃️' },
-];
-
 export function TerminalLayout({ children }: TerminalLayoutProps) {
-  const location = useLocation();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+  };
+
+  const handleRefresh = async (source: string): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/admin/ingest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ source }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        showToast({
+          title: 'Refresh Complete',
+          description: `Successfully refreshed ${source}. ${result.records_inserted} records inserted.`,
+          variant: 'success',
+        });
+        return { success: true, message: `Refreshed ${source}` };
+      } else {
+        showToast({
+          title: 'Refresh Failed',
+          description: result.detail || 'Failed to refresh data',
+          variant: 'error',
+        });
+        return { success: false, message: 'Refresh failed' };
+      }
+    } catch (error) {
+      showToast({
+        title: 'Refresh Error',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'error',
+      });
+      return { success: false, message: 'Refresh error' };
+    }
+  };
 
   return (
     <div className="terminal-layout">
-      <header className="terminal-header">
-        <div className="glass-container">
-          <div className="terminal-headline">
-            <div className="eyebrow">BIOTECH INTELLIGENCE PLATFORM</div>
-            <h1>AURORA TERMINAL</h1>
-            <div className="subtitle">Real-time pharmaceutical intelligence & market analysis</div>
-          </div>
-          <nav className="terminal-nav">
-            {navigation.map((item) => (
-              <Link key={item.path} to={item.path} className="nav-link">
-                <button
-                  className={`glass-button ${location.pathname === item.path ? 'active' : ''}`}
-                >
-                  {item.icon} {item.label}
-                </button>
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </header>
+      <AuroraTopBar
+        menuItems={menuStructure}
+        onNavigate={handleNavigate}
+        onRefresh={handleRefresh}
+        cornerBrackets={true}
+      />
 
       <main className="terminal-main">
         {children}
