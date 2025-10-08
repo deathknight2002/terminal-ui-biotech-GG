@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ContextGroupProvider } from '../../src/contexts/ContextGroupContext';
 
 // Import page components
 import { DashboardPage } from './pages/DashboardPage';
@@ -44,8 +45,9 @@ const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <TerminalLayout>
+      <ContextGroupProvider>
+        <Router>
+          <TerminalLayout>
           <Routes>
             {/* Home */}
             <Route path="/" element={<DashboardPage />} />
@@ -133,6 +135,7 @@ export function App() {
           </Routes>
         </TerminalLayout>
       </Router>
+      </ContextGroupProvider>
     </QueryClientProvider>
   );
 }

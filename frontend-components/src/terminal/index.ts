@@ -76,6 +76,12 @@ export type { AuroraBackdropProps } from './organisms/AuroraBackdrop';
 export { AuroraTopBar } from './organisms/AuroraTopBar';
 export type { AuroraTopBarProps, MenuItem, SubMenuItem } from './organisms/AuroraTopBar';
 
+export { CommandPalette } from './organisms/CommandPalette';
+export type { CommandPaletteProps } from './organisms/CommandPalette';
+
+export { AppLibrary } from './organisms/AppLibrary';
+export type { AppLibraryProps } from './organisms/AppLibrary';
+
 // Glass UI Components - October 2025 Concept
 export { GlassPanel } from './organisms/GlassPanel';
 export type { GlassPanelProps } from './organisms/GlassPanel';

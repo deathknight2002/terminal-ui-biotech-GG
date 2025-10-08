@@ -1,7 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuroraTopBar } from '../../../frontend-components/src/terminal/organisms/AuroraTopBar/AuroraTopBar';
+import { CommandPalette } from '../../../frontend-components/src/terminal/organisms/CommandPalette/CommandPalette';
+import { AppLibrary } from '../../../frontend-components/src/terminal/organisms/AppLibrary/AppLibrary';
 import { useToast } from '../../../frontend-components/src/terminal/molecules/Toast';
+import { useCommandPalette } from '../hooks/useCommandPalette';
+import { useAppLibrary } from '../hooks/useAppLibrary';
 import { menuStructure } from '../config/menuStructure';
 import '../styles/glass-theme.css';
 
@@ -12,6 +16,8 @@ interface TerminalLayoutProps {
 export function TerminalLayout({ children }: TerminalLayoutProps) {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const commandPalette = useCommandPalette();
+  const appLibrary = useAppLibrary();
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -60,6 +66,8 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
         menuItems={menuStructure}
         onNavigate={handleNavigate}
         onRefresh={handleRefresh}
+        onOpenCommandPalette={commandPalette.open}
+        onOpenAppLibrary={appLibrary.open}
         cornerBrackets={true}
       />
 
@@ -77,6 +85,24 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
           </div>
         </div>
       </footer>
+
+      {/* Command Palette - Bloomberg-style function codes */}
+      <CommandPalette
+        isOpen={commandPalette.isOpen}
+        onClose={commandPalette.close}
+        functionCodes={commandPalette.functionCodes}
+        recentCommands={commandPalette.recentCommands}
+        onExecute={commandPalette.execute}
+      />
+
+      {/* App Library - Launchable modules */}
+      <AppLibrary
+        isOpen={appLibrary.isOpen}
+        onClose={appLibrary.close}
+        apps={appLibrary.apps}
+        onLaunchApp={appLibrary.launchApp}
+        onToggleFavorite={appLibrary.toggleFavorite}
+      />
     </div>
   );
 }
