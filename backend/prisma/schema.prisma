@@ -1,0 +1,119 @@
+// Epidemiology Intelligence Platform Schema
+// Supports persistent, versioned, auditable disease data from SEER, WHO, CDC
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Disease model with ICD-10, ICD-11, and SNOMED CT codes
+model Disease {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  icd10       String   @unique
+  icd11       String?
+  snomed      String?
+  category    String   // 'Cancer' | 'Infectious Disease' | etc.
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  metrics Metric[]
+
+  @@index([icd10])
+  @@index([category])
+  @@map("diseases")
+}
+
+// Metric model for disease measurements (incidence, mortality, prevalence, etc.)
+model Metric {
+  id            String    @id @default(cuid())
+  diseaseId     String
+  disease       Disease   @relation(fields: [diseaseId], references: [id], onDelete: Cascade)
+  
+  // Data source and type
+  source        String    // 'SEER' | 'WHO' | 'CDC'
+  metricType    String    // 'incidence' | 'mortality' | 'prevalence' | 'survival_5y' | 'daly' | 'yll' | 'yld'
+  unit          String?   // 'per_100k' | 'percentage' | 'years' | 'count'
+  
+  // Values
+  valueNumeric  Float?
+  valueJson     Json?     // For complex structured data
+  
+  // Demographics
+  sex           String?   // 'M' | 'F' | 'All'
+  ageGroup      String?   // '0-18' | '19-44' | '45-64' | '65+' | 'All'
+  raceEthnicity String?
+  
+  // Geography
+  regionCode    String?   // ISO country/state code
+  regionLevel   String?   // 'country' | 'who_region' | 'state' | 'global'
+  
+  // Time period
+  year          Int?
+  periodStart   DateTime?
+  periodEnd     DateTime?
+  
+  // Metadata
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  provenance Provenance?
+
+  @@index([diseaseId, metricType, year])
+  @@index([source, metricType])
+  @@index([regionCode])
+  @@index([year])
+  @@map("metrics")
+}
+
+// Provenance model for data governance and auditability
+model Provenance {
+  id               String   @id @default(cuid())
+  metricId         String   @unique
+  metric           Metric   @relation(fields: [metricId], references: [id], onDelete: Cascade)
+  
+  // Source information
+  sourceName       String   // 'SEER' | 'WHO GHO' | 'CDC WONDER'
+  sourceUrl        String
+  sourceVersion    String?
+  sourceDatasetId  String?  // Dataset identifier from source
+  
+  // Timestamps
+  retrievedAt      DateTime // When data was fetched from source
+  ingestedAt       DateTime @default(now())
+  
+  // Data integrity
+  hash             String   // SHA-256 hash of raw data for change detection
+  reliabilityScore Int?     // 0-100 score for data quality
+  
+  // Notes
+  notes            String?
+  
+  @@index([sourceName])
+  @@index([retrievedAt])
+  @@map("provenance")
+}
+
+// Crosswalk model for terminology mapping (ICD-10 ↔ ICD-11 ↔ SNOMED CT)
+model Crosswalk {
+  id     String  @id @default(cuid())
+  icd10  String?
+  icd11  String?
+  snomed String?
+  notes  String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([icd10, icd11, snomed])
+  @@index([icd10])
+  @@index([icd11])
+  @@index([snomed])
+  @@map("crosswalks")
+}

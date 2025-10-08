@@ -41,6 +41,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@prisma/client": "^6.17.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
@@ -54,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
     "eslint": "^8.56.0",
+    "prisma": "^6.17.0",
     "tsc-alias": "^1.8.8",
     "tsx": "^4.20.6",
     "typescript": "^5.3.3",
