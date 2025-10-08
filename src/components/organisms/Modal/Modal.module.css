@@ -132,6 +132,11 @@
   transform: scale(1.05);
 }
 
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(102, 249, 255, 0.45), 0 0 0 6px rgba(102, 249, 255, 0.2);
+}
+
 .body {
   flex: 1;
   padding: var(--space-5);
