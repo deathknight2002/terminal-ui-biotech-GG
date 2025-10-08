@@ -57,6 +57,9 @@ export type { MetricCardProps } from './molecules/MetricCard';
 export { GlobalSearch } from './molecules/GlobalSearch';
 export type { GlobalSearchProps, SearchResult, SearchResults } from './molecules/GlobalSearch';
 
+export { ContextChannelSelector } from './molecules/ContextChannelSelector';
+export type { ContextChannelSelectorProps } from './molecules/ContextChannelSelector';
+
 // Organisms - Complex layout components
 export { Panel } from './organisms/Panel';
 export type { PanelProps } from './organisms/Panel';
