@@ -15,3 +15,22 @@ export type { ClinicalTrialsTimelineProps, ClinicalTrial } from './molecules/Cli
 export { BioAuroraDashboard } from './organisms/BioAuroraDashboard';
 
 export { BiotechFinancialDashboard } from './organisms/BiotechFinancialDashboard';
+
+// Glass UI Components - October 2025 Concept
+export { MolecularGlassGrid } from './organisms/MolecularGlassGrid';
+export type { MolecularGlassGridProps } from './organisms/MolecularGlassGrid';
+
+export { ClinicalTrialGlassTimeline } from './organisms/ClinicalTrialGlassTimeline';
+export type { 
+  ClinicalTrialGlassTimelineProps, 
+  TrialPhase, 
+  PhaseType 
+} from './organisms/ClinicalTrialGlassTimeline';
+
+export { CatalystGlassAlert } from './organisms/CatalystGlassAlert';
+export type { 
+  CatalystGlassAlertProps, 
+  CatalystAlert, 
+  AlertPriority, 
+  AlertType 
+} from './organisms/CatalystGlassAlert';
