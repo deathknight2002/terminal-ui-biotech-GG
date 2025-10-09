@@ -128,7 +128,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'Financial overview and models',
     path: '/financials',
     keywords: ['financials', 'finance', 'valuation', 'models'],
-    category: 'financials',
+    category: 'navigation',
   },
 
   {
@@ -137,7 +137,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'Analyst price targets and consensus',
     path: '/financials/price-targets',
     keywords: ['price', 'targets', 'analyst', 'consensus'],
-    category: 'financials',
+    category: 'navigation',
   },
 
   {
@@ -146,7 +146,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'DCF and multiples valuation',
     path: '/financials/valuation',
     keywords: ['valuation', 'dcf', 'multiples', 'analysis'],
-    category: 'financials',
+    category: 'navigation',
   },
 
   {
@@ -155,7 +155,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'Loss of exclusivity timeline',
     path: '/financials/loe',
     keywords: ['loe', 'loss', 'exclusivity', 'patent', 'cliff'],
-    category: 'financials',
+    category: 'navigation',
   },
 
   // Data Operations
@@ -202,7 +202,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'Generate and download reports',
     path: '#reports',
     keywords: ['reports', 'generate', 'download', 'artifacts'],
-    category: 'analytics',
+    category: 'action',
   },
 
   {
@@ -211,7 +211,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'Sensitivity analysis tables',
     path: '#sensitivity',
     keywords: ['sensitivity', 'analysis', 'scenarios', 'assumptions'],
-    category: 'analytics',
+    category: 'tool',
   },
 
   {
@@ -220,7 +220,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     description: 'Comparable companies analysis',
     path: '#comparables',
     keywords: ['comparables', 'comps', 'peers', 'multiples'],
-    category: 'analytics',
+    category: 'tool',
   },
 ];
 
