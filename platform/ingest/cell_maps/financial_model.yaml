@@ -1,0 +1,175 @@
+# Financial Model Cell Map
+# Defines Excel cell mappings for import/export
+
+version: "1.0"
+description: "Standard financial model with consensus and LoE data"
+
+# Consensus Estimates Sheet
+consensus_estimates:
+  sheet: "Consensus Estimates"
+  range: "A2:G100"
+  has_header: true
+  columns:
+    - name: ticker
+      type: string
+      description: "Company ticker symbol"
+    - name: metric
+      type: string
+      description: "Financial metric (revenue, EPS, GM, OPEX, shares, WACC, TGR)"
+    - name: period
+      type: string
+      description: "Time period (YYYY or YYYY-Q1 format)"
+    - name: value
+      type: float
+      description: "Estimate value"
+    - name: source
+      type: string
+      description: "Consensus source"
+    - name: currency
+      type: string
+      description: "Currency code (USD, EUR, etc.)"
+    - name: unit
+      type: string
+      description: "Unit of measurement (millions, billions, percentage)"
+
+# Price Targets Sheet
+price_targets:
+  sheet: "Price Targets"
+  range: "A2:F50"
+  has_header: true
+  columns:
+    - name: ticker
+      type: string
+      description: "Company ticker"
+    - name: source
+      type: string
+      description: "Bank/analyst name"
+    - name: date
+      type: date
+      description: "Target date"
+    - name: price_target
+      type: float
+      description: "Target price"
+    - name: rationale
+      type: string
+      description: "Justification"
+    - name: currency
+      type: string
+      description: "Currency code"
+
+# LoE Timeline Sheet
+loe_events:
+  sheet: "LoE Timeline"
+  range: "A2:I30"
+  has_header: true
+  columns:
+    - name: asset_id
+      type: string
+      description: "Asset identifier"
+    - name: asset_name
+      type: string
+      description: "Asset name"
+    - name: region
+      type: string
+      description: "Geographic region (US, EU, ROW)"
+    - name: expiry_date
+      type: date
+      description: "Patent/exclusivity expiry date"
+    - name: exclusivity_type
+      type: string
+      description: "Type (patent, data_exclusivity, orphan)"
+    - name: erosion_curve_id
+      type: string
+      description: "Erosion curve identifier"
+    - name: peak_revenue
+      type: float
+      description: "Peak revenue before LoE (millions)"
+    - name: year_1_erosion
+      type: float
+      description: "Year 1 erosion rate (0-1)"
+    - name: year_2_erosion
+      type: float
+      description: "Year 2 erosion rate (0-1)"
+
+# Revenue Projections Sheet
+revenue_projections:
+  sheet: "Revenue Projections"
+  range: "A2:J200"
+  has_header: true
+  columns:
+    - name: asset_id
+      type: string
+      description: "Asset identifier"
+    - name: asset_name
+      type: string
+      description: "Asset name"
+    - name: region
+      type: string
+      description: "Region (US, EU, ROW)"
+    - name: year
+      type: int
+      description: "Projection year"
+    - name: net_price
+      type: float
+      description: "Net price per patient"
+    - name: uptake
+      type: float
+      description: "Market penetration (0-1)"
+    - name: pos
+      type: float
+      description: "Probability of success (0-1)"
+    - name: patients
+      type: int
+      description: "Patient count"
+    - name: revenue
+      type: float
+      description: "Total revenue (millions)"
+    - name: scenario
+      type: string
+      description: "Scenario (base, bull, bear)"
+
+# Formatting Rules
+formatting:
+  number_formats:
+    currency: "$#,##0.0"
+    percentage: "0.0%"
+    millions: "#,##0.0"
+    date: "mm/dd/yyyy"
+  
+  styles:
+    header:
+      font_name: "Calibri"
+      font_size: 11
+      font_bold: true
+      fill_color: "1f4e78"
+      font_color: "ffffff"
+    
+    data:
+      font_name: "Calibri"
+      font_size: 10
+      fill_color: "ffffff"
+      font_color: "000000"
+    
+    assumption:
+      fill_color: "d9e2f3"
+    
+    output:
+      fill_color: "e2efda"
+    
+    warning:
+      fill_color: "fff2cc"
+
+# Export Settings
+export:
+  preserve_formulas: true
+  preserve_formatting: true
+  sheet_order:
+    - "Cover"
+    - "Assumptions"
+    - "Consensus Estimates"
+    - "Price Targets"
+    - "Revenue Projections"
+    - "LoE Timeline"
+    - "DCF Valuation"
+    - "Multiples"
+    - "Sensitivity"
