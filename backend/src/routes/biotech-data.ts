@@ -13,6 +13,10 @@ router.get('/dashboard', async (req, res) => {
     logger.info('📊 LIVE Dashboard data requested - Real market data');
     console.log('✅ Dashboard data retrieved successfully');
 
+    // Set Cache-Control headers for manual refresh model (30 min TTL)
+    res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes
+    res.setHeader('Last-Modified', new Date(dashboardData.headline?.lastUpdated || Date.now()).toUTCString());
+    
     res.json(dashboardData);
   } catch (error) {
     console.error('❌ Error in dashboard endpoint:', error);
@@ -31,6 +35,10 @@ router.get('/trials', async (req, res) => {
 
     logger.info('🧬 LIVE Clinical trials data - Active trials: ' + trialsData.trials.length);
 
+    // Set Cache-Control headers for manual refresh model (30 min TTL)
+    res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes
+    res.setHeader('Last-Modified', new Date(trialsData.lastUpdated || Date.now()).toUTCString());
+    
     res.json(trialsData);
   } catch (error) {
     logger.error('❌ Error fetching live trials data:', error);
@@ -48,6 +56,10 @@ router.get('/financial-models', async (req, res) => {
 
     logger.info('💰 LIVE Financial models - Real market valuations');
 
+    // Set Cache-Control headers for manual refresh model (30 min TTL)
+    res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes
+    res.setHeader('Last-Modified', new Date().toUTCString());
+    
     res.json(financialData);
   } catch (error) {
     logger.error('❌ Error fetching live financial data:', error);

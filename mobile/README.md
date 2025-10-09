@@ -166,6 +166,134 @@ mobile/
 
 This mobile app follows the same contribution guidelines as the main terminal application. See the root README for details.
 
+## Native App Wrappers (Optional)
+
+### Option 1: Capacitor iOS Wrapper
+
+For App Store distribution, wrap the mobile app with Capacitor:
+
+#### Setup Capacitor
+
+```bash
+cd mobile/
+
+# Install Capacitor
+npm install @capacitor/core @capacitor/cli
+npm install @capacitor/ios
+
+# Initialize Capacitor
+npx cap init
+
+# Add iOS platform
+npx cap add ios
+
+# Sync web assets to native project
+npx cap sync ios
+
+# Open in Xcode
+npx cap open ios
+```
+
+#### Configure in Xcode
+
+1. **Set Bundle ID**: e.g., `com.yourcompany.bioterminal`
+2. **Add Icons**: Use Assets.xcassets for app icons
+3. **Configure Capabilities**: 
+   - Background modes (if needed)
+   - Push notifications (if needed)
+4. **Set deployment target**: iOS 14.0+
+5. **Build and archive** for TestFlight/App Store
+
+#### Capacitor Configuration
+
+Create `capacitor.config.ts`:
+
+```typescript
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.yourcompany.bioterminal',
+  appName: 'Biotech Terminal',
+  webDir: 'dist',
+  server: {
+    // For local development
+    // url: 'http://localhost:3002',
+    // cleartext: true
+  },
+  ios: {
+    contentInset: 'always',
+    backgroundColor: '#0a0a0f'
+  }
+};
+
+export default config;
+```
+
+#### Deploy Workflow
+
+```bash
+# 1. Build web assets
+npm run build
+
+# 2. Sync to native project
+npx cap sync ios
+
+# 3. Open Xcode and build
+npx cap open ios
+```
+
+### Option 2: SwiftUI + WKWebView Shell
+
+For a minimal native wrapper:
+
+1. **Create new Xcode project** (SwiftUI + iOS)
+2. **Add WKWebView**:
+
+```swift
+import SwiftUI
+import WebKit
+
+struct ContentView: View {
+    var body: some View {
+        WebView(url: URL(string: "https://biotech-terminal.app")!)
+            .ignoresSafeArea()
+    }
+}
+
+struct WebView: UIViewRepresentable {
+    let url: URL
+    
+    func makeUIView(context: Context) -> WKWebView {
+        let config = WKWebViewConfiguration()
+        let webView = WKWebView(frame: .zero, configuration: config)
+        webView.load(URLRequest(url: url))
+        return webView
+    }
+    
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
+}
+```
+
+3. **Add refresh control**:
+
+```swift
+webView.scrollView.refreshControl = UIRefreshControl()
+webView.scrollView.refreshControl?.addTarget(
+    self, 
+    action: #selector(handleRefresh), 
+    for: .valueChanged
+)
+
+@objc func handleRefresh() {
+    webView.reload()
+    webView.scrollView.refreshControl?.endRefreshing()
+}
+```
+
+4. **Respect safe areas**: SwiftUI handles this automatically
+
+See [docs/IOS_PWA_GUIDE.md](../docs/IOS_PWA_GUIDE.md) for detailed native wrapper instructions.
+
 ## License
 
 MIT License - Same as the parent Biotech Terminal Platform

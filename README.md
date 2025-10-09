@@ -37,6 +37,51 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 🖥️ **Web Terminal Application**: http://localhost:3000
 - 💻 **CLI Terminal (TUI)**: `python3 -m platform.tui`
 
+## 📱 iOS Progressive Web App (PWA)
+
+The Biotech Terminal is optimized for iOS 26 as a Progressive Web App. Install it on your iPhone/iPad for a native app experience.
+
+### Quick Install (iOS 26)
+
+1. Open Safari and navigate to the terminal URL
+2. Tap Share → **Add to Home Screen**
+3. Ensure "Open as Web App" toggle is **ON** (default in iOS 26)
+4. Tap **Add** - the app appears on your Home Screen
+5. Launch from Home Screen for fullscreen standalone mode
+
+### Manual Refresh Data Model
+
+The PWA uses **manual-refresh-only** with zero background network:
+- ⚡ **Explicit refresh** - Tap refresh button to update data
+- 🚫 **No auto-polling** - Zero network traffic after initial load
+- ⏱️ **Last refreshed** timestamp shown in footer
+- 💾 **30-min server cache** - Fast refresh with Cache-Control headers
+- ❌ **No WebSocket/SSE** - No background connections
+
+**Why?**
+- Predictable resource usage
+- Controlled network traffic
+- Lower backend costs
+- Better debugging
+
+See [docs/IOS_PWA_GUIDE.md](docs/IOS_PWA_GUIDE.md) for detailed iOS installation guide and [docs/REFRESH_MODEL.md](docs/REFRESH_MODEL.md) for refresh semantics.
+
+### PWA Features
+
+✅ **Standalone fullscreen** - No Safari UI when launched  
+✅ **Safe area support** - Respects iPhone notch and bottom bar  
+✅ **Liquid Glass effects** - Backdrop blur headers (iOS 26 design)  
+✅ **Offline app shell** - Cached static assets work offline  
+✅ **Service worker** - Static assets only, no dynamic data caching
+
+### Optional: Native App Wrappers
+
+For App Store distribution, wrap with:
+- **Capacitor** (iOS/Android) - See `/mobile` directory
+- **SwiftUI + WKWebView** - Custom native shell
+
+See [docs/IOS_PWA_GUIDE.md](docs/IOS_PWA_GUIDE.md) for Capacitor and SwiftUI setup instructions.
+
 ## � Platform Architecture
 
 This repository is organized as a **multi-package workspace** following OpenBB platform patterns:

@@ -19,9 +19,7 @@ export function DashboardPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['aurora-dashboard'],
     queryFn: fetchDashboardData,
-    staleTime: 30000, // 30 seconds
-    gcTime: 60000, // 1 minute
-    refetchInterval: 30000, // Auto-refresh every 30 seconds
+    // Manual refresh only - no auto-refetch
   });
 
   // Show loading state

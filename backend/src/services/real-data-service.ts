@@ -5,7 +5,7 @@ import { spawn } from 'child_process';
 
 export class RealDataService {
   private dataCache: Map<string, { data: any; timestamp: number }> = new Map();
-  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  private readonly CACHE_DURATION = 30 * 60 * 1000; // 30 minutes (server-side TTL cache)
   private readonly DATA_FILE = path.join(process.cwd(), 'live_biotech_data.json');
   private readonly SCRAPER_SCRIPT = path.join(process.cwd(), 'backend', 'python-scrapers', 'biotech_scraper.py');
 
