@@ -1,5 +1,5 @@
 {
-  "name": "@deaxu/biotech-terminal-backend",
+  "name": "@biotech-terminal/backend",
   "version": "1.0.0",
   "description": "Backend services for the Biotech Terminal Intelligence Platform",
   "type": "module",
