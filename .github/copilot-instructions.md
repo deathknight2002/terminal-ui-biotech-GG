@@ -303,3 +303,466 @@ import { Panel } from '@biotech-terminal/frontend-components/terminal';
 - `examples/` - Component demonstrations
 
 When adding new biotech components: follow atomic design, use types from `src/types/biotech.ts`, maintain terminal aesthetics with `cornerBrackets` and uppercase labels, and test in both component library and terminal app contexts.
+
+## Testing Guidelines
+
+### Running Tests Before Making Changes
+**ALWAYS run tests before making changes to understand baseline:**
+```bash
+# Check Python backend tests
+cd platform && poetry run pytest -v
+
+# Check frontend component tests
+cd frontend-components && npm test
+
+# Check terminal app tests
+cd terminal && npm test
+
+# Run all tests from root
+npm run test
+```
+
+### Writing New Tests
+**Follow existing test patterns:**
+```typescript
+// Component tests (Vitest + React Testing Library)
+import { render, screen } from '@testing-library/react';
+import { Panel } from './Panel';
+
+test('renders with title', () => {
+  render(<Panel title="TEST PANEL">Content</Panel>);
+  expect(screen.getByText('TEST PANEL')).toBeInTheDocument();
+});
+```
+
+```python
+# Python tests (pytest with async support)
+import pytest
+from platform.core.database import Drug
+
+@pytest.mark.asyncio
+async def test_drug_creation(db_session):
+    drug = Drug(name="Test Drug", phase="Phase I")
+    db_session.add(drug)
+    await db_session.commit()
+    assert drug.id is not None
+```
+
+### Test Coverage Requirements
+- **Python**: Aim for 80%+ coverage on new code (`poetry run pytest --cov`)
+- **TypeScript**: Components should have unit tests for critical functionality
+- **Integration**: Test API endpoints with actual database transactions
+- **E2E**: Not required for minor changes, but recommended for major features
+
+### When Tests Fail
+1. **Read the error message carefully** - pytest and Vitest give detailed output
+2. **Check if it's an existing failure** - some tests may be flaky or environment-dependent
+3. **Run tests in isolation** - `npm test -- Button.test.tsx` or `pytest tests/test_drugs.py::test_specific`
+4. **Check for async issues** - common in FastAPI tests, ensure `@pytest.mark.asyncio` is used
+
+## Linting and Code Quality
+
+### Python Linting (Ruff)
+```bash
+# Check all Python code
+poetry run ruff check platform/
+
+# Auto-fix issues
+poetry run ruff check --fix platform/
+
+# Format code (Black style)
+poetry run ruff format platform/
+```
+
+**Common Ruff Errors:**
+- `F401` - Unused import → Remove the import
+- `E501` - Line too long → Break into multiple lines or use parentheses
+- `F841` - Unused variable → Remove or prefix with underscore `_unused`
+- `UP` - Outdated syntax → Use modern Python 3.9+ features
+
+### TypeScript/JavaScript Linting (ESLint)
+```bash
+# Check frontend-components
+cd frontend-components && npm run lint
+
+# Check terminal app
+cd terminal && npm run lint
+
+# Auto-fix issues
+npm run lint -- --fix
+```
+
+**Common ESLint Errors:**
+- `react-hooks/exhaustive-deps` - Missing dependency in useEffect → Add to dependency array
+- `@typescript-eslint/no-unused-vars` - Unused variable → Remove or prefix with underscore
+- `react/prop-types` - Missing prop validation → Add TypeScript types (we don't use PropTypes)
+
+### Type Checking
+```bash
+# Check TypeScript types before building
+cd frontend-components && npm run typecheck
+cd terminal && npm run typecheck
+
+# Common fixes:
+# - Add missing type annotations
+# - Import types from correct location
+# - Use proper generic types for hooks
+```
+
+### Pre-commit Checklist
+Before committing code, run:
+```bash
+# 1. Format and lint
+poetry run ruff format platform/
+poetry run ruff check --fix platform/
+npm run lint -- --fix
+
+# 2. Type check
+npm run typecheck
+
+# 3. Run affected tests
+npm run test:components  # If you changed components
+poetry run pytest        # If you changed Python code
+
+# 4. Build to ensure no errors
+npm run build:components  # If you changed components
+```
+
+## CI/CD Pipeline
+
+### GitHub Actions Workflow
+**File**: `.github/workflows/npm-grunt.yml`
+
+**What runs on every PR:**
+1. **Node.js matrix build** (18.x, 20.x, 22.x)
+2. **npm install** - Install all dependencies
+3. **grunt** - Run build tasks
+
+**Expected behavior:**
+- All jobs must pass before merge
+- Matrix tests ensure compatibility across Node versions
+- Build failures will block PR merge
+
+### Local CI Simulation
+```bash
+# Simulate CI build locally
+npm install
+npm run build
+npm run test
+npm run lint
+```
+
+## Security Best Practices
+
+### Input Validation
+**Always validate user input:**
+```python
+# Python - Use Pydantic models
+from pydantic import BaseModel, validator
+
+class DrugCreate(BaseModel):
+    name: str
+    phase: PhaseType
+    
+    @validator('name')
+    def name_not_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Name cannot be empty')
+        return v.strip()
+```
+
+```typescript
+// TypeScript - Use Zod for runtime validation
+import { z } from 'zod';
+
+const drugSchema = z.object({
+  name: z.string().min(1).max(100),
+  phase: z.enum(['Preclinical', 'Phase I', 'Phase II', 'Phase III'])
+});
+```
+
+### SQL Injection Prevention
+- **Use SQLAlchemy ORM** - Never build raw SQL strings
+- **Parameterized queries** - Use SQLAlchemy query builders
+```python
+# ✅ Good - Using ORM
+drugs = await session.execute(
+    select(Drug).where(Drug.name == user_input)
+)
+
+# ❌ Bad - Never do this
+query = f"SELECT * FROM drugs WHERE name = '{user_input}'"
+```
+
+### XSS Prevention
+- **React escapes by default** - Trust React's automatic escaping
+- **Use `xss` library** - For user-generated HTML content
+```typescript
+import xss from 'xss';
+
+// Only when you must render user HTML
+const sanitized = xss(userContent);
+```
+
+### API Security
+- **Rate limiting** - Configured in FastAPI middleware
+- **CORS** - Properly configured in `platform/core/app.py`
+- **Authentication** - Use JWT tokens for protected endpoints
+- **Never commit secrets** - Use `.env` files (already in `.gitignore`)
+
+### Dependency Security
+```bash
+# Check for vulnerabilities
+npm audit
+poetry check
+
+# Update vulnerable packages
+npm audit fix
+poetry update <package>
+```
+
+## Code Review Expectations
+
+### What Reviewers Look For
+
+**1. Code Quality**
+- [ ] Follows existing code style and patterns
+- [ ] No hardcoded values (use constants or config)
+- [ ] Proper error handling (try/catch, error boundaries)
+- [ ] No console.log() in production code
+- [ ] TypeScript types are specific (not `any`)
+
+**2. Testing**
+- [ ] New functionality has tests
+- [ ] Tests cover edge cases
+- [ ] Tests are not flaky (run multiple times)
+- [ ] Mocks are used appropriately
+
+**3. Documentation**
+- [ ] JSDoc/docstrings for public APIs
+- [ ] README updated if adding new features
+- [ ] Type definitions exported properly
+- [ ] Examples added if needed
+
+**4. Performance**
+- [ ] No N+1 queries in database operations
+- [ ] Large lists use virtualization (`@tanstack/react-virtual`)
+- [ ] Expensive calculations are memoized
+- [ ] Async operations don't block UI
+
+**5. Accessibility**
+- [ ] Semantic HTML elements used
+- [ ] ARIA labels for custom components
+- [ ] Keyboard navigation works
+- [ ] Color contrast meets WCAG AA (ideally AAA)
+
+**6. Security**
+- [ ] User input is validated
+- [ ] No SQL injection vulnerabilities
+- [ ] No XSS vulnerabilities
+- [ ] Secrets not committed
+
+### PR Description Template
+```markdown
+## What changed
+Brief description of the change
+
+## Why
+Explanation of the motivation
+
+## Testing
+How to test this change
+
+## Screenshots
+(If UI change) Before/After screenshots
+
+## Checklist
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] Linting passes
+- [ ] No breaking changes (or documented)
+```
+
+## Troubleshooting Guide
+
+### Build Failures
+
+**"Cannot find module '@biotech-terminal/frontend-components'"**
+```bash
+# Components not built yet
+cd frontend-components && npm run build
+cd ../terminal && npm run dev
+```
+
+**"Module not found: Error: Can't resolve 'X'"**
+```bash
+# Missing dependency
+npm install
+# Or for specific workspace
+cd frontend-components && npm install
+```
+
+**"Type error: Cannot find type definition"**
+```bash
+# Missing type packages or stale types
+npm install
+npm run typecheck  # See specific errors
+```
+
+### Test Failures
+
+**"Database connection error"**
+```bash
+# Python tests need database
+cd platform
+poetry run python -c "from platform.core.database import init_db; import asyncio; asyncio.run(init_db())"
+poetry run pytest
+```
+
+**"Port already in use"**
+```bash
+# Kill existing processes
+lsof -ti:8000 | xargs kill -9  # Python backend
+lsof -ti:3000 | xargs kill -9  # Terminal app
+lsof -ti:3001 | xargs kill -9  # Node.js backend
+```
+
+**"Timeout errors in tests"**
+- Increase timeout in test config
+- Check if database/external services are slow
+- Run fewer tests in parallel
+
+### Runtime Errors
+
+**"CORS error in browser"**
+- Check `CORS_ORIGINS` in `.env` file
+- Ensure backend is running on correct port
+- Clear browser cache
+
+**"WebSocket connection failed"**
+```bash
+# Ensure Node.js backend is running
+cd backend && npm run dev
+```
+
+**"Module 'X' has no exported member 'Y'"**
+- Check import path (use subpath imports)
+- Rebuild components: `cd frontend-components && npm run build`
+- Clear node_modules: `rm -rf node_modules && npm install`
+
+### Performance Issues
+
+**"Slow database queries"**
+```python
+# Add indexes to frequently queried fields
+# In database.py
+class Drug(Base):
+    __tablename__ = "drugs"
+    
+    name = Column(String, index=True)  # Add index=True
+    phase = Column(String, index=True)
+```
+
+**"Slow rendering of large lists"**
+```typescript
+// Use TanStack Virtual
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+// Virtualize rows
+const rowVirtualizer = useVirtualizer({
+  count: items.length,
+  getScrollElement: () => parentRef.current,
+  estimateSize: () => 35,
+});
+```
+
+**"Memory leaks in React"**
+- Clean up subscriptions in useEffect
+- Cancel fetch requests on unmount
+- Avoid creating functions in render
+
+## Common Development Patterns
+
+### Adding a New API Endpoint
+```python
+# 1. Create endpoint in platform/core/routers.py
+from fastapi import APIRouter
+
+biotech_router = APIRouter()
+
+@biotech_router.get("/drugs")
+async def get_drugs(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Drug))
+    return result.scalars().all()
+
+# 2. Register in app.py
+app.include_router(biotech_router, prefix="/api/v1/biotech")
+
+# 3. Test with curl
+curl http://localhost:8000/api/v1/biotech/drugs
+```
+
+### Adding a New Component
+```typescript
+// 1. Create in frontend-components/src/terminal/atoms/
+export interface MyComponentProps {
+  title: string;
+  variant?: 'primary' | 'secondary';
+}
+
+export const MyComponent: React.FC<MyComponentProps> = ({ title, variant = 'primary' }) => {
+  return <div className={`my-component ${variant}`}>{title}</div>;
+};
+
+// 2. Export from index.ts
+export { MyComponent } from './atoms/MyComponent/MyComponent';
+
+// 3. Add test
+// MyComponent.test.tsx
+
+// 4. Use in terminal app
+import { MyComponent } from '@biotech-terminal/frontend-components/terminal';
+```
+
+### Adding a New Database Model
+```python
+# 1. Define in platform/core/database.py
+class NewModel(Base):
+    __tablename__ = "new_models"
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# 2. Create migration (for production)
+# Use Alembic for migrations
+
+# 3. For development, recreate database
+rm biotech_terminal.db
+poetry run python -c "from platform.core.database import init_db; import asyncio; asyncio.run(init_db())"
+```
+
+## Important Notes for AI Assistants
+
+### When Making Changes
+1. **Read existing code first** - Understand patterns before changing
+2. **Run tests before and after** - Ensure you don't break existing functionality
+3. **Follow the monorepo structure** - Changes may need to be made in multiple workspaces
+4. **Build dependencies matter** - frontend-components must be built before terminal can use it
+5. **Check both backends** - Python and Node.js backends serve different purposes
+
+### When You're Unsure
+1. **Check docs/** folder for detailed guides
+2. **Look at existing similar code** for patterns
+3. **Run `npm run dev` to see it working** before making changes
+4. **Ask for clarification** rather than guessing
+
+### Red Flags to Avoid
+- ❌ Don't delete tests without understanding why they exist
+- ❌ Don't commit `.env` files or secrets
+- ❌ Don't use `any` type in TypeScript without good reason
+- ❌ Don't bypass security validations
+- ❌ Don't ignore linting errors
+- ❌ Don't skip writing tests for new functionality
+- ❌ Don't hardcode API URLs (use environment variables)
+- ❌ Don't modify `package-lock.json` or `poetry.lock` manually
