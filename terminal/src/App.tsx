@@ -13,6 +13,10 @@ import { DataExplorerPage } from './pages/DataExplorerPage';
 import { EpidemiologyPage } from './pages/EpidemiologyPage';
 import { NewsPage } from './pages/NewsPage';
 import { TerminalFeaturesDemo } from './pages/TerminalFeaturesDemo';
+import { CatalystCalendarPage } from './pages/CatalystCalendarPage';
+import { CompetitorsPage } from './pages/CompetitorsPage';
+import { DataCatalogPage } from './pages/DataCatalogPage';
+import { AuditLogPage } from './pages/AuditLogPage';
 
 // Import layout components
 import { TerminalLayout } from './components/TerminalLayout';
@@ -68,7 +72,7 @@ export function App() {
             <Route path="/science/biomarkers" element={<PlaceholderPage title="BIOMARKER ATLAS" />} />
 
             {/* Catalysts */}
-            <Route path="/catalysts/calendar" element={<PlaceholderPage title="CATALYST CALENDAR" />} />
+            <Route path="/catalysts/calendar" element={<CatalystCalendarPage />} />
             <Route path="/catalysts/past" element={<PlaceholderPage title="PAST CATALYSTS" />} />
             <Route path="/catalysts/alerts" element={<PlaceholderPage title="CATALYST ALERTS" />} />
 
@@ -83,7 +87,7 @@ export function App() {
             <Route path="/companies/pipelines" element={<PlaceholderPage title="PIPELINE MAPS" />} />
 
             {/* Competitors */}
-            <Route path="/competitors/spiderweb" element={<PlaceholderPage title="SPIDERWEB COMPARE" />} />
+            <Route path="/competitors/spiderweb" element={<CompetitorsPage />} />
             <Route path="/competitors/matrix" element={<PlaceholderPage title="LANDSCAPE MATRIX" />} />
             <Route path="/competitors/voice" element={<PlaceholderPage title="SHARE-OF-VOICE" />} />
 
@@ -108,8 +112,8 @@ export function App() {
             <Route path="/analytics/scenarios" element={<PlaceholderPage title="SCENARIO MODELS" />} />
 
             {/* Data */}
-            <Route path="/data/catalog" element={<PlaceholderPage title="DATA CATALOG" />} />
-            <Route path="/data/provenance" element={<PlaceholderPage title="PROVENANCE & AUDIT" />} />
+            <Route path="/data/catalog" element={<DataCatalogPage />} />
+            <Route path="/data/provenance" element={<AuditLogPage />} />
             <Route path="/data/exports" element={<PlaceholderPage title="EXPORTS" />} />
             <Route path="/data/freshness" element={<PlaceholderPage title="DATA FRESHNESS" />} />
 

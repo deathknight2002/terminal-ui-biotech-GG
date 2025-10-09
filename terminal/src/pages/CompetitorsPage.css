@@ -1,0 +1,260 @@
+.competitors-page {
+  padding: 2rem;
+  height: 100%;
+  position: relative;
+}
+
+.refresh-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary, #00ff00);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 0.25rem;
+}
+
+.refresh-btn:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.radar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.radar-chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.radar-chart {
+  width: 100%;
+  height: auto;
+}
+
+.radar-polygon {
+  transition: all 0.3s;
+}
+
+.radar-polygon:hover {
+  opacity: 0.8;
+}
+
+.radar-point {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.radar-point:hover {
+  r: 6;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.radar-label {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.radar-label:hover {
+  fill: var(--accent-primary, #00ff00);
+  font-size: 12px;
+}
+
+.radar-legend {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.legend-company {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  text-transform: uppercase;
+}
+
+.comparison-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 0.5rem;
+}
+
+.section-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: var(--accent-primary, #00ff00);
+  font-weight: 700;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  letter-spacing: 0.1em;
+}
+
+.comparison-table-container {
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.875rem;
+}
+
+.comparison-table th {
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--accent-primary, #00ff00);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--accent-primary, #00ff00);
+}
+
+.comparison-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+}
+
+.metric-name {
+  color: var(--text-secondary, #aaaaaa);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.metric-value {
+  position: relative;
+  cursor: pointer;
+}
+
+.value-bar {
+  position: relative;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.value-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: width 0.3s, background 0.3s;
+}
+
+.value-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  z-index: 1;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.justification-tooltip {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 500px;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid var(--accent-primary, #00ff00);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+  z-index: 1000;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.tooltip-company {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00ff00);
+  text-transform: uppercase;
+}
+
+.tooltip-metric {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #aaaaaa);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.tooltip-content {
+  font-size: 0.875rem;
+  color: var(--text-primary, #ffffff);
+  line-height: 1.6;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary, #aaaaaa);
+  font-size: 0.875rem;
+}
+
+.error-state {
+  color: #ff6666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .radar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-table {
+    font-size: 0.75rem;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.5rem;
+  }
+
+  .justification-tooltip {
+    max-width: 90vw;
+    padding: 1rem;
+  }
+}

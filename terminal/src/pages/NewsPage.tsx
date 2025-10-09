@@ -16,13 +16,34 @@ interface Article {
   };
 }
 
+interface NewsDiff {
+  since: string;
+  changes: {
+    added: number;
+    updated: number;
+    deleted: number;
+  };
+  highlights: Array<{
+    type: 'new' | 'updated' | 'deleted';
+    entity: string;
+    summary: string;
+    timestamp: string;
+    article_id?: number;
+    url?: string;
+  }>;
+  last_check: string;
+}
+
 export function NewsPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [diff, setDiff] = useState<NewsDiff | null>(null);
+  const [showDiffRibbon, setShowDiffRibbon] = useState(true);
 
   useEffect(() => {
     fetchNews();
+    fetchDiff();
   }, []);
 
   const fetchNews = async () => {
@@ -38,10 +59,90 @@ export function NewsPage() {
     }
   };
 
+  const fetchDiff = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/news/diff?since=1h');
+      const data = await response.json();
+      setDiff(data);
+    } catch (err) {
+      console.error('Failed to fetch diff:', err);
+    }
+  };
+
   const getSentimentBadge = (score: number) => {
     if (score > 0.3) return { label: 'POSITIVE', class: 'positive' };
     if (score < -0.3) return { label: 'NEGATIVE', class: 'negative' };
     return { label: 'NEUTRAL', class: 'neutral' };
+  };
+
+  const renderDiffRibbon = () => {
+    if (!diff || !showDiffRibbon) return null;
+
+    const hasChanges = diff.changes.added > 0 || diff.changes.updated > 0 || diff.changes.deleted > 0;
+
+    if (!hasChanges) return null;
+
+    return (
+      <div className="diff-ribbon">
+        <div className="diff-header">
+          <div className="diff-title">
+            📊 SINCE LAST REFRESH
+            <span className="diff-time">
+              {new Date(diff.since).toLocaleTimeString()}
+            </span>
+          </div>
+          <button
+            className="diff-close"
+            onClick={() => setShowDiffRibbon(false)}
+            title="Close"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="diff-stats">
+          {diff.changes.added > 0 && (
+            <div className="diff-stat added">
+              <span className="stat-value">{diff.changes.added}</span>
+              <span className="stat-label">NEW</span>
+            </div>
+          )}
+          {diff.changes.updated > 0 && (
+            <div className="diff-stat updated">
+              <span className="stat-value">{diff.changes.updated}</span>
+              <span className="stat-label">UPDATED</span>
+            </div>
+          )}
+          {diff.changes.deleted > 0 && (
+            <div className="diff-stat deleted">
+              <span className="stat-value">{diff.changes.deleted}</span>
+              <span className="stat-label">DELETED</span>
+            </div>
+          )}
+        </div>
+        {diff.highlights.length > 0 && (
+          <div className="diff-highlights">
+            {diff.highlights.slice(0, 3).map((highlight, idx) => (
+              <div key={idx} className={`diff-highlight diff-${highlight.type}`}>
+                <span className="highlight-icon">
+                  {highlight.type === 'new' ? '🆕' : highlight.type === 'updated' ? '🔄' : '🗑️'}
+                </span>
+                <span className="highlight-text">{highlight.summary}</span>
+                {highlight.url && (
+                  <a
+                    href={highlight.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="highlight-link"
+                  >
+                    →
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -51,6 +152,8 @@ export function NewsPage() {
         cornerBrackets
         variant="glass"
       >
+        {renderDiffRibbon()}
+        
         {loading && <div className="loading-state">Loading news articles...</div>}
         {error && <div className="error-state">{error}</div>}
         
@@ -72,6 +175,7 @@ export function NewsPage() {
                     className="article-title"
                   >
                     {article.title}
+                    <span className="external-link-icon">🔗</span>
                   </a>
                   <span className="article-source">{article.source}</span>
                 </div>
