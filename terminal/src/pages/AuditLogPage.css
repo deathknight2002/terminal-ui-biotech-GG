@@ -1,0 +1,255 @@
+.audit-log-page {
+  padding: 2rem;
+  height: 100%;
+}
+
+.export-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary, #00ff00);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 0.25rem;
+}
+
+.export-btn:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.audit-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.audit-search,
+.audit-filter {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary, #00ff00);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+}
+
+.audit-search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.audit-search::placeholder {
+  color: var(--text-secondary, #666666);
+}
+
+.audit-filter {
+  cursor: pointer;
+}
+
+.audit-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.audit-entry {
+  display: flex;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.entry-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.status-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  z-index: 1;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% { 
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+.timeline-line {
+  width: 2px;
+  flex: 1;
+  background: rgba(0, 255, 0, 0.2);
+  margin-top: 0.5rem;
+}
+
+.audit-entry:last-child .timeline-line {
+  display: none;
+}
+
+.entry-content {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+
+.entry-content:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-primary, #00ff00);
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+}
+
+.entry-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.action-icon {
+  font-size: 1.25rem;
+}
+
+.action-text {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00ff00);
+  letter-spacing: 0.05em;
+}
+
+.entry-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #aaaaaa);
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 0.25rem;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.status-success {
+  background: rgba(0, 255, 0, 0.2);
+  color: #00ff00;
+  border: 1px solid #00ff00;
+}
+
+.status-badge.status-failure {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff6666;
+  border: 1px solid #ff0000;
+}
+
+.status-badge.status-warning {
+  background: rgba(255, 165, 0, 0.2);
+  color: #ffaa00;
+  border: 1px solid #ff8800;
+}
+
+.entry-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  flex-wrap: wrap;
+}
+
+.detail-label {
+  color: var(--text-secondary, #aaaaaa);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  min-width: 80px;
+}
+
+.detail-value {
+  color: var(--text-primary, #ffffff);
+  flex: 1;
+  font-family: var(--font-mono, 'Courier New', monospace);
+}
+
+.metadata-json {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #aaaaaa);
+  word-break: break-all;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary, #aaaaaa);
+  font-size: 0.875rem;
+}
+
+.error-state {
+  color: #ff6666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .audit-log-page {
+    padding: 1rem;
+  }
+
+  .audit-controls {
+    flex-direction: column;
+  }
+
+  .audit-search {
+    min-width: auto;
+  }
+
+  .audit-entry {
+    gap: 1rem;
+  }
+
+  .entry-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .detail-label {
+    min-width: auto;
+  }
+}

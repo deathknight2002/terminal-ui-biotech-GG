@@ -15,6 +15,8 @@ import { NewsPage } from './pages/NewsPage';
 import { TerminalFeaturesDemo } from './pages/TerminalFeaturesDemo';
 import { CatalystCalendarPage } from './pages/CatalystCalendarPage';
 import { CompetitorsPage } from './pages/CompetitorsPage';
+import { DataCatalogPage } from './pages/DataCatalogPage';
+import { AuditLogPage } from './pages/AuditLogPage';
 
 // Import layout components
 import { TerminalLayout } from './components/TerminalLayout';
@@ -110,8 +112,8 @@ export function App() {
             <Route path="/analytics/scenarios" element={<PlaceholderPage title="SCENARIO MODELS" />} />
 
             {/* Data */}
-            <Route path="/data/catalog" element={<PlaceholderPage title="DATA CATALOG" />} />
-            <Route path="/data/provenance" element={<PlaceholderPage title="PROVENANCE & AUDIT" />} />
+            <Route path="/data/catalog" element={<DataCatalogPage />} />
+            <Route path="/data/provenance" element={<AuditLogPage />} />
             <Route path="/data/exports" element={<PlaceholderPage title="EXPORTS" />} />
             <Route path="/data/freshness" element={<PlaceholderPage title="DATA FRESHNESS" />} />
 
