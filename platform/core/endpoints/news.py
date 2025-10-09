@@ -190,3 +190,89 @@ async def get_news_sources(db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Error fetching news sources: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/diff")
+async def get_news_diff(
+    since: Optional[str] = Query(None, description="ISO timestamp or relative time (e.g., '1h', '1d')"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get news articles diff since last refresh with highlights.
+    Shows new, updated articles since the specified time.
+    """
+    try:
+        # Parse since parameter
+        if since:
+            if since.endswith('h'):
+                hours = int(since[:-1])
+                since_dt = datetime.utcnow() - timedelta(hours=hours)
+            elif since.endswith('d'):
+                days = int(since[:-1])
+                since_dt = datetime.utcnow() - timedelta(days=days)
+            elif since.endswith('w'):
+                weeks = int(since[:-1])
+                since_dt = datetime.utcnow() - timedelta(weeks=weeks)
+            else:
+                # Try to parse as ISO timestamp
+                try:
+                    since_dt = datetime.fromisoformat(since.replace('Z', '+00:00'))
+                except ValueError:
+                    raise HTTPException(status_code=400, detail=f"Invalid since format: {since}")
+        else:
+            # Default to last hour
+            since_dt = datetime.utcnow() - timedelta(hours=1)
+        
+        # Get new articles
+        new_articles = db.query(Article).filter(
+            Article.created_at >= since_dt,
+            Article.link_valid == True
+        ).order_by(desc(Article.created_at)).all()
+        
+        # Get updated articles (ingested_at > created_at means it was re-ingested/updated)
+        updated_articles = db.query(Article).filter(
+            Article.ingested_at >= since_dt,
+            Article.created_at < since_dt,
+            Article.link_valid == True
+        ).order_by(desc(Article.ingested_at)).all()
+        
+        highlights = []
+        
+        # Add new articles to highlights
+        for article in new_articles[:10]:  # Limit to 10 highlights
+            highlights.append({
+                "type": "new",
+                "entity": article.title,
+                "summary": f"New article from {article.source}",
+                "timestamp": article.created_at.isoformat() if article.created_at else None,
+                "article_id": article.id,
+                "url": article.url
+            })
+        
+        # Add updated articles to highlights
+        for article in updated_articles[:5]:  # Limit to 5 highlights
+            highlights.append({
+                "type": "updated",
+                "entity": article.title,
+                "summary": f"Article refreshed from {article.source}",
+                "timestamp": article.ingested_at.isoformat() if article.ingested_at else None,
+                "article_id": article.id,
+                "url": article.url
+            })
+        
+        return {
+            "since": since_dt.isoformat(),
+            "changes": {
+                "added": len(new_articles),
+                "updated": len(updated_articles),
+                "deleted": 0  # Not tracking deletions currently
+            },
+            "highlights": highlights,
+            "last_check": datetime.utcnow().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching news diff: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
