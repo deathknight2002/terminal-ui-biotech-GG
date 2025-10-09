@@ -1,5 +1,25 @@
 # Biotech Terminal Platform - Copilot Instructions
 
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Repository Architecture](#repository-architecture)
+3. [Critical Developer Workflows](#critical-developer-workflows)
+4. [Project-Specific Conventions](#project-specific-conventions)
+5. [Integration Points & Data Flow](#integration-points--data-flow)
+6. [Common Gotchas & Critical Knowledge](#common-gotchas--critical-knowledge)
+7. [Key Files to Understand](#key-files-to-understand)
+8. [Testing Guidelines](#testing-guidelines) ⭐ NEW
+9. [Linting and Code Quality](#linting-and-code-quality) ⭐ NEW
+10. [CI/CD Pipeline](#cicd-pipeline) ⭐ NEW
+11. [Security Best Practices](#security-best-practices) ⭐ NEW
+12. [Code Review Expectations](#code-review-expectations) ⭐ NEW
+13. [Troubleshooting Guide](#troubleshooting-guide) ⭐ NEW
+14. [Common Development Patterns](#common-development-patterns) ⭐ NEW
+15. [Important Notes for AI Assistants](#important-notes-for-ai-assistants) ⭐ NEW
+
+---
+
 ## Project Overview
 
 This is a **multi-workspace monorepo** combining Python FastAPI backend with React/TypeScript frontend for biotech/pharmaceutical intelligence. Architecture follows OpenBB platform patterns with Bloomberg Terminal aesthetics.
