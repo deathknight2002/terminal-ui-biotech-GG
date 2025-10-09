@@ -180,6 +180,28 @@ npm run build:terminal
 
 ## Configuration
 
+### Database Setup
+
+The platform uses SQLite for development (PostgreSQL for production). The database is automatically initialized on first run:
+
+```bash
+# Database is created automatically when running:
+poetry run uvicorn platform.core.app:app
+
+# Or initialize manually:
+python -c "from platform.core.database import init_db; import asyncio; asyncio.run(init_db())"
+```
+
+**Database Migrations:**
+- Schema migrations are located in `platform/core/migrations/`
+- The `init_db()` function creates all tables and seeds sample data
+- Database file: `biotech_terminal.db` (gitignored, not committed to repo)
+
+**Seed Data:**
+- Sample pharmaceutical data is automatically loaded via `seed_data.py`
+- Includes drugs, clinical trials, companies, and catalyst events
+- Run setup scripts to initialize the database with seed data
+
 ### Environment Variables
 ```bash
 # .env

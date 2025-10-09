@@ -130,6 +130,13 @@ See [docs/TUI.md](docs/TUI.md) for detailed usage instructions.
    ./scripts/setup.sh
    ```
 
+   The setup script will:
+   - Install Python dependencies via Poetry
+   - Install Node.js dependencies for all workspaces
+   - Create `.env` file with default configuration
+   - Initialize database and run migrations
+   - Seed database with sample pharmaceutical data
+
 2. **Start development servers:**
 
    ```bash
