@@ -1,0 +1,370 @@
+.catalyst-calendar-page {
+  padding: 2rem;
+  height: 100%;
+}
+
+.calendar-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.month-picker {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary, #00ff00);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.view-mode-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.view-mode-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary, #00ff00);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-mode-btn:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.view-mode-btn.active {
+  background: var(--accent-primary, #00ff00);
+  color: #000000;
+}
+
+.export-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--accent-primary, #00ff00);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.export-btn:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+/* Agenda View */
+.agenda-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+
+.agenda-item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.agenda-item:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-primary, #00ff00);
+}
+
+.agenda-date {
+  flex-shrink: 0;
+  width: 80px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--accent-primary, #00ff00);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.agenda-details {
+  flex: 1;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.agenda-title {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--text-primary, #ffffff);
+}
+
+.agenda-title a {
+  color: var(--accent-primary, #00ff00);
+  text-decoration: none;
+}
+
+.agenda-title a:hover {
+  text-decoration: underline;
+}
+
+.agenda-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.impact-badge, .probability-badge {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+}
+
+.impact-badge.impact-high {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff6666;
+  border: 1px solid #ff0000;
+}
+
+.impact-badge.impact-medium {
+  background: rgba(255, 165, 0, 0.2);
+  color: #ffb366;
+  border: 1px solid #ff8800;
+}
+
+.impact-badge.impact-low {
+  background: rgba(0, 255, 0, 0.2);
+  color: #66ff66;
+  border: 1px solid #00ff00;
+}
+
+.impact-badge.impact-unknown {
+  background: rgba(128, 128, 128, 0.2);
+  color: #cccccc;
+  border: 1px solid #888888;
+}
+
+.probability-badge {
+  background: rgba(0, 120, 255, 0.2);
+  color: #6699ff;
+  border: 1px solid #0066ff;
+}
+
+.agenda-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #aaaaaa);
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+}
+
+.status-badge {
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+}
+
+.status-badge.status-upcoming {
+  background: rgba(0, 255, 0, 0.2);
+  color: #00ff00;
+}
+
+.status-badge.status-completed {
+  background: rgba(128, 128, 128, 0.2);
+  color: #888888;
+}
+
+.status-badge.status-cancelled {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff6666;
+}
+
+.agenda-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #cccccc);
+  line-height: 1.4;
+}
+
+/* Month View */
+.month-view {
+  padding: 1rem;
+}
+
+.month-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.month-day-label {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00ff00);
+  padding: 0.5rem;
+}
+
+.month-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.month-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.month-day {
+  min-height: 100px;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 255, 0, 0.1);
+  border-radius: 0.25rem;
+  position: relative;
+}
+
+.month-day.active {
+  cursor: pointer;
+}
+
+.month-day.active:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-primary, #00ff00);
+}
+
+.month-day.inactive {
+  opacity: 0.3;
+}
+
+.month-day.has-events {
+  border-color: var(--accent-primary, #00ff00);
+}
+
+.day-number {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary, #ffffff);
+}
+
+.day-event {
+  font-size: 0.7rem;
+  padding: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-radius: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.day-event.impact-high {
+  background: rgba(255, 0, 0, 0.3);
+  color: #ff6666;
+}
+
+.day-event.impact-medium {
+  background: rgba(255, 165, 0, 0.3);
+  color: #ffb366;
+}
+
+.day-event.impact-low {
+  background: rgba(0, 255, 0, 0.3);
+  color: #66ff66;
+}
+
+/* Week View */
+.week-view {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.week-day {
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.week-day-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--accent-primary, #00ff00);
+}
+
+.week-day-events {
+  padding: 0.5rem;
+  min-height: 200px;
+}
+
+.week-event {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.week-event-time {
+  color: var(--accent-primary, #00ff00);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.week-event-title {
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 0.125rem;
+}
+
+.week-event-company {
+  color: var(--text-secondary, #aaaaaa);
+  font-size: 0.7rem;
+}
+
+.week-empty {
+  text-align: center;
+  color: var(--text-secondary, #666666);
+  padding: 2rem;
+  font-style: italic;
+}
+
+.loading-state, .error-state, .empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary, #aaaaaa);
+  font-size: 0.875rem;
+}
+
+.error-state {
+  color: #ff6666;
+}
