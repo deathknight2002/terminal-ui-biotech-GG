@@ -18,6 +18,17 @@ import { CompetitorsPage } from './pages/CompetitorsPage';
 import { DataCatalogPage } from './pages/DataCatalogPage';
 import { AuditLogPage } from './pages/AuditLogPage';
 
+// Import Financials pages
+import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
+import { PriceTargetsPage } from './pages/financials/PriceTargetsPage';
+import { LoECliffPage } from './pages/financials/LoECliffPage';
+import { 
+  ConsensusVsHousePage, 
+  DCFMultiplesPage, 
+  ModelAuditPage, 
+  ReportsPage 
+} from './pages/financials/FinancialsPages';
+
 // Import layout components
 import { TerminalLayout } from './components/TerminalLayout';
 
@@ -100,6 +111,15 @@ export function App() {
             <Route path="/markets/sectors" element={<PlaceholderPage title="SECTOR INDICES" />} />
             <Route path="/markets/valuations" element={<PlaceholderPage title="VALUATION COMPS" />} />
             <Route path="/markets/risks" element={<PlaceholderPage title="RISK FACTORS" />} />
+
+            {/* Financials */}
+            <Route path="/financials/overview" element={<FinancialsOverviewPage />} />
+            <Route path="/financials/price-targets" element={<PriceTargetsPage />} />
+            <Route path="/financials/consensus" element={<ConsensusVsHousePage />} />
+            <Route path="/financials/dcf" element={<DCFMultiplesPage />} />
+            <Route path="/financials/loe-cliff" element={<LoECliffPage />} />
+            <Route path="/financials/audit" element={<ModelAuditPage />} />
+            <Route path="/financials/reports" element={<ReportsPage />} />
 
             {/* Portfolios */}
             <Route path="/portfolios/watchlists" element={<PlaceholderPage title="WATCHLIST MANAGER" />} />
