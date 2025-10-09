@@ -6,6 +6,7 @@
  */
 
 export * from './event-bus';
+export * from './cloudevent-bus';
 export * from './service-registry';
 export * from './adaptive-cache';
 export * from './circuit-breaker';
@@ -18,6 +19,7 @@ export * from './documentation-generator';
 export * from './telemetry';
 export * from './metrics';
 export * from './health';
+export * from './di-container';
 
 /**
  * Initialize the core system
