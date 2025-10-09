@@ -3,7 +3,7 @@
 ## Quick Install
 
 ```bash
-npm install @deaxu/terminal-ui
+npm install @biotech-terminal/frontend-components
 ```
 
 ## Full Setup
@@ -11,24 +11,24 @@ npm install @deaxu/terminal-ui
 ### 1. Install the package
 
 ```bash
-npm install @deaxu/terminal-ui
+npm install @biotech-terminal/frontend-components
 # or
-yarn add @deaxu/terminal-ui
+yarn add @biotech-terminal/frontend-components
 # or
-pnpm add @deaxu/terminal-ui
+pnpm add @biotech-terminal/frontend-components
 ```
 
 ### 2. Import styles in your main file
 
 ```tsx
 // main.tsx or App.tsx
-import '@deaxu/terminal-ui/styles';
+import '@biotech-terminal/frontend-components/styles';
 ```
 
 ### 3. Start using components
 
 ```tsx
-import { Button, Panel, Metric } from '@deaxu/terminal-ui';
+import { Button, Panel, Metric } from '@biotech-terminal/frontend-components/terminal';
 
 function App() {
   return (
@@ -56,14 +56,14 @@ function App() {
 Import only what you need:
 
 ```tsx
-import { Button } from '@deaxu/terminal-ui';
-import { Panel } from '@deaxu/terminal-ui';
+import { Button } from '@biotech-terminal/frontend-components/terminal';
+import { Panel } from '@biotech-terminal/frontend-components/terminal';
 ```
 
 Not recommended (imports everything):
 
 ```tsx
-import * as TerminalUI from '@deaxu/terminal-ui'; // ❌ Large bundle
+import * as TerminalUI from '@biotech-terminal/frontend-components'; // ❌ Large bundle
 ```
 
 ### TypeScript
@@ -71,7 +71,7 @@ import * as TerminalUI from '@deaxu/terminal-ui'; // ❌ Large bundle
 Types are included automatically. No `@types` package needed.
 
 ```tsx
-import type { ButtonProps, PanelProps } from '@deaxu/terminal-ui';
+import type { ButtonProps, PanelProps } from '@biotech-terminal/frontend-components/terminal';
 
 const MyButton: React.FC<ButtonProps> = (props) => {
   return <Button {...props} />;
@@ -84,7 +84,7 @@ const MyButton: React.FC<ButtonProps> = (props) => {
 
 ```tsx
 // app/layout.tsx
-import '@deaxu/terminal-ui/styles';
+import '@biotech-terminal/frontend-components/styles';
 
 export default function RootLayout({ children }) {
   return (
@@ -99,7 +99,7 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // main.tsx
-import '@deaxu/terminal-ui/styles';
+import '@biotech-terminal/frontend-components/styles';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
@@ -110,7 +110,7 @@ createRoot(document.getElementById('root')!).render(<App />);
 
 ```tsx
 // index.tsx
-import '@deaxu/terminal-ui/styles';
+import '@biotech-terminal/frontend-components/styles';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
@@ -125,7 +125,7 @@ root.render(<App />);
 Make sure you imported the CSS:
 
 ```tsx
-import '@deaxu/terminal-ui/styles';
+import '@biotech-terminal/frontend-components/styles';
 ```
 
 ### TypeScript errors
@@ -147,8 +147,8 @@ npm install react@^18.0.0 react-dom@^18.0.0
 ## CDN Usage (Not Recommended for Production)
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@deaxu/terminal-ui/dist/terminal-ui.css">
-<script src="https://unpkg.com/@deaxu/terminal-ui/dist/terminal-ui.umd.cjs"></script>
+<link rel="stylesheet" href="https://unpkg.com/@biotech-terminal/frontend-components/dist/terminal-ui.css">
+<script src="https://unpkg.com/@biotech-terminal/frontend-components/dist/terminal-ui.umd.cjs"></script>
 
 <script>
   const { Button, Panel } = window.TerminalUI;
@@ -158,18 +158,18 @@ npm install react@^18.0.0 react-dom@^18.0.0
 ## GitHub Installation (Development)
 
 ```bash
-npm install git+https://github.com/deaxu/terminal-ui.git
+npm install git+https://github.com/deathknight2002/terminal-ui-biotech-GG.git
 ```
 
 Or clone and link locally:
 
 ```bash
-git clone https://github.com/deaxu/terminal-ui.git
-cd terminal-ui
+git clone https://github.com/deathknight2002/terminal-ui-biotech-GG.git
+cd terminal-ui-biotech-GG/frontend-components
 npm install
 npm run build
 npm link
 
 # In your project
-npm link @deaxu/terminal-ui
+npm link @biotech-terminal/frontend-components
 ```

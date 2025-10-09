@@ -126,9 +126,16 @@ See [docs/TUI.md](docs/TUI.md) for detailed usage instructions.
    # Windows
    .\scripts\setup.ps1
    
-   # macOS/Linux  
+   # macOS/Linux
    ./scripts/setup.sh
    ```
+
+   The setup script will:
+   - Install Python dependencies via Poetry
+   - Install Node.js dependencies for all workspaces
+   - Create `.env` file with default configuration
+   - Initialize database and run migrations
+   - Seed database with sample pharmaceutical data
 
 2. **Start development servers:**
 
@@ -235,7 +242,7 @@ Modes: `deuteranopia`, `protanomaly`
 ### Dashboard with Metrics
 
 ```tsx
-import { Panel, Metric, Gauge, SparkLine } from '@deaxu/terminal-ui';
+import { Panel, Metric, Gauge, SparkLine } from '@biotech-terminal/frontend-components/terminal';
 
 function Dashboard() {
   const sparkData = Array.from({ length: 20 }, () => Math.random() * 100);
@@ -265,7 +272,7 @@ function Dashboard() {
 ### Modal with Form
 
 ```tsx
-import { Modal, Button, Input, Select, useToast } from '@deaxu/terminal-ui';
+import { Modal, Button, Input, Select, useToast } from '@biotech-terminal/frontend-components/terminal';
 import { useState } from 'react';
 
 function ConfigModal() {
@@ -314,7 +321,7 @@ function ConfigModal() {
 ### Toast Notifications
 
 ```tsx
-import { Toast, useToast, Button } from '@deaxu/terminal-ui';
+import { Toast, useToast, Button } from '@biotech-terminal/frontend-components/terminal';
 
 function NotificationDemo() {
   const { messages, notify, remove } = useToast();
@@ -337,7 +344,7 @@ function NotificationDemo() {
 ### Data Table
 
 ```tsx
-import { DataTable, Badge } from '@deaxu/terminal-ui';
+import { DataTable, Badge } from '@biotech-terminal/frontend-components/terminal';
 
 function AgentTable() {
   const data = [
@@ -380,7 +387,7 @@ import type {
   DataTableProps,
   Column,
   Status
-} from '@deaxu/terminal-ui';
+} from '@biotech-terminal/frontend-components/terminal';
 ```
 
 ### CSS Customization

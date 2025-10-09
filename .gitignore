@@ -51,3 +51,7 @@ tmp/fixtures/
 
 # Nested repositories
 OLD OVERHAU;/
+
+# Database files
+*.db
+biotech_terminal.db
