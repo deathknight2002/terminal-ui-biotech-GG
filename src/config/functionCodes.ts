@@ -59,6 +59,169 @@ export const FUNCTION_CODES: FunctionCode[] = [
     shortcut: '⌘+K',
     category: 'navigation',
   },
+
+  // Pipeline
+  {
+    code: 'PI',
+    label: 'PIPELINE',
+    description: 'Drug pipeline and development tracker',
+    path: '/pipeline',
+    keywords: ['pipeline', 'drugs', 'development', 'assets'],
+    category: 'navigation',
+  },
+
+  // Epidemiology
+  {
+    code: 'EP',
+    label: 'EPIDEMIOLOGY',
+    description: 'Disease epidemiology and patient populations',
+    path: '/epidemiology',
+    keywords: ['epidemiology', 'disease', 'patients', 'prevalence'],
+    shortcut: '⌘+E',
+    category: 'navigation',
+  },
+
+  // Competitors
+  {
+    code: 'CM',
+    label: 'COMPETITORS',
+    description: 'Competitive landscape analysis',
+    path: '/competitors',
+    keywords: ['competitors', 'competition', 'landscape'],
+    category: 'navigation',
+  },
+
+  // Market Intelligence
+  {
+    code: 'MI',
+    label: 'MARKET INTEL',
+    description: 'Market intelligence and trends',
+    path: '/market-intelligence',
+    keywords: ['market', 'intelligence', 'trends', 'analysis'],
+    category: 'navigation',
+  },
+
+  // Data Catalog
+  {
+    code: 'DC',
+    label: 'DATA CATALOG',
+    description: 'Browse available datasets',
+    path: '/data-catalog',
+    keywords: ['data', 'catalog', 'datasets', 'sources'],
+    category: 'navigation',
+  },
+
+  // Audit Log
+  {
+    code: 'AL',
+    label: 'AUDIT LOG',
+    description: 'System audit log and history',
+    path: '/audit',
+    keywords: ['audit', 'log', 'history', 'changes'],
+    category: 'navigation',
+  },
+
+  // Financial Pages
+  {
+    code: 'FI',
+    label: 'FINANCIALS',
+    description: 'Financial overview and models',
+    path: '/financials',
+    keywords: ['financials', 'finance', 'valuation', 'models'],
+    category: 'financials',
+  },
+
+  {
+    code: 'PT',
+    label: 'PRICE TARGETS',
+    description: 'Analyst price targets and consensus',
+    path: '/financials/price-targets',
+    keywords: ['price', 'targets', 'analyst', 'consensus'],
+    category: 'financials',
+  },
+
+  {
+    code: 'VA',
+    label: 'VALUATION',
+    description: 'DCF and multiples valuation',
+    path: '/financials/valuation',
+    keywords: ['valuation', 'dcf', 'multiples', 'analysis'],
+    category: 'financials',
+  },
+
+  {
+    code: 'LO',
+    label: 'LOE TIMELINE',
+    description: 'Loss of exclusivity timeline',
+    path: '/financials/loe',
+    keywords: ['loe', 'loss', 'exclusivity', 'patent', 'cliff'],
+    category: 'financials',
+  },
+
+  // Data Operations
+  {
+    code: 'EX',
+    label: 'EXPORT',
+    description: 'Export data to Excel/PowerPoint',
+    path: '#export',
+    keywords: ['export', 'download', 'excel', 'pptx'],
+    category: 'data',
+  },
+
+  {
+    code: 'IM',
+    label: 'IMPORT',
+    description: 'Import data from Excel/CSV',
+    path: '#import',
+    keywords: ['import', 'upload', 'excel', 'csv'],
+    category: 'data',
+  },
+
+  {
+    code: 'SE',
+    label: 'SEARCH',
+    description: 'Global search across all data',
+    path: '#search',
+    keywords: ['search', 'find', 'query', 'lookup'],
+    category: 'data',
+  },
+
+  {
+    code: 'RE',
+    label: 'REFRESH',
+    description: 'Refresh data from sources',
+    path: '#refresh',
+    keywords: ['refresh', 'reload', 'update', 'sync'],
+    category: 'data',
+  },
+
+  // Analytics & Reports
+  {
+    code: 'RP',
+    label: 'REPORTS',
+    description: 'Generate and download reports',
+    path: '#reports',
+    keywords: ['reports', 'generate', 'download', 'artifacts'],
+    category: 'analytics',
+  },
+
+  {
+    code: 'SN',
+    label: 'SENSITIVITY',
+    description: 'Sensitivity analysis tables',
+    path: '#sensitivity',
+    keywords: ['sensitivity', 'analysis', 'scenarios', 'assumptions'],
+    category: 'analytics',
+  },
+
+  {
+    code: 'CP',
+    label: 'COMPARABLES',
+    description: 'Comparable companies analysis',
+    path: '#comparables',
+    keywords: ['comparables', 'comps', 'peers', 'multiples'],
+    category: 'analytics',
+  },
 ];
 
 /**

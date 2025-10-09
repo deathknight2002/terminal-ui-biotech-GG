@@ -1,13 +1,13 @@
 """
 Search API Endpoints
 
-Unified search across multiple entity types.
+Unified search across multiple entity types with FTS5 support.
 """
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import logging
 
 from ..database import (
@@ -19,10 +19,55 @@ from ..database import (
     Article,
     ClinicalTrial
 )
+from ..fts import search_fts
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+@router.get("/global")
+async def global_search(
+    q: str = Query(..., description="Search query"),
+    type: Optional[str] = Query(None, description="Entity type filter"),
+    limit: int = Query(50, ge=1, le=100, description="Max results"),
+    use_fts: bool = Query(True, description="Use full-text search"),
+    db: Session = Depends(get_db)
+):
+    """
+    Global full-text search across all entities.
+    
+    Uses FTS5 for efficient searching when available.
+    Falls back to LIKE queries if FTS is not available.
+    """
+    try:
+        if use_fts:
+            # Use FTS5 for fast full-text search
+            results = search_fts(db, q, entity_type=type, limit=limit)
+            
+            return {
+                "query": q,
+                "count": len(results),
+                "results": results,
+                "method": "fts5"
+            }
+        else:
+            # Fallback to LIKE queries
+            return await unified_search(q=q, limit=limit, db=db)
+            
+    except Exception as e:
+        logger.error(f"Global search error: {e}")
+        # Fallback to LIKE queries on error
+        try:
+            return await unified_search(q=q, limit=limit, db=db)
+        except Exception as e2:
+            logger.error(f"Fallback search error: {e2}")
+            return {
+                "error": str(e2),
+                "query": q,
+                "count": 0,
+                "results": []
+            }
 
 
 @router.get("/multi")
@@ -44,7 +89,8 @@ async def unified_search(
             "therapeutics": [],
             "catalysts": [],
             "articles": [],
-            "trials": []
+            "trials": [],
+            "method": "like"
         }
         
         # Search diseases
