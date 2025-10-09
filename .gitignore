@@ -46,5 +46,8 @@ ENV/
 # Coverage
 coverage/
 
+# Fixtures (generated test data)
+tmp/fixtures/
+
 # Nested repositories
 OLD OVERHAU;/
