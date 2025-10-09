@@ -1,0 +1,29 @@
+# Linguist language classification overrides
+# Fix Visual Basic 6 misclassification
+
+# Mark generated/vendored files
+external/** linguist-vendored
+tmp/** linguist-generated
+dist/** linguist-generated
+build/** linguist-generated
+*.min.js linguist-generated
+*.min.css linguist-generated
+
+# Documentation files
+*.md linguist-documentation
+
+# Force correct language detection for TypeScript/JavaScript
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JavaScript
+
+# Python files
+*.py linguist-language=Python
+
+# CSS files
+*.css linguist-language=CSS
+
+# Ignore specific problematic files that might be misclassified
+*.frm linguist-vendored=false
+*.vbp linguist-vendored=false
