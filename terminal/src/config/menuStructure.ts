@@ -75,6 +75,18 @@ export const menuStructure: MenuItem[] = [
     ]
   },
   {
+    label: 'FINANCIALS',
+    items: [
+      { label: 'Overview', path: '/financials/overview', description: 'House vs Street financial overview' },
+      { label: 'Price Targets', path: '/financials/price-targets', description: 'Analyst price targets' },
+      { label: 'Consensus vs House', path: '/financials/consensus', description: 'Street consensus vs House estimates' },
+      { label: 'DCF & Multiples', path: '/financials/dcf', description: 'Discounted cash flow and multiples analysis' },
+      { label: 'LoE Cliff', path: '/financials/loe-cliff', description: 'Loss of exclusivity timeline' },
+      { label: 'Model Audit', path: '/financials/audit', description: 'Valuation run audit trail' },
+      { label: 'Reports', path: '/financials/reports', description: 'Export decks and models' }
+    ]
+  },
+  {
     label: 'PORTFOLIOS',
     items: [
       { label: 'Watchlist Manager', path: '/portfolios/watchlists', description: 'Manage your watchlists' },

@@ -529,6 +529,174 @@ class DataIngestionLog(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+# ============================================================================
+# FINANCIALS MODULE MODELS
+# ============================================================================
+
+class PriceTarget(Base):
+    """Price target estimates from various sources (Street consensus)"""
+    __tablename__ = "price_targets"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    source = Column(String, nullable=False, index=True)  # Bank/Analyst name
+    date = Column(DateTime, nullable=False, index=True)
+    price_target = Column(Float, nullable=False)
+    rationale = Column(Text)
+    currency = Column(String, default="USD")
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_price_target_ticker_date', 'ticker', 'date'),
+        Index('idx_price_target_source', 'source'),
+    )
+
+
+class ConsensusEstimate(Base):
+    """Street consensus estimates for various financial metrics"""
+    __tablename__ = "consensus_estimates"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    metric = Column(String, nullable=False, index=True)  # revenue, EPS, GM, OPEX, shares, WACC, TGR
+    period = Column(String, nullable=False, index=True)  # YYYY or YYYY-Q1 format
+    value = Column(Float, nullable=False)
+    source = Column(String, index=True)  # Consensus source
+    currency = Column(String, default="USD")
+    unit = Column(String)  # millions, billions, percentage, etc.
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_consensus_ticker_metric_period', 'ticker', 'metric', 'period'),
+    )
+
+
+class RevenueLine(Base):
+    """Revenue projections by asset, region, and year"""
+    __tablename__ = "revenue_lines"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    asset_id = Column(String, nullable=False, index=True)  # References therapeutic/asset
+    asset_name = Column(String, nullable=False)
+    region = Column(String, nullable=False, index=True)  # US, EU, ROW
+    year = Column(Integer, nullable=False, index=True)
+    
+    # Revenue drivers
+    net_price = Column(Float, nullable=False)  # Price per patient
+    uptake = Column(Float, nullable=False)  # Market penetration (0-1)
+    probability_of_success = Column(Float, nullable=False)  # PoS by phase (0-1)
+    patients = Column(Integer)  # Patient count
+    revenue = Column(Float, nullable=False)  # Total revenue
+    
+    # Metadata
+    currency = Column(String, default="USD")
+    scenario = Column(String, default="base")  # base, bull, bear
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_revenue_asset_year', 'asset_id', 'year'),
+        Index('idx_revenue_region', 'region'),
+    )
+
+
+class PatentExpiry(Base):
+    """Patent expiry and loss of exclusivity (LoE) events"""
+    __tablename__ = "patent_expiries"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    asset_id = Column(String, nullable=False, index=True)
+    asset_name = Column(String, nullable=False)
+    region = Column(String, nullable=False, index=True)  # US, EU, etc.
+    expiry_date = Column(DateTime, nullable=False, index=True)
+    
+    exclusivity_type = Column(String, nullable=False)  # patent, data_exclusivity, orphan
+    erosion_curve_id = Column(String, nullable=False)  # Reference to erosion curve
+    
+    # Erosion parameters
+    peak_revenue_before_loe = Column(Float)
+    year_1_erosion_rate = Column(Float)  # Percentage drop year 1
+    year_2_erosion_rate = Column(Float)
+    steady_state_share = Column(Float)  # Long-term generic share
+    
+    notes = Column(Text)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_patent_asset_region', 'asset_id', 'region'),
+        Index('idx_patent_expiry_date', 'expiry_date'),
+    )
+
+
+class ValuationRun(Base):
+    """Valuation model runs with inputs hash for reproducibility"""
+    __tablename__ = "valuation_runs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    run_timestamp = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    
+    # Inputs tracking
+    inputs = Column(JSON, nullable=False)  # Full input parameters
+    inputs_hash = Column(String, nullable=False, index=True)  # Hash for deduplication
+    
+    # Valuation outputs
+    outputs = Column(JSON, nullable=False)  # DCF results, multiples, per-share value
+    scenario = Column(String, default="base")  # base, bull, bear
+    
+    # Model metadata
+    version = Column(String, default="1.0")  # Model version
+    user = Column(String, index=True)  # User who ran the model
+    notes = Column(Text)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_valuation_ticker_timestamp', 'ticker', 'run_timestamp'),
+        Index('idx_valuation_hash', 'inputs_hash'),
+    )
+
+
+class ReportArtifact(Base):
+    """Generated reports (XLSX, PPTX, PDF)"""
+    __tablename__ = "report_artifacts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    file_type = Column(String, nullable=False, index=True)  # xlsx, pptx, pdf
+    template_id = Column(String, nullable=False, index=True)  # Template identifier
+    
+    # Report parameters
+    ticker = Column(String, index=True)
+    params = Column(JSON, nullable=False)  # Generation parameters
+    
+    # File storage
+    file_path = Column(String, nullable=False)  # Storage path or URL
+    file_size = Column(Integer)  # File size in bytes
+    file_hash = Column(String)  # SHA256 hash
+    
+    # Access control
+    download_url = Column(String)  # Signed download URL
+    expiry_date = Column(DateTime)  # URL expiry
+    
+    # Metadata
+    generated_by = Column(String, index=True)
+    generated_at = Column(DateTime, default=datetime.utcnow, index=True)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_report_ticker_type', 'ticker', 'file_type'),
+        Index('idx_report_template', 'template_id'),
+    )
+
+
 # Database initialization
 async def init_db():
     """Initialize database tables"""
