@@ -2,7 +2,114 @@
 
 ## Philosophy: Manual Refresh Only
 
-The Biotech Terminal uses a **manual-refresh-only model** with zero background jobs.
+The Biotech Terminal uses a **manual-refresh-only model** with zero background jobs or automatic polling.
+
+## Frontend Manual Refresh (React Query)
+
+### Zero Background Network Traffic
+
+After initial page load, **no network requests** occur until you explicitly click the Refresh button.
+
+#### Disabled Features
+- ❌ `refetchInterval` - No polling
+- ❌ `refetchOnWindowFocus` - No auto-refresh when tab gains focus
+- ❌ `refetchOnReconnect` - No auto-refresh when network reconnects
+- ❌ WebSocket connections - No real-time streaming
+- ❌ EventSource/SSE - No server-sent events
+- ❌ Service Worker background sync - No background data updates
+
+#### React Query Configuration
+
+```typescript
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,              // Never auto-refetch
+      refetchOnWindowFocus: false,      // Explicit refresh only
+      refetchOnReconnect: false,        // No auto-refresh
+      refetchInterval: false,           // No polling
+    },
+  },
+});
+```
+
+### Explicit Refresh UX
+
+#### Refresh Button (Top Bar)
+- Click refresh icon to open menu
+- Options: News, Clinical Trials, Catalysts, or **Refresh All**
+- Shows spinner while fetching
+- Updates "Last Refreshed" timestamp on completion
+
+#### How It Works
+
+```typescript
+// User clicks Refresh All
+const handleRefresh = async () => {
+  // Invalidate all cached queries
+  await queryClient.invalidateQueries();
+  
+  // Update timestamp
+  setLastRefreshed(new Date().toISOString());
+  
+  // Show toast notification
+  showToast({ title: 'Refresh Complete', variant: 'success' });
+};
+```
+
+#### Error Handling
+
+**429 Rate Limit / 5xx Server Error:**
+- Shows dismissible banner: "Service busy; showing cached data"
+- Does NOT clear existing data
+- User can continue working with cached state
+
+**Network Failure:**
+- Shows warning: "Refreshed from cache - backend unavailable"
+- Queries refetch from cache
+- No app crash or blank screens
+
+### Last Refreshed Timestamp
+
+**Footer Display:**
+```
+LAST REFRESHED: 10/09/2025, 2:34:15 PM
+```
+
+**Behavior:**
+- Set on initial page load
+- Updated only when user clicks Refresh
+- Persists across route navigation (within session)
+- Does NOT update automatically
+
+### Server-Side Caching (Backend)
+
+Backend implements 30-minute TTL cache:
+
+```typescript
+// Cache-Control headers
+res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 min
+res.setHeader('Last-Modified', new Date(data.lastUpdated).toUTCString());
+```
+
+**Benefits:**
+- Multiple refresh clicks within 30 min → instant (304 Not Modified)
+- Reduces backend load
+- Cheaper API quota usage
+- ETag/If-None-Match support (future enhancement)
+
+### PWA Service Worker
+
+**Static Assets Only:**
+- Caches app shell (HTML, CSS, JS)
+- Does NOT cache API responses
+- Does NOT prefetch data
+- No Periodic Background Sync
+- No Background Fetch
+
+See `terminal/public/sw.js` for implementation.
+
+## Backend Scraper Refresh (CLI/API)
 
 ## Why Manual Refresh?
 

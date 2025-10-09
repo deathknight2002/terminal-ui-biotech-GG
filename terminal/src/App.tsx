@@ -36,14 +36,18 @@ import { TerminalLayout } from './components/TerminalLayout';
 import '../../frontend-components/src/styles/global.css';
 import './styles/glass-theme.css';
 import './styles/enhanced-aurora.css';
+import './styles/pwa.css';
 import './App.css';
 
-// Create React Query client
+// Create React Query client with manual-refresh-only settings
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: Infinity, // Never auto-refetch, only manual refresh
       gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false, // Disable auto-refetch on window focus
+      refetchOnReconnect: false, // Disable auto-refetch on reconnect
+      refetchInterval: false, // Disable polling
     },
   },
 });

@@ -1,0 +1,67 @@
+/**
+ * PWA Styles - Safe Areas and Standalone Mode
+ * iOS 26 compatible safe-area handling for notch/haptics
+ */
+
+:root {
+  /* Safe area insets for iOS notch/bottom bar */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  
+  /* Base padding */
+  --base-padding: 12px;
+}
+
+/* Apply safe areas to root app container */
+.terminal-layout {
+  padding-top: calc(var(--base-padding) + var(--safe-area-top));
+  padding-right: calc(var(--base-padding) + var(--safe-area-right));
+  padding-bottom: calc(var(--base-padding) + var(--safe-area-bottom));
+  padding-left: calc(var(--base-padding) + var(--safe-area-left));
+}
+
+/* Standalone mode - when installed as PWA */
+@media (display-mode: standalone) {
+  /* Reduce chrome, app is fullscreen */
+  .terminal-layout {
+    padding-top: calc(8px + var(--safe-area-top));
+  }
+  
+  /* Add backdrop blur to headers for Liquid Glass effect */
+  .aurora-top-bar,
+  .terminal-header,
+  .app-header {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(10, 10, 15, 0.85);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  }
+  
+  /* Enhance footer in standalone */
+  .terminal-footer {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background-color: rgba(10, 10, 15, 0.85);
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    padding-bottom: var(--safe-area-bottom);
+  }
+  
+  /* Tighten padding in standalone */
+  .terminal-main {
+    padding: 16px;
+  }
+}
+
+/* Browser mode - normal web browsing */
+@media (display-mode: browser) {
+  /* Keep standard chrome/spacing */
+}
+
+/* Minimal-ui mode - reduced browser UI */
+@media (display-mode: minimal-ui) {
+  .terminal-layout {
+    padding-top: calc(4px + var(--safe-area-top));
+  }
+}
