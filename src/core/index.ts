@@ -15,6 +15,9 @@ export * from './module-interface';
 export * from './intelligent-router';
 export * from './configuration-manager';
 export * from './documentation-generator';
+export * from './telemetry';
+export * from './metrics';
+export * from './health';
 
 /**
  * Initialize the core system
