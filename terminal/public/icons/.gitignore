@@ -1,0 +1,6 @@
+# Ignore generated PNG icons (to be generated from SVG)
+*.png
+
+# Keep the source SVG and documentation
+!icon.svg
+!README.md
