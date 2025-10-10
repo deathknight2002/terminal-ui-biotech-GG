@@ -395,6 +395,199 @@ export interface ApiError {
   details?: Record<string, any>;
 }
 
+// Evidence Journal Types (for science-first biotech intelligence)
+export type RefreshMode = "manual" | "scheduled" | "live";
+export type CatalystType = "PDUFA" | "AdComm" | "Readout" | "CHMP" | "EMA-Opinion" | "CRL" | "Approval" | "Other";
+export type CatalystStatus = "Upcoming" | "Past" | "Completed";
+export type EvidenceClass = "genetic" | "preclinical" | "translational" | "clinical" | "RWE";
+export type TrialPhase = "Preclinical" | "Phase I" | "Phase II" | "Phase III" | "Phase IV";
+export type TrialStatus = "Not yet recruiting" | "Recruiting" | "Active" | "Completed" | "Terminated" | "Withdrawn";
+export type EndpointType = "primary" | "secondary" | "exploratory";
+export type LineOfTherapy = "1L" | "2L" | "3L+" | "Adjuvant" | "Neoadjuvant" | "Maintenance";
+
+// Evidence Journal Company (expanded from existing Sponsor)
+export interface EvidenceCompany {
+  name: string;
+  ticker?: string;
+  stage_mix: string; // e.g., "Phase II/III focused"
+  cash_runway_est?: number; // months
+  company_type: CompanyType;
+  disclosures: string[]; // Links to 8-K filings, press releases
+  market_cap?: number;
+  headquarters?: string;
+  pipeline_count?: number;
+}
+
+// Evidence Journal Asset/Drug (enhanced version of existing Drug)
+export interface EvidenceDrug {
+  id: string;
+  name: string;
+  moa: string; // Mechanism of Action
+  targets: string[]; // e.g., ["IL-23", "TL1A"]
+  indications: string[];
+  line_of_therapy?: LineOfTherapy;
+  route: string; // e.g., "SC", "IV", "Oral"
+  competitor_set: Competitor[];
+  sponsor: string;
+  phase: PhaseType;
+  differentiation_score?: number; // 0-100
+  genetic_evidence_score?: number; // from Open Targets
+  last_updated: string;
+}
+
+// Evidence Journal Catalyst (enhanced from existing Catalyst)
+export interface EvidenceCatalyst {
+  id: string;
+  type: CatalystType;
+  date: string;
+  confidence: "High" | "Medium" | "Low"; // confidence in date/outcome
+  source_urls: string[]; // FDA, CT.gov, EMA, etc.
+  status: CatalystStatus;
+  drug_name?: string;
+  company?: string;
+  indication?: string;
+  description?: string;
+  impact_score?: number; // Readout credibility × Market relevance × Competitive density
+  readout_window?: { start: string; end: string }; // uncertainty window
+}
+
+// Evidence Record
+export interface Evidence {
+  id: string;
+  class: EvidenceClass;
+  strength_score: number; // 0-100, weighted by class
+  citations: string[]; // PubMed IDs, DOIs, etc.
+  summary: string;
+  drug_id?: string;
+  indication?: string;
+  date_published?: string;
+  source: string; // "Open Targets", "PubMed", "ClinicalTrials.gov"
+  source_url?: string;
+  linkage_verified: boolean; // Flag if no matching PubMed link to NCT
+}
+
+// Clinical Trial (expanded for Evidence Journal)
+export interface EvidenceTrial {
+  nct_id: string; // NCT number
+  phase: TrialPhase;
+  design: string; // e.g., "Randomized, Double-blind, Placebo-controlled"
+  endpoints: TrialEndpoint[];
+  status: TrialStatus;
+  arm_schema: string; // e.g., "2:1 randomization"
+  readout_window?: { start: string; end: string };
+  links: string[]; // ClinicalTrials.gov, publications
+  drug_name: string;
+  indication: string;
+  sponsor: string;
+  enrollment?: number;
+  primary_completion_date?: string;
+  multiplicity_controlled?: boolean; // for credibility
+  powered?: boolean; // adequate statistical power
+  historical_effect_size?: string; // precedent data
+}
+
+export interface TrialEndpoint {
+  name: string;
+  type: EndpointType;
+  measure: string; // e.g., "OS", "PFS", "ORR", "MMS", "CDAI"
+  time_point?: string;
+  pre_specified: boolean; // vs post-hoc
+}
+
+// MoA (Mechanism of Action) Data
+export interface MoaData {
+  target: string; // e.g., "IL-23"
+  genetic_evidence: {
+    source: "Open Targets";
+    score: number; // 0-1
+    associations: Array<{ disease: string; score: number }>;
+  };
+  bench_potency: {
+    source: "ChEMBL";
+    ic50?: number; // nM
+    selectivity?: string;
+  };
+  biomarker_linkage?: string;
+  competitor_heatmap: Array<{
+    drug: string;
+    company: string;
+    phase: string;
+    target: string;
+  }>;
+  differentiation_score: number; // f(genetic_prior, selectivity, PoC markers, class precedents)
+}
+
+// Company Scorecard
+export interface CompanyScorecard {
+  company: EvidenceCompany;
+  evidence_stack: {
+    genetic: Evidence[];
+    translational: Evidence[];
+    clinical: Evidence[];
+  };
+  cash_runway_months?: number;
+  near_catalysts: EvidenceCatalyst[]; // next 90 days
+  risk_score?: number;
+  opportunity_score?: number;
+}
+
+// Journal Entry (the notebook feature)
+export interface JournalEntry {
+  id: string;
+  user_id?: string;
+  title: string;
+  content: string; // user's note
+  evidence_snippets: Array<{
+    evidence_id: string;
+    snippet: string;
+    citation: string;
+    permalink: string; // deep link to source
+    so_what: string; // user's one-sentence "Why it matters?"
+  }>;
+  created_at: string;
+  updated_at: string;
+  refresh_timestamp: string; // when evidence was fetched
+  tags?: string[];
+  pinned?: boolean;
+  catalysts?: string[]; // catalyst IDs on watchlist
+}
+
+// Today's Evidence update
+export interface TodaysEvidence {
+  new_trial_events: Array<{
+    nct_id: string;
+    event: string; // "Status changed to Recruiting"
+    date: string;
+    drug: string;
+  }>;
+  label_guidance_changes: Array<{
+    drug: string;
+    change: string;
+    source_url: string;
+    date: string;
+  }>;
+  adcomm_docket_changes: Array<{
+    drug: string;
+    meeting_date: string;
+    source_url: string;
+  }>;
+  new_8k_filings: Array<{
+    company: string;
+    filing_type: string; // "8-K"
+    mentions_endpoints: boolean;
+    filing_url: string;
+    date: string;
+  }>;
+  last_refresh: string;
+}
+
+// Diff Preview (for scheduled/live modes)
+export interface EvidenceDiff {
+  added: Array<{ type: string; item: any }>;
+  changed: Array<{ type: string; before: any; after: any }>;
+  removed: Array<{ type: string; item: any }>;
+}
+
 // Epidemiology Types
 export type DiseaseAreaType = 
   | "DMD" // Duchenne Muscular Dystrophy

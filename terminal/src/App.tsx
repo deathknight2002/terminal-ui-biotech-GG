@@ -17,6 +17,7 @@ import { CatalystCalendarPage } from './pages/CatalystCalendarPage';
 import { CompetitorsPage } from './pages/CompetitorsPage';
 import { DataCatalogPage } from './pages/DataCatalogPage';
 import { AuditLogPage } from './pages/AuditLogPage';
+import { EvidenceJournalPage } from './pages/EvidenceJournalPage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -85,6 +86,7 @@ export function App() {
             <Route path="/science/epidemiology" element={<EpidemiologyPage />} />
             <Route path="/science/literature" element={<PlaceholderPage title="LITERATURE EXPLORER" />} />
             <Route path="/science/biomarkers" element={<PlaceholderPage title="BIOMARKER ATLAS" />} />
+            <Route path="/science/evidence-journal" element={<EvidenceJournalPage />} />
 
             {/* Catalysts */}
             <Route path="/catalysts/calendar" element={<CatalystCalendarPage />} />
