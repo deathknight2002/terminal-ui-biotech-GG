@@ -61,7 +61,7 @@ export interface UseMonitoringReturn {
 export function useMonitoring(options: UseMonitoringOptions = {}): UseMonitoringReturn {
   const {
     url = 'http://localhost:3001',
-    autoConnect = true,
+    autoConnect = false, // Disabled by default for manual-refresh model
     channels = ['changes', 'alerts', 'news', 'portfolio'],
   } = options;
 
@@ -289,17 +289,11 @@ export function useMonitoringRest(apiUrl: string = 'http://localhost:3001/api/mo
     }
   }, [apiUrl]);
 
+  // Manual refresh only - NO automatic polling
+  // Data is fetched only on initial mount, not periodically
   useEffect(() => {
     fetchAlerts();
     fetchStats();
-    
-    // Poll every 30 seconds
-    const interval = setInterval(() => {
-      fetchAlerts();
-      fetchStats();
-    }, 30000);
-
-    return () => clearInterval(interval);
   }, [fetchAlerts, fetchStats]);
 
   return {

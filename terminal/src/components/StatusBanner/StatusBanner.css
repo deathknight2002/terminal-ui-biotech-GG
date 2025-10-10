@@ -1,0 +1,109 @@
+.status-banner {
+  position: fixed;
+  top: 80px; /* Below the top bar */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  
+  min-width: 400px;
+  max-width: 600px;
+  padding: 1rem 1.5rem;
+  
+  background-color: rgba(10, 10, 15, 0.95);
+  border: 1px solid;
+  border-radius: 4px;
+  
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.875rem;
+  
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.status-banner--warning {
+  border-color: rgba(255, 193, 7, 0.5);
+  background-color: rgba(255, 193, 7, 0.1);
+}
+
+.status-banner--error {
+  border-color: rgba(244, 67, 54, 0.5);
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.status-banner--info {
+  border-color: rgba(0, 212, 255, 0.5);
+  background-color: rgba(0, 212, 255, 0.1);
+}
+
+.status-banner__content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.status-banner__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.status-banner__message {
+  color: var(--text-primary, #ffffff);
+  line-height: 1.5;
+}
+
+.status-banner__dismiss {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #aaaaaa);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s;
+  margin-left: auto;
+}
+
+.status-banner__dismiss:hover {
+  color: var(--text-primary, #ffffff);
+}
+
+.status-banner__dismiss:focus {
+  outline: 2px solid var(--accent-primary, #00d4ff);
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .status-banner {
+    min-width: auto;
+    max-width: 90vw;
+    left: 5vw;
+    transform: none;
+  }
+}
+
+/* PWA Standalone mode - adjust for safe area */
+@media (display-mode: standalone) {
+  .status-banner {
+    top: calc(80px + env(safe-area-inset-top, 0px));
+  }
+}

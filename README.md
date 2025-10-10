@@ -43,11 +43,46 @@ The Biotech Terminal is optimized for iOS 26 as a Progressive Web App. Install i
 
 ### Quick Install (iOS 26)
 
-1. Open Safari and navigate to the terminal URL
-2. Tap Share → **Add to Home Screen**
-3. Ensure "Open as Web App" toggle is **ON** (default in iOS 26)
-4. Tap **Add** - the app appears on your Home Screen
-5. Launch from Home Screen for fullscreen standalone mode
+1. Open Safari and navigate to the terminal URL (must be HTTPS in production)
+2. Tap the **Share** button (square with arrow pointing up)
+3. Scroll down and tap **"Add to Home Screen"**
+4. Ensure **"Open as Web App"** toggle is **ON** (default in iOS 26)
+5. Edit the name if desired, then tap **Add**
+6. The app icon appears on your Home Screen
+7. Launch from Home Screen for fullscreen standalone mode
+
+**Alternative (iOS 16+):**
+- Safari may show an install banner at the bottom of the page
+- Tap "Install" on the banner for one-tap installation
+
+### Lighthouse PWA Installability Checklist
+
+Before deploying, verify your PWA passes these checks:
+
+- ✅ **HTTPS required** - PWAs must be served over HTTPS (or localhost for dev)
+- ✅ **Web app manifest** - `manifest.webmanifest` with name, icons, start_url, display
+- ✅ **Service worker** - Registered and active (handles offline/caching)
+- ✅ **Icons** - Multiple sizes provided (180px for iOS, 192px+ for Android)
+- ✅ **Viewport meta tag** - `viewport-fit=cover` for iPhone notch support
+- ✅ **Apple touch icon** - `<link rel="apple-touch-icon">` for iOS
+- ✅ **Theme color** - `<meta name="theme-color">` matching brand
+
+**Run Lighthouse audit:**
+```bash
+# In Chrome DevTools
+1. Open DevTools (F12)
+2. Go to Lighthouse tab
+3. Select "Progressive Web App" category
+4. Run audit
+5. Score should be 100/100 for installability
+```
+
+**Test on real iOS device:**
+- Install on iPhone/iPad running iOS 16.4+
+- Verify fullscreen mode (no Safari UI)
+- Check safe areas (notch/bottom bar spacing)
+- Test offline behavior (airplane mode)
+- Confirm refresh button updates data
 
 ### Manual Refresh Data Model
 
