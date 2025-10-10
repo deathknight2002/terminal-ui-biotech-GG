@@ -227,6 +227,118 @@ See [docs/TUI.md](docs/TUI.md) for detailed usage instructions.
    ./scripts/setup.sh dev
    ```
 
+## 🧪 Smoke Testing & Quality Assurance
+
+Before starting development or deployment, verify your setup with our comprehensive smoke testing tools:
+
+### Quick Pre-flight Check (30 seconds)
+
+Quickly verify your development environment is ready:
+
+```bash
+npm run preflight
+```
+
+This checks:
+- ✅ Node.js and npm installation
+- ✅ Dependencies installed in all workspaces
+- ✅ Project structure and critical files
+- ✅ Port availability (3000, 3001, 3002)
+- ✅ Python and Poetry (optional for backend)
+
+### Mobile Setup Verification (Interactive)
+
+For first-time mobile setup with step-by-step guidance:
+
+```bash
+npm run verify:mobile
+```
+
+Features:
+- 📱 **Extremely clear error messages** with codes and timestamps
+- 💡 **Step-by-step guidance** through the entire setup process
+- 🔧 **Specific solutions** for every problem that may occur
+- ✅ **Interactive progress** reporting
+- 📋 **Mobile-specific checks** (viewport, routes, components)
+
+### Full Smoke Test Suite (5-10 minutes)
+
+Comprehensive testing of all features:
+
+```bash
+npm run smoke-test
+```
+
+This automated suite verifies:
+- Dependencies installation across all workspaces
+- Mobile and desktop platform setup
+- TypeScript configuration and type checking
+- Code quality (linting)
+- Build process for all workspaces
+- Dev servers startup (mobile and desktop)
+
+**Error codes reference:**
+- `E001`: Dependencies not installed
+- `E002`: Build failed
+- `E005`: TypeScript errors
+- `E007`: Mobile setup invalid
+- `E008`: Desktop setup invalid
+
+### Interactive UI Smoke Test
+
+For manual feature verification with a visual checklist:
+
+1. Open in browser: `docs/INTERACTIVE_SMOKE_TEST.html`
+2. Follow the interactive checklist
+3. Test each feature systematically
+4. Export results report
+
+Features:
+- ✅ Check off each test as you complete it
+- 📊 Real-time progress tracking
+- 💾 Automatic save of test state
+- 📄 Export detailed test reports
+- 🎯 Covers all desktop and mobile routes
+
+### Common Error Solutions
+
+**E001 - Dependencies not installed:**
+```bash
+cd /path/to/project
+npm install
+```
+
+**E007 - Mobile setup invalid:**
+```bash
+# Build components first (required)
+npm run build:components
+# Then start mobile app
+npm run dev:mobile
+```
+
+**E008 - Desktop setup invalid:**
+```bash
+# Ensure frontend-components is built
+npm run build:components
+# Then start terminal app
+npm run dev:terminal
+```
+
+**Port already in use:**
+```bash
+# Find and kill process using the port
+lsof -i :3002  # macOS/Linux
+netstat -ano | findstr :3002  # Windows
+```
+
+### Documentation
+
+For complete testing procedures:
+- 📖 [Smoke Testing Guide](docs/SMOKE_TESTING_GUIDE.md) - Comprehensive testing procedures
+- 📱 [Mobile Setup Guide](mobile/README.md) - Mobile-specific setup instructions
+- 🍎 [iOS PWA Guide](docs/IOS_PWA_GUIDE.md) - iOS installation and testing
+- 🔍 [Cross-Platform Testing](docs/CROSS_PLATFORM_TESTING_GUIDE.md) - Multi-platform verification
+
 ## 📊 Features
 
 ### Atoms (18 components)
