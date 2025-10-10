@@ -313,8 +313,8 @@ class SmokeTestRunner {
         description: 'News page',
       },
       {
-        file: 'vite.config.ts',
-        description: 'Vite configuration for terminal',
+        file: 'index.html',
+        description: 'Terminal HTML entry point',
       },
     ];
 
@@ -637,16 +637,28 @@ class SmokeTestRunner {
     this.log(`Node: ${process.version}`, 'blue');
     this.log(`Working Directory: ${ROOT_DIR}\n`, 'blue');
 
+    // Check for --quick flag
+    const quickMode = process.argv.includes('--quick');
+    
+    if (quickMode) {
+      this.log('Running in QUICK mode (skipping builds and dev servers)', 'yellow');
+    }
+
     try {
       // Run all checks
       await this.checkDependencies();
       await this.checkMobileSetup();
       await this.checkDesktopSetup();
-      await this.checkTypeScript();
-      await this.checkLinting();
-      await this.checkBuilds();
-      await this.checkMobileDevServer();
-      await this.checkDesktopDevServer();
+      
+      if (!quickMode) {
+        await this.checkTypeScript();
+        await this.checkLinting();
+        await this.checkBuilds();
+        await this.checkMobileDevServer();
+        await this.checkDesktopDevServer();
+      } else {
+        this.logWarning('Skipping TypeScript, linting, builds, and dev server tests (quick mode)');
+      }
 
       // Print summary
       const success = this.printSummary();
