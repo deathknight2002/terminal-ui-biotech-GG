@@ -8,6 +8,7 @@ import { useToast } from '../../../frontend-components/src/terminal/molecules/To
 import { useCommandPalette } from '../hooks/useCommandPalette';
 import { useAppLibrary } from '../hooks/useAppLibrary';
 import { menuStructure } from '../config/menuStructure';
+import { StatusBanner } from './StatusBanner';
 import '../styles/glass-theme.css';
 
 interface TerminalLayoutProps {
@@ -21,6 +22,8 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
   const commandPalette = useCommandPalette();
   const appLibrary = useAppLibrary();
   const [lastRefreshed, setLastRefreshed] = useState<string>(new Date().toISOString());
+  const [showErrorBanner, setShowErrorBanner] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Store initial load time
   useEffect(() => {
@@ -60,16 +63,25 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
         // Invalidate relevant queries after backend refresh
         await queryClient.invalidateQueries();
         setLastRefreshed(new Date().toISOString());
+        setShowErrorBanner(false); // Clear any existing error banner
         showToast({
           title: 'Refresh Complete',
           description: `Successfully refreshed ${source}. ${result.records_inserted} records inserted.`,
           variant: 'success',
         });
         return { success: true, message: `Refreshed ${source}` };
-      } else {
-        // If backend fails, still invalidate queries to refetch with cached data
+      } else if (response.status === 429 || response.status >= 500) {
+        // 429 Rate Limit or 5xx Server Error - show banner with cached data
         await queryClient.invalidateQueries();
         setLastRefreshed(new Date().toISOString());
+        setErrorMessage('Service busy; showing cached data.');
+        setShowErrorBanner(true);
+        return { success: false, message: 'Showing cached data' };
+      } else {
+        // Other errors - still invalidate queries to refetch with cached data
+        await queryClient.invalidateQueries();
+        setLastRefreshed(new Date().toISOString());
+        setShowErrorBanner(false);
         showToast({
           title: 'Service Busy',
           description: 'Showing cached data. Backend may be updating.',
@@ -81,6 +93,7 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
       // On network error, still invalidate to show cached data
       await queryClient.invalidateQueries();
       setLastRefreshed(new Date().toISOString());
+      setShowErrorBanner(false);
       showToast({
         title: 'Refresh Complete',
         description: 'Refreshed from cache - backend unavailable',
@@ -92,6 +105,14 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
 
   return (
     <div className="terminal-layout">
+      {/* Status Banner for API errors */}
+      <StatusBanner
+        message={errorMessage}
+        variant="warning"
+        visible={showErrorBanner}
+        onDismiss={() => setShowErrorBanner(false)}
+      />
+
       <AuroraTopBar
         menuItems={menuStructure}
         onNavigate={handleNavigate}

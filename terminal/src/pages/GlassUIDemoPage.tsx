@@ -61,32 +61,26 @@ const DEMO_TRIAL_PHASES: TrialPhase[] = [
 export const GlassUIDemoPage: React.FC = () => {
   const { alerts, addAlert, dismissAlert } = useGlassAlerts(5);
   const [selectedPhase, setSelectedPhase] = useState<TrialPhase | null>(null);
-  const [liveDataActive, setLiveDataActive] = useState(false);
 
-  // Simulate live data updates
-  useEffect(() => {
-    if (!liveDataActive) return;
+  // Live data simulation - manual trigger only, no automatic polling
+  // This is a demo feature and does NOT run automatically
+  const triggerDemoAlert = () => {
+    const alertTypes = ['fda', 'trial', 'market', 'regulatory', 'clinical'] as const;
+    const priorities = ['critical', 'high', 'medium', 'low'] as const;
+    const tickers = ['ARYAZ', 'BCRX', 'XYZ', 'ABC', 'DEF'];
+    
+    const randomType = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+    const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
+    const randomTicker = tickers[Math.floor(Math.random() * tickers.length)];
 
-    const interval = setInterval(() => {
-      const alertTypes = ['fda', 'trial', 'market', 'regulatory', 'clinical'] as const;
-      const priorities = ['critical', 'high', 'medium', 'low'] as const;
-      const tickers = ['ARYAZ', 'BCRX', 'XYZ', 'ABC', 'DEF'];
-      
-      const randomType = alertTypes[Math.floor(Math.random() * alertTypes.length)];
-      const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
-      const randomTicker = tickers[Math.floor(Math.random() * tickers.length)];
-
-      addAlert({
-        title: `${randomType.toUpperCase()} Update`,
-        message: `Live market data detected for ${randomTicker} - ${new Date().toLocaleTimeString()}`,
-        priority: randomPriority,
-        type: randomType,
-        ticker: randomTicker,
-      });
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [liveDataActive, addAlert]);
+    addAlert({
+      title: `${randomType.toUpperCase()} Update`,
+      message: `Demo alert for ${randomTicker} - ${new Date().toLocaleTimeString()}`,
+      priority: randomPriority,
+      type: randomType,
+      ticker: randomTicker,
+    });
+  };
 
   const handleSimulateAlert = (priority: 'critical' | 'high' | 'medium' | 'low') => {
     addAlert({
@@ -145,10 +139,10 @@ export const GlassUIDemoPage: React.FC = () => {
                 Trigger Low Alert
               </button>
               <button
-                className={`demo-button ${liveDataActive ? 'demo-button-active' : ''}`}
-                onClick={() => setLiveDataActive(!liveDataActive)}
+                className="demo-button"
+                onClick={() => triggerDemoAlert()}
               >
-                {liveDataActive ? '🔴 Stop' : '🟢 Start'} Live Data
+                Trigger Random Alert
               </button>
             </div>
           </GlassPanel>
@@ -161,7 +155,7 @@ export const GlassUIDemoPage: React.FC = () => {
             Panels with data-driven transparency levels and surface textures
           </p>
           <div className="panel-showcase-grid">
-            <GlassPanel urgency="critical" texture="neural" showDataUpdate={liveDataActive}>
+            <GlassPanel urgency="critical" texture="neural" showDataUpdate={false}>
               <div className="showcase-panel-content">
                 <h3 className="showcase-title">CRITICAL</h3>
                 <p className="showcase-text">15% transparency • Neural texture</p>

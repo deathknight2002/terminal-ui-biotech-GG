@@ -18,6 +18,7 @@ from .config import settings
 from .database import init_db
 from .routers import api_router
 from .websocket import websocket_router
+from .middleware.caching import CachingMiddleware
 
 
 # Configure logging
@@ -59,6 +60,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Add caching middleware for manual-refresh model
+# Implements Cache-Control headers and conditional requests (ETag/Last-Modified)
+app.add_middleware(CachingMiddleware, default_ttl=1800)  # 30 minutes default
 
 
 # Health check endpoint
