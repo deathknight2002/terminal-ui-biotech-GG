@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
 import { RefreshModeToggle } from '../../../frontend-components/src/terminal/molecules/RefreshModeToggle/RefreshModeToggle';
 import type { RefreshMode } from '../../../src/types/biotech';
@@ -17,11 +18,49 @@ import './EvidenceJournalPage.css';
  * - MoA Explorer (mechanism differentiation)
  * - Company Scorecard (evidence stack)
  * - Journal notebook (pinned notes + evidence stream)
+ * 
+ * Routes:
+ * - /evidence → Today's Evidence
+ * - /catalysts → Catalyst Board
+ * - /moa → MoA Explorer
+ * - /companies/:id → Company Scorecard
+ * - /journal → Journal Notebook
  */
 export function EvidenceJournalPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [refreshMode, setRefreshMode] = useState<RefreshMode>('manual');
   const [lastRefreshed] = useState<string>(new Date().toISOString());
-  const [activeTab, setActiveTab] = useState<'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal'>('today');
+  
+  // Determine active tab from route
+  const getActiveTabFromRoute = (): 'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal' => {
+    const path = location.pathname;
+    if (path.includes('/catalysts')) return 'catalysts';
+    if (path.includes('/moa')) return 'moa';
+    if (path.includes('/companies/')) return 'scorecard';
+    if (path.includes('/journal')) return 'journal';
+    return 'today'; // default for /evidence or /science/evidence-journal
+  };
+
+  const [activeTab, setActiveTab] = useState<'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal'>(getActiveTabFromRoute());
+
+  // Update active tab when route changes
+  useEffect(() => {
+    setActiveTab(getActiveTabFromRoute());
+  }, [location.pathname]);
+
+  // Navigate when tab changes
+  const handleTabChange = (tab: 'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal') => {
+    setActiveTab(tab);
+    const routes = {
+      today: '/evidence',
+      catalysts: '/catalysts',
+      moa: '/moa',
+      scorecard: '/companies/example', // TODO: Get actual company ID
+      journal: '/journal'
+    };
+    navigate(routes[tab]);
+  };
 
   return (
     <div className="evidence-journal-page">
@@ -42,31 +81,31 @@ export function EvidenceJournalPage() {
       <div className="journal-tabs">
         <button
           className={`tab-button ${activeTab === 'today' ? 'active' : ''}`}
-          onClick={() => setActiveTab('today')}
+          onClick={() => handleTabChange('today')}
         >
           TODAY'S EVIDENCE
         </button>
         <button
           className={`tab-button ${activeTab === 'catalysts' ? 'active' : ''}`}
-          onClick={() => setActiveTab('catalysts')}
+          onClick={() => handleTabChange('catalysts')}
         >
           CATALYST BOARD
         </button>
         <button
           className={`tab-button ${activeTab === 'moa' ? 'active' : ''}`}
-          onClick={() => setActiveTab('moa')}
+          onClick={() => handleTabChange('moa')}
         >
           MOA EXPLORER
         </button>
         <button
           className={`tab-button ${activeTab === 'scorecard' ? 'active' : ''}`}
-          onClick={() => setActiveTab('scorecard')}
+          onClick={() => handleTabChange('scorecard')}
         >
           COMPANY SCORECARD
         </button>
         <button
           className={`tab-button ${activeTab === 'journal' ? 'active' : ''}`}
-          onClick={() => setActiveTab('journal')}
+          onClick={() => handleTabChange('journal')}
         >
           JOURNAL
         </button>

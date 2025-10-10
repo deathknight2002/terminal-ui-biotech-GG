@@ -88,6 +88,13 @@ export function App() {
             <Route path="/science/biomarkers" element={<PlaceholderPage title="BIOMARKER ATLAS" />} />
             <Route path="/science/evidence-journal" element={<EvidenceJournalPage />} />
 
+            {/* Evidence Journal dedicated routes */}
+            <Route path="/evidence" element={<EvidenceJournalPage />} />
+            <Route path="/catalysts" element={<EvidenceJournalPage />} />
+            <Route path="/moa" element={<EvidenceJournalPage />} />
+            <Route path="/journal" element={<EvidenceJournalPage />} />
+            <Route path="/companies/:id" element={<EvidenceJournalPage />} />
+
             {/* Catalysts */}
             <Route path="/catalysts/calendar" element={<CatalystCalendarPage />} />
             <Route path="/catalysts/past" element={<PlaceholderPage title="PAST CATALYSTS" />} />
