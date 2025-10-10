@@ -397,13 +397,40 @@ export interface ApiError {
 
 // Evidence Journal Types (for science-first biotech intelligence)
 export type RefreshMode = "manual" | "scheduled" | "live";
-export type CatalystType = "PDUFA" | "AdComm" | "Readout" | "CHMP" | "EMA-Opinion" | "CRL" | "Approval" | "Other";
+export type CatalystType = "readout" | "AdComm" | "PDUFA" | "CHMP" | "EMA-Opinion" | "CRL" | "Approval" | "Other";
+export type DateConfidence = "estimated" | "likely" | "confirmed";
 export type CatalystStatus = "Upcoming" | "Past" | "Completed";
-export type EvidenceClass = "genetic" | "preclinical" | "translational" | "clinical" | "RWE";
+export type EvidenceClass = "genetic" | "translational" | "clinical" | "safety" | "rwe";
 export type TrialPhase = "Preclinical" | "Phase I" | "Phase II" | "Phase III" | "Phase IV";
 export type TrialStatus = "Not yet recruiting" | "Recruiting" | "Active" | "Completed" | "Terminated" | "Withdrawn";
 export type EndpointType = "primary" | "secondary" | "exploratory";
 export type LineOfTherapy = "1L" | "2L" | "3L+" | "Adjuvant" | "Neoadjuvant" | "Maintenance";
+
+// Provenance - mandatory for all data
+export interface Citation {
+  url: string;
+  domain: string;
+  pulledAt: string;
+  verifiedAt?: string;
+}
+
+export interface Provenance {
+  source: {
+    url: string;
+    domain: string;
+    pulledAt: string;
+  };
+  verifiedAt?: string;
+}
+
+// Company - exact fields per problem statement
+export interface Company {
+  id: string;
+  name: string;
+  ticker?: string;
+  cashRunwayEst?: number; // months
+  disclosures: Citation[];
+}
 
 // Evidence Journal Company (expanded from existing Sponsor)
 export interface EvidenceCompany {
@@ -416,6 +443,17 @@ export interface EvidenceCompany {
   market_cap?: number;
   headquarters?: string;
   pipeline_count?: number;
+}
+
+// Asset (Drug/Program) - exact fields per problem statement
+export interface Asset {
+  id: string;
+  companyId: string;
+  name: string;
+  moa: string; // Mechanism of Action
+  targets: string[];
+  indications: string[];
+  competitorSet: Competitor[];
 }
 
 // Evidence Journal Asset/Drug (enhanced version of existing Drug)
@@ -435,6 +473,93 @@ export interface EvidenceDrug {
   last_updated: string;
 }
 
+// Trial - exact fields per problem statement
+export interface Trial {
+  id: string;
+  nct: string; // NCT number
+  phase: TrialPhase;
+  designSummary: string;
+  endpoints: {
+    primary: TrialEndpoint[];
+    secondary: TrialEndpoint[];
+  };
+  status: TrialStatus;
+  readoutWindow?: { start: string; end: string };
+  links: Citation[];
+}
+
+// Catalyst - exact fields per problem statement
+export interface Catalyst {
+  id: string;
+  trialId?: string;
+  assetId?: string;
+  type: CatalystType;
+  dateEst: string;
+  dateConfidence: DateConfidence;
+  rationale: string;
+}
+
+// Evidence - exact fields per problem statement with provenance
+export interface Evidence {
+  id: string;
+  assetId?: string;
+  trialId?: string;
+  class: EvidenceClass;
+  strength: number; // 0-1
+  summary: string;
+  citations: Citation[];
+}
+
+// EndpointTruth (by indication)
+export interface EndpointTruth {
+  indication: string;
+  endpoints: Array<{
+    name: string;
+    decisionGrade: boolean;
+    mcidDescription: string;
+    regulatoryPrecedent?: string;
+  }>;
+}
+
+// DifferentiationScore
+export interface DifferentiationScore {
+  assetId: string;
+  total: number; // 0-100
+  subscores: {
+    genetic: number;
+    mechanistic: number;
+    translational: number;
+    clinical: number;
+    comp: number;
+    execution: number;
+  };
+  rationale: string[];
+}
+
+// Bayesian snapshot for catalysts
+export interface BayesianSnapshot {
+  prior: number; // class/base rate
+  likelihood: string; // design/power/multiplicity description
+  posterior: {
+    win: number;
+    meh: number;
+    kill: number;
+  };
+}
+
+// Trial Audit
+export type AuditColor = "green" | "yellow" | "red";
+
+export interface TrialAudit {
+  randomization: boolean;
+  blinded: boolean;
+  controlQuality: AuditColor;
+  ittVsPp: "ITT" | "PP" | "Both";
+  alphaSpending: boolean;
+  missingDataPlan: boolean;
+  overallColor: AuditColor;
+}
+
 // Evidence Journal Catalyst (enhanced from existing Catalyst)
 export interface EvidenceCatalyst {
   id: string;
@@ -449,10 +574,12 @@ export interface EvidenceCatalyst {
   description?: string;
   impact_score?: number; // Readout credibility × Market relevance × Competitive density
   readout_window?: { start: string; end: string }; // uncertainty window
+  bayesianSnapshot?: BayesianSnapshot;
+  trialAudit?: TrialAudit;
 }
 
-// Evidence Record
-export interface Evidence {
+// Evidence Record (legacy, keeping for backward compatibility)
+export interface EvidenceRecord {
   id: string;
   class: EvidenceClass;
   strength_score: number; // 0-100, weighted by class
@@ -586,6 +713,17 @@ export interface EvidenceDiff {
   added: Array<{ type: string; item: any }>;
   changed: Array<{ type: string; before: any; after: any }>;
   removed: Array<{ type: string; item: any }>;
+}
+
+// Evidence Journal Aggregator Response
+export interface EvidenceJournalData {
+  companies: Company[];
+  assets: Asset[];
+  trials: Trial[];
+  catalysts: Catalyst[];
+  evidence: Evidence[];
+  endpointTruth: EndpointTruth[];
+  differentiationScores?: DifferentiationScore[];
 }
 
 // Epidemiology Types
