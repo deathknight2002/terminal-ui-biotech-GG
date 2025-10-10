@@ -91,6 +91,7 @@ export function TerminalLayout({ children }: TerminalLayoutProps) {
       }
     } catch (error) {
       // On network error, still invalidate to show cached data
+      console.error('Refresh error:', error);
       await queryClient.invalidateQueries();
       setLastRefreshed(new Date().toISOString());
       setShowErrorBanner(false);

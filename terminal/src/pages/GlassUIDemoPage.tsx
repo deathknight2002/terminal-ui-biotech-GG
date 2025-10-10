@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { GlassPanel } from '../../frontend-components/src/terminal/organisms/GlassPanel';
 import { MolecularGlassGrid } from '../../frontend-components/src/biotech/organisms/MolecularGlassGrid';
 import { ClinicalTrialGlassTimeline } from '../../frontend-components/src/biotech/organisms/ClinicalTrialGlassTimeline';
