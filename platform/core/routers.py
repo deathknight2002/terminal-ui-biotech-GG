@@ -5,7 +5,7 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence
+from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas
 
 # Main API router
 api_router = APIRouter()
@@ -90,4 +90,11 @@ api_router.include_router(
     evidence.router,
     prefix="/evidence",
     tags=["evidence"]
+)
+
+# Therapeutic area intelligence endpoints
+api_router.include_router(
+    therapeutic_areas.router,
+    prefix="/therapeutic-areas",
+    tags=["therapeutic-areas"]
 )
