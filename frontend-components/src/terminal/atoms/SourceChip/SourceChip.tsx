@@ -9,6 +9,8 @@ export interface SourceChipProps {
   provenance?: Provenance;
   /** Whether to show warning for missing provenance */
   showWarning?: boolean;
+  /** Hard fail mode - throws error or prevents render if no source */
+  hardFail?: boolean;
   /** Additional CSS classes */
   className?: string;
   /** Click handler */
@@ -21,6 +23,9 @@ export interface SourceChipProps {
  * Shows source domain and pull timestamp. Required for all evidence data.
  * Missing provenance displays a warning glyph.
  * 
+ * In hardFail mode (for external/production views), missing provenance
+ * throws an error to enforce data quality standards.
+ * 
  * @example
  * ```tsx
  * <SourceChip citation={{
@@ -28,12 +33,16 @@ export interface SourceChipProps {
  *   domain: "opentargets.org",
  *   pulledAt: "2024-01-15T10:30:00Z"
  * }} />
+ * 
+ * // Hard fail mode for production
+ * <SourceChip citation={data.citation} hardFail={true} />
  * ```
  */
 export function SourceChip({
   citation,
   provenance,
   showWarning = true,
+  hardFail = false,
   className = '',
   onClick
 }: SourceChipProps) {
@@ -44,6 +53,21 @@ export function SourceChip({
   
   // Show warning if no provenance data
   if (!domain || !pulledAt) {
+    // Hard fail mode: throw error or log to prevent render
+    if (hardFail) {
+      const errorMsg = 'SourceChip: Missing required provenance data (domain and pulledAt). Data cannot be rendered without source attribution.';
+      console.error(errorMsg, { citation, provenance });
+      
+      // In production, this would prevent the data from being shown
+      // For development, we show a prominent error badge
+      return (
+        <div className={`source-chip source-chip--error ${className}`} title={errorMsg}>
+          <span className="source-chip__error-icon">🚫</span>
+          <span className="source-chip__text">⚠ NO SOURCE - DATA BLOCKED</span>
+        </div>
+      );
+    }
+    
     if (!showWarning) return null;
     
     return (

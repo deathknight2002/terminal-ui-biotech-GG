@@ -11,6 +11,12 @@ export type { CatalystTickerProps } from './molecules/CatalystTicker';
 export { ClinicalTrialsTimeline } from './molecules/ClinicalTrialsTimeline';
 export type { ClinicalTrialsTimelineProps, ClinicalTrial } from './molecules/ClinicalTrialsTimeline';
 
+export { BayesianSnapshot } from './molecules/BayesianSnapshot';
+export type { BayesianSnapshotProps } from './molecules/BayesianSnapshot';
+
+export { CredenceBadge, CredenceBadgeGroup } from './molecules/CredenceBadge';
+export type { CredenceBadgeProps, CredenceBadgeGroupProps, CredenceType } from './molecules/CredenceBadge';
+
 // Organisms - Complex biotech dashboards
 export { BioAuroraDashboard } from './organisms/BioAuroraDashboard';
 

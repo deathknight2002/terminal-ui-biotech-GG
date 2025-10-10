@@ -230,28 +230,110 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
         }
     ]
     
-    # Endpoint truth by indication
+    # Endpoint truth by indication (expanded with regulator-grade anchors)
     endpointTruth = [
         {
             "indication": "IBD (Ulcerative Colitis)",
             "endpoints": [
                 {
+                    "name": "Clinical remission",
+                    "decisionGrade": True,
+                    "mcidDescription": "Rectal bleeding subscore=0, stool frequency subscore ≤1 with ≥1-point reduction from baseline",
+                    "regulatoryPrecedent": "FDA 2016 UC guidance; Mayo score gold standard"
+                },
+                {
                     "name": "Endoscopic remission",
                     "decisionGrade": True,
                     "mcidDescription": "Mayo endoscopic subscore ≤1; FDA considers approvable",
-                    "regulatoryPrecedent": "FDA 2016 UC guidance; approved for Entyvio, Stelara"
+                    "regulatoryPrecedent": "FDA 2016 UC guidance; approved for Entyvio, Stelara, Rinvoq"
+                },
+                {
+                    "name": "Steroid-free remission",
+                    "decisionGrade": True,
+                    "mcidDescription": "Clinical remission achieved without corticosteroids for ≥90 days",
+                    "regulatoryPrecedent": "FDA guidance emphasizes steroid-free endpoints; critical for approval"
+                },
+                {
+                    "name": "Histologic remission",
+                    "decisionGrade": True,
+                    "mcidDescription": "Neutrophil infiltration <5% crypts; Geboes score ≤3.1",
+                    "regulatoryPrecedent": "FDA 2020 draft guidance; exploratory but gaining traction (Rinvoq label)"
                 },
                 {
                     "name": "Clinical response (CDAI)",
                     "decisionGrade": False,
                     "mcidDescription": "≥100 point reduction; supportive endpoint only",
-                    "regulatoryPrecedent": "FDA requires endoscopic confirmation"
+                    "regulatoryPrecedent": "FDA requires endoscopic confirmation for approval"
                 },
                 {
-                    "name": "Histologic remission",
+                    "name": "Endoscopic improvement",
+                    "decisionGrade": False,
+                    "mcidDescription": "≥1-point reduction in Mayo endoscopic subscore",
+                    "regulatoryPrecedent": "Supportive; remission (≤1) is approvable standard"
+                }
+            ]
+        },
+        {
+            "indication": "IBD (Crohn's Disease)",
+            "endpoints": [
+                {
+                    "name": "Clinical remission (CDAI)",
                     "decisionGrade": True,
-                    "mcidDescription": "Neutrophil infiltration <5%; gaining traction post-2020",
-                    "regulatoryPrecedent": "FDA 2020 draft guidance mentions exploratory potential"
+                    "mcidDescription": "CDAI <150; sustained for ≥12 weeks",
+                    "regulatoryPrecedent": "FDA CD guidance; approved for Stelara, Skyrizi"
+                },
+                {
+                    "name": "Endoscopic response",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥50% reduction in SES-CD from baseline; ulcer healing",
+                    "regulatoryPrecedent": "FDA 2020 CD guidance; SES-CD validated"
+                },
+                {
+                    "name": "Steroid-free clinical remission",
+                    "decisionGrade": True,
+                    "mcidDescription": "CDAI <150 without corticosteroids for ≥90 days",
+                    "regulatoryPrecedent": "FDA emphasizes steroid-free maintenance; critical for differentiation"
+                },
+                {
+                    "name": "Transmural healing",
+                    "decisionGrade": False,
+                    "mcidDescription": "MRI-based bowel wall thickness normalization",
+                    "regulatoryPrecedent": "Exploratory; not validated for approval decisions"
+                }
+            ]
+        },
+        {
+            "indication": "Cardiology (HFrEF)",
+            "endpoints": [
+                {
+                    "name": "CV death or HF hospitalization",
+                    "decisionGrade": True,
+                    "mcidDescription": "Time to first event; composite primary endpoint",
+                    "regulatoryPrecedent": "FDA 2019 HF guidance; gold standard for Entresto, Jardiance"
+                },
+                {
+                    "name": "CV death",
+                    "decisionGrade": True,
+                    "mcidDescription": "All-cause mortality or cardiovascular mortality",
+                    "regulatoryPrecedent": "FDA accepts as standalone endpoint for HF approval"
+                },
+                {
+                    "name": "KCCQ total symptom score",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥5-point improvement = MCID; ≥10-point = clinically meaningful",
+                    "regulatoryPrecedent": "FDA 2019 HF guidance; PRO co-primary endpoint (Jardiance)"
+                },
+                {
+                    "name": "NT-proBNP reduction",
+                    "decisionGrade": False,
+                    "mcidDescription": "≥30% reduction; biomarker surrogate",
+                    "regulatoryPrecedent": "Supportive evidence only; not approvable alone"
+                },
+                {
+                    "name": "6-minute walk distance",
+                    "decisionGrade": False,
+                    "mcidDescription": "≥30m improvement; functional capacity",
+                    "regulatoryPrecedent": "FDA accepts for functional claim only, not approval"
                 }
             ]
         },
@@ -261,20 +343,26 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
                 {
                     "name": "CV death or HF hospitalization",
                     "decisionGrade": True,
-                    "mcidDescription": "Time to first event; gold standard endpoint",
-                    "regulatoryPrecedent": "FDA 2019 HF guidance; approved for Jardiance, Entresto"
+                    "mcidDescription": "Time to first event; composite primary endpoint",
+                    "regulatoryPrecedent": "FDA 2019 HF guidance; approved for Jardiance (DELIVER trial)"
                 },
                 {
-                    "name": "6-minute walk distance",
-                    "decisionGrade": False,
-                    "mcidDescription": "≥30m improvement; surrogate only unless functional claim",
-                    "regulatoryPrecedent": "FDA accepts for functional capacity labeling only"
+                    "name": "KCCQ clinical summary score",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥5-point improvement = MCID; patient-reported outcomes",
+                    "regulatoryPrecedent": "FDA 2019 HF guidance; KCCQ validated PRO for HFpEF"
                 },
                 {
-                    "name": "NT-proBNP reduction",
+                    "name": "Total HF hospitalizations",
+                    "decisionGrade": True,
+                    "mcidDescription": "Recurrent event analysis (Lin-Wei-Ying-Ying model)",
+                    "regulatoryPrecedent": "FDA accepts with adjudication; approved for Jardiance"
+                },
+                {
+                    "name": "Exercise capacity (CPET)",
                     "decisionGrade": False,
-                    "mcidDescription": "Biomarker, not approvable endpoint",
-                    "regulatoryPrecedent": "Supportive evidence only"
+                    "mcidDescription": "Peak VO2 improvement ≥1.0 mL/kg/min",
+                    "regulatoryPrecedent": "Exploratory; not validated for HFpEF approval"
                 }
             ]
         },
@@ -282,22 +370,179 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             "indication": "DMD (Duchenne Muscular Dystrophy)",
             "endpoints": [
                 {
-                    "name": "North Star Ambulatory Assessment",
+                    "name": "North Star Ambulatory Assessment (NSAA)",
                     "decisionGrade": True,
-                    "mcidDescription": "≥3 point change over 48 weeks; validated in natural history",
-                    "regulatoryPrecedent": "FDA accepted for Elevidys conditional approval"
-                },
-                {
-                    "name": "Dystrophin expression",
-                    "decisionGrade": False,
-                    "mcidDescription": "Biomarker; requires correlation with function",
-                    "regulatoryPrecedent": "Accelerated approval pathway if ≥30% baseline"
+                    "mcidDescription": "≥3 point change over 48 weeks; validated MCID in natural history",
+                    "regulatoryPrecedent": "FDA accepted for Elevidys conditional approval (2023)"
                 },
                 {
                     "name": "Timed function tests (4-stair climb)",
                     "decisionGrade": True,
-                    "mcidDescription": "≥1 sec improvement; validated clinically meaningful",
-                    "regulatoryPrecedent": "FDA 2018 DMD guidance"
+                    "mcidDescription": "≥1 sec improvement in velocity; clinically meaningful",
+                    "regulatoryPrecedent": "FDA 2018 DMD guidance; validated functional measure"
+                },
+                {
+                    "name": "10-meter walk/run velocity",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥0.1 m/s improvement; functional assessment",
+                    "regulatoryPrecedent": "FDA 2018 DMD guidance; timed function test battery"
+                },
+                {
+                    "name": "Micro-dystrophin expression",
+                    "decisionGrade": False,
+                    "mcidDescription": "≥30% of normal levels by Western blot; biomarker",
+                    "regulatoryPrecedent": "Accelerated approval pathway (Elevidys); requires functional confirmation"
+                },
+                {
+                    "name": "Dystrophin expression (exon-skipping)",
+                    "decisionGrade": False,
+                    "mcidDescription": "≥30% dystrophin-positive fibers; surrogate endpoint",
+                    "regulatoryPrecedent": "AA precedent: Exondys 51 (2016); confirmatory trials required"
+                },
+                {
+                    "name": "Supine-to-stand time",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥1 sec improvement; validated functional test",
+                    "regulatoryPrecedent": "FDA 2018 DMD guidance; part of timed function battery"
+                }
+            ]
+        },
+        {
+            "indication": "Retina (NPDR - Non-Proliferative Diabetic Retinopathy)",
+            "endpoints": [
+                {
+                    "name": "DRSS 2-step improvement",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥2-step improvement on Diabetic Retinopathy Severity Scale; clinically meaningful",
+                    "regulatoryPrecedent": "FDA approval precedent: Eylea (PANORAMA trial 2019)"
+                },
+                {
+                    "name": "DRSS 3-step improvement",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥3-step improvement; robust efficacy signal",
+                    "regulatoryPrecedent": "Strong evidence in PANORAMA; supports approval"
+                },
+                {
+                    "name": "DRSS progression to PDR",
+                    "decisionGrade": True,
+                    "mcidDescription": "Prevention of progression to proliferative DR",
+                    "regulatoryPrecedent": "FDA accepts as approvable endpoint for NPDR treatment"
+                },
+                {
+                    "name": "BCVA (Best Corrected Visual Acuity)",
+                    "decisionGrade": False,
+                    "mcidDescription": "≥15 letters ETDRS; supportive in NPDR (primary for DME)",
+                    "regulatoryPrecedent": "Not primary for NPDR; patients typically have good baseline vision"
+                }
+            ]
+        },
+        {
+            "indication": "Retina (DME - Diabetic Macular Edema)",
+            "endpoints": [
+                {
+                    "name": "BCVA gain ≥15 letters",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥15 letters ETDRS at 12 months; 3-line improvement",
+                    "regulatoryPrecedent": "FDA standard for DME approval (Eylea, Lucentis, Beovu)"
+                },
+                {
+                    "name": "BCVA gain ≥10 letters",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥10 letters ETDRS; 2-line improvement",
+                    "regulatoryPrecedent": "Acceptable for approval; clinically meaningful"
+                },
+                {
+                    "name": "Central subfield thickness (CST) reduction",
+                    "decisionGrade": False,
+                    "mcidDescription": "Anatomic measure on OCT; surrogate",
+                    "regulatoryPrecedent": "Supportive evidence; BCVA is approvable endpoint"
+                },
+                {
+                    "name": "Avoidance of ≥15 letter loss",
+                    "decisionGrade": True,
+                    "mcidDescription": "Vision loss prevention; durability endpoint",
+                    "regulatoryPrecedent": "FDA accepts as secondary endpoint for DME"
+                }
+            ]
+        },
+        {
+            "indication": "Oncology (Solid Tumors - Advanced)",
+            "endpoints": [
+                {
+                    "name": "Overall Survival (OS)",
+                    "decisionGrade": True,
+                    "mcidDescription": "Gold standard; time from randomization to death",
+                    "regulatoryPrecedent": "FDA preferred endpoint for regular approval in advanced cancer"
+                },
+                {
+                    "name": "Progression-Free Survival (PFS)",
+                    "decisionGrade": True,
+                    "mcidDescription": "Time to progression or death; RECIST 1.1",
+                    "regulatoryPrecedent": "FDA accepts for approval if clinically meaningful magnitude (≥3 months)"
+                },
+                {
+                    "name": "Objective Response Rate (ORR)",
+                    "decisionGrade": False,
+                    "mcidDescription": "CR + PR by RECIST; surrogate endpoint",
+                    "regulatoryPrecedent": "AA pathway for high unmet need; requires OS confirmatory trial"
+                },
+                {
+                    "name": "Duration of Response (DoR)",
+                    "decisionGrade": False,
+                    "mcidDescription": "Median time to progression in responders",
+                    "regulatoryPrecedent": "Supportive; used with ORR for AA approval"
+                }
+            ]
+        },
+        {
+            "indication": "Oncology (Adjuvant/Curative Intent)",
+            "endpoints": [
+                {
+                    "name": "Disease-Free Survival (DFS)",
+                    "decisionGrade": True,
+                    "mcidDescription": "Time to recurrence or death; standard adjuvant endpoint",
+                    "regulatoryPrecedent": "FDA gold standard for adjuvant approval (Keytruda melanoma)"
+                },
+                {
+                    "name": "Event-Free Survival (EFS)",
+                    "decisionGrade": True,
+                    "mcidDescription": "Composite: recurrence, progression, death",
+                    "regulatoryPrecedent": "FDA accepts for neoadjuvant/adjuvant settings"
+                },
+                {
+                    "name": "Pathologic Complete Response (pCR)",
+                    "decisionGrade": False,
+                    "mcidDescription": "No residual invasive disease at surgery",
+                    "regulatoryPrecedent": "AA pathway in breast/bladder cancer; requires DFS/OS confirmation"
+                }
+            ]
+        },
+        {
+            "indication": "Alzheimer's Disease",
+            "endpoints": [
+                {
+                    "name": "CDR-SB (Clinical Dementia Rating-Sum of Boxes)",
+                    "decisionGrade": True,
+                    "mcidDescription": "0.5-1.0 point slowing = MCID; co-primary with cognitive",
+                    "regulatoryPrecedent": "FDA standard; approved for Leqembi (0.45 difference at 18mo)"
+                },
+                {
+                    "name": "ADAS-Cog (cognitive subscale)",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥4 point difference; cognitive function",
+                    "regulatoryPrecedent": "FDA historical standard; Aduhelm/Leqembi used CDR-SB + ADAS-Cog14"
+                },
+                {
+                    "name": "Amyloid PET reduction",
+                    "decisionGrade": False,
+                    "mcidDescription": "Biomarker; Centiloid units reduction",
+                    "regulatoryPrecedent": "Supportive; AA pathway requires clinical confirmation"
+                },
+                {
+                    "name": "ADCS-ADL (Activities of Daily Living)",
+                    "decisionGrade": True,
+                    "mcidDescription": "≥3 point difference; functional measure",
+                    "regulatoryPrecedent": "FDA accepts as functional co-primary"
                 }
             ]
         }

@@ -150,6 +150,68 @@ export class CTGovV2Connector {
   }
 
   /**
+   * Incremental pull: Get trials updated since a specific timestamp
+   * Enables deterministic Manual refresh with change tracking
+   * 
+   * @param lastChangedAfter ISO 8601 timestamp to filter trials updated after this date
+   * @param options Search options including condition, intervention, etc.
+   * @returns Trials updated since the timestamp with their lastChanged dates
+   */
+  async getTrialsSinceTimestamp(
+    lastChangedAfter: string,
+    options?: {
+      condition?: string;
+      intervention?: string;
+      pageSize?: number;
+      maxResults?: number;
+    }
+  ): Promise<ClinicalTrialContract[]> {
+    const url = new URL(`${this.baseUrl}/studies`);
+    
+    // Add filters
+    if (options?.condition) url.searchParams.set('query.cond', options.condition);
+    if (options?.intervention) url.searchParams.set('query.intr', options.intervention);
+    
+    // Key parameter: filter by last update date
+    // CT.gov API v2 supports lastUpdatePostDate filter
+    url.searchParams.set('filter.lastUpdatePostDate', lastChangedAfter);
+    
+    url.searchParams.set('pageSize', (options?.pageSize || this.defaultPageSize).toString());
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('sort', 'LastUpdatePostDate'); // Sort by update date
+
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error(`CT.gov API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const studies = data.studies || [];
+
+    return studies
+      .slice(0, options?.maxResults)
+      .map((study: any) => this.normalizeToContract(study));
+  }
+
+  /**
+   * Get watermark timestamp for incremental pulls
+   * Returns the latest lastChanged timestamp from a set of trials
+   * Use this as the cursor for the next incremental pull
+   */
+  getLatestTimestamp(trials: ClinicalTrialContract[]): string {
+    if (trials.length === 0) {
+      return new Date().toISOString();
+    }
+    
+    const timestamps = trials
+      .map(t => t.data.lastChanged)
+      .sort()
+      .reverse();
+    
+    return timestamps[0];
+  }
+
+  /**
    * Search trials with advanced query
    */
   async searchAdvanced(
