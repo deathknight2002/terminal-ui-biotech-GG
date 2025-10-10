@@ -626,6 +626,169 @@ const report = await client.reports.export({
 });
 ```
 
+## Therapeutic Area Intelligence Endpoints
+
+### GET /api/v1/therapeutic-areas/areas
+
+List all therapeutic areas with their science attributes for spider/radar chart visualization.
+
+**Response:**
+```json
+{
+  "areas": [
+    {
+      "id": "DMD",
+      "name": "Duchenne Muscular Dystrophy",
+      "attributes": {
+        "unmet_need": 9.5,
+        "market_size": 7.8,
+        "regulatory_support": 8.5,
+        "scientific_validation": 8.2,
+        "competitive_intensity": 7.5,
+        "reimbursement_potential": 8.0,
+        "patient_advocacy": 9.0
+      },
+      "metadata": {
+        "description": "Ultra-rare X-linked disorder...",
+        "prevalence": "1 in 3,500-5,000 male births",
+        "peak_sales_potential": "5-8B globally",
+        "key_mechanisms": ["Exon skipping", "Gene therapy", "Myosin inhibition"]
+      },
+      "companies": ["SRPT", "BMRN", "EWTX", "INSM", "JAZZ", "KROS", "PEPG", "PFE", "QURE", "RGNX", "RNA", "SLDB", "WVE"]
+    }
+  ],
+  "attribute_labels": [
+    "Unmet Need",
+    "Market Size",
+    "Regulatory Support",
+    "Scientific Validation",
+    "Competitive Intensity",
+    "Reimbursement Potential",
+    "Patient Advocacy"
+  ],
+  "scale": {
+    "min": 0,
+    "max": 10,
+    "description": "All attributes scored 0-10 where 10 is most favorable"
+  }
+}
+```
+
+### GET /api/v1/therapeutic-areas/areas/{area_id}
+
+Get detailed information about a specific therapeutic area including companies, pipeline assets, and recent catalysts.
+
+**Parameters:**
+- `area_id`: Therapeutic area identifier (e.g., "DMD", "Cardiology", "IBD")
+
+**Response:**
+```json
+{
+  "id": "DMD",
+  "name": "Duchenne Muscular Dystrophy",
+  "attributes": {...},
+  "metadata": {...},
+  "companies": [
+    {
+      "ticker": "SRPT",
+      "name": "Sarepta Therapeutics",
+      "company_type": "Biotech",
+      "market_cap": 7800000000,
+      "pipeline_count": 15
+    }
+  ],
+  "pipeline": [
+    {
+      "name": "SRP-5051",
+      "generic_name": "Vesleteplirsen",
+      "company": "Sarepta Therapeutics",
+      "indication": "Duchenne Muscular Dystrophy (Exon 51 Skip)",
+      "phase": "Phase III",
+      "mechanism": "Exon-skipping PMO"
+    }
+  ],
+  "pipeline_count": 6,
+  "company_count": 13
+}
+```
+
+### GET /api/v1/therapeutic-areas/areas/compare/radar
+
+Get therapeutic area comparison data formatted for radar/spider chart visualization with Aurora-themed gradients.
+
+**Query Parameters:**
+- `areas` (optional): Comma-separated area IDs to compare (default: all areas)
+
+**Example:** `/api/v1/therapeutic-areas/areas/compare/radar?areas=DMD,Cardiology,IBD`
+
+**Response:**
+```json
+{
+  "chart_type": "radar",
+  "attributes": [
+    "Unmet Need",
+    "Market Size",
+    "Regulatory Support",
+    "Scientific Validation",
+    "Competitive Intensity",
+    "Reimbursement Potential",
+    "Patient Advocacy"
+  ],
+  "series": [
+    {
+      "id": "DMD",
+      "name": "Duchenne Muscular Dystrophy",
+      "values": [9.5, 7.8, 8.5, 8.2, 7.5, 8.0, 9.0],
+      "color": "#00d4ff",
+      "description": "Ultra-rare X-linked disorder with high mortality..."
+    },
+    {
+      "id": "CARDIOLOGY",
+      "name": "Cardiovascular Disease",
+      "values": [8.5, 9.5, 7.5, 9.0, 9.0, 8.5, 7.0],
+      "color": "#fbbf24",
+      "description": "Large market with significant unmet need..."
+    }
+  ],
+  "scale": {
+    "min": 0,
+    "max": 10
+  },
+  "theme": "aurora",
+  "interactivity": {
+    "hover": true,
+    "toggle_series": true,
+    "color_by_value": true
+  }
+}
+```
+
+### GET /api/v1/therapeutic-areas/areas/{area_id}/companies
+
+Get all companies operating in a therapeutic area with their market metrics.
+
+**Parameters:**
+- `area_id`: Therapeutic area identifier
+
+**Response:**
+```json
+{
+  "therapeutic_area": "Duchenne Muscular Dystrophy",
+  "company_count": 13,
+  "companies": [
+    {
+      "ticker": "SRPT",
+      "name": "Sarepta Therapeutics",
+      "company_type": "Biotech",
+      "market_cap": 7800000000,
+      "headquarters": "Cambridge, MA",
+      "pipeline_count": 15,
+      "therapeutic_areas": "Rare Disease,Neurology"
+    }
+  ]
+}
+```
+
 ## Best Practices
 
 1. **Use Authentication**: Always include Bearer token
@@ -633,8 +796,51 @@ const report = await client.reports.export({
 3. **Validate Input**: Check parameters before sending
 4. **Handle Errors**: Gracefully handle 4xx/5xx responses
 5. **Use Pagination**: Implement pagination for large datasets
-6. **Cache Responses**: Cache static data locally
+6. **Cache Responses**: Cache static data locally (especially therapeutic area data)
 7. **Monitor Usage**: Track API calls and quotas
+8. **Yahoo Finance Integration**: Use the built-in rate limiter (max 2000 req/hour)
+
+### Yahoo Finance Rate Limiting
+
+When integrating with Yahoo Finance data (for market data, quotes, etc.), use the built-in rate limiter:
+
+```python
+from platform.core.utils import yahoo_rate_limited, get_yahoo_rate_limiter
+
+# Option 1: Use decorator
+@yahoo_rate_limited(use_cache=True)
+def fetch_stock_quote(ticker: str):
+    # Your Yahoo Finance API call
+    response = requests.get(f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={ticker}")
+    return response.json()
+
+# Option 2: Manual usage
+limiter = get_yahoo_rate_limiter()
+
+def fetch_historical_data(ticker: str, period: str):
+    def _fetch():
+        # Your API call here
+        return requests.get(f"https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1=...")
+    
+    return limiter.get_cached_or_fetch(
+        endpoint=f"historical_{ticker}",
+        fetch_func=_fetch,
+        use_cache=True
+    )
+
+# Check rate limiter stats
+stats = limiter.get_stats()
+print(f"API calls this hour: {stats['requests_last_hour']}/{stats['max_requests_per_hour']}")
+print(f"Cache size: {stats['cache_size']}")
+print(f"Throttle events: {stats['throttle_events']}")
+```
+
+**Rate Limiting Features:**
+- Token bucket algorithm with 2000 req/hour limit
+- Minimum 200ms delay between requests
+- Automatic caching with 10-minute TTL
+- Exponential backoff on 403/999 errors
+- Request tracking and statistics
 
 ## See Also
 

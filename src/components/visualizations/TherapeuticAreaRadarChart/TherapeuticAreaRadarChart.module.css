@@ -1,0 +1,135 @@
+.therapeuticAreaRadarChart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: var(--bg-panel, #0f172a);
+  border-radius: 8px;
+}
+
+.therapeuticAreaRadarChart canvas {
+  cursor: crosshair;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-terminal, #0a0e1a);
+  border: 1px solid var(--border-primary, #1e293b);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-primary, #f8fafc);
+}
+
+.legendItem:hover {
+  background: var(--bg-hover, #1e293b);
+  border-color: var(--accent-primary, #00d4ff);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+.legendItemInactive {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.legendItemInactive:hover {
+  opacity: 0.6;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.legendLabel {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.legendDescription {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #94a3b8);
+  font-style: italic;
+  max-width: 200px;
+}
+
+@media (min-width: 768px) {
+  .legendDescription {
+    display: block;
+  }
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  padding: 0.5rem 0.75rem;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--accent-primary, #00d4ff);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-primary, #f8fafc);
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Aurora theme specific styles */
+[data-theme="aurora"] .therapeuticAreaRadarChart {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+}
+
+[data-theme="aurora"] .legendItem {
+  background: rgba(10, 14, 26, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="aurora"] .legendItem:hover {
+  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .therapeuticAreaRadarChart {
+    padding: 0.5rem;
+  }
+
+  .legend {
+    gap: 0.5rem;
+  }
+
+  .legendItem {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .legendLabel {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

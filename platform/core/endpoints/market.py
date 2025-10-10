@@ -14,27 +14,107 @@ router = APIRouter()
 
 
 @router.get("/summary")
-async def get_market_summary() -> dict:
-    """Expose sample market breadth and sentiment figures."""
+async def get_market_summary(db: Session = Depends(get_db)) -> dict:
+    """
+    Return market breadth and sentiment figures.
+    
+    In production, this should fetch from:
+    - Market data API (e.g., Alpha Vantage, Polygon.io)
+    - Sentiment analysis from news aggregator
+    - Volume data from exchange feeds
+    
+    Current implementation returns database-derived metrics.
+    """
+    from sqlalchemy import func, case
+    
+    # Calculate real metrics from database
+    total_tickers = db.query(func.count(func.distinct(MarketData.ticker))).scalar() or 0
+    
+    if total_tickers == 0:
+        # Fallback if no data
+        return {
+            "sentiment_score": 0.50,
+            "advancers": 0,
+            "decliners": 0,
+            "volume_spike": 1.0,
+            "total_tickers": 0,
+            "data_source": "No market data available"
+        }
+    
+    # Get latest price for each ticker to determine advancers/decliners
+    # This is a simplified calculation; production would use real-time API
+    latest_data = db.query(
+        MarketData.ticker,
+        MarketData.close_price,
+        MarketData.open_price
+    ).order_by(
+        MarketData.ticker,
+        MarketData.timestamp.desc()
+    ).limit(total_tickers * 2).all()
+    
+    ticker_changes = {}
+    for ticker, close, open_price in latest_data:
+        if ticker not in ticker_changes:
+            change = ((close - open_price) / open_price) if open_price > 0 else 0
+            ticker_changes[ticker] = change
+    
+    advancers = sum(1 for change in ticker_changes.values() if change > 0)
+    decliners = sum(1 for change in ticker_changes.values() if change < 0)
+    
+    # Sentiment score based on advancers/decliners ratio
+    sentiment_score = advancers / total_tickers if total_tickers > 0 else 0.5
 
     return {
-        "sentiment_score": 0.78,
-        "advancers": 142,
-        "decliners": 38,
-        "volume_spike": 1.35,
+        "sentiment_score": round(sentiment_score, 2),
+        "advancers": advancers,
+        "decliners": decliners,
+        "volume_spike": 1.15,  # TODO: Calculate from actual volume data
+        "total_tickers": total_tickers,
+        "data_source": "database"
     }
 
 
 @router.get("/catalysts")
-async def get_market_catalysts() -> dict:
-    """Return a light-weight catalyst ticker feed."""
+async def get_market_catalysts(db: Session = Depends(get_db)) -> dict:
+    """
+    Return catalyst ticker feed from database.
+    
+    In production, integrate with:
+    - ClinicalTrials.gov API for trial milestones
+    - FDA calendar for PDUFA dates
+    - Company IR calendars for earnings
+    - News scraping for ad-hoc events
+    """
+    from datetime import datetime, timedelta
+    from ..database import Catalyst
+    
+    # Fetch upcoming catalysts from database
+    upcoming = db.query(Catalyst).filter(
+        Catalyst.event_date >= datetime.now(),
+        Catalyst.event_date <= datetime.now() + timedelta(days=90)
+    ).order_by(Catalyst.event_date.asc()).limit(10).all()
+    
+    if not upcoming:
+        return {"items": [], "data_source": "database (no upcoming catalysts)"}
+    
+    items = []
+    for catalyst in upcoming:
+        # Determine impact from probability and description
+        impact = "positive" if catalyst.probability and catalyst.probability > 0.7 else "watch"
+        if "negative" in (catalyst.description or "").lower() or "risk" in (catalyst.description or "").lower():
+            impact = "negative"
+        
+        items.append({
+            "symbol": catalyst.company.split()[0][:4].upper() if catalyst.company else "N/A",  # Simple ticker extraction
+            "event": catalyst.title or catalyst.event_type,
+            "impact": impact,
+            "date": catalyst.event_date.strftime("%Y-%m-%d") if catalyst.event_date else None,
+            "probability": catalyst.probability
+        })
 
     return {
-        "items": [
-            {"symbol": "BRX", "event": "FDA Priority Review", "impact": "positive"},
-            {"symbol": "GNX", "event": "Phase II data readout", "impact": "watch"},
-            {"symbol": "NXO", "event": "Secondary offering", "impact": "negative"},
-        ]
+        "items": items,
+        "data_source": "database"
     }
 
 
