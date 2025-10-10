@@ -22,6 +22,7 @@ export const menuStructure: MenuItem[] = [
     label: 'SCIENCE',
     items: [
       { label: 'Evidence Journal', path: '/science/evidence-journal', description: 'Science-first biotech intelligence' },
+      { label: 'Therapeutic Areas', path: '/science/therapeutic-areas', description: 'Spider web comparison of therapeutic areas' },
       { label: 'Epidemiology Builder', path: '/science/epidemiology', description: 'Disease burden analysis' },
       { label: 'Literature Explorer', path: '/science/literature', description: 'Scientific literature search' },
       { label: 'Biomarker Atlas', path: '/science/biomarkers', description: 'Biomarker database' }
