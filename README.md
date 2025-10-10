@@ -175,6 +175,34 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 - 🔍 **Market Intelligence** - Competitor analysis
 - 📊 **Clinical Trial Tracker** - Real-time trial data
 - 🧬 **Biotech Data Explorer** - Interactive data discovery
+- 🔬 **Evidence Journal** - Science-first catalyst tracking (NEW!)
+
+#### Evidence Journal - Science-First Intelligence
+
+**Route**: `/science/evidence-journal`
+
+A mechanism-centric evidence platform that ranks companies and assets by mechanistic differentiation and surfaces near-term catalysts with transparent evidence trails.
+
+**Key Features**:
+- **Refresh Modes**: Manual (default, zero background network) | Scheduled | Live
+- **Today's Evidence**: Trial updates, FDA label changes, AdComm dockets, SEC 8-K filings
+- **Catalyst Board**: 90-180 day timeline with confidence-coded events (PDUFA, AdComm, readouts)
+- **MoA Explorer**: Target differentiation analysis (genetic evidence + bench potency scores)
+- **Company Scorecard**: Evidence pyramid (Genetic > Translational > Clinical) + cash runway
+- **Journal Notebook**: Research notes with evidence snippets and "So what?" one-liners
+
+**Domain Focus**:
+- **Cardiology**: Lp(a), Factor XI, HFpEF with FDA 2019 HF guidance context
+- **IBD**: IL-23 class, TL1A/DR3, orals with MMS/CDAI benchmarks
+- **DMD**: Gene therapy competitive mapping (Elevidys vs next-gen)
+- **Retina**: NPDR/DME durability with DRSS shift endpoints
+
+**Data Sources** (API-ready structure):
+- ClinicalTrials.gov API v2, FDA (openFDA, Drugs@FDA, AdComm calendar)
+- SEC/EDGAR 8-K filings, EMA CHMP meetings
+- Open Targets GraphQL (genetic validation), ChEMBL (bench potency)
+
+See [docs/EVIDENCE_JOURNAL.md](docs/EVIDENCE_JOURNAL.md) for complete feature documentation.
 
 ### TUI - Command Line Interface (`platform/tui/`)
 
