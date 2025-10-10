@@ -60,7 +60,11 @@
     "setup:python": "./scripts/setup.sh python",
     "setup:nodejs": "./scripts/setup.sh nodejs",
     "start:dev": "./scripts/setup.sh dev",
-    "start:prod": "poetry run uvicorn platform.core.app:app --host 0.0.0.0 --port 3001"
+    "start:prod": "poetry run uvicorn platform.core.app:app --host 0.0.0.0 --port 3001",
+    "smoke-test": "node scripts/smoke-test.js",
+    "smoke-test:quick": "node scripts/smoke-test.js --quick",
+    "preflight": "chmod +x scripts/preflight-check.sh && ./scripts/preflight-check.sh",
+    "verify:mobile": "chmod +x scripts/verify-mobile-setup.sh && ./scripts/verify-mobile-setup.sh"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
