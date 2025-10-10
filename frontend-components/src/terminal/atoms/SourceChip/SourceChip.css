@@ -34,6 +34,34 @@
   color: var(--status-warning);
 }
 
+.source-chip--error {
+  background-color: rgba(255, 68, 68, 0.1);
+  border: 2px solid rgba(255, 68, 68, 0.5);
+  color: var(--error, #ff4444);
+  font-weight: 700;
+  animation: source-chip-error-pulse 2s ease-in-out infinite;
+}
+
+@keyframes source-chip-error-pulse {
+  0%, 100% {
+    border-color: rgba(255, 68, 68, 0.5);
+  }
+  50% {
+    border-color: rgba(255, 68, 68, 0.8);
+  }
+}
+
+.source-chip__error-icon {
+  font-size: 1rem;
+  animation: source-chip-error-shake 0.5s ease-in-out;
+}
+
+@keyframes source-chip-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
 .source-chip__domain {
   font-weight: 600;
   color: var(--accent-primary);

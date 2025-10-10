@@ -1,0 +1,179 @@
+.credence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.credence-badge--compact {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  gap: 0.25rem;
+}
+
+/* Confidence Levels */
+.credence-badge--high {
+  background: rgba(0, 255, 136, 0.15);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  color: var(--success, #00ff88);
+}
+
+.credence-badge--medium {
+  background: rgba(255, 170, 0, 0.15);
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  color: var(--warning, #ffaa00);
+}
+
+.credence-badge--low {
+  background: rgba(136, 136, 136, 0.15);
+  border: 1px solid rgba(136, 136, 136, 0.4);
+  color: var(--text-muted, #888);
+}
+
+.credence-badge__icon {
+  font-size: 1em;
+  line-height: 1;
+}
+
+.credence-badge__label {
+  font-weight: 700;
+}
+
+.credence-badge__date {
+  font-size: 0.85em;
+  opacity: 0.7;
+  margin-left: 0.25rem;
+}
+
+/* Linkable badges */
+.credence-badge__link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.credence-badge__link .credence-badge {
+  cursor: pointer;
+}
+
+.credence-badge__link:hover .credence-badge--high {
+  background: rgba(0, 255, 136, 0.25);
+  border-color: var(--success, #00ff88);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 255, 136, 0.2);
+}
+
+.credence-badge__link:hover .credence-badge--medium {
+  background: rgba(255, 170, 0, 0.25);
+  border-color: var(--warning, #ffaa00);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 170, 0, 0.2);
+}
+
+.credence-badge__link:hover .credence-badge--low {
+  background: rgba(136, 136, 136, 0.25);
+  border-color: var(--text-muted, #888);
+  transform: translateY(-1px);
+}
+
+/* Badge Group */
+.credence-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.credence-badge-group__more {
+  padding: 0.375rem 0.75rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+  background: var(--bg-elevated, #121212);
+  border: 1px solid var(--border-subtle, #2a2a2a);
+  border-radius: 2px;
+  cursor: help;
+}
+
+/* Theme Support */
+[data-theme="amber"] .credence-badge--high {
+  color: var(--accent-primary, #ffaa00);
+  border-color: rgba(255, 170, 0, 0.4);
+  background: rgba(255, 170, 0, 0.15);
+}
+
+[data-theme="amber"] .credence-badge__link:hover .credence-badge--high {
+  border-color: var(--accent-primary, #ffaa00);
+  box-shadow: 0 2px 8px rgba(255, 170, 0, 0.2);
+}
+
+[data-theme="cyan"] .credence-badge--high {
+  color: var(--accent-primary, #00d4ff);
+  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.15);
+}
+
+[data-theme="cyan"] .credence-badge__link:hover .credence-badge--high {
+  border-color: var(--accent-primary, #00d4ff);
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+}
+
+[data-theme="purple"] .credence-badge--high {
+  color: var(--accent-primary, #bb86fc);
+  border-color: rgba(187, 134, 252, 0.4);
+  background: rgba(187, 134, 252, 0.15);
+}
+
+[data-theme="purple"] .credence-badge__link:hover .credence-badge--high {
+  border-color: var(--accent-primary, #bb86fc);
+  box-shadow: 0 2px 8px rgba(187, 134, 252, 0.2);
+}
+
+[data-theme="blue"] .credence-badge--high {
+  color: var(--accent-primary, #4dabf7);
+  border-color: rgba(77, 171, 247, 0.4);
+  background: rgba(77, 171, 247, 0.15);
+}
+
+[data-theme="blue"] .credence-badge__link:hover .credence-badge--high {
+  border-color: var(--accent-primary, #4dabf7);
+  box-shadow: 0 2px 8px rgba(77, 171, 247, 0.2);
+}
+
+/* Animations */
+@keyframes credence-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.credence-badge--high:hover .credence-badge__icon {
+  animation: credence-pulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .credence-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .credence-badge--compact {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .credence-badge__date {
+    display: none; /* Hide date on mobile */
+  }
+}

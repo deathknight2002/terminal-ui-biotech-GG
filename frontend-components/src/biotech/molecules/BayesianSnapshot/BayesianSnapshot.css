@@ -1,0 +1,284 @@
+.bayesian-snapshot {
+  background: var(--bg-panel, #0a0a0a);
+  border: 1px solid var(--border-subtle, #2a2a2a);
+  border-radius: 4px;
+  padding: 1.5rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  color: var(--text-primary, #e0e0e0);
+}
+
+.bayesian-snapshot--compact {
+  padding: 1rem;
+  font-size: 0.9em;
+}
+
+.bayesian-snapshot__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle, #2a2a2a);
+}
+
+.bayesian-snapshot__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--accent-primary, #00ff88);
+}
+
+.bayesian-snapshot__subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bayesian-snapshot__section {
+  margin-bottom: 1.5rem;
+}
+
+.bayesian-snapshot__section:last-child {
+  margin-bottom: 0;
+}
+
+.bayesian-snapshot__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-primary, #00ff88);
+}
+
+.bayesian-snapshot__icon {
+  font-size: 1rem;
+}
+
+.bayesian-snapshot__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00ff88);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+}
+
+.bayesian-snapshot__description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #b0b0b0);
+}
+
+/* Thresholds Grid */
+.bayesian-snapshot__thresholds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bayesian-snapshot__threshold {
+  padding: 1rem;
+  border-radius: 4px;
+  background: var(--bg-elevated, #121212);
+  border: 1px solid var(--border-subtle, #2a2a2a);
+  transition: border-color 0.2s ease;
+}
+
+.bayesian-snapshot__threshold:hover {
+  border-color: var(--accent-primary, #00ff88);
+}
+
+.bayesian-snapshot__threshold--win {
+  border-left: 3px solid var(--success, #00ff88);
+}
+
+.bayesian-snapshot__threshold--meh {
+  border-left: 3px solid var(--warning, #ffaa00);
+}
+
+.bayesian-snapshot__threshold--kill {
+  border-left: 3px solid var(--error, #ff4444);
+}
+
+.bayesian-snapshot__threshold-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bayesian-snapshot__threshold--win .bayesian-snapshot__threshold-label {
+  color: var(--success, #00ff88);
+}
+
+.bayesian-snapshot__threshold--meh .bayesian-snapshot__threshold-label {
+  color: var(--warning, #ffaa00);
+}
+
+.bayesian-snapshot__threshold--kill .bayesian-snapshot__threshold-label {
+  color: var(--error, #ff4444);
+}
+
+.bayesian-snapshot__threshold-icon {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.bayesian-snapshot__threshold-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  margin-bottom: 0.25rem;
+  color: var(--text-primary, #e0e0e0);
+}
+
+.bayesian-snapshot__threshold-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted, #888);
+  line-height: 1.3;
+}
+
+/* Math Explanation */
+.bayesian-snapshot__math {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle, #2a2a2a);
+}
+
+.bayesian-snapshot__math details {
+  cursor: pointer;
+}
+
+.bayesian-snapshot__math summary {
+  font-size: 0.85rem;
+  color: var(--accent-primary, #00ff88);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.bayesian-snapshot__math summary:hover {
+  opacity: 0.8;
+}
+
+.bayesian-snapshot__math-content {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg-elevated, #121212);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.bayesian-snapshot__math-content p {
+  margin: 0 0 0.75rem 0;
+}
+
+.bayesian-snapshot__math-content ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.bayesian-snapshot__math-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* Sources */
+.bayesian-snapshot__sources {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle, #2a2a2a);
+}
+
+.bayesian-snapshot__sources-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, #888);
+  margin-bottom: 0.5rem;
+}
+
+.bayesian-snapshot__sources-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bayesian-snapshot__source-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--accent-primary, #00ff88);
+  background: var(--bg-elevated, #121212);
+  border: 1px solid var(--border-subtle, #2a2a2a);
+  border-radius: 2px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.bayesian-snapshot__source-link:hover {
+  background: var(--bg-hover, #1a1a1a);
+  border-color: var(--accent-primary, #00ff88);
+  transform: translateY(-1px);
+}
+
+.bayesian-snapshot__source-link::before {
+  content: '🔗';
+  margin-right: 0.5rem;
+  font-size: 0.9em;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bayesian-snapshot {
+    padding: 1rem;
+  }
+
+  .bayesian-snapshot__thresholds {
+    grid-template-columns: 1fr;
+  }
+
+  .bayesian-snapshot__value {
+    font-size: 1.5rem;
+  }
+
+  .bayesian-snapshot__threshold-value {
+    font-size: 1.25rem;
+  }
+}
+
+/* Theme Support */
+[data-theme="amber"] .bayesian-snapshot__title,
+[data-theme="amber"] .bayesian-snapshot__label,
+[data-theme="amber"] .bayesian-snapshot__source-link {
+  color: var(--accent-primary, #ffaa00);
+}
+
+[data-theme="cyan"] .bayesian-snapshot__title,
+[data-theme="cyan"] .bayesian-snapshot__label,
+[data-theme="cyan"] .bayesian-snapshot__source-link {
+  color: var(--accent-primary, #00d4ff);
+}
+
+[data-theme="purple"] .bayesian-snapshot__title,
+[data-theme="purple"] .bayesian-snapshot__label,
+[data-theme="purple"] .bayesian-snapshot__source-link {
+  color: var(--accent-primary, #bb86fc);
+}
+
+[data-theme="blue"] .bayesian-snapshot__title,
+[data-theme="blue"] .bayesian-snapshot__label,
+[data-theme="blue"] .bayesian-snapshot__source-link {
+  color: var(--accent-primary, #4dabf7);
+}
