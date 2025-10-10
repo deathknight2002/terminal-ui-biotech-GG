@@ -18,6 +18,7 @@ import { CompetitorsPage } from './pages/CompetitorsPage';
 import { DataCatalogPage } from './pages/DataCatalogPage';
 import { AuditLogPage } from './pages/AuditLogPage';
 import { EvidenceJournalPage } from './pages/EvidenceJournalPage';
+import { TherapeuticAreasPage } from './pages/TherapeuticAreasPage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -87,6 +88,7 @@ export function App() {
             <Route path="/science/literature" element={<PlaceholderPage title="LITERATURE EXPLORER" />} />
             <Route path="/science/biomarkers" element={<PlaceholderPage title="BIOMARKER ATLAS" />} />
             <Route path="/science/evidence-journal" element={<EvidenceJournalPage />} />
+            <Route path="/science/therapeutic-areas" element={<TherapeuticAreasPage />} />
 
             {/* Evidence Journal dedicated routes */}
             <Route path="/evidence" element={<EvidenceJournalPage />} />
