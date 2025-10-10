@@ -1,4 +1,3 @@
-import React from 'react';
 import type { RefreshMode } from '../../../../../src/types/biotech';
 import './RefreshModeToggle.css';
 
