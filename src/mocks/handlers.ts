@@ -3,30 +3,77 @@ import { http, HttpResponse } from 'msw';
 // OpenBB API base URL
 const OPENBB_API_BASE = 'https://api.openbb.co/v1';
 
-// Mock data for different endpoints
+// Mock data for different endpoints - Real Biotech Companies from DMD and Cardiology Primers
 const mockMarketData = {
-  AAPL: {
-    symbol: 'AAPL',
-    price: 175.43,
-    change: 2.15,
-    changePercent: 1.24,
-    volume: 45234567,
-    marketCap: 2750000000000,
-    pe: 28.5,
-    dividend: 0.96,
+  // DMD Companies (from Duchenne Muscular Dystrophy primer)
+  SRPT: {
+    symbol: 'SRPT',
+    price: 115.42,
+    change: 3.25,
+    changePercent: 2.90,
+    volume: 1234567,
+    marketCap: 11200000000,
+    pe: -18.5,  // Not profitable yet
+    dividend: 0.0,
     lastUpdated: new Date().toISOString()
   },
+  BMRN: {
+    symbol: 'BMRN',
+    price: 78.34,
+    change: -1.23,
+    changePercent: -1.55,
+    volume: 987654,
+    marketCap: 15800000000,
+    pe: -12.3,
+    dividend: 0.0,
+    lastUpdated: new Date().toISOString()
+  },
+  ARWR: {
+    symbol: 'ARWR',
+    price: 28.67,
+    change: 1.45,
+    changePercent: 5.33,
+    volume: 2345678,
+    marketCap: 4100000000,
+    pe: -8.7,
+    dividend: 0.0,
+    lastUpdated: new Date().toISOString()
+  },
+  // Cardiology Companies
   AMGN: {
     symbol: 'AMGN',
-    price: 264.12,
+    price: 295.12,
     change: -3.44,
-    changePercent: -1.29,
+    changePercent: -1.15,
     volume: 2456789,
-    marketCap: 145000000000,
+    marketCap: 148000000000,
     pe: 15.2,
     dividend: 7.28,
     lastUpdated: new Date().toISOString()
   },
+  CYTK: {
+    symbol: 'CYTK',
+    price: 52.18,
+    change: 2.34,
+    changePercent: 4.69,
+    volume: 856234,
+    marketCap: 3200000000,
+    pe: -15.6,
+    dividend: 0.0,
+    lastUpdated: new Date().toISOString()
+  },
+  LLY: {
+    symbol: 'LLY',
+    price: 825.43,
+    change: 12.55,
+    changePercent: 1.54,
+    volume: 3456789,
+    marketCap: 750000000000,
+    pe: 68.5,
+    dividend: 3.92,
+    lastUpdated: new Date().toISOString()
+  },
+  // Additional Biotech Companies
   GILD: {
     symbol: 'GILD',
     price: 68.45,
@@ -62,19 +109,83 @@ const mockMarketData = {
   }
 };
 
+// Real biotech companies from DMD, Cardiology, and IBD research primers
 const mockBiotechScreener = [
+  // DMD Companies
+  {
+    symbol: 'SRPT',
+    name: 'Sarepta Therapeutics',
+    marketCap: 11200000000,
+    price: 115.42,
+    change: 2.90,
+    volume: 1234567,
+    pe: -18.5,
+    pipeline: 'Gene Therapy/DMD',
+    phase: 'Marketed/Phase III',
+    indication: 'Duchenne Muscular Dystrophy'
+  },
+  {
+    symbol: 'BMRN',
+    name: 'BioMarin Pharmaceutical',
+    marketCap: 15800000000,
+    price: 78.34,
+    change: -1.55,
+    volume: 987654,
+    pe: -12.3,
+    pipeline: 'Rare Disease/Gene Therapy',
+    phase: 'Marketed',
+    indication: 'Multiple Rare Diseases'
+  },
+  {
+    symbol: 'ARWR',
+    name: 'Arrowhead Pharmaceuticals',
+    marketCap: 4100000000,
+    price: 28.67,
+    change: 5.33,
+    volume: 2345678,
+    pe: -8.7,
+    pipeline: 'RNAi Therapeutics',
+    phase: 'Phase II/III',
+    indication: 'Cardiology/Rare Disease'
+  },
+  // Cardiology Companies
   {
     symbol: 'AMGN',
     name: 'Amgen Inc.',
-    marketCap: 145000000000,
-    price: 264.12,
-    change: -1.29,
+    marketCap: 148000000000,
+    price: 295.12,
+    change: -1.15,
     volume: 2456789,
     pe: 15.2,
-    pipeline: 'Oncology/Inflammation',
+    pipeline: 'Cardiology/Oncology/Inflammation',
     phase: 'Marketed',
     indication: 'Multiple'
   },
+  {
+    symbol: 'CYTK',
+    name: 'Cytokinetics Inc',
+    marketCap: 3200000000,
+    price: 52.18,
+    change: 4.69,
+    volume: 856234,
+    pe: -15.6,
+    pipeline: 'Cardiac Myosin Inhibition',
+    phase: 'Phase III',
+    indication: 'Hypertrophic Cardiomyopathy'
+  },
+  {
+    symbol: 'LLY',
+    name: 'Eli Lilly and Company',
+    marketCap: 750000000000,
+    price: 825.43,
+    change: 1.54,
+    volume: 3456789,
+    pe: 68.5,
+    pipeline: 'Diabetes/Obesity/Cardiology',
+    phase: 'Marketed',
+    indication: 'Multiple'
+  },
+  // Other Key Biotech
   {
     symbol: 'GILD',
     name: 'Gilead Sciences Inc.',
@@ -83,7 +194,7 @@ const mockBiotechScreener = [
     change: 1.83,
     volume: 5234567,
     pe: 11.5,
-    pipeline: 'Virology/Oncology',
+    pipeline: 'Virology/Oncology/IBD',
     phase: 'Marketed',
     indication: 'HIV/HBV/Cancer'
   },
@@ -113,7 +224,76 @@ const mockBiotechScreener = [
   }
 ];
 
+// Real clinical trials from DMD and Cardiology companies
 const mockClinicalTrials = {
+  SRPT: [
+    {
+      id: 'NCT05096221',
+      title: 'SRP-9001 Gene Therapy for Duchenne Muscular Dystrophy',
+      phase: 'Phase III',
+      status: 'Active, not recruiting',
+      indication: 'Duchenne Muscular Dystrophy',
+      primaryCompletion: '2025-06-15',
+      estimatedEnrollment: 99,
+      sponsors: ['Sarepta Therapeutics'],
+      locations: ['United States', 'Europe'],
+      lastUpdated: '2024-10-01'
+    },
+    {
+      id: 'NCT04626674',
+      title: 'Long-term Follow-up of SRP-9001 Gene Therapy',
+      phase: 'Phase IV',
+      status: 'Recruiting',
+      indication: 'Duchenne Muscular Dystrophy',
+      primaryCompletion: '2028-12-31',
+      estimatedEnrollment: 150,
+      sponsors: ['Sarepta Therapeutics'],
+      locations: ['United States'],
+      lastUpdated: '2024-09-28'
+    }
+  ],
+  BMRN: [
+    {
+      id: 'NCT05251207',
+      title: 'BMN 307 Gene Therapy for Hemophilia A',
+      phase: 'Phase III',
+      status: 'Recruiting',
+      indication: 'Hemophilia A',
+      primaryCompletion: '2026-03-20',
+      estimatedEnrollment: 134,
+      sponsors: ['BioMarin Pharmaceutical Inc.'],
+      locations: ['Global'],
+      lastUpdated: '2024-10-05'
+    }
+  ],
+  ARWR: [
+    {
+      id: 'NCT05936372',
+      title: 'ARO-APOC3 for Mixed Dyslipidemia',
+      phase: 'Phase III',
+      status: 'Recruiting',
+      indication: 'Cardiovascular Disease',
+      primaryCompletion: '2025-08-15',
+      estimatedEnrollment: 650,
+      sponsors: ['Arrowhead Pharmaceuticals'],
+      locations: ['United States', 'Europe', 'Asia'],
+      lastUpdated: '2024-10-02'
+    }
+  ],
+  CYTK: [
+    {
+      id: 'NCT05601440',
+      title: 'Aficamten in Hypertrophic Cardiomyopathy (SEQUOIA-HCM)',
+      phase: 'Phase III',
+      status: 'Active, not recruiting',
+      indication: 'Hypertrophic Cardiomyopathy',
+      primaryCompletion: '2025-03-30',
+      estimatedEnrollment: 282,
+      sponsors: ['Cytokinetics, Inc.'],
+      locations: ['United States', 'Europe'],
+      lastUpdated: '2024-09-15'
+    }
+  ],
   AMGN: [
     {
       id: 'NCT05234567',
@@ -184,9 +364,37 @@ const mockClinicalTrials = {
   ]
 };
 
+// Real FDA events for DMD and Cardiology companies
 const mockFDAEvents = [
   {
     id: 'fda-001',
+    date: '2025-06-21',
+    type: 'PDUFA Date',
+    drug: 'SRP-9001 (Elevidys)',
+    company: 'Sarepta',
+    indication: 'Duchenne Muscular Dystrophy',
+    status: 'Approved 2023 (Accelerated), sNDA Under Review'
+  },
+  {
+    id: 'fda-002',
+    date: '2025-03-15',
+    type: 'Advisory Committee',
+    drug: 'Aficamten',
+    company: 'Cytokinetics',
+    indication: 'Hypertrophic Cardiomyopathy',
+    status: 'Scheduled'
+  },
+  {
+    id: 'fda-003',
+    date: '2025-08-20',
+    type: 'BLA Submission Expected',
+    drug: 'ARO-APOC3',
+    company: 'Arrowhead',
+    indication: 'Cardiovascular Disease',
+    status: 'Phase III Ongoing'
+  },
+  {
+    id: 'fda-004',
     date: '2024-11-15',
     type: 'PDUFA Date',
     drug: 'AMG-510',
@@ -195,22 +403,13 @@ const mockFDAEvents = [
     status: 'Scheduled'
   },
   {
-    id: 'fda-002',
+    id: 'fda-005',
     date: '2024-12-03',
     type: 'Advisory Committee',
     drug: 'GS-9674',
     company: 'Gilead',
     indication: 'NASH',
     status: 'Scheduled'
-  },
-  {
-    id: 'fda-003',
-    date: '2025-01-20',
-    type: 'BLA Submission',
-    drug: 'REGN2810',
-    company: 'Regeneron',
-    indication: 'Solid Tumors',
-    status: 'Expected'
   }
 ];
 

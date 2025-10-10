@@ -1,0 +1,537 @@
+/**
+ * Therapeutic Areas Page Styles
+ * Aurora Glass Theme with Liquid Glass Effects
+ */
+
+.therapeuticAreasPage {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 7, 25, 1) 0%,
+    rgba(11, 15, 21, 1) 50%,
+    rgba(10, 16, 24, 1) 100%
+  );
+  padding: 2rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Aurora gradient overlay */
+.therapeuticAreasPage::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(1200px 600px at 10% -10%, rgba(125, 249, 255, 0.15), transparent 50%),
+    radial-gradient(900px 500px at 90% 0%, rgba(192, 132, 252, 0.12), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: auroraPulse 20s ease-in-out infinite;
+}
+
+@keyframes auroraPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+}
+
+/* Header Section */
+.header {
+  position: relative;
+  z-index: 1;
+  background: rgba(15, 20, 32, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(125, 249, 255, 0.15);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.headerContent {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00d4ff);
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+}
+
+.titleBracket {
+  color: rgba(125, 249, 255, 0.5);
+  font-weight: 400;
+}
+
+.subtitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  color: rgba(230, 241, 255, 0.7);
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.refreshButton {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(125, 249, 255, 0.15), rgba(125, 249, 255, 0.05));
+  border: 1px solid rgba(125, 249, 255, 0.3);
+  border-radius: 8px;
+  color: var(--accent-primary, #00d4ff);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(125, 249, 255, 0.25), rgba(125, 249, 255, 0.1));
+  border-color: rgba(125, 249, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(125, 249, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.refreshButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.timestamp {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.8);
+  letter-spacing: 0.02em;
+}
+
+/* Error Banner */
+.errorBanner {
+  position: relative;
+  z-index: 1;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.errorIcon {
+  font-size: 1.5rem;
+}
+
+.errorMessage {
+  flex: 1;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  color: rgba(254, 202, 202, 1);
+}
+
+.errorRetry {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 6px;
+  color: rgba(254, 202, 202, 1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.errorRetry:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* Content Grid */
+.contentGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1200px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Areas Panel */
+.areasPanel {
+  background: rgba(15, 20, 32, 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(125, 249, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.panelTitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00d4ff);
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.areaCount {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.7);
+  background: rgba(148, 163, 184, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+}
+
+.areasList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Area Cards */
+.areaCard {
+  background: rgba(11, 15, 21, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 8px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.areaCard:hover {
+  background: rgba(11, 15, 21, 0.8);
+  border-color: rgba(125, 249, 255, 0.3);
+  transform: translateX(4px);
+  box-shadow: -4px 0 16px rgba(125, 249, 255, 0.15);
+}
+
+.areaCardActive {
+  background: rgba(125, 249, 255, 0.05);
+  border-color: rgba(125, 249, 255, 0.5);
+  box-shadow: -4px 0 16px rgba(125, 249, 255, 0.2);
+}
+
+.areaCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.areaName {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(230, 241, 255, 1);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.areaIndicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-primary, #00d4ff);
+  box-shadow: 0 0 8px rgba(125, 249, 255, 0.5);
+}
+
+.areaDescription {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(203, 213, 225, 0.9);
+  margin: 0 0 1rem 0;
+}
+
+.areaMetrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metricLabel {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.625rem;
+  color: rgba(148, 163, 184, 0.8);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.metricValue {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(230, 241, 255, 1);
+}
+
+.areaCompanies {
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.companiesLabel {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.625rem;
+  color: rgba(148, 163, 184, 0.8);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-right: 0.5rem;
+}
+
+.companiesList {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  color: rgba(203, 213, 225, 0.9);
+}
+
+.areaMechanisms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mechanismTag {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.625rem;
+  background: rgba(125, 249, 255, 0.1);
+  border: 1px solid rgba(125, 249, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  color: rgba(125, 249, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Chart Panel */
+.chartPanel {
+  background: rgba(15, 20, 32, 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(125, 249, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.chartSubtitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.chartContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 600px;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(125, 249, 255, 0.2);
+  border-top-color: var(--accent-primary, #00d4ff);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  color: rgba(148, 163, 184, 0.8);
+  margin: 0;
+}
+
+/* Attribute Guide */
+.attributeGuide {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.guideTitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00d4ff);
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+}
+
+.guideGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.guideItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(203, 213, 225, 0.9);
+}
+
+.guideDot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--accent-primary, #00d4ff);
+  border-radius: 50%;
+  margin-top: 0.5rem;
+  box-shadow: 0 0 6px rgba(125, 249, 255, 0.5);
+}
+
+.guideItem strong {
+  color: rgba(230, 241, 255, 1);
+  font-weight: 600;
+}
+
+/* Insights Panel */
+.insightsPanel {
+  position: relative;
+  z-index: 1;
+  background: rgba(15, 20, 32, 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(125, 249, 255, 0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.insightsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.insightCard {
+  background: rgba(11, 15, 21, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.insightCard:hover {
+  background: rgba(11, 15, 21, 0.8);
+  border-color: rgba(125, 249, 255, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(125, 249, 255, 0.15);
+}
+
+.insightIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.insightTitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(230, 241, 255, 1);
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.insightText {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: rgba(203, 213, 225, 0.9);
+  margin: 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .therapeuticAreasPage {
+    padding: 1rem;
+  }
+
+  .header {
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .chartContainer {
+    padding: 1rem;
+    min-height: 400px;
+  }
+
+  .insightsGrid {
+    grid-template-columns: 1fr;
+  }
+}
