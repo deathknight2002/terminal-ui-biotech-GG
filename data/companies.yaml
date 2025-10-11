@@ -1,0 +1,174 @@
+# 13 — DMD / neuromuscular
+- name: Sarepta Therapeutics
+  ticker: SRPT
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: PTC Therapeutics
+  ticker: PTCT
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Dyne Therapeutics
+  ticker: DYN
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Entrada Therapeutics
+  ticker: TRDA
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: PepGen
+  ticker: PEPG
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Edgewise Therapeutics
+  ticker: EWTX
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Solid Biosciences
+  ticker: SLDB
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Santhera Pharmaceuticals
+  ticker: SANN.SW   # SIX; keep stringly typed
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Catalyst Pharmaceuticals
+  ticker: CPRX
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Nippon Shinyaku
+  ticker: 4516.T    # parent of NS Pharma (US)
+  is_private: false
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: NS Pharma
+  ticker: null      # US subsidiary
+  is_private: true
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Italfarmaco
+  ticker: null
+  is_private: true
+  areas: [DMD]
+  hq: null
+  pipeline_count: null
+- name: Roche
+  ticker: RHHBY
+  is_private: false
+  areas: [DMD, Oncology]
+  hq: null
+  pipeline_count: null
+
+# 13 — Cardiology / cardiometabolic
+- name: Amgen
+  ticker: AMGN
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Eli Lilly
+  ticker: LLY
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Merck
+  ticker: MRK
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: AstraZeneca
+  ticker: AZN
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Bristol Myers Squibb
+  ticker: BMY
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Ionis Pharmaceuticals
+  ticker: IONS
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Cytokinetics
+  ticker: CYTK
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Novo Nordisk
+  ticker: NVO
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Regeneron
+  ticker: REGN
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Amarin
+  ticker: AMRN
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Esperion
+  ticker: ESPR
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: BridgeBio Pharma
+  ticker: BBIO
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+- name: Arrowhead Pharmaceuticals
+  ticker: ARWR
+  is_private: false
+  areas: [Cardiology]
+  hq: null
+  pipeline_count: null
+
+# 2 — private surgical robotics (user asked to include "like Moon/Distalmotion/Avenzo";
+# using two to keep total at 28)
+- name: Moon Surgical
+  ticker: null
+  is_private: true
+  areas: [MedTech]
+  hq: null
+  pipeline_count: null
+- name: Distalmotion
+  ticker: null
+  is_private: true
+  areas: [MedTech]
+  hq: null
+  pipeline_count: null
