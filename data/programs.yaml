@@ -1,0 +1,97 @@
+- company: Sarepta Therapeutics
+  name: ELEVIDYS (delandistrogene moxeparvovvec)
+  mechanism: AAV micro-dystrophin gene therapy
+  indication: Duchenne muscular dystrophy
+  phase: Approved
+  registry_ids: []
+- company: Sarepta Therapeutics
+  name: SRP-5051
+  mechanism: PPMO exon 51 skipping
+  indication: DMD (exon 51 amenable)
+  phase: Phase 3   # keep dynamic
+  registry_ids: []
+- company: NS Pharma
+  name: Viltolarsen (Viltepso)
+  mechanism: Exon 53 skipping
+  indication: DMD (exon 53)
+  phase: Approved
+  registry_ids: []
+- company: Italfarmaco
+  name: Givinostat (Duvyzat)
+  mechanism: HDAC inhibitor
+  indication: DMD
+  phase: Approved
+  registry_ids: []
+- company: Santhera/Catalyst
+  name: Vamorolone (Agamree)
+  mechanism: Dissociative corticosteroid
+  indication: DMD
+  phase: Approved
+  registry_ids: []
+- company: PTC Therapeutics
+  name: Ataluren (Translarna)
+  mechanism: Read-through of nonsense mutations
+  indication: nmDMD
+  phase: Marketed (ex-US)  # dynamic status
+  registry_ids: []
+
+- company: Bristol Myers Squibb
+  name: Camzyos (mavacamten)
+  mechanism: Cardiac myosin inhibitor
+  indication: Obstructive HCM
+  phase: Approved
+  registry_ids: []
+- company: Cytokinetics
+  name: Aficamten
+  mechanism: Cardiac myosin inhibitor (next-gen)
+  indication: HCM
+  phase: Phase 3
+  registry_ids: []
+- company: Arrowhead Pharmaceuticals
+  name: Plozasiran
+  mechanism: RNAi targeting APOC3
+  indication: Severe hypertriglyceridemia / FCS
+  phase: Phase 3
+  registry_ids: []
+- company: Ionis Pharmaceuticals
+  name: Pelacarsen
+  mechanism: ASO targeting Lp(a)
+  indication: ASCVD with elevated Lp(a)
+  phase: Phase 3
+  registry_ids: []
+- company: Novartis
+  name: Inclisiran (Leqvio)
+  mechanism: siRNA targeting PCSK9
+  indication: LDL-C lowering
+  phase: Approved
+  registry_ids: []
+- company: Roche / Alnylam
+  name: Zilebesiran
+  mechanism: RNAi targeting angiotensinogen (AGT)
+  indication: Hypertension
+  phase: Phase 2
+  registry_ids: []
+- company: Esperion
+  name: Bempedoic acid (Nexletol/Nexlizet)
+  mechanism: ACL inhibitor
+  indication: LDL-C lowering
+  phase: Approved
+  registry_ids: []
+- company: Eli Lilly
+  name: Tirzepatide (Mounjaro/Zepbound)
+  mechanism: Dual GIP/GLP-1 agonist
+  indication: T2D / Obesity; CV outcomes
+  phase: Approved
+  registry_ids: []
+- company: Ionis Pharmaceuticals
+  name: Olezarsen
+  mechanism: ASO targeting APOC3
+  indication: Hypertriglyceridemia / FPL
+  phase: Phase 3
+  registry_ids: []
+- company: Regeneron
+  name: Evinacumab (Evkeeza)
+  mechanism: mAb targeting ANGPTL3
+  indication: HoFH / severe hyperlipidemia
+  phase: Approved
+  registry_ids: []
