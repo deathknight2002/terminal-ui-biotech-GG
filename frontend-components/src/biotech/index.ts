@@ -40,3 +40,9 @@ export type {
   AlertPriority, 
   AlertType 
 } from './organisms/CatalystGlassAlert';
+
+export { CatalystScoringRadar } from './organisms/CatalystScoringRadar';
+export type {
+  CatalystScoringRadarProps,
+  CatalystScore
+} from './organisms/CatalystScoringRadar';

@@ -731,7 +731,39 @@ async def get_catalysts(
                 "impact": catalyst.impact,
                 "description": catalyst.description,
                 "status": catalyst.status,
-                "days_until": (catalyst.event_date - now).days if catalyst.event_date else None
+                "days_until": (catalyst.event_date - now).days if catalyst.event_date else None,
+                # Ionis-style stealth catalyst scoring fields
+                "event_leverage": catalyst.event_leverage,
+                "timing_clarity": catalyst.timing_clarity,
+                "surprise_factor": catalyst.surprise_factor,
+                "downside_contained": catalyst.downside_contained,
+                "market_depth": catalyst.market_depth,
+                # Computed total score (0-16)
+                "total_score": (
+                    (catalyst.event_leverage or 0) +
+                    (catalyst.timing_clarity or 0) +
+                    (catalyst.surprise_factor or 0) +
+                    (catalyst.downside_contained or 0) +
+                    (catalyst.market_depth or 0)
+                ),
+                # Tier classification
+                "tier": (
+                    "High-Torque" if (
+                        (catalyst.event_leverage or 0) +
+                        (catalyst.timing_clarity or 0) +
+                        (catalyst.surprise_factor or 0) +
+                        (catalyst.downside_contained or 0) +
+                        (catalyst.market_depth or 0)
+                    ) > 8 else (
+                        "Tradable" if (
+                            (catalyst.event_leverage or 0) +
+                            (catalyst.timing_clarity or 0) +
+                            (catalyst.surprise_factor or 0) +
+                            (catalyst.downside_contained or 0) +
+                            (catalyst.market_depth or 0)
+                        ) >= 6 else "Watch"
+                    )
+                )
             }
             for catalyst in catalysts
         ],

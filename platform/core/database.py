@@ -72,6 +72,7 @@ class Company(Base):
     founded = Column(Integer)
     employees = Column(Integer)
     pipeline_count = Column(Integer, default=0)
+    therapeutic_areas = Column(String)  # Comma-separated therapeutic areas
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -93,6 +94,14 @@ class Catalyst(Base):
     description = Column(Text)
     status = Column(String, default="Upcoming")
     source_url = Column(String)  # Source URL for the catalyst
+    
+    # Ionis-style stealth catalyst scoring (0-4 scale for leverage/clarity/surprise/downside, 0-3 for market_depth)
+    event_leverage = Column(Integer)  # Hard endpoint likelihood (0-4): prespecified? clinically persuasive?
+    timing_clarity = Column(Integer)  # Fixed PDUFA vs event-driven fog (0-3)
+    surprise_factor = Column(Integer)  # Street models anchored on surrogate only? (0-3)
+    downside_contained = Column(Integer)  # CRL-type or class read-through favors asymmetry? (0-3)
+    market_depth = Column(Integer)  # Payer appetite + population size + guideline friendliness (0-3)
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

@@ -1,0 +1,233 @@
+/**
+ * Catalyst Scoring Radar Chart Styles
+ * Glass-morphic design with modern iOS aesthetic
+ */
+
+.container {
+  --glass-bg: rgba(0, 0, 0, 0.45);
+  --glass-border: rgba(0, 212, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--glass-shadow);
+  font-family: var(--font-mono);
+  position: relative;
+  overflow: hidden;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 212, 255, 0.5),
+    transparent
+  );
+  opacity: 0.6;
+}
+
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.radarWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.scoreInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.tierBadge {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid currentColor;
+  background: rgba(0, 0, 0, 0.4);
+  text-shadow: 0 0 10px currentColor;
+  box-shadow: 0 0 20px currentColor;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+.totalScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.scoreLabel {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.scoreValue {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  tabular-nums: true;
+  text-shadow: 0 0 20px currentColor;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.legendLabel {
+  flex: 1;
+  letter-spacing: 0.05em;
+}
+
+.legendValue {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  tabular-nums: true;
+  min-width: 20px;
+  text-align: right;
+}
+
+.footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.description {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .title {
+    font-size: 12px;
+  }
+  
+  .scoreValue {
+    font-size: 24px;
+  }
+  
+  .legendItem {
+    font-size: 10px;
+  }
+}
+
+/* Theme variants */
+[data-theme="amber"] .container {
+  --glass-border: rgba(255, 193, 7, 0.2);
+}
+
+[data-theme="amber"] .container::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 193, 7, 0.5),
+    transparent
+  );
+}
+
+[data-theme="green"] .container {
+  --glass-border: rgba(0, 255, 127, 0.2);
+}
+
+[data-theme="green"] .container::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 127, 0.5),
+    transparent
+  );
+}
+
+[data-theme="purple"] .container {
+  --glass-border: rgba(138, 43, 226, 0.2);
+}
+
+[data-theme="purple"] .container::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(138, 43, 226, 0.5),
+    transparent
+  );
+}

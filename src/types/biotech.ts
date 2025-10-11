@@ -77,6 +77,13 @@ export interface Catalyst {
   description?: string;
   expectedImpact?: ImpactLevel;
   category?: "Clinical" | "Regulatory" | "Commercial" | "Corporate";
+  
+  // Ionis-style stealth catalyst scoring
+  eventLeverage?: number;      // Hard endpoint likelihood (0-4)
+  timingClarity?: number;       // Fixed PDUFA vs event-driven fog (0-3)
+  surpriseFactor?: number;      // Street models anchored on surrogate only? (0-3)
+  downsideContained?: number;   // CRL-type or class read-through favors asymmetry? (0-3)
+  marketDepth?: number;         // Payer appetite + population size + guideline friendliness (0-3)
 }
 
 export interface PipelineStage {
