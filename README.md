@@ -204,6 +204,36 @@ A mechanism-centric evidence platform that ranks companies and assets by mechani
 
 See [docs/EVIDENCE_JOURNAL.md](docs/EVIDENCE_JOURNAL.md) for complete feature documentation.
 
+#### Catalyst Scoring System - "Ionis-Style" Stealth Watchlist (NEW!)
+
+**50-catalyst watchlist** with quantitative scoring framework for identifying high-torque biotech setups.
+
+**Scoring Methodology** (0-16 points across 5 dimensions):
+1. **Event Leverage (0-4)**: Hard endpoint likelihood (MACE, pancreatitis events, CV death)
+2. **Timing Clarity (0-3)**: Fixed PDUFA vs event-driven fog
+3. **Surprise Factor (0-3)**: Street models underweight key endpoints?
+4. **Downside Contained (0-3)**: CRL resolution or class read-through
+5. **Market Depth (0-3)**: Payer appetite + population size + guideline friendliness
+
+**Tier Classifications**:
+- 🚀 **High-Torque (>8/16)**: High asymmetric upside with contained downside
+- 📊 **Tradable (6-8/16)**: Moderate setup with tradable risk/reward
+- 👁️ **Watch (<6/16)**: Watch list candidates with lower conviction
+
+**50 Pre-Seeded Catalysts** covering:
+- Cardiometabolic & CV outcomes (apoC-III, Lp(a), HTN, gene editing)
+- Rare disease & neuro (SMA, DMD, Angelman, DEB, Hunter syndrome)
+- Oncology (ADCs, BTK degraders, synthetic lethality, oncolytics)
+- Immunology & derm (STAT6 degrader, T-reg therapies)
+- And more...
+
+**API Endpoint**: `GET /api/v1/biotech/catalysts` returns catalysts with scoring fields
+**UI Component**: `CatalystScoringRadar` - Beautiful glass-morphic radar chart
+**Example**: See `examples/CatalystScoringExample.tsx`
+
+See [docs/CATALYST_SCORING_SYSTEM.md](docs/CATALYST_SCORING_SYSTEM.md) for complete documentation.
+
+
 ### TUI - Command Line Interface (`platform/tui/`)
 
 **Interactive terminal user interface** for biotech portfolio analysis:
