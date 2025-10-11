@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalyst Scoring Radar - Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+      color: white;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      letter-spacing: 0.15em;
+      color: #00d4ff;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 40px;
+      letter-spacing: 0.05em;
+    }
+
+    .radar-container {
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .radar-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+      opacity: 0.6;
+    }
+
+    .canvas-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    canvas {
+      max-width: 100%;
+    }
+
+    .tier-badge {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: 2px solid #00d4ff;
+      background: rgba(0, 0, 0, 0.4);
+      color: #00d4ff;
+      text-shadow: 0 0 10px #00d4ff;
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+      display: inline-block;
+      margin: 20px auto;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.02); }
+    }
+
+    .score-info {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .total-score {
+      font-size: 48px;
+      font-weight: 700;
+      color: #00d4ff;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+    }
+
+    .score-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
+
+    .legend {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      padding: 20px;
+      margin-top: 30px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 12px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #00d4ff;
+      box-shadow: 0 0 8px #00d4ff;
+      flex-shrink: 0;
+    }
+
+    .legend-label {
+      flex: 1;
+      letter-spacing: 0.05em;
+    }
+
+    .legend-value {
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: white;
+      min-width: 30px;
+      text-align: right;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(0, 212, 255, 0.1);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CATALYST SCORING RADAR</h1>
+    <p class="subtitle">"Ionis-Style" Stealth Catalyst Watchlist</p>
+
+    <div class="radar-container">
+      <h2 style="text-align: center; font-size: 16px; margin-bottom: 20px; color: #00d4ff;">
+        Olezarsen SHTG Pancreatitis Event Data (Ionis)
+      </h2>
+
+      <div class="canvas-wrapper">
+        <canvas id="radarCanvas" width="400" height="400"></canvas>
+      </div>
+
+      <div style="text-align: center;">
+        <div class="tier-badge">🚀 HIGH-TORQUE</div>
+      </div>
+
+      <div class="score-info">
+        <div class="total-score">13/16</div>
+        <div class="score-label">TOTAL SCORE</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-dot"></span>
+          <span class="legend-label">Event Leverage (0-4)</span>
+          <span class="legend-value">4</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot"></span>
+          <span class="legend-label">Timing Clarity (0-3)</span>
+          <span class="legend-value">2</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot"></span>
+          <span class="legend-label">Surprise Factor (0-3)</span>
+          <span class="legend-value">3</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot"></span>
+          <span class="legend-label">Downside Contained (0-3)</span>
+          <span class="legend-value">2</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot"></span>
+          <span class="legend-label">Market Depth (0-3)</span>
+          <span class="legend-value">2</span>
+        </div>
+      </div>
+
+      <div class="footer">
+        High asymmetric upside potential with contained downside.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('radarCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    const centerX = 200;
+    const centerY = 200;
+    const radius = 140;
+    
+    // Data: normalized to 0-100 scale
+    const data = [
+      { label: 'Event Leverage', value: (4/4) * 100 },
+      { label: 'Timing Clarity', value: (2/3) * 100 },
+      { label: 'Surprise Factor', value: (3/3) * 100 },
+      { label: 'Downside Contained', value: (2/3) * 100 },
+      { label: 'Market Depth', value: (2/3) * 100 }
+    ];
+    
+    const angleStep = (Math.PI * 2) / data.length;
+    
+    // Draw background grid
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.2)';
+    ctx.lineWidth = 1;
+    
+    for (let level = 1; level <= 5; level++) {
+      const levelRadius = (radius / 5) * level;
+      ctx.beginPath();
+      
+      for (let i = 0; i <= data.length; i++) {
+        const angle = angleStep * i - Math.PI / 2;
+        const x = centerX + Math.cos(angle) * levelRadius;
+        const y = centerY + Math.sin(angle) * levelRadius;
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      
+      ctx.closePath();
+      ctx.stroke();
+    }
+    
+    // Draw axes
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.3)';
+    data.forEach((_, i) => {
+      const angle = angleStep * i - Math.PI / 2;
+      const x = centerX + Math.cos(angle) * radius;
+      const y = centerY + Math.sin(angle) * radius;
+      
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    });
+    
+    // Draw data polygon
+    ctx.strokeStyle = '#00d4ff';
+    ctx.fillStyle = 'rgba(0, 212, 255, 0.2)';
+    ctx.lineWidth = 2;
+    
+    ctx.beginPath();
+    data.forEach((point, i) => {
+      const angle = angleStep * i - Math.PI / 2;
+      const value = point.value / 100;
+      const pointRadius = radius * value;
+      const x = centerX + Math.cos(angle) * pointRadius;
+      const y = centerY + Math.sin(angle) * pointRadius;
+      
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+      
+      // Draw point
+      ctx.fillStyle = '#00d4ff';
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw labels
+    ctx.fillStyle = 'white';
+    ctx.font = '11px Courier New';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    data.forEach((point, i) => {
+      const angle = angleStep * i - Math.PI / 2;
+      const labelRadius = radius + 40;
+      const x = centerX + Math.cos(angle) * labelRadius;
+      const y = centerY + Math.sin(angle) * labelRadius;
+      
+      // Adjust alignment based on position
+      if (x < centerX - 5) {
+        ctx.textAlign = 'right';
+      } else if (x > centerX + 5) {
+        ctx.textAlign = 'left';
+      } else {
+        ctx.textAlign = 'center';
+      }
+      
+      ctx.fillText(point.label.toUpperCase(), x, y);
+    });
+  </script>
+</body>
+</html>
