@@ -72,6 +72,7 @@ class Company(Base):
     founded = Column(Integer)
     employees = Column(Integer)
     pipeline_count = Column(Integer, default=0)
+    therapeutic_areas = Column(String)  # Comma-separated therapeutic areas
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
