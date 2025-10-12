@@ -1174,3 +1174,88 @@ export interface UIPreferences {
   reduceMotion: boolean;
   fontSize: "small" | "medium" | "large";
 }
+
+// PM Mode - Portfolio Manager Mode Types
+export type Phase = 'Preclinical' | 'Phase I' | 'Phase II' | 'Phase III' | 'Filed' | 'Approved';
+
+export interface Program {
+  id: string;
+  companyId: string;
+  assetName: string;
+  modality: 'ASO' | 'RNAi' | 'mAb' | 'SmallMol' | 'CellTherapy' | string;
+  target: string;
+  therapeuticArea: string;
+  indication: string;
+  phase: Phase;
+  nextMilestone?: {
+    date: string;
+    type: 'Data' | 'Filing' | 'AdCom' | 'Approval';
+    confidence: 0 | 1 | 2;
+  };
+  partner?: {
+    name: string;
+    stage: string;
+    royalty?: string;
+    milestones?: string;
+  };
+  peakSalesBase?: number;
+  posBase?: number;
+  posAdj?: number;
+  rnPV?: number;
+  sources?: Array<{ label: string; url: string; asOf: string }>;
+}
+
+export interface SavedView {
+  id: string;
+  name: string;
+  filters: Record<string, string[]>;
+  sort?: {
+    field: 'rnPV' | 'phase' | 'peakSalesBase';
+    dir: 'asc' | 'desc';
+  };
+  openNodes?: string[];
+  layout?: 'pmMode' | 'dragGrid';
+  hash?: string;
+}
+
+export interface PMHeaderMetrics {
+  ticker: string;
+  price: number;
+  priceChange: number;
+  enterpriseValue: number;
+  marketCap: number;
+  netCash: number;
+  cashRunwayMonths: number;
+  programCount: number;
+  programsOwnedPercent: number;
+  avgDailyVolume3M: number;
+  shortInterest?: number;
+  topRnpvDrivers: Array<{ name: string; value: number }>;
+  nextCatalysts: Array<{
+    date: string;
+    event: string;
+    program: string;
+  }>;
+}
+
+export interface RnpvLadderItem {
+  id: string;
+  name: string;
+  rnpv: number;
+  phase: Phase;
+  isPartnered: boolean;
+  therapeuticArea: string;
+}
+
+export interface CatalystTimelineEvent {
+  id: string;
+  date: string;
+  program: string;
+  eventType: 'Data' | 'Filing' | 'AdCom' | 'PDUFA' | 'Other';
+  importance: number;
+  description: string;
+  phase: Phase;
+  therapeuticArea: string;
+  proximity?: number;
+  evDelta?: number;
+}
