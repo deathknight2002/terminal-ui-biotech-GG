@@ -12,22 +12,22 @@
       "require": "./dist/index.cjs"
     },
     "./terminal": {
-      "types": "./dist/terminal/index.d.ts",
-      "import": "./dist/terminal/index.js"
+      "import": "./dist/terminal.js",
+      "require": "./dist/terminal.cjs"
     },
     "./tables": {
-      "types": "./dist/tables/index.d.ts",
-      "import": "./dist/tables/index.js"
+      "import": "./dist/tables.js",
+      "require": "./dist/tables.cjs"
     },
     "./plotly": {
-      "types": "./dist/plotly/index.d.ts",
-      "import": "./dist/plotly/index.js"
+      "import": "./dist/plotly.js",
+      "require": "./dist/plotly.cjs"
     },
     "./biotech": {
-      "types": "./dist/biotech/index.d.ts",
-      "import": "./dist/biotech/index.js"
+      "import": "./dist/biotech.js",
+      "require": "./dist/biotech.cjs"
     },
-    "./styles": "./dist/style.css"
+    "./styles": "./dist/frontend-components.css"
   },
   "files": [
     "dist",
