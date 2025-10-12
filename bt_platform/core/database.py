@@ -73,6 +73,17 @@ class Company(Base):
     employees = Column(Integer)
     pipeline_count = Column(Integer, default=0)
     therapeutic_areas = Column(String)  # Comma-separated therapeutic areas
+    
+    # XBI tracking
+    is_xbi_constituent = Column(Boolean, default=False, index=True)
+    xbi_added_date = Column(DateTime)
+    xbi_removed_date = Column(DateTime)
+    
+    # Profile data
+    description = Column(Text)
+    website = Column(String)
+    investor_relations_url = Column(String)
+    
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -703,6 +714,92 @@ class ReportArtifact(Base):
     __table_args__ = (
         Index('idx_report_ticker_type', 'ticker', 'file_type'),
         Index('idx_report_template', 'template_id'),
+    )
+
+
+# ============================================================================
+# COMPANY PROFILE MODULE MODELS
+# ============================================================================
+
+class CompanySource(Base):
+    """Company sources like investor presentations, press releases, IR materials"""
+    __tablename__ = "company_sources"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
+    ticker = Column(String, index=True)  # Denormalized for easier queries
+    
+    source_type = Column(String, index=True, nullable=False)  # PRESENTATION, PRESS_RELEASE, IR_MATERIAL, FILING
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    published_date = Column(DateTime, index=True)
+    description = Column(Text)
+    
+    # For filings
+    filing_type = Column(String)  # 10-K, 10-Q, 8-K, etc.
+    accession_number = Column(String)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_company_source_type_date', 'company_id', 'source_type', 'published_date'),
+        Index('idx_company_source_ticker', 'ticker', 'published_date'),
+    )
+
+
+class CompanyArticle(Base):
+    """News articles linked to companies"""
+    __tablename__ = "company_articles"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
+    ticker = Column(String, index=True)  # Denormalized for easier queries
+    
+    title = Column(String, nullable=False)
+    source = Column(String)
+    url = Column(String)
+    published_date = Column(DateTime, index=True)
+    summary = Column(Text)
+    
+    # Relevance and sentiment
+    relevance_score = Column(Float)  # 0-1 relevance to company
+    sentiment_score = Column(Float)  # -1 to 1 sentiment
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_company_article_date', 'company_id', 'published_date'),
+        Index('idx_company_article_ticker', 'ticker', 'published_date'),
+    )
+
+
+class CompanyOwnership(Base):
+    """Institutional ownership tracking"""
+    __tablename__ = "company_ownership"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
+    ticker = Column(String, index=True)  # Denormalized for easier queries
+    
+    institution_name = Column(String, nullable=False)
+    shares_held = Column(Integer)
+    percent_owned = Column(Float)
+    value_usd = Column(Float)  # in dollars
+    
+    # Reporting details
+    reporting_date = Column(DateTime, index=True, nullable=False)
+    form_type = Column(String)  # 13F, 13G, etc.
+    
+    # Change tracking
+    shares_change = Column(Integer)
+    percent_change = Column(Float)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_ownership_company_date', 'company_id', 'reporting_date'),
+        Index('idx_ownership_ticker', 'ticker', 'reporting_date'),
+        Index('idx_ownership_institution', 'institution_name', 'reporting_date'),
     )
 
 

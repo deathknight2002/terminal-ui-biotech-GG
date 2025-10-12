@@ -52,6 +52,16 @@ class Company(Base):
     founded_year = Column(Integer)
     employees = Column(Integer)
     
+    # XBI tracking
+    is_xbi_constituent = Column(Boolean, default=False, index=True)
+    xbi_added_date = Column(Date)
+    xbi_removed_date = Column(Date)
+    
+    # Profile data
+    description = Column(Text)
+    website = Column(String(500))
+    investor_relations_url = Column(String(500))
+    
     # Metadata
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
@@ -61,6 +71,9 @@ class Company(Base):
     catalyst_events = relationship("CatalystEvent", back_populates="company")
     filings = relationship("Filing", back_populates="company")
     transcripts = relationship("Transcript", back_populates="company")
+    sources = relationship("CompanySource", back_populates="company")
+    articles = relationship("CompanyArticle", back_populates="company")
+    ownership_records = relationship("CompanyOwnership", back_populates="company")
     
     __table_args__ = (
         Index('idx_company_ticker_name', 'ticker', 'name'),
@@ -547,6 +560,94 @@ class Transcript(Base):
 
 
 # ============================================================================
+# Company Profile Extensions
+# ============================================================================
+
+class CompanySource(Base):
+    """Company sources like investor presentations, press releases, IR materials"""
+    __tablename__ = "company_sources"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
+    
+    source_type = Column(String(100), index=True, nullable=False)  # PRESENTATION, PRESS_RELEASE, IR_MATERIAL
+    title = Column(String(500), nullable=False)
+    url = Column(String(1000), nullable=False)
+    published_date = Column(Date, index=True)
+    description = Column(Text)
+    
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    company = relationship("Company", back_populates="sources")
+    
+    __table_args__ = (
+        Index('idx_company_source_type_date', 'company_id', 'source_type', 'published_date'),
+    )
+
+
+class CompanyArticle(Base):
+    """News articles linked to companies"""
+    __tablename__ = "company_articles"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
+    
+    title = Column(String(500), nullable=False)
+    source = Column(String(200))
+    url = Column(String(1000))
+    published_date = Column(DateTime(timezone=True), index=True)
+    summary = Column(Text)
+    
+    # Relevance and sentiment
+    relevance_score = Column(Float)  # 0-1 relevance to company
+    sentiment_score = Column(Float)  # -1 to 1 sentiment
+    
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    company = relationship("Company", back_populates="articles")
+    
+    __table_args__ = (
+        Index('idx_company_article_date', 'company_id', 'published_date'),
+    )
+
+
+class CompanyOwnership(Base):
+    """Institutional ownership tracking"""
+    __tablename__ = "company_ownership"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
+    
+    institution_name = Column(String(255), nullable=False)
+    shares_held = Column(BigInteger)
+    percent_owned = Column(Float)
+    value_usd = Column(BigInteger)  # in cents
+    
+    # Reporting details
+    reporting_date = Column(Date, index=True, nullable=False)
+    form_type = Column(String(20))  # 13F, 13G, etc.
+    
+    # Change tracking
+    shares_change = Column(BigInteger)
+    percent_change = Column(Float)
+    
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    company = relationship("Company", back_populates="ownership_records")
+    
+    __table_args__ = (
+        Index('idx_ownership_company_date', 'company_id', 'reporting_date'),
+        Index('idx_ownership_institution', 'institution_name', 'reporting_date'),
+    )
+
+
+# ============================================================================
 # Utility Functions
 # ============================================================================
 
@@ -573,5 +674,8 @@ __all__ = [
     'OptionsSnapshot',
     'Filing',
     'Transcript',
+    'CompanySource',
+    'CompanyArticle',
+    'CompanyOwnership',
     'init_db',
 ]
