@@ -6,6 +6,7 @@ import { RnpvLadder } from '../components/pm-mode/RnpvLadder';
 import { CatalystTimeline } from '../components/pm-mode/CatalystTimeline';
 import { DCFCalculator } from '../components/calculators/DCFCalculator';
 import { PipelineVisualization } from '../components/visualizations/PipelineVisualization';
+import { VirtualizedPipelineView } from '../components/pm-mode/VirtualizedPipelineView';
 import { IONIS_PROFILE } from '../data/ionisData';
 import { IONIS_PIPELINE } from '../data/ionisPipeline';
 import {
@@ -22,6 +23,7 @@ export const IonisPMModePage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [viewName, setViewName] = useState('');
+  const [useVirtualized, setUseVirtualized] = useState(true); // Toggle between old and new view
 
   // Load saved views on mount
   useEffect(() => {
@@ -184,12 +186,33 @@ export const IonisPMModePage: React.FC = () => {
 
         {/* Middle Row - Pipeline Visualization */}
         <div className="pm-mode-middle-row">
-          <Panel title="PIPELINE SWIMLANES" cornerBrackets>
-            <PipelineVisualization
-              programs={IONIS_PIPELINE}
-              enableZoom={true}
-              enableFiltering={true}
-            />
+          <Panel title="PIPELINE SWIMLANES - PHASE B" cornerBrackets>
+            <div className="pipeline-view-toggle">
+              <button
+                className={`toggle-btn ${!useVirtualized ? 'active' : ''}`}
+                onClick={() => setUseVirtualized(false)}
+              >
+                CLASSIC VIEW
+              </button>
+              <button
+                className={`toggle-btn ${useVirtualized ? 'active' : ''}`}
+                onClick={() => setUseVirtualized(true)}
+              >
+                VIRTUALIZED VIEW (150+ Programs)
+              </button>
+            </div>
+
+            {useVirtualized ? (
+              <VirtualizedPipelineView
+                programs={IONIS_PIPELINE}
+              />
+            ) : (
+              <PipelineVisualization
+                programs={IONIS_PIPELINE}
+                enableZoom={true}
+                enableFiltering={true}
+              />
+            )}
           </Panel>
         </div>
 

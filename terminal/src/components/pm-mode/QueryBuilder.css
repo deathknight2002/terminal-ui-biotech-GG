@@ -1,0 +1,377 @@
+/* Query Builder Styles */
+.query-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.1));
+  border-radius: 4px;
+  font-family: var(--font-mono, 'Courier New', monospace);
+}
+
+/* Header */
+.query-builder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+}
+
+.query-builder-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00ffcc);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.query-builder-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.active-filter-count {
+  padding: 0.25rem 0.5rem;
+  background: var(--accent-primary, #00ffcc);
+  color: var(--bg-terminal, #0a0e1a);
+  border-radius: 2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.btn-clear,
+.btn-save {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.2));
+  color: var(--text-primary, #ffffff);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 2px;
+}
+
+.btn-clear:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--status-error, #ff4444);
+  color: var(--status-error, #ff4444);
+}
+
+.btn-save:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-primary, #00ffcc);
+  color: var(--accent-primary, #00ffcc);
+}
+
+/* Filter Groups */
+.filter-group,
+.quick-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-section-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Filter Chips */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-chips.scrollable {
+  max-height: 120px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.filter-chips.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-chips.scrollable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-chips.scrollable::-webkit-scrollbar-thumb {
+  background: var(--accent-primary, #00ffcc);
+  border-radius: 3px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #ffffff);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.filter-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-primary, #00ffcc);
+}
+
+.filter-chip.active {
+  background: var(--accent-primary, #00ffcc);
+  color: var(--bg-terminal, #0a0e1a);
+  border-color: var(--accent-primary, #00ffcc);
+  font-weight: 600;
+}
+
+.filter-chip.quick {
+  background: rgba(0, 255, 204, 0.1);
+  border-color: var(--accent-primary, #00ffcc);
+  color: var(--accent-primary, #00ffcc);
+}
+
+.filter-chip.quick:hover {
+  background: rgba(0, 255, 204, 0.2);
+}
+
+.chip-close {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.filter-more {
+  padding: 0.5rem 0.75rem;
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+/* Saved Filters */
+.saved-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.saved-filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.saved-filter-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.saved-filter-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.saved-filter-list::-webkit-scrollbar-thumb {
+  background: var(--accent-primary, #00ffcc);
+  border-radius: 3px;
+}
+
+.saved-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.saved-filter-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #ffffff);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.7rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 2px;
+}
+
+.saved-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-primary, #00ffcc);
+}
+
+.saved-filter-delete {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.2));
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-filter-delete:hover {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: var(--status-error, #ff4444);
+  color: var(--status-error, #ff4444);
+}
+
+/* Save Dialog */
+.save-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.save-dialog {
+  width: 400px;
+  max-width: 90vw;
+  padding: 1.5rem;
+  background: var(--bg-terminal, #0a0e1a);
+  border: 2px solid var(--accent-primary, #00ffcc);
+  border-radius: 4px;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.save-dialog h4 {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent-primary, #00ffcc);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 1rem 0;
+}
+
+.view-name-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.2));
+  color: var(--text-primary, #ffffff);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.875rem;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+
+.view-name-input:focus {
+  outline: none;
+  border-color: var(--accent-primary, #00ffcc);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.btn-primary {
+  background: var(--accent-primary, #00ffcc);
+  color: var(--bg-terminal, #0a0e1a);
+  border-color: var(--accent-primary, #00ffcc);
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent-primary, #00ffcc);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary, #ffffff);
+  border-color: var(--border-primary, rgba(255, 255, 255, 0.2));
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-primary, #00ffcc);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .query-builder-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .filter-chips {
+    gap: 0.375rem;
+  }
+
+  .filter-chip {
+    font-size: 0.65rem;
+    padding: 0.375rem 0.5rem;
+  }
+}

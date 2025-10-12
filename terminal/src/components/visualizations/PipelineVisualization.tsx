@@ -217,7 +217,7 @@ export const PipelineVisualization: React.FC<PipelineVisualizationProps> = ({
         >
           {/* Phase columns */}
           <div className="pipeline-grid">
-            {phases.map((phase, phaseIndex) => (
+            {phases.map((phase) => (
               <div key={phase} className="pipeline-column">
                 <div className="phase-header" style={{ borderColor: PHASE_COLORS[phase] }}>
                   <div className="phase-name">{phase}</div>
