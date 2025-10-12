@@ -13,6 +13,7 @@ import { DataExplorerPage } from './pages/DataExplorerPage';
 import { EpidemiologyPage } from './pages/EpidemiologyPage';
 import { NewsPage } from './pages/NewsPage';
 import { TerminalFeaturesDemo } from './pages/TerminalFeaturesDemo';
+import { EnhancedFeaturesDemo } from './pages/EnhancedFeaturesDemo';
 import { CatalystCalendarPage } from './pages/CatalystCalendarPage';
 import { CompetitorsPage } from './pages/CompetitorsPage';
 import { DataCatalogPage } from './pages/DataCatalogPage';
@@ -75,6 +76,7 @@ export function App() {
             {/* Home */}
             <Route path="/" element={<DashboardPage />} />
             <Route path="/demo" element={<TerminalFeaturesDemo />} />
+            <Route path="/enhanced-demo" element={<EnhancedFeaturesDemo />} />
             <Route path="/recents" element={<PlaceholderPage title="RECENTS" />} />
             <Route path="/favorites" element={<PlaceholderPage title="FAVORITES" />} />
 
