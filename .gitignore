@@ -55,3 +55,25 @@ OLD OVERHAU;/
 # Database files
 *.db
 biotech_terminal.db
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.tfvars
+
+# ML Models
+*.pkl
+*.joblib
+*.h5
+*.pb
+ml/artifacts/
+
+# Data
+*.parquet
+*.csv.gz
+*.json.gz
+data/raw/
+data/processed/
