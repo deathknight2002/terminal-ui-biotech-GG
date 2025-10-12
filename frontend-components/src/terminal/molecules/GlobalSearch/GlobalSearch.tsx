@@ -199,7 +199,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           aria-label="Global search"
           aria-autocomplete="list"
           aria-controls="search-results"
-          aria-expanded={showResults}
+          aria-expanded={showResults ? true : undefined}
         />
         {loading && <div className="search-loading" />}
         {query && !loading && (

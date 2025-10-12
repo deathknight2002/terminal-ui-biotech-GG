@@ -1,7 +1,11 @@
 import React, { useMemo } from 'react';
 import { transformOpenBBPlotPayload } from './openbb-plot-utils';
 import { OpenBBPlotProps } from './openbb-plot-types';
-import Chart from '../../../external/OpenBB/frontend-components/plotly/src/components/Chart';
+// TODO: Re-enable when OpenBB submodule is initialized
+// import Chart from '../../../external/OpenBB/frontend-components/plotly/src/components/Chart';
+
+// Temporary stub until OpenBB is available
+const Chart: React.FC<any> = () => <div>OpenBB Chart (requires submodule)</div>;
 
 export const OpenBBPlot: React.FC<OpenBBPlotProps> = ({ payload, className }) => {
   const transformed = useMemo(

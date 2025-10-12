@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Citation, Provenance } from '../../../../../src/types/biotech';
 import './SourceChip.css';
 
