@@ -53,7 +53,7 @@ root/                           # Monorepo orchestration
 
 ### Dual Backend Architecture (Critical Understanding)
 **Two backends serve different purposes:**
-1. **Python FastAPI** (`platform/core/app.py` on port 8000): Data providers, database models, batch analytics
+1. **Python FastAPI** (`bt_platform/core/app.py` on port 8000): Data providers, database models, batch analytics
 2. **Node.js Express** (`backend/src/index.ts` on port 3001): Real-time WebSocket, market data streaming
 
 ### Component Organization (Atomic Design)
@@ -272,10 +272,10 @@ import './App.css';                                      // Then app styles
 ```
 
 ### DuckDB Ingestion Pipeline
-Located in `platform/ingestion/` - separate from FastAPI app:
+Located in `bt_platform/ingestion/` - separate from FastAPI app:
 ```bash
 cd platform/ingestion
-python -m platform.ingestion  # Run pipeline manually
+python -m bt_platform.ingestion  # Run pipeline manually
 ```
 Ingests parquet/CSV → DuckDB → SQLite for analysis
 
@@ -296,7 +296,7 @@ import { Panel } from '@biotech-terminal/frontend-components/terminal';
 ## Key Files to Understand
 
 ### Entry Points
-- `platform/core/app.py` - Python FastAPI application entry
+- `bt_platform/core/app.py` - Python FastAPI application entry
 - `backend/src/index.ts` - Node.js Express application entry
 - `frontend-components/src/index.ts` - Component library main export
 - `terminal/src/main.tsx` - Terminal application entry
@@ -526,7 +526,7 @@ const sanitized = xss(userContent);
 
 ### API Security
 - **Rate limiting** - Configured in FastAPI middleware
-- **CORS** - Properly configured in `platform/core/app.py`
+- **CORS** - Properly configured in `bt_platform/core/app.py`
 - **Authentication** - Use JWT tokens for protected endpoints
 - **Never commit secrets** - Use `.env` files (already in `.gitignore`)
 

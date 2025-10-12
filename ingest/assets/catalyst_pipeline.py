@@ -268,8 +268,8 @@ def normalized_trials(context: AssetExecutionContext, raw_data: Dict[str, Any]) 
     - Enrollment velocity calculation
     - Endpoint hardness scoring
     """
-    from platform.core.contracts import TrialContract
-    from platform.core.schema import Trial
+    from bt_platform.core.contracts import TrialContract
+    from bt_platform.core.schema import Trial
     
     # Process each trial
     normalized_count = 0
@@ -310,7 +310,7 @@ def normalized_catalyst_events(
     - Conference presentations (scraped separately)
     - SEC 8-K filings indicating material events
     """
-    from platform.core.contracts import CatalystEventContract
+    from bt_platform.core.contracts import CatalystEventContract
     
     # Aggregate events from multiple sources
     all_events = []

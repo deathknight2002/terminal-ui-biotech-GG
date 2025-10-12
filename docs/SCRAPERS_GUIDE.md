@@ -12,16 +12,16 @@ The scraper framework provides a plugin-based system for collecting biotech/phar
 
 ```bash
 # Scrape FierceBiotech (last 7 days, max 20 articles)
-python -m platform.cli.scrape --source fierce --since 7d --limit 20
+python3 -m bt_platform.cli.scrape --source fierce --since 7d --limit 20
 
 # Scrape FDA with fixtures for testing
-python -m platform.cli.scrape --source fda --save-fixture --limit 10
+python3 -m bt_platform.cli.scrape --source fda --save-fixture --limit 10
 
 # Dry run without database writes
-python -m platform.cli.scrape --source businesswire --dry-run
+python3 -m bt_platform.cli.scrape --source businesswire --dry-run
 
 # Scrape specific URL
-python -m platform.cli.scrape --source fierce --url https://www.fiercebiotech.com/biotech/...
+python3 -m bt_platform.cli.scrape --source fierce --url https://www.fiercebiotech.com/biotech/...
 ```
 
 ### Available sources
@@ -170,7 +170,7 @@ Uses `selectolax` for fast parsing:
 ### Save Fixtures
 
 ```bash
-python -m platform.cli.scrape --source fierce --save-fixture --limit 5
+python3 -m bt_platform.cli.scrape --source fierce --save-fixture --limit 5
 ```
 
 Saves to `tmp/fixtures/<source>/YYYYMMDD/<hash>.json`:

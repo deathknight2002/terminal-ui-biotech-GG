@@ -58,10 +58,10 @@ poetry install
 
 ```bash
 # From project root
-python3 -m platform.tui
+python3 -m bt_platform.tui
 
 # Or if installed via Poetry
-poetry run python -m platform.tui
+poetry run python3 -m bt_platform.tui
 ```
 
 The terminal will launch with the onboarding panel displayed.
@@ -228,13 +228,13 @@ python3 -m pytest tests/tui/ -v
 python3 -m pytest tests/tui/test_watchlist_manager.py -v
 
 # Run with coverage
-python3 -m pytest tests/tui/ --cov=platform.tui --cov-report=html
+python3 -m pytest tests/tui/ --cov=bt_platform.tui --cov-report=html
 ```
 
 ### Project Structure
 
 ```
-platform/tui/
+bt_platform/tui/
 ├── __init__.py           # Module initialization
 ├── __main__.py           # CLI entry point
 ├── app.py                # Main TUI application
@@ -301,7 +301,7 @@ echo $TERM
 
 Contributions are welcome! Please ensure:
 1. All tests pass: `pytest tests/tui/ -v`
-2. Code follows style guidelines: `ruff check platform/tui/`
+2. Code follows style guidelines: `ruff check bt_platform/tui/`
 3. New features include tests
 4. Documentation is updated
 

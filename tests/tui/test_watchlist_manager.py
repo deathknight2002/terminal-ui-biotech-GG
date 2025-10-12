@@ -2,7 +2,7 @@
 Tests for WatchlistManager Service
 """
 
-from platform.tui.services.watchlist_manager import WatchlistManager
+from bt_platform.tui.services.watchlist_manager import WatchlistManager
 
 
 class TestWatchlistManager:

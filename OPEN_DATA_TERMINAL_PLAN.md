@@ -67,7 +67,7 @@ All datasets remain optional; the component backfills them with `DEFAULT_HOME_DA
 
 ## 5. Ingestion Scaffold
 
-- Python entrypoint: `python -m platform.ingestion --example` seeds DuckDB/parquet with placeholder watchlist + stage data for UI smoke tests.
+- Python entrypoint: `python -m bt_platform.ingestion --example` seeds DuckDB/parquet with placeholder watchlist + stage data for UI smoke tests.
 - Core modules:
   - `platform/ingestion/config.py` — derives paths from `settings`.
   - `platform/ingestion/duckdb_manager.py` — handles DuckDB sessions + Parquet exports.

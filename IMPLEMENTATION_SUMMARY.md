@@ -71,24 +71,24 @@ A comprehensive Terminal User Interface (TUI) has been successfully implemented 
 ## 📁 Files Created
 
 ### Core Application
-- `platform/tui/__init__.py` - Module init
-- `platform/tui/__main__.py` - Entry point
-- `platform/tui/app.py` - Main app (10.9KB)
-- `platform/tui/demo.py` - Demo script
+- `bt_platform/tui/__init__.py` - Module init
+- `bt_platform/tui/__main__.py` - Entry point
+- `bt_platform/tui/app.py` - Main app (10.9KB)
+- `bt_platform/tui/demo.py` - Demo script
 
 ### Services (Business Logic)
-- `platform/tui/services/watchlist_manager.py` - 83 lines
-- `platform/tui/services/recent_assets_tracker.py` - 65 lines
-- `platform/tui/services/refresh_service.py` - 97 lines
+- `bt_platform/tui/services/watchlist_manager.py` - 83 lines
+- `bt_platform/tui/services/recent_assets_tracker.py` - 65 lines
+- `bt_platform/tui/services/refresh_service.py` - 97 lines
 
 ### Widgets (UI Components)
-- `platform/tui/widgets/onboarding.py` - 88 lines
-- `platform/tui/widgets/watchlist_sidebar.py` - 67 lines
-- `platform/tui/widgets/recent_assets.py` - 62 lines
-- `platform/tui/widgets/asset_detail.py` - 105 lines
+- `bt_platform/tui/widgets/onboarding.py` - 88 lines
+- `bt_platform/tui/widgets/watchlist_sidebar.py` - 67 lines
+- `bt_platform/tui/widgets/recent_assets.py` - 62 lines
+- `bt_platform/tui/widgets/asset_detail.py` - 105 lines
 
 ### Helpers
-- `platform/tui/helpers/risk_metrics.py` - 84 lines
+- `bt_platform/tui/helpers/risk_metrics.py` - 84 lines
 
 ### Tests (100% Coverage)
 - `tests/tui/test_watchlist_manager.py` - 9 tests
@@ -105,7 +105,7 @@ A comprehensive Terminal User Interface (TUI) has been successfully implemented 
 
 ### Launch the TUI
 ```bash
-python3 -m platform.tui
+python3 -m bt_platform.tui
 ```
 
 ### Example Session
@@ -143,7 +143,7 @@ pytest tests/tui/ -v
 
 ### Run Linter
 ```bash
-ruff check platform/tui/ tests/tui/
+ruff check bt_platform/tui/ tests/tui/
 ```
 
 **Result:** ✅ All checks passed!

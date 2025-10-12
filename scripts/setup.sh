@@ -48,7 +48,7 @@ setup_python() {
     echo "🗄️ Initializing database..."
     poetry run python -c "
 import asyncio
-from platform.core.database import init_db
+from bt_platform.core.database import init_db
 asyncio.run(init_db())
 "
     
@@ -131,7 +131,7 @@ start_services() {
     
     # Start backend in background
     echo "🔧 Starting backend platform..."
-    poetry run uvicorn platform.core.app:app --reload --port 8000 &
+    poetry run uvicorn bt_platform.core.app:app --reload --port 8000 &
     BACKEND_PID=$!
     
     sleep 3

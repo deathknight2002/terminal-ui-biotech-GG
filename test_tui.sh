@@ -27,4 +27,4 @@ read
 
 # Launch the TUI
 cd /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG
-PYTHONPATH=/home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG python3 -m platform.tui
+PYTHONPATH=/home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG python3 -m bt_platform.tui

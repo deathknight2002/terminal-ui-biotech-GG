@@ -26,7 +26,7 @@ This implementation delivers **Bloomberg/FactSet/LSEG-inspired terminal primitiv
 - Audit logging in `DataIngestionLog` table
 - **NO cron schedulers** - manual-only
 
-**API**: `platform/core/endpoints/admin.py`
+**API**: `bt_platform/core/endpoints/admin.py`
 **Frontend**: AuroraTopBar refresh button
 
 **Features**:
@@ -67,7 +67,7 @@ This implementation delivers **Bloomberg/FactSet/LSEG-inspired terminal primitiv
 **Files**:
 - `terminal/src/pages/NewsPage.tsx`
 - `terminal/src/pages/NewsPage.css`
-- `platform/core/endpoints/news.py`
+- `bt_platform/core/endpoints/news.py`
 
 ---
 
@@ -97,7 +97,7 @@ This implementation delivers **Bloomberg/FactSet/LSEG-inspired terminal primitiv
 **Files**:
 - `terminal/src/pages/CatalystCalendarPage.tsx`
 - `terminal/src/pages/CatalystCalendarPage.css`
-- `platform/core/endpoints/catalysts.py`
+- `bt_platform/core/endpoints/catalysts.py`
 
 ---
 
@@ -152,7 +152,7 @@ This implementation delivers **Bloomberg/FactSet/LSEG-inspired terminal primitiv
 **Files**:
 - `terminal/src/pages/CompetitorsPage.tsx`
 - `terminal/src/pages/CompetitorsPage.css`
-- `platform/core/endpoints/competition.py`
+- `bt_platform/core/endpoints/competition.py`
 
 ---
 

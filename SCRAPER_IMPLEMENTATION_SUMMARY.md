@@ -6,7 +6,7 @@ This PR implements a comprehensive, production-ready scraper framework for the B
 
 ## What Was Built
 
-### 1. Core Framework (`platform/scrapers/`)
+### 1. Core Framework (`bt_platform/scrapers/`)
 
 #### Plugin Architecture
 - **ScraperInterface** - Base class defining strict pipeline: discover → fetch → parse → normalize → link → upsert
@@ -35,7 +35,7 @@ This PR implements a comprehensive, production-ready scraper framework for the B
 - **URL canonicalization**: Removes tracking parameters, normalizes format
 - **MinHash LSH**: Clustering for press release reprints (Jaccard similarity ≥ 0.8)
 
-### 2. Scraper Implementations (`platform/scrapers/sites/`)
+### 2. Scraper Implementations (`bt_platform/scrapers/sites/`)
 
 #### News & Press
 - **FierceScraper** - FierceBiotech/FiercePharma (RSS + archives)
@@ -59,12 +59,12 @@ All scrapers:
 - Descriptive User-Agent with contact email
 - Automatic retry with backoff
 
-### 3. CLI Harness (`platform/cli/scrape.py`)
+### 3. CLI Harness (`bt_platform/cli/scrape.py`)
 
 Command-line interface with full feature support:
 
 ```bash
-python -m platform.cli.scrape \
+python3 -m bt_platform.cli.scrape \
   --source fierce \
   --since 7d \
   --limit 20 \
@@ -85,7 +85,7 @@ python -m platform.cli.scrape \
 - Absolute: "2024-01-01"
 - ISO format: "2024-01-15T12:00:00Z"
 
-### 4. Registry System (`platform/scrapers/registry.yaml`)
+### 4. Registry System (`bt_platform/scrapers/registry.yaml`)
 
 Centralized configuration for all sources:
 
@@ -114,7 +114,7 @@ Categories:
 - `exchanges` - 1 source (SEC EDGAR)
 - `company_sites` - Template for per-company scrapers
 
-### 5. Admin API Endpoints (`platform/core/endpoints/admin.py`)
+### 5. Admin API Endpoints (`bt_platform/core/endpoints/admin.py`)
 
 #### POST /api/v1/admin/ingest
 Manual data ingestion with multi-source support:
@@ -189,7 +189,7 @@ Offline testing with golden snapshots:
 
 **Save fixtures:**
 ```bash
-python -m platform.cli.scrape --source fierce --save-fixture --limit 5
+python3 -m bt_platform.cli.scrape --source fierce --save-fixture --limit 5
 ```
 
 **Fixture format** (`tmp/fixtures/<source>/YYYYMMDD/<hash>.json`):
@@ -281,7 +281,7 @@ make scrape-url URL=https://...  # Scrape specific URL
 
 ### 9. Testing Infrastructure
 
-#### Tests (`platform/scrapers/tests/test_base.py`)
+#### Tests (`bt_platform/scrapers/tests/test_base.py`)
 - Registry loading
 - Scraper config retrieval
 - Category filtering
@@ -397,7 +397,7 @@ make scrape-url URL=https://...  # Scrape specific URL
 
 The scraper framework integrates with existing database models:
 
-- **Article** - Already defined in `platform/core/database.py`
+- **Article** - Already defined in `bt_platform/core/database.py`
 - **Sentiment** - Already defined (regulatory/clinical/mna domains)
 - **Catalyst** - Already defined with M2M link table
 - **Therapeutic** - Already defined with company/disease links
@@ -469,7 +469,7 @@ The new Python framework operates independently and can coexist with TypeScript 
 pip install httpx pyyaml selectolax feedparser python-dateutil orjson simhash datasketch beautifulsoup4 lxml pytest pytest-asyncio
 
 # Run a scraper
-python -m platform.cli.scrape --source fierce --since 7d --limit 20
+python3 -m bt_platform.cli.scrape --source fierce --since 7d --limit 20
 
 # Or use Make
 make scrape-fierce
@@ -511,7 +511,7 @@ python -c "from platform.scrapers.base.registry import ScraperRegistry; r = Scra
 ### 2. Test CLI
 
 ```bash
-python -m platform.cli.scrape --help
+python3 -m bt_platform.cli.scrape --help
 ```
 
 ### 3. Test Utilities
@@ -534,7 +534,7 @@ pytest platform/scrapers/tests/ -v
 ### 5. Generate Fixtures
 
 ```bash
-python -m platform.cli.scrape --source fierce --save-fixture --limit 5
+python3 -m bt_platform.cli.scrape --source fierce --save-fixture --limit 5
 ls tmp/fixtures/fierce_biotech/
 ```
 

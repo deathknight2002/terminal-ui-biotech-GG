@@ -6,7 +6,7 @@ Tests revenue projection, LoE erosion, DCF, and sensitivity analysis.
 
 import pytest
 from datetime import datetime
-from platform.logic.valuation import ValuationEngine
+from bt_platform.logic.valuation import ValuationEngine
 
 
 class TestValuationEngine:

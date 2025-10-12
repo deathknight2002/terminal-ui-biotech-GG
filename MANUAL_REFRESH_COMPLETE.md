@@ -44,7 +44,7 @@ All generated from existing `icon.svg` using ImageMagick.
 
 ### 3. Backend HTTP Caching ✅
 
-**New File:** `platform/core/middleware/caching.py`
+**New File:** `bt_platform/core/middleware/caching.py`
 
 Implements:
 - Cache-Control headers with TTL-based expiration:
@@ -56,7 +56,7 @@ Implements:
 - 304 Not Modified responses
 - Last-Modified headers
 
-**Integration:** Added to FastAPI middleware stack in `platform/core/app.py`
+**Integration:** Added to FastAPI middleware stack in `bt_platform/core/app.py`
 
 **Benefits:**
 - User-initiated refreshes collapse to cheap 304s
@@ -109,8 +109,8 @@ Features:
 ## Files Changed
 
 ### Created Files (4)
-1. `platform/core/middleware/__init__.py` - Package init
-2. `platform/core/middleware/caching.py` - HTTP caching middleware (153 lines)
+1. `bt_platform/core/middleware/__init__.py` - Package init
+2. `bt_platform/core/middleware/caching.py` - HTTP caching middleware (153 lines)
 3. `terminal/src/components/StatusBanner/StatusBanner.tsx` - Error banner component (55 lines)
 4. `terminal/src/components/StatusBanner/StatusBanner.css` - Banner styles (100 lines)
 5. `terminal/src/components/StatusBanner/index.ts` - Exports
@@ -118,7 +118,7 @@ Features:
 7. `docs/MANUAL_REFRESH_TESTING.md` - Testing guide (450 lines)
 
 ### Modified Files (5)
-1. `platform/core/app.py` - Added caching middleware
+1. `bt_platform/core/app.py` - Added caching middleware
 2. `terminal/src/components/TerminalLayout.tsx` - Integrated error banner, improved error handling
 3. `terminal/src/hooks/useMonitoring.ts` - Disabled auto-connect, removed polling
 4. `terminal/src/pages/GlassUIDemoPage.tsx` - Removed setInterval, manual trigger only

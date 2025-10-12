@@ -6,7 +6,7 @@ authors = ["Biotech Terminal Team <team@bioterminal.dev>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    {include = "platform"},
+    {include = "bt_platform"},
 ]
 
 [tool.poetry.dependencies]
@@ -144,7 +144,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["platform"]
+source = ["bt_platform"]
 omit = [
     "*/tests/*",
     "*/conftest.py",

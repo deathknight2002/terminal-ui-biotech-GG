@@ -313,7 +313,7 @@ Types (TypeScript)
 2. `frontend-components/src/terminal/molecules/RefreshModeToggle/RefreshModeToggle.css`
 3. `terminal/src/pages/EvidenceJournalPage.tsx`
 4. `terminal/src/pages/EvidenceJournalPage.css`
-5. `platform/core/endpoints/evidence.py`
+5. `bt_platform/core/endpoints/evidence.py`
 6. `docs/EVIDENCE_JOURNAL.md`
 7. `EVIDENCE_JOURNAL_IMPLEMENTATION.md` (this file)
 
@@ -322,7 +322,7 @@ Types (TypeScript)
 2. `terminal/src/App.tsx` - Added route for Evidence Journal
 3. `terminal/src/config/menuStructure.ts` - Added menu entry
 4. `README.md` - Added Evidence Journal section
-5. `platform/core/routers.py` - Registered evidence endpoints
+5. `bt_platform/core/routers.py` - Registered evidence endpoints
 
 ## Testing Recommendations
 

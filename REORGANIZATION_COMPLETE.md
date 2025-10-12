@@ -58,11 +58,11 @@ biotech-terminal-platform/
 ### 📋 Key Files Created
 
 **Platform Backend:**
-- `platform/core/app.py` - FastAPI application
-- `platform/core/database.py` - SQLAlchemy setup
-- `platform/core/models.py` - Biotech data models
-- `platform/providers/` - Data source providers
-- `platform/routers/` - API endpoint routers
+- `bt_platform/core/app.py` - FastAPI application
+- `bt_platform/core/database.py` - SQLAlchemy setup
+- `bt_platform/core/models.py` - Biotech data models
+- `bt_platform/providers/` - Data source providers
+- `bt_platform/routers/` - API endpoint routers
 - `pyproject.toml` - Poetry dependencies
 
 **Frontend Structure:**

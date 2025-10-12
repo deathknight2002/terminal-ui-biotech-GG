@@ -127,8 +127,8 @@ Fetch with If-None-Match header
 ### ✅ Created Files (17 files)
 
 **Backend:**
-- `platform/core/middleware/__init__.py`
-- `platform/core/middleware/caching.py` (153 lines)
+- `bt_platform/core/middleware/__init__.py`
+- `bt_platform/core/middleware/caching.py` (153 lines)
 
 **Frontend:**
 - `terminal/src/components/StatusBanner/StatusBanner.tsx` (55 lines)
@@ -152,7 +152,7 @@ Fetch with If-None-Match header
 ### ✅ Modified Files (5 files)
 
 **Backend:**
-- `platform/core/app.py` (+3 lines: middleware registration)
+- `bt_platform/core/app.py` (+3 lines: middleware registration)
 
 **Frontend:**
 - `terminal/src/components/TerminalLayout.tsx` (+30 lines: error banner)
