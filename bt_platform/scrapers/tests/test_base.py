@@ -4,8 +4,8 @@ Tests for scraper base framework
 
 import pytest
 from datetime import datetime, timedelta
-from platform.scrapers.base.interface import ScraperInterface, ScraperResult, ContentType
-from platform.scrapers.base.registry import ScraperRegistry
+from bt_platform.scrapers.base.interface import ScraperInterface, ScraperResult, ContentType
+from bt_platform.scrapers.base.registry import ScraperRegistry
 
 
 def test_scraper_registry_loads():

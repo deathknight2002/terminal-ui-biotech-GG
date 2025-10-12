@@ -333,7 +333,7 @@ async def test_my_source_normalize():
 
 ```bash
 # Generate test fixtures
-python -m platform.cli.scrape --source mysource --save-fixture --limit 5
+python3 -m bt_platform.cli.scrape --source mysource --save-fixture --limit 5
 
 # Fixtures saved to tmp/fixtures/mysource/YYYYMMDD/
 ```

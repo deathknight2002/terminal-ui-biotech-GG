@@ -11,8 +11,8 @@ from textual.app import App
 from textual.widgets import Static
 
 # Import the TUI app components
-from platform.tui.services import WatchlistManager, RecentAssetsTracker
-from platform.tui.helpers import get_risk_metrics
+from bt_platform.tui.services import WatchlistManager, RecentAssetsTracker
+from bt_platform.tui.helpers import get_risk_metrics
 
 
 def demo_services():
@@ -72,7 +72,7 @@ def demo_services():
     print("DEMO COMPLETE")
     print()
     print("To launch the full TUI, run:")
-    print("  python3 -m platform.tui")
+    print("  python3 -m bt_platform.tui")
     print("=" * 60)
 
 

@@ -1,5 +1,5 @@
 # Linguist language classification overrides
-# Fix Visual Basic 6 misclassification
+# Fix Visual Basic 6 misclassification and ensure accurate language detection
 
 # Mark generated/vendored files
 external/** linguist-vendored
@@ -8,9 +8,13 @@ dist/** linguist-generated
 build/** linguist-generated
 *.min.js linguist-generated
 *.min.css linguist-generated
+node_modules/** linguist-vendored
+.next/** linguist-generated
+coverage/** linguist-generated
 
 # Documentation files
 *.md linguist-documentation
+docs/** linguist-documentation
 
 # Force correct language detection for TypeScript/JavaScript
 *.ts linguist-language=TypeScript
@@ -24,6 +28,30 @@ build/** linguist-generated
 # CSS files
 *.css linguist-language=CSS
 
-# Ignore specific problematic files that might be misclassified
-*.frm linguist-vendored=false
-*.vbp linguist-vendored=false
+# Mark problematic files that might be misclassified as VB6
+*.frm linguist-vendored=false linguist-generated=false
+*.vbp linguist-vendored=false linguist-generated=false
+*.bas linguist-vendored=false linguist-generated=false
+*.cls linguist-vendored=false linguist-generated=false
+*.vb linguist-vendored=false linguist-generated=false
+
+# Exclude REFERENCE directory from language stats (contains legacy/example code)
+REFERENCE/** linguist-vendored
+
+# Exclude large test fixtures and data files
+data/** linguist-vendored
+fixtures/** linguist-vendored
+test-fixtures/** linguist-vendored
+
+# Lock files
+package-lock.json linguist-generated
+poetry.lock linguist-generated
+pnpm-lock.yaml linguist-generated
+yarn.lock linguist-generated
+
+# Config files should not count toward project language stats
+*.json linguist-detectable=false
+*.toml linguist-detectable=false
+*.yaml linguist-detectable=false
+*.yml linguist-detectable=false
+

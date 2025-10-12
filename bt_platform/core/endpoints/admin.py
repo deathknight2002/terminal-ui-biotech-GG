@@ -30,8 +30,8 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from platform.scrapers.base.registry import ScraperRegistry
-from platform.scrapers.sites import (
+from bt_platform.scrapers.base.registry import ScraperRegistry
+from bt_platform.scrapers.sites import (
     FierceScraper,
     BusinessWireScraper,
     GlobeNewswireScraper,

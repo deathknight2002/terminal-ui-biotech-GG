@@ -6,7 +6,7 @@ This repository follows the OpenBB platform architecture pattern with clear sepa
 
 ```
 biotech-terminal-platform/
-├── platform/                  # Python backend platform
+├── bt_platform/                  # Python backend platform
 │   ├── core/                  # FastAPI application
 │   ├── providers/             # Data provider modules
 │   ├── extensions/            # Analytics and modeling (planned)
@@ -49,10 +49,10 @@ npm run dev:terminal     # Terminal app at :3000
 - **Provider Pattern**: Modular data sources
 
 ### Key Files
-- `platform/core/app.py`: Main FastAPI application
-- `platform/core/database.py`: Database models and setup
-- `platform/providers/`: Data provider implementations
-- `platform/core/endpoints/`: API route handlers
+- `bt_platform/core/app.py`: Main FastAPI application
+- `bt_platform/core/database.py`: Database models and setup
+- `bt_platform/providers/`: Data provider implementations
+- `bt_platform/core/endpoints/`: API route handlers
 
 ### Adding New Data Provider
 ```python
@@ -193,7 +193,7 @@ python -c "from platform.core.database import init_db; import asyncio; asyncio.r
 ```
 
 **Database Migrations:**
-- Schema migrations are located in `platform/core/migrations/`
+- Schema migrations are located in `bt_platform/core/migrations/`
 - The `init_db()` function creates all tables and seeds sample data
 - Database file: `biotech_terminal.db` (gitignored, not committed to repo)
 

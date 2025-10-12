@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from platform.core.config import settings
+from bt_platform.core.config import settings
 
 
 @dataclass(slots=True)

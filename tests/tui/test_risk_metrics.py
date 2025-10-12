@@ -2,7 +2,7 @@
 Tests for Risk Metrics Helper
 """
 
-from platform.tui.helpers.risk_metrics import RiskMetrics, get_risk_metrics
+from bt_platform.tui.helpers.risk_metrics import RiskMetrics, get_risk_metrics
 
 
 class TestRiskMetrics:

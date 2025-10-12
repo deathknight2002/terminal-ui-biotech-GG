@@ -8,8 +8,8 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from platform.core.app import app
-from platform.core.database import Base, get_db
+from bt_platform.core.app import app
+from bt_platform.core.database import Base, get_db
 
 
 # Create test database

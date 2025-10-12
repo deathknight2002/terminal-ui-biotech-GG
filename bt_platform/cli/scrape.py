@@ -14,20 +14,20 @@ import sys
 # Add platform to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from platform.scrapers.base.registry import ScraperRegistry
-from platform.scrapers.sites.fierce_scraper import FierceScraper
-from platform.scrapers.sites.press_release_scraper import (
+from bt_platform.scrapers.base.registry import ScraperRegistry
+from bt_platform.scrapers.sites.fierce_scraper import FierceScraper
+from bt_platform.scrapers.sites.press_release_scraper import (
     BusinessWireScraper,
     GlobeNewswireScraper,
     PRNewswireScraper,
 )
-from platform.scrapers.sites.regulator_scraper import (
+from bt_platform.scrapers.sites.regulator_scraper import (
     FDAScraper,
     EMAScraper,
     MHRAScraper,
 )
-from platform.scrapers.sites.clinical_trials_scraper import ClinicalTrialsScraper
-from platform.scrapers.sites.edgar_scraper import EDGARScraper
+from bt_platform.scrapers.sites.clinical_trials_scraper import ClinicalTrialsScraper
+from bt_platform.scrapers.sites.edgar_scraper import EDGARScraper
 
 
 # Scraper mapping
@@ -145,16 +145,16 @@ def main():
         epilog="""
 Examples:
   # Scrape FierceBiotech (last 7 days, max 20 articles)
-  python -m platform.cli.scrape --source fierce --since 7d --limit 20
+  python -m bt_platform.cli.scrape --source fierce --since 7d --limit 20
   
   # Scrape FDA with fixtures for testing
-  python -m platform.cli.scrape --source fda --save-fixture --limit 10
+  python -m bt_platform.cli.scrape --source fda --save-fixture --limit 10
   
   # Dry run BusinessWire
-  python -m platform.cli.scrape --source businesswire --dry-run
+  python -m bt_platform.cli.scrape --source businesswire --dry-run
   
   # Scrape specific URL
-  python -m platform.cli.scrape --source fierce --url https://www.fiercebiotech.com/...
+  python -m bt_platform.cli.scrape --source fierce --url https://www.fiercebiotech.com/...
   
 Available sources:
   fierce, fiercebiotech, fiercepharma

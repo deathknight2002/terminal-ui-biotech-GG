@@ -139,13 +139,13 @@ See `terminal/public/sw.js` for implementation.
 
 ```bash
 # Manual refresh via CLI
-python -m platform.cli.scrape --source fierce --since 7d --limit 20
+python3 -m bt_platform.cli.scrape --source fierce --since 7d --limit 20
 
 # Dry run to preview
-python -m platform.cli.scrape --source fda --dry-run
+python3 -m bt_platform.cli.scrape --source fda --dry-run
 
 # Save fixtures for testing
-python -m platform.cli.scrape --source businesswire --save-fixture
+python3 -m bt_platform.cli.scrape --source businesswire --save-fixture
 ```
 
 ### 2. UI Button
@@ -310,7 +310,7 @@ While the default is manual-only, you can add scheduled refreshes using system c
 ```bash
 # crontab -e
 # Refresh news sources daily at 9 AM
-0 9 * * * cd /path/to/terminal && python -m platform.cli.scrape --source fierce --since 1d >> /var/log/scraper.log 2>&1
+0 9 * * * cd /path/to/terminal && python3 -m bt_platform.cli.scrape --source fierce --since 1d >> /var/log/scraper.log 2>&1
 ```
 
 **Important:** This is opt-in and not part of the default deployment.

@@ -11,7 +11,7 @@ import sys
 def main() -> int:
     """Main entry point for the terminal application."""
     try:
-        from platform.tui.app import run_app
+        from bt_platform.tui.app import run_app
 
         run_app()
         return 0

@@ -314,7 +314,7 @@ import { SourceChip } from '@biotech-terminal/frontend-components/terminal';
 
 ## Expanded EndpointTruth Tables
 
-**Location**: `platform/core/endpoints/evidence.py`
+**Location**: `bt_platform/core/endpoints/evidence.py`
 
 ### New Indications Added (10+)
 

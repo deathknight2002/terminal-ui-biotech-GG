@@ -2,7 +2,7 @@
 Tests for RecentAssetsTracker Service
 """
 
-from platform.tui.services.recent_assets_tracker import RecentAssetsTracker
+from bt_platform.tui.services.recent_assets_tracker import RecentAssetsTracker
 
 
 class TestRecentAssetsTracker:

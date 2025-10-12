@@ -8,11 +8,11 @@ import asyncio
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 import feedparser
-from platform.scrapers.base.interface import ScraperInterface, ScraperResult, ContentType
-from platform.scrapers.utils.http_client import AsyncHTTPClient
-from platform.scrapers.utils.rate_limiter import TokenBucketRateLimiter
-from platform.scrapers.utils.parsing import extract_article_metadata, extract_text_content
-from platform.scrapers.utils.deduplication import canonical_url, content_hash, content_fingerprint
+from bt_platform.scrapers.base.interface import ScraperInterface, ScraperResult, ContentType
+from bt_platform.scrapers.utils.http_client import AsyncHTTPClient
+from bt_platform.scrapers.utils.rate_limiter import TokenBucketRateLimiter
+from bt_platform.scrapers.utils.parsing import extract_article_metadata, extract_text_content
+from bt_platform.scrapers.utils.deduplication import canonical_url, content_hash, content_fingerprint
 
 
 class FierceScraper(ScraperInterface):

@@ -100,7 +100,7 @@ def test_api_structure():
     print("=" * 60)
     
     try:
-        from platform.core.endpoints.therapeutic_areas import (
+        from bt_platform.core.endpoints.therapeutic_areas import (
             DB, ATTRS, AreaScores, list_areas, get_area, compare_radar
         )
         
@@ -150,7 +150,7 @@ def test_rate_limiter():
     print("=" * 60)
     
     try:
-        from platform.core.utils.ratelimit import (
+        from bt_platform.core.utils.ratelimit import (
             rate_limited, get_cache_stats, get_rate_limiter_stats
         )
         

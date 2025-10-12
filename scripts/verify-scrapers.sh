@@ -46,7 +46,7 @@ python -c "from platform.scrapers.sites.regulator_scraper import FDAScraper" 2>/
 # Test 4: CLI
 echo ""
 echo "Testing CLI..."
-python -m platform.cli.scrape --help >/dev/null 2>&1 && echo -e "${GREEN}✓${NC} CLI help works" && ((pass++)) || (echo -e "${RED}✗${NC} CLI help works" && ((fail++)))
+python -m bt_platform.cli.scrape --help >/dev/null 2>&1 && echo -e "${GREEN}✓${NC} CLI help works" && ((pass++)) || (echo -e "${RED}✗${NC} CLI help works" && ((fail++)))
 
 # Test 5: Utilities
 echo ""
@@ -107,7 +107,7 @@ if [ $fail -eq 0 ]; then
     echo "🚀 Scraper framework is ready to use!"
     echo ""
     echo "Quick start:"
-    echo "  python -m platform.cli.scrape --source fierce --since 7d --limit 10"
+    echo "  python -m bt_platform.cli.scrape --source fierce --since 7d --limit 10"
     echo "  make scrape-fierce"
     echo "  ./scripts/scrape.sh --source fda --limit 5"
     exit 0

@@ -35,7 +35,7 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 🔧 **Backend API**: http://localhost:8000
 - 📖 **API Documentation**: http://localhost:8000/docs
 - 🖥️ **Web Terminal Application**: http://localhost:3000
-- 💻 **CLI Terminal (TUI)**: `python3 -m platform.tui`
+- 💻 **CLI Terminal (TUI)**: `python3 -m bt_platform.tui`
 
 ## 📱 iOS Progressive Web App (PWA)
 
@@ -123,7 +123,7 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 
 ```
 📦 biotech-terminal-platform/
-├── 🐍 platform/           # Python FastAPI backend
+├── 🐍 bt_platform/        # Python FastAPI backend
 │   ├── core/              # Main application and database
 │   ├── providers/         # Data source integrations
 │   ├── routers/           # API endpoints
@@ -138,7 +138,7 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 └── 📖 docs/              # Documentation
 ```
 
-### Backend Platform (`platform/`)
+### Backend Platform (`bt_platform/`)
 
 **Python FastAPI** backend with:
 - **Async SQLAlchemy ORM** for data modeling
@@ -234,7 +234,7 @@ See [docs/EVIDENCE_JOURNAL.md](docs/EVIDENCE_JOURNAL.md) for complete feature do
 See [docs/CATALYST_SCORING_SYSTEM.md](docs/CATALYST_SCORING_SYSTEM.md) for complete documentation.
 
 
-### TUI - Command Line Interface (`platform/tui/`)
+### TUI - Command Line Interface (`bt_platform/tui/`)
 
 **Interactive terminal user interface** for biotech portfolio analysis:
 - 🎯 **Onboarding Panel** - Usage instructions and recent assets

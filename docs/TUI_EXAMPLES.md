@@ -7,7 +7,7 @@ This document provides practical examples of using the Biotech Terminal TUI.
 When you first launch the TUI:
 
 ```bash
-python3 -m platform.tui
+python3 -m bt_platform.tui
 ```
 
 You'll see:
@@ -205,7 +205,7 @@ Here's a typical analyst workflow:
 
 ```bash
 # 1. Launch TUI
-python3 -m platform.tui
+python3 -m bt_platform.tui
 
 # 2. View a promising asset
 > view BCRX-001
@@ -315,7 +315,7 @@ ModuleNotFoundError: No module named 'platform.tui'
 ```
 **Solution:** Run with PYTHONPATH set
 ```bash
-PYTHONPATH=/path/to/project python3 -m platform.tui
+PYTHONPATH=/path/to/project python3 -m bt_platform.tui
 ```
 
 ## Next Steps

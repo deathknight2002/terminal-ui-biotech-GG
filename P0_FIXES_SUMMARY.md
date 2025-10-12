@@ -89,8 +89,8 @@ For new developers cloning the repository:
 
 2. **Database Initialization:**
    - Database file `biotech_terminal.db` is created automatically
-   - Schema migrations from `platform/core/migrations/` are applied
-   - Seed data is loaded from `platform/core/seed_data.py`
+   - Schema migrations from `bt_platform/core/migrations/` are applied
+   - Seed data is loaded from `bt_platform/core/seed_data.py`
    - Includes sample drugs, clinical trials, companies, and catalysts
 
 3. **Manual Database Reset:**
@@ -130,7 +130,7 @@ cat .gitattributes
 ## Next Steps (Out of Scope for P0)
 
 ### P1 - Repo Hygiene
-- [ ] Resolve duplicate backend concepts (`platform/` vs `backend/`)
+- [ ] Resolve duplicate backend concepts (`bt_platform/` vs `backend/`)
 - [ ] Formalize plugin/provider layer (OpenBB pattern)
 
 ### P2 - Features
@@ -142,8 +142,8 @@ cat .gitattributes
 
 ## References
 
-- Platform database models: `platform/core/database.py`
-- Database initialization: `platform/core/database.py::init_db()`
-- Seed data: `platform/core/seed_data.py`
-- Migration schema: `platform/core/migrations/epidemiology_schema.sql`
+- Platform database models: `bt_platform/core/database.py`
+- Database initialization: `bt_platform/core/database.py::init_db()`
+- Seed data: `bt_platform/core/seed_data.py`
+- Migration schema: `bt_platform/core/migrations/epidemiology_schema.sql`
 - Setup scripts: `scripts/setup.ps1` (Windows) and `scripts/setup.sh` (macOS/Linux)

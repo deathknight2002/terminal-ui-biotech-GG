@@ -7,8 +7,8 @@ FDA, EMA, MHRA scrapers for regulatory news and approvals.
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 
-from platform.scrapers.sites.press_release_scraper import PressReleaseScraper
-from platform.scrapers.base.interface import ContentType, ScraperResult
+from bt_platform.scrapers.sites.press_release_scraper import PressReleaseScraper
+from bt_platform.scrapers.base.interface import ContentType, ScraperResult
 
 
 class RegulatorScraper(PressReleaseScraper):

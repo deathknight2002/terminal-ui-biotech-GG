@@ -104,7 +104,7 @@ if [ -z "$SOURCE" ]; then
 fi
 
 # Build command
-CMD="python -m platform.cli.scrape --source $SOURCE"
+CMD="python -m bt_platform.cli.scrape --source $SOURCE"
 
 if [ -n "$SINCE" ]; then
     CMD="$CMD --since $SINCE"
