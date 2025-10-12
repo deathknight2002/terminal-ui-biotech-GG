@@ -22,6 +22,7 @@ import { EvidenceJournalPage } from './pages/EvidenceJournalPage';
 import { TherapeuticAreasPage } from './pages/TherapeuticAreasPage';
 import { CompanyProfilePage } from './pages/CompanyProfilePage';
 import { IonisProfilePage } from './pages/IonisProfilePage';
+import { IonisPMModePage } from './pages/IonisPMModePage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -115,6 +116,7 @@ export function App() {
             <Route path="/companies" element={<PlaceholderPage title="COMPANY PROFILES" />} />
             <Route path="/companies/:ticker" element={<CompanyProfilePage />} />
             <Route path="/companies/ionis" element={<IonisProfilePage />} />
+            <Route path="/companies/ionis/pm-mode" element={<IonisPMModePage />} />
             <Route path="/companies/therapeutics" element={<PlaceholderPage title="THERAPEUTICS DIRECTORY" />} />
             <Route path="/companies/pipelines" element={<PlaceholderPage title="PIPELINE MAPS" />} />
 

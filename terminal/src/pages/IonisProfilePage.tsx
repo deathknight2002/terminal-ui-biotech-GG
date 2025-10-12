@@ -55,6 +55,12 @@ export const IonisProfilePage: React.FC = () => {
           </div>
           <div className="header-controls">
             <button
+              className="mode-toggle pm-mode-link"
+              onClick={() => navigate('/companies/ionis/pm-mode')}
+            >
+              📊 PM MODE
+            </button>
+            <button
               className={`mode-toggle ${showDragPanels ? 'active' : ''}`}
               onClick={() => setShowDragPanels(!showDragPanels)}
             >
