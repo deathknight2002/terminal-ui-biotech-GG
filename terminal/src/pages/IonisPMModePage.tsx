@@ -20,13 +20,14 @@ import './IonisPMModePage.css';
 export const IonisPMModePage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [savedViews, setSavedViews] = useState<SavedView[]>([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [viewName, setViewName] = useState('');
 
   // Load saved views on mount
   useEffect(() => {
-    setSavedViews(PMLayoutPersistence.getAllViews());
+    // Load all views for future use (display in dropdown, etc.)
+    const views = PMLayoutPersistence.getAllViews();
+    console.log('Available saved views:', views.length);
     
     // Check if we have a shared view in URL
     const shareHash = searchParams.get('view');
@@ -72,7 +73,9 @@ export const IonisPMModePage: React.FC = () => {
     };
     
     PMLayoutPersistence.saveView(newView);
-    setSavedViews(PMLayoutPersistence.getAllViews());
+    // Refresh the available views count
+    const views = PMLayoutPersistence.getAllViews();
+    console.log('Saved view. Total views:', views.length);
     setShowSaveDialog(false);
     setViewName('');
   };
