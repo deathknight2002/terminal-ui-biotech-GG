@@ -1,7 +1,11 @@
-import '../../../external/OpenBB/frontend-components/plotly/src/index.css';
+// TODO: Re-enable when OpenBB submodule is initialized
+// import '../../../external/OpenBB/frontend-components/plotly/src/index.css';
 
 import { useMemo } from 'react';
-import Chart from '../../../external/OpenBB/frontend-components/plotly/src/components/Chart';
+// import Chart from '../../../external/OpenBB/frontend-components/plotly/src/components/Chart';
+
+// Temporary stub until OpenBB is available
+const Chart: React.FC<any> = () => <div>OpenBB Chart (requires submodule)</div>;
 
 export interface OpenBBPlotPayload {
   data?: any[];

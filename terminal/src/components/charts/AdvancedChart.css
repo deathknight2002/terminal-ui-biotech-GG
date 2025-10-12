@@ -1,0 +1,99 @@
+.advanced-chart {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem;
+}
+
+.chart-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg-terminal);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+}
+
+.chart-control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.chart-control-group label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  min-width: 100px;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.control-btn:hover {
+  background: rgba(var(--accent-primary-rgb), 0.1);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.control-btn.active {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  border-color: var(--accent-primary);
+  font-weight: bold;
+}
+
+.chart-container {
+  flex: 1;
+  min-height: 400px;
+  background: var(--bg-terminal);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .chart-control-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-control-group label {
+    min-width: auto;
+  }
+
+  .button-group {
+    width: 100%;
+  }
+
+  .control-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .chart-container {
+    min-height: 300px;
+  }
+}
