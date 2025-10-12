@@ -234,3 +234,98 @@
     min-height: 300px;
   }
 }
+
+/* Save View Dialog */
+.save-view-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.dialog-content {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 2rem;
+  min-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content h3 {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.view-name-input {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--bg-terminal);
+  border: 1px solid var(--border-primary);
+  border-radius: 3px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.view-name-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb, 0, 255, 102), 0.1);
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.btn-primary,
+.btn-secondary {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  color: var(--bg-terminal);
+  background: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+}
+
+.btn-primary:hover {
+  background: var(--status-success);
+  border-color: var(--status-success);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb, 0, 255, 102), 0.3);
+}
+
+.btn-secondary {
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-primary);
+}
+
+.btn-secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+

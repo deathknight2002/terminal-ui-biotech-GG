@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Panel } from '@biotech-terminal/frontend-components/terminal';
 import { PMStickyHeader } from '../components/pm-mode/PMStickyHeader';
 import { RnpvLadder } from '../components/pm-mode/RnpvLadder';
@@ -13,10 +13,37 @@ import {
   convertToRnpvLadder,
   convertToCatalystTimeline,
 } from '../utils/pmModeHelpers';
+import { PMLayoutPersistence } from '../utils/pmLayoutPersistence';
+import type { SavedView } from '../../../src/types/biotech';
 import './IonisPMModePage.css';
 
 export const IonisPMModePage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [savedViews, setSavedViews] = useState<SavedView[]>([]);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [viewName, setViewName] = useState('');
+
+  // Load saved views on mount
+  useEffect(() => {
+    setSavedViews(PMLayoutPersistence.getAllViews());
+    
+    // Check if we have a shared view in URL
+    const shareHash = searchParams.get('view');
+    if (shareHash) {
+      const sharedState = PMLayoutPersistence.parseShareHash(shareHash);
+      if (sharedState) {
+        // Apply shared state (filters, etc.)
+        console.log('Loaded shared view:', sharedState);
+      }
+    } else {
+      // Load last saved view
+      const currentView = PMLayoutPersistence.loadCurrentView();
+      if (currentView) {
+        console.log('Restored previous view:', currentView);
+      }
+    }
+  }, [searchParams]);
 
   // Convert data to PM Mode format
   const pmMetrics = useMemo(
@@ -33,6 +60,43 @@ export const IonisPMModePage: React.FC = () => {
     () => convertToCatalystTimeline(IONIS_PIPELINE),
     []
   );
+
+  const handleSaveView = () => {
+    if (!viewName.trim()) return;
+    
+    const newView: SavedView = {
+      id: `view-${Date.now()}`,
+      name: viewName,
+      filters: {}, // Would contain actual filter state
+      layout: 'pmMode',
+    };
+    
+    PMLayoutPersistence.saveView(newView);
+    setSavedViews(PMLayoutPersistence.getAllViews());
+    setShowSaveDialog(false);
+    setViewName('');
+  };
+
+  const handleShareView = () => {
+    const currentView: SavedView = {
+      id: 'temp',
+      name: 'Current View',
+      filters: {},
+      layout: 'pmMode',
+    };
+    
+    const hash = PMLayoutPersistence.generateShareHash(currentView);
+    const shareUrl = `${window.location.origin}${window.location.pathname}?view=${hash}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('Share link copied to clipboard!');
+    });
+  };
+
+  const handleExportDeck = () => {
+    alert('Export to PowerPoint/PDF coming soon!');
+  };
 
   return (
     <div className="ionis-pm-mode-page">
@@ -51,17 +115,41 @@ export const IonisPMModePage: React.FC = () => {
             <span className="pm-mode-subtitle">Portfolio Manager View</span>
           </div>
           <div className="pm-mode-actions">
-            <button className="btn-action">
+            <button className="btn-action" onClick={() => setShowSaveDialog(true)}>
               💾 SAVE VIEW
             </button>
-            <button className="btn-action">
+            <button className="btn-action" onClick={handleExportDeck}>
               📤 EXPORT DECK
             </button>
-            <button className="btn-action">
+            <button className="btn-action" onClick={handleShareView}>
               🔗 SHARE LINK
             </button>
           </div>
         </div>
+
+        {/* Save View Dialog */}
+        {showSaveDialog && (
+          <div className="save-view-dialog">
+            <div className="dialog-content">
+              <h3>SAVE VIEW</h3>
+              <input
+                type="text"
+                placeholder="Enter view name..."
+                value={viewName}
+                onChange={(e) => setViewName(e.target.value)}
+                className="view-name-input"
+              />
+              <div className="dialog-actions">
+                <button onClick={handleSaveView} className="btn-primary">
+                  SAVE
+                </button>
+                <button onClick={() => setShowSaveDialog(false)} className="btn-secondary">
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Top Row - Three Core Panels */}
         <div className="pm-mode-top-row">
