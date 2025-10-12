@@ -97,14 +97,6 @@ interface Catalyst {
   source_url: string;
 }
 
-interface StockDataPoint {
-  date: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-}
 
 export const CompanyProfilePage: React.FC = () => {
   const { ticker } = useParams<{ ticker: string }>();
@@ -116,7 +108,7 @@ export const CompanyProfilePage: React.FC = () => {
   const [ownership, setOwnership] = useState<OwnershipRecord[]>([]);
   const [pipeline, setPipeline] = useState<PipelineByTA[]>([]);
   const [catalysts, setCatalysts] = useState<Catalyst[]>([]);
-  const [stockData, setStockData] = useState<StockDataPoint[]>([]);
+  // const [stockData, setStockData] = useState<StockDataPoint[]>([]);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

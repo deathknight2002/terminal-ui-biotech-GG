@@ -54,7 +54,7 @@ export function CompetitorsPage() {
     const maxRadius = 120;
 
     // Generate polygon points
-    const points = metrics.map(([_, value], i) => {
+    const points = metrics.map(([, value], i) => {
       const angle = i * angleStep - Math.PI / 2;
       const radius = (value / 100) * maxRadius;
       const x = centerX + radius * Math.cos(angle);
@@ -63,7 +63,7 @@ export function CompetitorsPage() {
     }).join(' ');
 
     // Generate axis lines and labels
-    const axes = metrics.map(([key, _], i) => {
+    const axes = metrics.map(([key], i) => {
       const angle = i * angleStep - Math.PI / 2;
       const labelX = centerX + (maxRadius + 30) * Math.cos(angle);
       const labelY = centerY + (maxRadius + 30) * Math.sin(angle);

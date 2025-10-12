@@ -149,7 +149,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           <span className="section-count">{items.length}</span>
         </div>
         <div className="search-section-items">
-          {items.map((item, index) => {
+          {items.map((item) => {
             const flatIndex = flatResults.findIndex(r => r.id === item.id && r.type === item.type);
             return (
               <button

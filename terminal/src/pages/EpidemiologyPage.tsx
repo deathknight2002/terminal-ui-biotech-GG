@@ -1,15 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {
-  ALL_DISEASE_MODELS,
-  DISEASE_MODEL_MAP,
-  SURVIVAL_CURVES_MAP,
-  COHORTS_MAP,
-  TREATMENT_PATTERNS_MAP,
-} from '../../../src/data/epidemiologyModels';
-import type { DiseaseAreaType } from '../../../src/types/biotech';
-import { SurvivalCurveChart } from '../../../frontend-components/src/epidemiology/visualizations/SurvivalCurveChart';
-import { CohortStratificationChart } from '../../../frontend-components/src/epidemiology/visualizations/CohortStratificationChart';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
 import { MetricCard } from '../../../frontend-components/src/terminal/molecules/MetricCard/MetricCard';
 import styles from './EpidemiologyPage.module.css';
@@ -50,23 +40,9 @@ const searchDiseases = async (query: string, filters?: any) => {
   return result.data;
 };
 
-// Legacy API fetch function for fallback
-const fetchEpidemiologyData = async (diseaseArea: DiseaseAreaType) => {
-  // In production, this would fetch from backend API
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  
-  return {
-    model: DISEASE_MODEL_MAP[diseaseArea],
-    survivalCurves: SURVIVAL_CURVES_MAP[diseaseArea] || [],
-    cohorts: COHORTS_MAP[diseaseArea] || [],
-    treatmentPatterns: TREATMENT_PATTERNS_MAP[diseaseArea] || [],
-  };
-};
-
 export function EpidemiologyPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDiseaseId, setSelectedDiseaseId] = useState<string | null>(null);
-  const [selectedMetric, setSelectedMetric] = useState<'population' | 'prevalence' | 'mortality'>('population');
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
   const [dataSourceFilter, setDataSourceFilter] = useState<string[]>([]);
 

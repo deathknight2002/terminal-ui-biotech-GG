@@ -16,7 +16,7 @@ const fetchDashboardData = async () => {
 };
 
 export function DashboardPage() {
-  const { data, isLoading, error } = useQuery({
+  const { isLoading, error } = useQuery({
     queryKey: ['aurora-dashboard'],
     queryFn: fetchDashboardData,
     // Manual refresh only - no auto-refetch

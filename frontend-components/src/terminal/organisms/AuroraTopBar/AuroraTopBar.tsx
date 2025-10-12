@@ -43,7 +43,7 @@ export const AuroraTopBar: React.FC<AuroraTopBarProps> = ({
 
   // Close mega menu on outside click
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = () => {
       if (activeMenu !== null) {
         setActiveMenu(null);
       }
@@ -101,7 +101,7 @@ export const AuroraTopBar: React.FC<AuroraTopBarProps> = ({
     setShowRefreshMenu(false);
 
     try {
-      const result = await onRefresh(source);
+      await onRefresh(source);
       // Toast notification handled by parent
     } catch (error) {
       console.error('Refresh error:', error);
