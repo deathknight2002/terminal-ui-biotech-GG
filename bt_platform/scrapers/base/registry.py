@@ -47,7 +47,7 @@ class ScraperRegistry:
     """
     Registry of all available scrapers.
     
-    Loads from platform/scrapers/registry.yaml
+    Loads from bt_platform/scrapers/registry.yaml
     """
     
     def __init__(self, registry_path: Optional[str] = None):

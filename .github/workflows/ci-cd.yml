@@ -70,11 +70,11 @@ jobs:
       
       - name: Lint with ruff
         run: |
-          poetry run ruff check platform/ ml/ ingest/
+          poetry run ruff check bt_platform/ ml/ ingest/
       
       - name: Type check with mypy
         run: |
-          poetry run mypy platform/ ml/ ingest/ --ignore-missing-imports
+          poetry run mypy bt_platform/ ml/ ingest/ --ignore-missing-imports
         continue-on-error: true  # Strict typing can be enforced later
       
       - name: Run tests with pytest
@@ -82,7 +82,7 @@ jobs:
           DATABASE_URL: postgresql://test:test@localhost:5432/biotech_terminal_test
           REDIS_URL: redis://localhost:6379/0
         run: |
-          poetry run pytest tests/ -v --cov=platform --cov=ml --cov=ingest --cov-report=xml
+          poetry run pytest tests/ -v --cov=bt_platform --cov=ml --cov=ingest --cov-report=xml
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
