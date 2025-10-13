@@ -23,6 +23,7 @@ import { TherapeuticAreasPage } from './pages/TherapeuticAreasPage';
 import { CompanyProfilePage } from './pages/CompanyProfilePage';
 import { IonisProfilePage } from './pages/IonisProfilePage';
 import { IonisPMModePage } from './pages/IonisPMModePage';
+import { XBICompaniesPage } from './pages/XBICompaniesPage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -114,11 +115,14 @@ export function App() {
 
             {/* Companies */}
             <Route path="/companies" element={<PlaceholderPage title="COMPANY PROFILES" />} />
+            <Route path="/company/:ticker" element={<CompanyProfilePage />} />
             <Route path="/companies/:ticker" element={<CompanyProfilePage />} />
             <Route path="/companies/ionis" element={<IonisProfilePage />} />
             <Route path="/companies/ionis/pm-mode" element={<IonisPMModePage />} />
             <Route path="/companies/therapeutics" element={<PlaceholderPage title="THERAPEUTICS DIRECTORY" />} />
             <Route path="/companies/pipelines" element={<PlaceholderPage title="PIPELINE MAPS" />} />
+            <Route path="/xbi-companies" element={<XBICompaniesPage />} />
+            <Route path="/xbi" element={<XBICompaniesPage />} />
 
             {/* Competitors */}
             <Route path="/competitors/spiderweb" element={<CompetitorsPage />} />
