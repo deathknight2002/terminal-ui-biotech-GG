@@ -1,0 +1,209 @@
+# XBI (SPDR S&P Biotech ETF) Constituents List
+# This list represents major biotech companies typically included in the XBI ETF
+# Last updated: 2024
+# Source: Public XBI holdings information
+
+constituents:
+  # Large Cap Biotech
+  - ticker: VRTX
+    name: Vertex Pharmaceuticals
+  - ticker: REGN
+    name: Regeneron Pharmaceuticals
+  - ticker: BIIB
+    name: Biogen Inc
+  - ticker: ALNY
+    name: Alnylam Pharmaceuticals
+  - ticker: MRNA
+    name: Moderna Inc
+  - ticker: ILMN
+    name: Illumina Inc
+  - ticker: BMRN
+    name: BioMarin Pharmaceutical
+  - ticker: INCY
+    name: Incyte Corporation
+  - ticker: EXAS
+    name: Exact Sciences Corporation
+  - ticker: UTHR
+    name: United Therapeutics Corporation
+  
+  # Mid Cap Biotech
+  - ticker: TECH
+    name: Bio-Techne Corporation
+  - ticker: IONS
+    name: Ionis Pharmaceuticals
+  - ticker: NBIX
+    name: Neurocrine Biosciences
+  - ticker: RARE
+    name: Ultragenyx Pharmaceutical
+  - ticker: SRPT
+    name: Sarepta Therapeutics
+  - ticker: BNTX
+    name: BioNTech SE
+  - ticker: BGNE
+    name: BeiGene Ltd
+  - ticker: ARWR
+    name: Arrowhead Pharmaceuticals
+  - ticker: KRYS
+    name: Krystal Biotech Inc
+  - ticker: LEGN
+    name: Legend Biotech Corporation
+  - ticker: RGNX
+    name: REGENXBIO Inc
+  - ticker: BLUE
+    name: bluebird bio Inc
+  - ticker: FOLD
+    name: Amicus Therapeutics Inc
+  - ticker: SAGE
+    name: Sage Therapeutics Inc
+  - ticker: VRTX
+    name: Vertex Pharmaceuticals Inc
+  
+  # Small to Mid Cap
+  - ticker: BBIO
+    name: BridgeBio Pharma Inc
+  - ticker: ACAD
+    name: ACADIA Pharmaceuticals Inc
+  - ticker: DVAX
+    name: Dynavax Technologies Corporation
+  - ticker: PTCT
+    name: PTC Therapeutics Inc
+  - ticker: HALO
+    name: Halozyme Therapeutics Inc
+  - ticker: RYTM
+    name: Rhythm Pharmaceuticals Inc
+  - ticker: IMCR
+    name: Immunocore Holdings plc
+  - ticker: TGTX
+    name: TG Therapeutics Inc
+  - ticker: GOSS
+    name: Gossamer Bio Inc
+  - ticker: DAWN
+    name: Day One Biopharmaceuticals Inc
+  - ticker: RCKT
+    name: Rocket Pharmaceuticals Inc
+  - ticker: XNCR
+    name: Xencor Inc
+  - ticker: ARVN
+    name: Arvinas Inc
+  - ticker: ALLO
+    name: Allogene Therapeutics Inc
+  - ticker: KROS
+    name: Keros Therapeutics Inc
+  - ticker: PRTA
+    name: Prothena Corporation plc
+  - ticker: YMAB
+    name: Y-mAbs Therapeutics Inc
+  - ticker: CYTK
+    name: Cytokinetics Inc
+  - ticker: INSM
+    name: Insmed Incorporated
+  - ticker: PCRX
+    name: Pacira BioSciences Inc
+  - ticker: MDGL
+    name: Madrigal Pharmaceuticals Inc
+  - ticker: VKTX
+    name: Viking Therapeutics Inc
+  - ticker: TBPH
+    name: Theravance Biopharma Inc
+  - ticker: CORT
+    name: Corcept Therapeutics Incorporated
+  - ticker: AGIO
+    name: Agios Pharmaceuticals Inc
+  - ticker: ADMA
+    name: ADMA Biologics Inc
+  - ticker: APLS
+    name: Apellis Pharmaceuticals Inc
+  - ticker: TNDM
+    name: Tandem Diabetes Care Inc
+  - ticker: NTRA
+    name: Natera Inc
+  - ticker: AKRO
+    name: Akero Therapeutics Inc
+  - ticker: BCYC
+    name: Bicycle Therapeutics plc
+  - ticker: CRNX
+    name: Crinetics Pharmaceuticals Inc
+  - ticker: VERV
+    name: Verve Therapeutics Inc
+  - ticker: CGEM
+    name: Cullinan Oncology Inc
+  - ticker: MREO
+    name: Mereo BioPharma Group plc
+  - ticker: RLAY
+    name: Relay Therapeutics Inc
+  - ticker: SMMT
+    name: Summit Therapeutics Inc
+  - ticker: VCEL
+    name: Vericel Corporation
+  - ticker: IGMS
+    name: IGM Biosciences Inc
+  - ticker: BEAM
+    name: Beam Therapeutics Inc
+  - ticker: NTLA
+    name: Intellia Therapeutics Inc
+  - ticker: EDIT
+    name: Editas Medicine Inc
+  - ticker: CRSP
+    name: CRISPR Therapeutics AG
+  - ticker: FATE
+    name: Fate Therapeutics Inc
+  - ticker: PGEN
+    name: Precigen Inc
+  - ticker: VCYT
+    name: Veracyte Inc
+  - ticker: CPRX
+    name: Catalyst Pharmaceuticals Inc
+  - ticker: DNLI
+    name: Denali Therapeutics Inc
+  - ticker: GLPG
+    name: Galapagos NV
+  - ticker: LXRX
+    name: Lexicon Pharmaceuticals Inc
+  - ticker: MYGN
+    name: Myriad Genetics Inc
+  - ticker: QURE
+    name: uniQure NV
+  - ticker: SWTX
+    name: SpringWorks Therapeutics Inc
+  - ticker: ZLAB
+    name: Zai Lab Limited
+  - ticker: RXRX
+    name: Recursion Pharmaceuticals Inc
+  - ticker: ABCL
+    name: AbCellera Biologics Inc
+  - ticker: SAVA
+    name: Cassava Sciences Inc
+  - ticker: AVIR
+    name: Atea Pharmaceuticals Inc
+  - ticker: GTHX
+    name: G1 Therapeutics Inc
+  - ticker: HOOK
+    name: HOOKIPA Pharma Inc
+  - ticker: KYMR
+    name: Kymera Therapeutics Inc
+  - ticker: MRTX
+    name: Mirati Therapeutics Inc
+  - ticker: OTIC
+    name: Otonomy Inc
+  - ticker: PETQ
+    name: PetIQ Inc
+  - ticker: RPTX
+    name: Repare Therapeutics Inc
+  - ticker: ACRV
+    name: Acrivon Therapeutics Inc
+  - ticker: ANAB
+    name: AnaptysBio Inc
+  - ticker: CGON
+    name: CG Oncology Inc
+  - ticker: KALV
+    name: KalVista Pharmaceuticals Inc
+  - ticker: TARS
+    name: Tarsus Pharmaceuticals Inc
+  - ticker: TVTX
+    name: Travere Therapeutics Inc
+  - ticker: VERA
+    name: Vera Therapeutics Inc
+  - ticker: XENE
+    name: Xenon Pharmaceuticals Inc
+  - ticker: ZYXI
+    name: Zynex Inc

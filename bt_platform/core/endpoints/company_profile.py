@@ -430,10 +430,16 @@ async def get_company_stock_chart(
 @router.get("/companies/xbi/constituents")
 async def get_xbi_constituents(
     active_only: bool = Query(True, description="Only return current constituents"),
+    search: Optional[str] = Query(None, description="Search by company name or ticker"),
+    company_type: Optional[str] = Query(None, description="Filter by company type"),
+    min_market_cap: Optional[float] = Query(None, description="Minimum market cap in USD"),
+    max_market_cap: Optional[float] = Query(None, description="Maximum market cap in USD"),
+    limit: int = Query(200, description="Maximum results to return"),
+    offset: int = Query(0, description="Results offset for pagination"),
     db: Session = Depends(get_db)
 ):
     """
-    Get list of XBI (SPDR S&P Biotech ETF) constituents.
+    Get list of XBI (SPDR S&P Biotech ETF) constituents with search and filter options.
     """
     query = db.query(Company)
     
@@ -448,7 +454,31 @@ async def get_xbi_constituents(
     else:
         query = query.filter(Company.is_xbi_constituent == True)
     
-    companies = query.order_by(Company.market_cap.desc()).all()
+    # Apply search filter
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            or_(
+                Company.name.ilike(search_term),
+                Company.ticker.ilike(search_term)
+            )
+        )
+    
+    # Apply company type filter
+    if company_type:
+        query = query.filter(Company.company_type == company_type)
+    
+    # Apply market cap filters
+    if min_market_cap is not None:
+        query = query.filter(Company.market_cap >= min_market_cap)
+    if max_market_cap is not None:
+        query = query.filter(Company.market_cap <= max_market_cap)
+    
+    # Get total count before pagination
+    total_count = query.count()
+    
+    # Apply ordering and pagination
+    companies = query.order_by(Company.market_cap.desc()).limit(limit).offset(offset).all()
     
     return {
         "constituents": [
@@ -457,6 +487,8 @@ async def get_xbi_constituents(
                 "name": company.name,
                 "company_type": company.company_type,
                 "market_cap": company.market_cap,
+                "headquarters": company.headquarters,
+                "therapeutic_areas": company.therapeutic_areas.split(",") if company.therapeutic_areas else [],
                 "is_current": company.xbi_removed_date is None or company.xbi_removed_date > datetime.utcnow(),
                 "added_date": company.xbi_added_date.isoformat() if company.xbi_added_date else None,
                 "removed_date": company.xbi_removed_date.isoformat() if company.xbi_removed_date else None,
@@ -464,5 +496,14 @@ async def get_xbi_constituents(
             for company in companies
         ],
         "count": len(companies),
+        "total": total_count,
+        "limit": limit,
+        "offset": offset,
         "active_only": active_only,
+        "filters": {
+            "search": search,
+            "company_type": company_type,
+            "min_market_cap": min_market_cap,
+            "max_market_cap": max_market_cap,
+        }
     }

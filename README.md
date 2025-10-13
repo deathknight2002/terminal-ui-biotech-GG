@@ -176,6 +176,44 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 - 📊 **Clinical Trial Tracker** - Real-time trial data
 - 🧬 **Biotech Data Explorer** - Interactive data discovery
 - 🔬 **Evidence Journal** - Science-first catalyst tracking (NEW!)
+- 🏢 **XBI Company Profiles** - Comprehensive profiles for all XBI constituents (NEW!)
+
+#### XBI Company Profiles - Comprehensive Company Intelligence
+
+**Route**: `/xbi-companies`
+
+A comprehensive company profile system providing detailed information on all SPDR S&P Biotech ETF (XBI) constituents with advanced search and filtering capabilities.
+
+**Key Features**:
+- **120+ Company Profiles**: Complete XBI constituent coverage
+- **Free Financial Data**: Powered by Yahoo Finance (yfinance library)
+- **Advanced Search**: Find companies by name or ticker symbol
+- **Smart Filtering**: Filter by company type (Big Pharma, Large/Mid/Small Cap) and market cap range
+- **Detailed Profiles**: Business summaries, financials, pipeline, catalysts, and more
+- **Intelligent Caching**: 24-hour cache TTL for improved performance
+- **Pagination**: Browse through companies efficiently
+- **Click-through Navigation**: Access full profiles from the company list
+
+**Data Provider**:
+- Yahoo Finance via `yfinance` Python library (free, no API key required)
+- Company profiles with sector, industry, headquarters, employee count
+- Financial metrics: market cap, revenue, margins, valuation ratios
+- Analyst recommendations and price targets
+- Stock price history and trading data
+
+**Usage**:
+```bash
+# Populate database with XBI companies
+python -m bt_platform.core.ingest_xbi_companies
+
+# Force refresh (bypass cache)
+python -m bt_platform.core.ingest_xbi_companies --force-refresh
+
+# Ingest specific company
+python -m bt_platform.core.ingest_xbi_companies --ticker VRTX
+```
+
+See [docs/XBI_COMPANY_PROFILES.md](docs/XBI_COMPANY_PROFILES.md) for complete documentation.
 
 #### Evidence Journal - Science-First Intelligence
 
