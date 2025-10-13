@@ -1,5 +1,5 @@
 // Mock data for Ionis Pharmaceuticals with 42 pipeline programs
-import type { PipelineProgram } from '../components/visualizations/PipelineVisualization';
+import type { PipelineProgram } from '../components/visualizations/PipelineVisualization'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export const IONIS_PROFILE = {
   ticker: 'IONS',

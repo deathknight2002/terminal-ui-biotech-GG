@@ -106,6 +106,42 @@
   min-height: 500px;
 }
 
+/* Pipeline View Toggle */
+.pipeline-view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #ffffff);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 2px;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-primary, #00ffcc);
+}
+
+.toggle-btn.active {
+  background: var(--accent-primary, #00ffcc);
+  color: var(--bg-terminal, #0a0e1a);
+  border-color: var(--accent-primary, #00ffcc);
+}
+
 /* Bottom Row - Therapeutic Areas */
 .pm-mode-bottom-row {
   min-height: 300px;
