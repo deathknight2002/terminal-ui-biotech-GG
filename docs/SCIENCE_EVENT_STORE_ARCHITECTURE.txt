@@ -1,0 +1,151 @@
+PERSISTENT SCIENCE EVENT STORE - ARCHITECTURE
+==============================================
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           CLIENT LAYERS                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │
+│  │   Terminal   │  │   Web UI     │  │  Mobile App  │                  │
+│  │   (React)    │  │   (React)    │  │   (React)    │                  │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘                  │
+│         │                  │                  │                           │
+│         └──────────────────┴──────────────────┘                          │
+│                            │                                              │
+│                  ┌─────────▼─────────┐                                   │
+│                  │  TypeScript API   │                                   │
+│                  │  Client + Hooks   │                                   │
+│                  │ (science-events.ts)│                                  │
+│                  └─────────┬─────────┘                                   │
+└─────────────────────────────┼─────────────────────────────────────────────┘
+                              │
+                              │ HTTP/JSON
+                              │
+┌─────────────────────────────▼─────────────────────────────────────────────┐
+│                         FASTAPI BACKEND                                    │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  ┌─────────────────────────────────────────────────────────────────────┐ │
+│  │               REST API ENDPOINTS                                     │ │
+│  │               /api/v1/science/*                                      │ │
+│  ├─────────────────────────────────────────────────────────────────────┤ │
+│  │                                                                      │ │
+│  │  CRUD:                    Querying:               Relationships:    │ │
+│  │  • POST   /science-events  • GET /timeline/...    • POST /event-    │ │
+│  │  • GET    /science-events  • GET /aggregate/...     relationships  │ │
+│  │  • GET    /science-events/{id}  • GET /search    • GET  /event-    │ │
+│  │  • PUT    /science-events/{id}                      relationships/  │ │
+│  │  • GET    /science-events/{id}/history                            │ │
+│  │                                                                      │ │
+│  └──────────────────────────┬───────────────────────────────────────────┘ │
+│                             │                                              │
+│  ┌──────────────────────────▼──────────────────────────────────────────┐ │
+│  │            BUSINESS LOGIC & VALIDATION                              │ │
+│  │            (contracts.py - Pydantic Models)                         │ │
+│  ├─────────────────────────────────────────────────────────────────────┤ │
+│  │  • ScienceEventContract       • Validate required fields           │ │
+│  │  • EventRelationshipContract  • Score bounds (0-1)                 │ │
+│  │  • EvidenceContract            • Date format validation            │ │
+│  └──────────────────────────┬───────────────────────────────────────────┘ │
+│                             │                                              │
+│  ┌──────────────────────────▼──────────────────────────────────────────┐ │
+│  │              ORM LAYER (SQLAlchemy)                                 │ │
+│  │              (schema.py - Database Models)                          │ │
+│  ├─────────────────────────────────────────────────────────────────────┤ │
+│  │  • ScienceEvent (26 fields, versioned)                             │ │
+│  │  • Evidence (enhanced with 9 new fields)                           │ │
+│  │  • EventRelationship (knowledge graph)                             │ │
+│  │  • science_event_evidence (association table)                      │ │
+│  └──────────────────────────┬───────────────────────────────────────────┘ │
+│                             │                                              │
+└─────────────────────────────┼──────────────────────────────────────────────┘
+                              │
+                              │ SQL
+                              │
+┌─────────────────────────────▼─────────────────────────────────────────────┐
+│                     DATABASE (PostgreSQL/SQLite)                           │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  ┌──────────────────────┐  ┌──────────────────────┐                      │
+│  │   science_events     │  │  event_relationships │                      │
+│  ├──────────────────────┤  ├──────────────────────┤                      │
+│  │ • id (PK)            │  │ • id (PK)            │                      │
+│  │ • event_type         │  │ • source_event_id    │                      │
+│  │ • title              │  │ • target_event_id    │                      │
+│  │ • event_date         │  │ • relationship_type  │                      │
+│  │ • entity_type        │  │ • confidence         │                      │
+│  │ • entity_id          │  │ • ...                │                      │
+│  │ • version            │  └──────────────────────┘                      │
+│  │ • is_current         │                                                 │
+│  │ • confidence_score   │                                                 │
+│  │ • impact_score       │                                                 │
+│  │ • ...                │  ┌──────────────────────┐                      │
+│  └──────────────────────┘  │science_event_evidence│                      │
+│                             ├──────────────────────┤                      │
+│  ┌──────────────────────┐  │ • science_event_id   │                      │
+│  │   evidence           │  │ • evidence_id        │                      │
+│  │   (enhanced)         │  │ • relationship_type  │                      │
+│  ├──────────────────────┤  └──────────────────────┘                      │
+│  │ • id (PK)            │                                                 │
+│  │ • catalyst_event_id  │                                                 │
+│  │   (now nullable)     │  INDEXES:                                      │
+│  │ • entity_type        │  • event_type + event_date                     │
+│  │ • entity_id          │  • entity_type + entity_id                     │
+│  │ • evidence_class     │  • source_type + published_date                │
+│  │ • version            │  • is_current + created_at                     │
+│  │ • is_current         │  • event_category + event_date                 │
+│  │ • ...                │  • evidence_class + confidence_score           │
+│  └──────────────────────┘                                                 │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+DATA FLOW EXAMPLES
+==================
+
+1. CREATE EVENT:
+   Client → TypeScript API → FastAPI POST /science-events → Pydantic Validation
+   → SQLAlchemy ORM → INSERT INTO science_events → Return ID + metadata
+
+2. QUERY TIMELINE:
+   Client → GET /timeline/DRUG/BPX-IL23 → Filter by entity_type + entity_id
+   → ORDER BY event_date → Return chronological events
+
+3. UPDATE EVENT (Versioning):
+   Client → PUT /science-events/123 → Mark v1 as is_current=false
+   → INSERT new row with version=2, parent_version_id=123 → Return new ID
+
+4. SEARCH:
+   Client → GET /search?q="IL-23 inhibitor" → ILIKE on title/description/content
+   → Return matching events with highlights
+
+KEY FEATURES VISUALIZATION
+===========================
+
+┌────────────────┐
+│ VERSIONING     │  v1 ──[parent]──> v2 ──[parent]──> v3 (current)
+│                │  ↓                 ↓                 ↓
+│                │  is_current=false  is_current=false  is_current=true
+└────────────────┘
+
+┌────────────────┐
+│ RELATIONSHIPS  │  Event A ──[SUPPORTS]──> Event B
+│                │  Event C ──[CONTRADICTS]──> Event A
+│                │  Event D ──[FOLLOWS]──> Event A
+│                │           (Knowledge Graph)
+└────────────────┘
+
+┌────────────────┐
+│ ENTITY LINKING │  DRUG: BPX-IL23
+│                │    ├─ Clinical Readout (2024-01-15)
+│                │    ├─ Mechanism Insight (2024-02-20)
+│                │    └─ Regulatory Change (2024-03-10)
+│                │         (Timeline View)
+└────────────────┘
+
+┌────────────────┐
+│ PROVENANCE     │  Event → source_type: "CT.gov"
+│                │       → source_url: "https://..."
+│                │       → ingested_at: 2024-01-15T10:30:00Z
+│                │       → confidence_score: 0.95
+│                │         (Full Audit Trail)
+└────────────────┘
