@@ -176,6 +176,50 @@ This repository is organized as a **multi-package workspace** following OpenBB p
 - 📊 **Clinical Trial Tracker** - Real-time trial data
 - 🧬 **Biotech Data Explorer** - Interactive data discovery
 - 🔬 **Evidence Journal** - Science-first catalyst tracking (NEW!)
+- 🏢 **XBI Company Profiles** - Comprehensive profiles for all XBI constituents (NEW!)
+
+#### XBI Company Profiles - Browse All Biotech Companies (NEW!)
+
+**Route**: `/companies/xbi`
+
+A comprehensive company browser for all constituents of the XBI ETF (SPDR S&P Biotech ETF), powered by Yahoo Finance data.
+
+**Key Features**:
+- **Complete Coverage**: Profiles for all 56+ XBI constituents
+- **Real-time Search**: Search by company name, ticker, or location
+- **Advanced Filters**: Filter by company type (Big Pharma, Biotech, etc.) and sector
+- **Sortable Grid**: Sort by market cap, name, or ticker
+- **Company Profiles**: Click through to detailed profiles with:
+  - Business summary and description
+  - Sector, industry, and therapeutic areas
+  - Market cap, employees, headquarters
+  - Financial metrics and market data
+  - Pipeline programs and catalysts
+  - Recent news and articles
+- **Data Sync**: Manual and automated sync from Yahoo Finance
+- **XBI Tracking**: Monitor XBI membership changes over time
+
+**Data Source**: Yahoo Finance via `yfinance` Python library
+- 24-hour cache for company profiles
+- Rate limited to 1 request/second
+- Free for personal, non-commercial use
+
+**API Endpoints**:
+- `GET /api/v1/companies/xbi/constituents` - List all XBI companies
+- `POST /api/v1/companies/xbi/sync` - Sync from Yahoo Finance
+- `GET /api/v1/companies/search` - Search with filters
+- `GET /api/v1/companies/{ticker}/profile` - Detailed company profile
+
+**CLI Usage**:
+```bash
+# Sync XBI data manually
+python -m bt_platform.cli.sync_xbi
+
+# Force refresh (bypass cache)
+python -m bt_platform.cli.sync_xbi --force
+```
+
+See [docs/XBI_COMPANY_PROFILES.md](docs/XBI_COMPANY_PROFILES.md) for complete documentation.
 
 #### Evidence Journal - Science-First Intelligence
 

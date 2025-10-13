@@ -4,6 +4,41 @@
   margin: 0 auto;
 }
 
+/* Navigation breadcrumb */
+.profile-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.breadcrumb-link {
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-family: var(--font-mono);
+}
+
+.breadcrumb-link:hover {
+  background: rgba(var(--accent-rgb), 0.1);
+  transform: translateX(-2px);
+}
+
+.breadcrumb-separator {
+  color: var(--text-secondary);
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* Header */
 .profile-header {
   margin-bottom: 1.5rem;

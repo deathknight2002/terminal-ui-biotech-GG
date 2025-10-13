@@ -235,6 +235,18 @@ export const CompanyProfilePage: React.FC = () => {
 
   return (
     <div className="company-profile-page">
+      {/* Navigation breadcrumb */}
+      <div className="profile-breadcrumb">
+        <button 
+          className="breadcrumb-link"
+          onClick={() => navigate('/companies/xbi')}
+        >
+          ← XBI Companies
+        </button>
+        <span className="breadcrumb-separator">/</span>
+        <span className="breadcrumb-current">{ticker}</span>
+      </div>
+
       {/* Header */}
       <div className="profile-header">
         <div className="profile-header-top">
