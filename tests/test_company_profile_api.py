@@ -221,6 +221,92 @@ def test_get_company_pipeline(sample_company, test_db):
     assert "Immunology" in tas
 
 
+def test_get_xbi_constituents_with_search(sample_company, test_db):
+    """Test XBI constituents with search filter"""
+    # Add another company
+    company2 = Company(
+        ticker="BMRN",
+        name="BioMarin Pharmaceutical",
+        company_type="Biotech",
+        market_cap=15_000_000_000,
+        is_xbi_constituent=True,
+        xbi_added_date=datetime(2018, 1, 1)
+    )
+    test_db.add(company2)
+    test_db.commit()
+    
+    # Search by name
+    response = client.get("/api/v1/companies/xbi/constituents?search=BioMarin")
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert data["count"] >= 1
+    assert any("BioMarin" in c["name"] for c in data["constituents"])
+
+
+def test_get_xbi_constituents_with_market_cap_filter(sample_company, test_db):
+    """Test XBI constituents with market cap filter"""
+    # Add companies with different market caps
+    companies = [
+        Company(ticker="SMALL", name="Small Cap Co", company_type="Biotech",
+                market_cap=1_000_000_000, is_xbi_constituent=True,
+                xbi_added_date=datetime(2020, 1, 1)),
+        Company(ticker="MID", name="Mid Cap Co", company_type="Biotech",
+                market_cap=5_000_000_000, is_xbi_constituent=True,
+                xbi_added_date=datetime(2020, 1, 1)),
+        Company(ticker="LARGE", name="Large Cap Co", company_type="Biotech",
+                market_cap=50_000_000_000, is_xbi_constituent=True,
+                xbi_added_date=datetime(2020, 1, 1)),
+    ]
+    for c in companies:
+        test_db.add(c)
+    test_db.commit()
+    
+    # Filter for mid to large cap
+    response = client.get("/api/v1/companies/xbi/constituents?min_market_cap=5000000000&max_market_cap=60000000000")
+    assert response.status_code == 200
+    data = response.json()
+    
+    # Should include MID and LARGE, but not SMALL
+    tickers = [c["ticker"] for c in data["constituents"]]
+    assert "MID" in tickers or "LARGE" in tickers
+    assert data["filters"]["min_market_cap"] == 5000000000
+
+
+def test_get_xbi_constituents_pagination(sample_company, test_db):
+    """Test XBI constituents pagination"""
+    # Add multiple companies
+    for i in range(15):
+        company = Company(
+            ticker=f"TEST{i:02d}",
+            name=f"Test Company {i}",
+            company_type="Biotech",
+            market_cap=1_000_000_000 * (i + 1),
+            is_xbi_constituent=True,
+            xbi_added_date=datetime(2020, 1, 1)
+        )
+        test_db.add(company)
+    test_db.commit()
+    
+    # First page
+    response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=0")
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert data["count"] == 5
+    assert data["limit"] == 5
+    assert data["offset"] == 0
+    assert data["total"] >= 15
+    
+    # Second page
+    response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=5")
+    assert response.status_code == 200
+    data = response.json()
+    
+    assert data["count"] == 5
+    assert data["offset"] == 5
+
+
 def test_get_xbi_constituents(sample_company):
     """Test XBI constituents listing"""
     response = client.get("/api/v1/companies/xbi/constituents?active_only=true")
