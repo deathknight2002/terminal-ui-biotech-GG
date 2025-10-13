@@ -6,7 +6,7 @@ Type-safe data validation for all external I/O with versioned schemas.
 Implements validation contracts for ingest pipeline and API endpoints.
 """
 
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Optional, List, Dict, Any, Union
 from datetime import date, datetime
 from enum import Enum
@@ -100,7 +100,7 @@ class ProgramContract(BaseModel):
 
 class TrialContract(BaseModel):
     """Clinical trial contract"""
-    nct_id: str = Field(..., regex=r'^NCT\d{8}$', description="ClinicalTrials.gov ID")
+    nct_id: str = Field(..., pattern=r'^NCT\d{8}$', description="ClinicalTrials.gov ID")
     title: Optional[str] = None
     phase: Optional[PhaseType] = None
     status: Optional[str] = Field(None, max_length=100)
@@ -117,7 +117,7 @@ class TrialContract(BaseModel):
     locations: Optional[List[Dict[str, Any]]] = None
     results_available: bool = False
     results_summary: Optional[Dict[str, Any]] = None
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
     
     class Config:
         use_enum_values = True
@@ -146,7 +146,7 @@ class CatalystEventContract(BaseModel):
     timing_clarity_score: Optional[float] = Field(None, ge=0, le=1, description="0=foggy, 1=PDUFA-like")
     endpoint: Optional[str] = Field(None, max_length=255)
     indication: Optional[str] = Field(None, max_length=255)
-    trial_nct_id: Optional[str] = Field(None, regex=r'^NCT\d{8}$')
+    trial_nct_id: Optional[str] = Field(None, pattern=r'^NCT\d{8}$')
     event_leverage: Optional[float] = Field(None, ge=0, le=1, description="Hard vs soft endpoint")
     market_depth: Optional[float] = Field(None, ge=0, description="TAM relevance score")
     sources: Optional[List[Dict[str, Any]]] = Field(None, description="Source provenance")
@@ -154,12 +154,12 @@ class CatalystEventContract(BaseModel):
     actual_outcome: Optional[OutcomeType] = None
     actual_move_pct: Optional[float] = Field(None, description="Realized stock move %")
     status: str = Field(default="UPCOMING", max_length=50)
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
     
     class Config:
         use_enum_values = True
     
-    @root_validator
+    @model_validator(mode="after")
     def validate_dates(cls, values):
         expected = values.get('expected_date')
         range_start = values.get('date_range_start')
@@ -198,7 +198,75 @@ class EvidenceContract(BaseModel):
     source_url: Optional[str] = Field(None, max_length=1000)
     source_type: Optional[str] = Field(None, max_length=100)
     published_date: Optional[date] = None
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    
+    # New fields for persistent evidence store
+    event_date: Optional[datetime] = None
+    entity_type: Optional[str] = Field(None, max_length=50)
+    entity_id: Optional[str] = Field(None, max_length=255)
+    evidence_class: Optional[str] = Field(None, max_length=50)
+    strength_score: Optional[float] = Field(None, ge=0, le=1)
+    citations: Optional[List[Dict[str, Any]]] = None
+    linkage_verified: bool = False
+    
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
+
+
+class ScienceEventContract(BaseModel):
+    """Science event contract for persistent event store"""
+    event_type: str = Field(..., max_length=100, description="Event type (CLINICAL_READOUT, MECHANISM_INSIGHT, etc.)")
+    event_category: Optional[str] = Field(None, max_length=50)
+    title: str = Field(..., min_length=1, max_length=500)
+    description: Optional[str] = None
+    summary: Optional[str] = Field(None, max_length=1000)
+    
+    event_date: datetime = Field(..., description="When the event occurred")
+    published_date: Optional[date] = None
+    
+    entity_type: Optional[str] = Field(None, max_length=50, description="DRUG, COMPANY, TARGET, INDICATION, TRIAL")
+    entity_id: Optional[str] = Field(None, max_length=255)
+    entity_name: Optional[str] = Field(None, max_length=255)
+    related_entities: Optional[List[Dict[str, Any]]] = None
+    
+    source_type: Optional[str] = Field(None, max_length=100)
+    source_url: Optional[str] = Field(None, max_length=1000)
+    source_metadata: Optional[Dict[str, Any]] = None
+    
+    content: Optional[str] = None
+    key_findings: Optional[List[Dict[str, Any]]] = None
+    impact_assessment: Optional[str] = None
+    
+    evidence_class: Optional[str] = Field(None, max_length=50)
+    confidence_score: Optional[float] = Field(None, ge=0, le=1)
+    impact_score: Optional[float] = Field(None, ge=0, le=1)
+    
+    tags: Optional[List[str]] = None
+    metadata: Optional[Dict[str, Any]] = None
+    
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
+    
+    @validator('related_entities')
+    def validate_related_entities(cls, v):
+        if v:
+            for entity in v:
+                if 'type' not in entity or 'id' not in entity:
+                    raise ValueError('Each related entity must have type and id')
+        return v
+
+
+class EventRelationshipContract(BaseModel):
+    """Event relationship contract"""
+    source_event_id: int = Field(..., gt=0)
+    target_event_id: int = Field(..., gt=0)
+    relationship_type: str = Field(..., max_length=50)
+    description: Optional[str] = None
+    confidence: Optional[float] = Field(None, ge=0, le=1)
+    metadata: Optional[Dict[str, Any]] = None
+    
+    @validator('target_event_id')
+    def validate_different_events(cls, v, values):
+        if 'source_event_id' in values and v == values['source_event_id']:
+            raise ValueError('Source and target events must be different')
+        return v
 
 
 class ProviderRawContract(BaseModel):
@@ -207,7 +275,7 @@ class ProviderRawContract(BaseModel):
     provider_type: str = Field(..., max_length=100)
     entity_id: Optional[str] = Field(None, max_length=255)
     raw_json: Dict[str, Any]
-    content_hash: str = Field(..., regex=r'^[a-f0-9]{64}$', description="SHA256 hash of content")
+    content_hash: str = Field(..., pattern=r'^[a-f0-9]{64}$', description="SHA256 hash of content")
     s3_bucket: Optional[str] = Field(None, max_length=255)
     s3_key: Optional[str] = Field(None, max_length=1000)
     parquet_partition: Optional[str] = Field(None, max_length=255, description="Partition path")
@@ -231,7 +299,7 @@ class ProviderRawContract(BaseModel):
 class FeatureSnapshotContract(BaseModel):
     """Feature vector contract"""
     feature_schema_version: str = Field(..., max_length=50)
-    hash: str = Field(..., regex=r'^[a-f0-9]{64}$')
+    hash: str = Field(..., pattern=r'^[a-f0-9]{64}$')
     features_json: Dict[str, Any]
     
     # Core features
@@ -296,7 +364,7 @@ class PredictionContract(BaseModel):
     brier_score: Optional[float] = Field(None, ge=0, le=1)
     pinball_loss: Optional[float] = Field(None, ge=0)
     
-    @root_validator
+    @model_validator(mode="after")
     def validate_expected_torque(cls, values):
         p = values.get('p')
         U = values.get('U')
@@ -339,9 +407,9 @@ class PriceBarContract(BaseModel):
     adj_close: Optional[float] = Field(None, gt=0)
     returns_1d: Optional[float] = None
     returns_xbi_residual: Optional[float] = None
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
     
-    @root_validator
+    @model_validator(mode="after")
     def validate_ohlc(cls, values):
         open_p = values.get('open')
         high = values.get('high')
@@ -372,9 +440,9 @@ class OptionsSnapshotContract(BaseModel):
     iv_90d: Optional[float] = Field(None, ge=0, le=500)
     iv_rank: Optional[float] = Field(None, ge=0, le=100)
     put_call_ratio: Optional[float] = Field(None, ge=0)
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
     
-    @root_validator
+    @model_validator(mode="after")
     def validate_straddle(cls, values):
         call = values.get('atm_call_price')
         put = values.get('atm_put_price')
@@ -401,7 +469,7 @@ class FilingContract(BaseModel):
     full_text: Optional[str] = None
     summary: Optional[str] = None
     s3_key: Optional[str] = Field(None, max_length=1000)
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
 
 
 class TranscriptContract(BaseModel):
@@ -414,7 +482,7 @@ class TranscriptContract(BaseModel):
     sentiment_score: Optional[float] = Field(None, ge=-1, le=1)
     key_topics: Optional[List[str]] = None
     s3_key: Optional[str] = Field(None, max_length=1000)
-    provider_file_sha256: Optional[str] = Field(None, regex=r'^[a-f0-9]{64}$')
+    provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
 
 
 # ============================================================================

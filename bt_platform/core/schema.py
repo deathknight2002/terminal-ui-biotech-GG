@@ -256,10 +256,11 @@ class Evidence(Base):
     __tablename__ = "evidence"
     
     id = Column(Integer, primary_key=True, index=True)
-    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=True)
     
     evidence_type = Column(String(100), index=True)
-    # Types: TRIAL_DATA, FDA_FILING, CONFERENCE_ABSTRACT, PRESS_RELEASE, etc.
+    # Types: TRIAL_DATA, FDA_FILING, CONFERENCE_ABSTRACT, PRESS_RELEASE, 
+    #        MECHANISM_INSIGHT, CLINICAL_READOUT, GENETIC_EVIDENCE, etc.
     
     title = Column(String(500))
     content = Column(Text)
@@ -267,7 +268,25 @@ class Evidence(Base):
     
     source_url = Column(String(1000))
     source_type = Column(String(100))
-    published_date = Column(Date)
+    published_date = Column(Date, index=True)
+    
+    # Versioning support for persistent evidence tracking
+    version = Column(Integer, default=1, nullable=False)
+    parent_version_id = Column(Integer, ForeignKey('evidence.id'), nullable=True)
+    is_current = Column(Boolean, default=True, index=True)
+    
+    # Metadata for science journal
+    event_date = Column(DateTime(timezone=True), index=True)  # When the event occurred
+    entity_type = Column(String(50), index=True)  # DRUG, COMPANY, TARGET, INDICATION
+    entity_id = Column(String(255), index=True)  # NCT ID, ticker, target name, etc.
+    
+    # Evidence classification
+    evidence_class = Column(String(50), index=True)
+    # Classes: GENETIC, PRECLINICAL, TRANSLATIONAL, CLINICAL, RWE, REGULATORY
+    
+    strength_score = Column(Float)  # 0-1 evidence strength
+    citations = Column(JSON)  # Array of citation objects
+    linkage_verified = Column(Boolean, default=False)
     
     # Semantic search support
     embedding_vector = Column(JSON)  # For pgvector integration
@@ -276,14 +295,21 @@ class Evidence(Base):
     provider_file_sha256 = Column(String(64), index=True)
     ingested_at = Column(DateTime(timezone=True), server_default=func.now())
     
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
     catalyst_event = relationship("CatalystEvent", back_populates="evidences")
+    parent_version = relationship("Evidence", remote_side=[id], foreign_keys=[parent_version_id])
+    science_events = relationship("ScienceEvent", secondary="science_event_evidence", back_populates="evidences")
     
     __table_args__ = (
         Index('idx_evidence_catalyst', 'catalyst_event_id'),
         Index('idx_evidence_type', 'evidence_type'),
+        Index('idx_evidence_entity', 'entity_type', 'entity_id'),
+        Index('idx_evidence_class', 'evidence_class'),
+        Index('idx_evidence_current', 'is_current', 'created_at'),
+        Index('idx_evidence_published', 'published_date'),
     )
 
 
@@ -322,6 +348,148 @@ class ProviderRaw(Base):
         Index('idx_provider_raw_provider_type', 'provider_name', 'provider_type'),
         Index('idx_provider_raw_hash', 'content_hash'),
         Index('idx_provider_raw_processed', 'processed', 'ingested_at'),
+    )
+
+
+# ============================================================================
+# Science Event Store - Persistent, Queryable, Versioned
+# ============================================================================
+
+class ScienceEvent(Base):
+    """
+    Persistent science event store for journalism-style insights.
+    
+    Canonical storage for:
+    - Clinical readouts
+    - Mechanism insights
+    - Evidence journal entries
+    - Mechanistic changes
+    - Regulatory updates
+    
+    Every event is discrete, versioned, and queryable with full provenance.
+    """
+    __tablename__ = "science_events"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Event classification
+    event_type = Column(String(100), index=True, nullable=False)
+    # Types: CLINICAL_READOUT, MECHANISM_INSIGHT, EVIDENCE_UPDATE, 
+    #        REGULATORY_CHANGE, TRIAL_UPDATE, TARGET_VALIDATION, etc.
+    
+    event_category = Column(String(50), index=True)
+    # Categories: CLINICAL, PRECLINICAL, REGULATORY, MECHANISM, COMMERCIAL
+    
+    # Event identity
+    title = Column(String(500), nullable=False)
+    description = Column(Text)
+    summary = Column(Text)  # Short summary for timeline views
+    
+    # Temporal information
+    event_date = Column(DateTime(timezone=True), index=True, nullable=False)
+    published_date = Column(Date, index=True)
+    
+    # Entity associations
+    entity_type = Column(String(50), index=True)  # DRUG, COMPANY, TARGET, INDICATION, TRIAL
+    entity_id = Column(String(255), index=True)  # NCT ID, ticker, target name, etc.
+    entity_name = Column(String(255))  # Human-readable name
+    
+    # Related entities (JSON array)
+    related_entities = Column(JSON)
+    # Example: [{"type": "DRUG", "id": "BPX-IL23", "name": "BPX-IL23"}, ...]
+    
+    # Source and provenance
+    source_type = Column(String(100), index=True)  # FDA, CT.gov, EMA, SEC, PUBMED, etc.
+    source_url = Column(String(1000))
+    source_metadata = Column(JSON)  # Additional source info
+    
+    # Content and insights
+    content = Column(Text)  # Full content if available
+    key_findings = Column(JSON)  # Structured key findings
+    impact_assessment = Column(Text)  # "So what?" explanation
+    
+    # Classification and scoring
+    evidence_class = Column(String(50), index=True)
+    # GENETIC, PRECLINICAL, TRANSLATIONAL, CLINICAL, RWE, REGULATORY
+    
+    confidence_score = Column(Float)  # 0-1 confidence in the data
+    impact_score = Column(Float)  # 0-1 estimated impact
+    
+    # Versioning for updates over time
+    version = Column(Integer, default=1, nullable=False)
+    parent_version_id = Column(Integer, ForeignKey('science_events.id'), nullable=True)
+    is_current = Column(Boolean, default=True, index=True)
+    change_summary = Column(Text)  # What changed in this version
+    
+    # Metadata
+    tags = Column(JSON)  # Array of tags for filtering
+    event_metadata = Column(JSON)  # Flexible additional metadata (renamed from 'metadata' to avoid SQLAlchemy conflict)
+    
+    # Lineage
+    provider_file_sha256 = Column(String(64), index=True)
+    ingested_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    parent_version = relationship("ScienceEvent", remote_side=[id], foreign_keys=[parent_version_id])
+    evidences = relationship("Evidence", secondary="science_event_evidence", back_populates="science_events")
+    
+    __table_args__ = (
+        Index('idx_science_event_type', 'event_type', 'event_date'),
+        Index('idx_science_event_entity', 'entity_type', 'entity_id'),
+        Index('idx_science_event_source', 'source_type', 'published_date'),
+        Index('idx_science_event_current', 'is_current', 'created_at'),
+        Index('idx_science_event_category', 'event_category', 'event_date'),
+        Index('idx_science_event_class', 'evidence_class', 'confidence_score'),
+    )
+
+
+# Association table for Science Events and Evidence (many-to-many)
+science_event_evidence = Table(
+    'science_event_evidence',
+    Base.metadata,
+    Column('science_event_id', Integer, ForeignKey('science_events.id'), primary_key=True),
+    Column('evidence_id', Integer, ForeignKey('evidence.id'), primary_key=True),
+    Column('relationship_type', String(50)),  # SUPPORTS, CONTRADICTS, REFINES, etc.
+    Column('created_at', DateTime(timezone=True), server_default=func.now()),
+    Index('idx_science_event_evidence_event', 'science_event_id'),
+    Index('idx_science_event_evidence_evidence', 'evidence_id'),
+)
+
+
+class EventRelationship(Base):
+    """
+    Explicit relationships between science events for timeline analysis.
+    
+    Captures how events relate to each other:
+    - Sequential relationships (FOLLOWS, PRECEDES)
+    - Causal relationships (CAUSES, RESULTS_FROM)
+    - Comparative relationships (CONTRADICTS, SUPPORTS, REFINES)
+    """
+    __tablename__ = "event_relationships"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    source_event_id = Column(Integer, ForeignKey('science_events.id'), nullable=False, index=True)
+    target_event_id = Column(Integer, ForeignKey('science_events.id'), nullable=False, index=True)
+    
+    relationship_type = Column(String(50), index=True, nullable=False)
+    # Types: FOLLOWS, PRECEDES, CAUSES, RESULTS_FROM, CONTRADICTS, 
+    #        SUPPORTS, REFINES, UPDATES, INVALIDATES
+    
+    description = Column(Text)  # Explanation of the relationship
+    confidence = Column(Float)  # 0-1 confidence in the relationship
+    
+    # Additional metadata
+    event_metadata = Column(JSON)  # Renamed from 'metadata' to avoid SQLAlchemy conflict
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    
+    __table_args__ = (
+        Index('idx_event_rel_source', 'source_event_id', 'relationship_type'),
+        Index('idx_event_rel_target', 'target_event_id', 'relationship_type'),
     )
 
 
