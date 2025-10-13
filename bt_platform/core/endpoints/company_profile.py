@@ -23,6 +23,7 @@ from ..database import (
     CompanyOwnership,
     MarketData
 )
+from ..services import XBISyncService
 
 logger = logging.getLogger(__name__)
 
@@ -465,4 +466,115 @@ async def get_xbi_constituents(
         ],
         "count": len(companies),
         "active_only": active_only,
+    }
+
+
+@router.post("/companies/xbi/sync")
+async def sync_xbi_constituents(
+    force_refresh: bool = Query(False, description="Force refresh from data source"),
+    db: Session = Depends(get_db)
+):
+    """
+    Sync XBI constituents from Yahoo Finance.
+    
+    This endpoint fetches the latest XBI holdings and company profiles from Yahoo Finance.
+    Use force_refresh=true to bypass cache and fetch fresh data.
+    
+    Note: This operation may take several minutes due to rate limiting.
+    """
+    try:
+        service = XBISyncService(db)
+        stats = service.sync_xbi_constituents(force_refresh=force_refresh)
+        
+        return {
+            "status": "success",
+            "message": "XBI constituents synced successfully",
+            "statistics": stats,
+        }
+    except Exception as e:
+        logger.error(f"Error syncing XBI constituents: {e}")
+        raise HTTPException(status_code=500, detail=f"Sync failed: {str(e)}")
+
+
+@router.get("/companies/xbi/sync-status")
+async def get_xbi_sync_status(
+    db: Session = Depends(get_db)
+):
+    """
+    Get current XBI sync status.
+    """
+    service = XBISyncService(db)
+    status = service.get_sync_status()
+    
+    return {
+        "status": "success",
+        "data": status,
+    }
+
+
+@router.get("/companies/search")
+async def search_companies(
+    q: Optional[str] = Query(None, description="Search query (name or ticker)"),
+    sector: Optional[str] = Query(None, description="Filter by sector"),
+    company_type: Optional[str] = Query(None, description="Filter by company type"),
+    xbi_only: bool = Query(False, description="Only XBI constituents"),
+    limit: int = Query(50, le=200, description="Maximum results"),
+    db: Session = Depends(get_db)
+):
+    """
+    Search companies by name, ticker, or other criteria.
+    """
+    query = db.query(Company)
+    
+    # Text search
+    if q:
+        search_term = f"%{q}%"
+        query = query.filter(
+            or_(
+                Company.name.ilike(search_term),
+                Company.ticker.ilike(search_term)
+            )
+        )
+    
+    # Filter by XBI membership
+    if xbi_only:
+        query = query.filter(
+            Company.is_xbi_constituent == True,
+            or_(
+                Company.xbi_removed_date == None,
+                Company.xbi_removed_date > datetime.utcnow()
+            )
+        )
+    
+    # Filter by company type
+    if company_type:
+        query = query.filter(Company.company_type == company_type)
+    
+    # Filter by sector (in therapeutic_areas)
+    if sector:
+        query = query.filter(Company.therapeutic_areas.ilike(f"%{sector}%"))
+    
+    # Order by market cap
+    companies = query.order_by(Company.market_cap.desc()).limit(limit).all()
+    
+    return {
+        "results": [
+            {
+                "ticker": company.ticker,
+                "name": company.name,
+                "company_type": company.company_type,
+                "market_cap": company.market_cap,
+                "headquarters": company.headquarters,
+                "is_xbi_constituent": company.is_xbi_constituent,
+                "therapeutic_areas": company.therapeutic_areas.split(",") if company.therapeutic_areas else [],
+            }
+            for company in companies
+        ],
+        "count": len(companies),
+        "query": {
+            "q": q,
+            "sector": sector,
+            "company_type": company_type,
+            "xbi_only": xbi_only,
+        }
     }

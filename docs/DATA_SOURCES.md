@@ -134,18 +134,31 @@ Source: SEC EDGAR (Accession Number: 0001234567-24-000123)
 **Library**: yfinance (Python wrapper)  
 **License**: Data for personal, non-commercial use
 
+**Usage in Platform**:
+- **XBI ETF Holdings**: Fetching XBI constituent list
+- **Company Profiles**: Sector, industry, business summaries
+- **Market Data**: Stock prices, market cap, trading volume
+- **Financials**: Revenue, EBITDA, cash, debt metrics
+
 **Terms of Service**:
 - Yahoo Finance API is not officially supported
 - yfinance library uses scraping (gray area)
-- Rate limiting recommended
+- Rate limiting recommended (1 request/second implemented)
+- Data cached for 24 hours to minimize requests
 
 **Compliance**:
 - ⚠️ Gray area: yfinance scrapes Yahoo Finance
-- ✅ Rate limiting: Randomized delays, max 1 req/s
+- ✅ Rate limiting: Max 1 request/second enforced
+- ✅ Caching: 24-hour cache for profiles, 15-min for quotes
 - ✅ Backup: Can switch to paid data provider (Polygon.io, Alpha Vantage)
-- ✅ Caching: 24-hour cache to minimize requests
 
-**Recommended Alternative** (for production):
+**Features Powered by Yahoo Finance**:
+- `/api/v1/companies/{ticker}/profile` - Company profiles with business summaries
+- `/api/v1/companies/xbi/constituents` - XBI ETF holdings list
+- `/api/v1/companies/xbi/sync` - Automated XBI data refresh
+- `/api/v1/companies/search` - Search companies by sector, industry
+
+**Recommended Alternative** (for production):\
 - **Polygon.io**: $399/month for real-time stocks + options
 - **Alpha Vantage**: $49.99/month for stocks
 - **IEX Cloud**: Pay-as-you-go, ~$0.0004/request
