@@ -5,7 +5,7 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events
+from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2
 
 # Main API router
 api_router = APIRouter()
@@ -56,6 +56,13 @@ api_router.include_router(
 
 api_router.include_router(
     catalysts.router,
+    prefix="/catalysts/legacy",
+    tags=["catalysts-legacy"]
+)
+
+# Enhanced Catalyst API with Provenance (v2)
+api_router.include_router(
+    catalysts_v2.router,
     prefix="/catalysts",
     tags=["catalysts"]
 )
