@@ -138,6 +138,10 @@ class Trial(Base):
     phase = Column(String(50), index=True)
     status = Column(String(100), index=True)
     
+    # Trial design
+    design = Column(String(100))  # Randomized, Open-label, etc.
+    control_type = Column(String(100))  # Placebo, Active, Historical
+    
     # Enrollment
     enrollment_target = Column(Integer)
     enrollment_actual = Column(Integer)
@@ -145,12 +149,13 @@ class Trial(Base):
     
     # Endpoints
     primary_endpoint = Column(Text)
+    primary_endpoint_type = Column(String(100))  # For scoring
     endpoint_hardness = Column(Float)  # 0-1 score for feature engineering
     secondary_endpoints = Column(JSON)
     
     # Timeline
     start_date = Column(Date)
-    primary_completion_date = Column(Date)
+    primary_completion_date = Column(Date, index=True)
     completion_date = Column(Date)
     
     # Location and sponsor
@@ -171,10 +176,12 @@ class Trial(Base):
     
     # Relationships
     program = relationship("Program", back_populates="trials")
+    catalyst_events = relationship("CatalystEvent", back_populates="trial")
     
     __table_args__ = (
         Index('idx_trial_phase_status', 'phase', 'status'),
         Index('idx_trial_sponsor', 'sponsor'),
+        Index('idx_trial_completion', 'primary_completion_date'),
     )
 
 
@@ -189,33 +196,67 @@ class CatalystEvent(Base):
     id = Column(Integer, primary_key=True, index=True)
     company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
     program_id = Column(Integer, ForeignKey('programs.id'))
+    trial_id = Column(Integer, ForeignKey('trials.id'))
     
     # Event identification
     event_type = Column(String(100), index=True, nullable=False)
-    # Types: FDA_APPROVAL, FDA_REJECTION, PDUFA_DATE, DATA_READOUT, 
-    #        ADCOM_MEETING, EMA_DECISION, CONFERENCE_PRESENTATION, etc.
+    # Types: IND_ACCEPTANCE, ADCOM_SCHEDULED, PDUFA_DATE, CHMP_OPINION,
+    #        APPROVAL, CRL, FPI, LAST_PATIENT_IN, TOPLINE_READOUT, 
+    #        FULL_DATA_CONFERENCE, DOSE_EXPANSION_DECISION, LAUNCH,
+    #        LABEL_EXPANSION, PAYER_DECISION, MILESTONE_TRIGGER, ATM_ACTIVATION
     
     title = Column(String(500), nullable=False)
     description = Column(Text)
     
-    # Timeline with uncertainty
-    expected_date = Column(Date, index=True)
-    date_range_start = Column(Date)
-    date_range_end = Column(Date)
+    # Timeline with uncertainty and confidence
+    event_window_start = Column(Date, index=True)
+    event_window_end = Column(Date, index=True)
+    expected_date = Column(Date, index=True)  # Best estimate within window
     actual_date = Column(Date, index=True)
+    
+    # Date confidence levels
+    date_confidence = Column(String(50), index=True)
+    # Values: EXACT_DATE, DATE_WINDOW, QUARTER, BY_YEAR_END, HALF, VAGUE
+    
     timing_clarity_score = Column(Float)  # 0-1, high=PDUFA, low=event-driven
     
     # Clinical/regulatory details
     endpoint = Column(String(255))
+    primary_endpoint_type = Column(String(100))  # SURVIVAL, RESPONSE_RATE, etc.
+    control_type = Column(String(100))  # PLACEBO, ACTIVE, HISTORICAL
     indication = Column(String(255))
-    trial_nct_id = Column(String(20))
+    trial_nct_id = Column(String(20), index=True)
+    trial_phase = Column(String(50))
+    trial_design = Column(String(100))
+    target_gene = Column(String(100))
     
-    # Importance scoring
+    # Sample size
+    n = Column(Integer)  # Trial enrollment
+    
+    # Regulatory designations
+    orphan = Column(Boolean, default=False)
+    fast_track = Column(Boolean, default=False)
+    breakthrough = Column(Boolean, default=False)
+    
+    # Importance scoring (transparent formula components)
     event_leverage = Column(Float)  # 0-1 for hard vs soft endpoint
+    endpoint_rigor = Column(Float)  # Quality of endpoint
     market_depth = Column(Float)  # TAM/market size relevance
+    phase_weight = Column(Float)  # Weight by development phase
+    unmet_need = Column(Float)  # Unmet need score
+    complexity_penalty = Column(Float)  # Penalty for complex design
+    quality_score = Column(Float)  # Computed catalyst quality score 0-100
     
-    # Sources and provenance
-    sources = Column(JSON)  # Array of {type, url, scraped_at}
+    # Probability of Success (PoS)
+    prob_of_success = Column(Float)  # 0-1 baseline PoS by phase/indication
+    pos_overridden = Column(Boolean, default=False)  # Has analyst overridden?
+    
+    # Expected impact
+    expected_impact = Column(String(50))
+    # Values: REV_MOVING, LABEL_EXPANDING, DE_RISKING, LOW_IMPACT
+    
+    # Sources and provenance (deprecated - use entity_source_links instead)
+    sources = Column(JSON)  # Legacy: Array of {type, url, scraped_at}
     confidence = Column(Float)  # Source reliability 0-1
     
     # Actual outcome (post-event)
@@ -225,6 +266,9 @@ class CatalystEvent(Base):
     # Status
     status = Column(String(50), default="UPCOMING", index=True)
     # UPCOMING, OCCURRED, CANCELLED, POSTPONED
+    
+    # Review and curation
+    last_reviewed_at = Column(DateTime(timezone=True))
     
     # Lineage
     provider_file_sha256 = Column(String(64), index=True)
@@ -237,13 +281,16 @@ class CatalystEvent(Base):
     # Relationships
     company = relationship("Company", back_populates="catalyst_events")
     program = relationship("Program", back_populates="catalyst_events")
+    trial = relationship("Trial", back_populates="catalyst_events")
     predictions = relationship("Prediction", back_populates="catalyst_event")
     evidences = relationship("Evidence", back_populates="catalyst_event")
     
     __table_args__ = (
-        Index('idx_catalyst_event_type_date', 'event_type', 'expected_date'),
+        Index('idx_catalyst_event_type_date', 'event_type', 'event_window_start'),
         Index('idx_catalyst_company_status', 'company_id', 'status'),
-        Index('idx_catalyst_expected_date', 'expected_date'),
+        Index('idx_catalyst_window', 'event_window_start', 'event_window_end'),
+        Index('idx_catalyst_confidence', 'date_confidence', 'status'),
+        Index('idx_catalyst_phase', 'trial_phase', 'event_type'),
     )
 
 
@@ -348,6 +395,160 @@ class ProviderRaw(Base):
         Index('idx_provider_raw_provider_type', 'provider_name', 'provider_type'),
         Index('idx_provider_raw_hash', 'content_hash'),
         Index('idx_provider_raw_processed', 'processed', 'ingested_at'),
+    )
+
+
+# ============================================================================
+# Source Provenance and Lineage
+# ============================================================================
+
+class SourceProvenance(Base):
+    """
+    Granular source provenance for every data claim.
+    
+    Tracks the exact source of every fact with URL, timestamp, content hash,
+    parser version, and verbatim excerpt. Enables "one click from UI to the 
+    raw line that justified the data."
+    """
+    __tablename__ = "source_provenance"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Source identification
+    source_url = Column(String(1000), nullable=False, index=True)
+    source_type = Column(String(100), nullable=False, index=True)
+    # Types: CT.GOV, SEC_EDGAR, FDA, EMA, PRESS_RELEASE, IR_CALENDAR, 
+    #        CONFERENCE_SCHEDULE, COMPANY_WEBSITE
+    
+    # Temporal tracking
+    accessed_at = Column(DateTime(timezone=True), nullable=False, index=True)
+    
+    # Content verification
+    content_hash = Column(String(64), nullable=False, index=True)
+    # SHA256 hash of the source content for change detection
+    
+    # Parser versioning
+    parser_version = Column(String(50), nullable=False)
+    # e.g., "ctgov_v1.2.0", "edgar_8k_v2.1.0"
+    
+    # Extraction details
+    selector = Column(String(500))
+    # CSS selector, XPath, or JSON path used to extract data
+    
+    verbatim_excerpt = Column(Text, nullable=False)
+    # The exact text/data that was extracted
+    
+    # Metadata
+    source_metadata = Column(JSON)
+    # Additional source-specific metadata (document type, section, etc.)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_source_prov_type_accessed', 'source_type', 'accessed_at'),
+        Index('idx_source_prov_hash', 'content_hash'),
+    )
+
+
+class EntitySourceLink(Base):
+    """
+    Links entities to their source provenance.
+    
+    Many-to-many relationship between entities (catalyst_events, trials, 
+    programs, etc.) and source_provenance records.
+    """
+    __tablename__ = "entity_source_links"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Entity reference (polymorphic)
+    entity_type = Column(String(50), nullable=False, index=True)
+    # Types: CATALYST_EVENT, TRIAL, PROGRAM, COMPANY, etc.
+    
+    entity_id = Column(Integer, nullable=False, index=True)
+    # The ID of the entity in its respective table
+    
+    # Source provenance reference
+    source_provenance_id = Column(Integer, ForeignKey('source_provenance.id'), nullable=False)
+    
+    # Link metadata
+    relevance_score = Column(Float)  # 0-1, how relevant this source is to the entity
+    is_primary = Column(Boolean, default=False)  # Is this the primary source?
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    source_provenance = relationship("SourceProvenance")
+    
+    __table_args__ = (
+        Index('idx_entity_source_link', 'entity_type', 'entity_id'),
+        Index('idx_entity_source_prov', 'source_provenance_id'),
+    )
+
+
+class AliasMap(Base):
+    """
+    Entity alias mapping for synonym handling.
+    
+    Maps aliases to canonical entity names to support search and matching.
+    E.g., "zuranolone" ≡ "SAGE-217"
+    """
+    __tablename__ = "alias_map"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Entity reference
+    entity_type = Column(String(50), nullable=False, index=True)
+    # Types: DRUG, COMPANY, TARGET, INDICATION
+    
+    canonical = Column(String(255), nullable=False, index=True)
+    # The canonical/preferred name
+    
+    alias = Column(String(255), nullable=False, index=True)
+    # The alternate name/alias
+    
+    # Alias metadata
+    confidence = Column(Float, default=1.0)  # 0-1, confidence in the mapping
+    note = Column(Text)  # Explanation or context for the alias
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_alias_entity_type', 'entity_type', 'canonical'),
+        Index('idx_alias_search', 'entity_type', 'alias'),
+    )
+
+
+class AnalystNote(Base):
+    """
+    Analyst notes and annotations on entities.
+    
+    Allows analysts to override computed values (e.g., PoS) or add
+    context to entities.
+    """
+    __tablename__ = "analyst_notes"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Entity reference (polymorphic)
+    entity_type = Column(String(50), nullable=False, index=True)
+    entity_id = Column(Integer, nullable=False, index=True)
+    
+    # Author and content
+    author = Column(String(100), nullable=False)
+    note = Column(Text, nullable=False)
+    
+    # Note metadata
+    note_type = Column(String(50))  # OVERRIDE, COMMENT, FLAG, etc.
+    override_field = Column(String(100))  # Field being overridden (if applicable)
+    override_value = Column(String(500))  # New value (if applicable)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_analyst_note_entity', 'entity_type', 'entity_id'),
+        Index('idx_analyst_note_author', 'author', 'created_at'),
     )
 
 
