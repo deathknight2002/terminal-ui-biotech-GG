@@ -526,6 +526,327 @@ class PredictionDetailResponse(BaseModel):
 
 
 # ============================================================================
+# Provenance and Lineage Contracts
+# ============================================================================
+
+class DateConfidence(str, Enum):
+    """Date confidence levels for catalyst events"""
+    EXACT_DATE = "EXACT_DATE"
+    DATE_WINDOW = "DATE_WINDOW"
+    QUARTER = "QUARTER"
+    BY_YEAR_END = "BY_YEAR_END"
+    HALF = "HALF"
+    VAGUE = "VAGUE"
+
+
+class SourceType(str, Enum):
+    """Source types for provenance tracking"""
+    CT_GOV = "CT.GOV"
+    SEC_EDGAR = "SEC_EDGAR"
+    FDA = "FDA"
+    EMA = "EMA"
+    PRESS_RELEASE = "PRESS_RELEASE"
+    IR_CALENDAR = "IR_CALENDAR"
+    CONFERENCE_SCHEDULE = "CONFERENCE_SCHEDULE"
+    COMPANY_WEBSITE = "COMPANY_WEBSITE"
+    OTHER = "OTHER"
+
+
+class SourceProvenanceContract(BaseModel):
+    """Source provenance contract for traceable data"""
+    source_url: str = Field(..., min_length=1, max_length=1000, description="Source URL")
+    source_type: SourceType = Field(..., description="Type of source")
+    accessed_at: datetime = Field(..., description="When the source was accessed")
+    content_hash: str = Field(..., pattern=r'^[a-f0-9]{64}$', description="SHA256 hash of source content")
+    parser_version: str = Field(..., min_length=1, max_length=50, description="Parser version used")
+    selector: Optional[str] = Field(None, max_length=500, description="CSS/XPath/JSON path selector")
+    verbatim_excerpt: str = Field(..., min_length=1, description="Exact extracted text")
+    source_metadata: Optional[Dict[str, Any]] = Field(None, description="Additional source metadata")
+    
+    class Config:
+        use_enum_values = True
+
+
+class SourceProvenanceResponse(SourceProvenanceContract):
+    """Source provenance response with ID"""
+    id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class EntitySourceLinkContract(BaseModel):
+    """Link between entity and source provenance"""
+    entity_type: str = Field(..., min_length=1, max_length=50, description="Entity type")
+    entity_id: int = Field(..., gt=0, description="Entity ID")
+    source_provenance_id: int = Field(..., gt=0, description="Source provenance ID")
+    relevance_score: Optional[float] = Field(None, ge=0, le=1, description="Relevance score 0-1")
+    is_primary: bool = Field(default=False, description="Is this the primary source?")
+
+
+class AliasMapContract(BaseModel):
+    """Entity alias mapping contract"""
+    entity_type: str = Field(..., min_length=1, max_length=50)
+    canonical: str = Field(..., min_length=1, max_length=255)
+    alias: str = Field(..., min_length=1, max_length=255)
+    confidence: float = Field(default=1.0, ge=0, le=1)
+    note: Optional[str] = None
+
+
+class AnalystNoteContract(BaseModel):
+    """Analyst note contract"""
+    entity_type: str = Field(..., min_length=1, max_length=50)
+    entity_id: int = Field(..., gt=0)
+    author: str = Field(..., min_length=1, max_length=100)
+    note: str = Field(..., min_length=1)
+    note_type: Optional[str] = Field(None, max_length=50)
+    override_field: Optional[str] = Field(None, max_length=100)
+    override_value: Optional[str] = Field(None, max_length=500)
+
+
+class AnalystNoteResponse(AnalystNoteContract):
+    """Analyst note response with timestamps"""
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
+
+# ============================================================================
+# Enhanced Catalyst Event Contracts
+# ============================================================================
+
+class CatalystEventType(str, Enum):
+    """Controlled vocabulary for catalyst event types"""
+    # Regulatory
+    IND_ACCEPTANCE = "IND_ACCEPTANCE"
+    ADCOM_SCHEDULED = "ADCOM_SCHEDULED"
+    PDUFA_DATE = "PDUFA_DATE"
+    CHMP_OPINION = "CHMP_OPINION"
+    APPROVAL = "APPROVAL"
+    CRL = "CRL"
+    
+    # Clinical
+    FPI = "FPI"
+    LAST_PATIENT_IN = "LAST_PATIENT_IN"
+    TOPLINE_READOUT = "TOPLINE_READOUT"
+    FULL_DATA_CONFERENCE = "FULL_DATA_CONFERENCE"
+    DOSE_EXPANSION_DECISION = "DOSE_EXPANSION_DECISION"
+    
+    # Commercial
+    LAUNCH = "LAUNCH"
+    LABEL_EXPANSION = "LABEL_EXPANSION"
+    PAYER_DECISION = "PAYER_DECISION"
+    
+    # Funding/Partnership
+    MILESTONE_TRIGGER = "MILESTONE_TRIGGER"
+    ATM_ACTIVATION = "ATM_ACTIVATION"
+    
+    OTHER = "OTHER"
+
+
+class ExpectedImpact(str, Enum):
+    """Expected impact categories"""
+    REV_MOVING = "REV_MOVING"
+    LABEL_EXPANDING = "LABEL_EXPANDING"
+    DE_RISKING = "DE_RISKING"
+    LOW_IMPACT = "LOW_IMPACT"
+
+
+class CatalystEventCreateContract(BaseModel):
+    """Contract for creating catalyst events with provenance"""
+    company_id: int = Field(..., gt=0)
+    program_id: Optional[int] = Field(None, gt=0)
+    trial_id: Optional[int] = Field(None, gt=0)
+    
+    event_type: CatalystEventType
+    title: str = Field(..., min_length=1, max_length=500)
+    description: Optional[str] = None
+    
+    # Timeline
+    event_window_start: Optional[date] = None
+    event_window_end: Optional[date] = None
+    expected_date: Optional[date] = None
+    date_confidence: Optional[DateConfidence] = None
+    
+    # Clinical details
+    endpoint: Optional[str] = Field(None, max_length=255)
+    primary_endpoint_type: Optional[str] = Field(None, max_length=100)
+    control_type: Optional[str] = Field(None, max_length=100)
+    indication: Optional[str] = Field(None, max_length=255)
+    trial_nct_id: Optional[str] = Field(None, max_length=20)
+    trial_phase: Optional[str] = Field(None, max_length=50)
+    trial_design: Optional[str] = Field(None, max_length=100)
+    target_gene: Optional[str] = Field(None, max_length=100)
+    n: Optional[int] = Field(None, gt=0)
+    
+    # Regulatory designations
+    orphan: bool = False
+    fast_track: bool = False
+    breakthrough: bool = False
+    
+    # Scoring
+    event_leverage: Optional[float] = Field(None, ge=0, le=1)
+    endpoint_rigor: Optional[float] = Field(None, ge=0, le=1)
+    market_depth: Optional[float] = Field(None, ge=0, le=1)
+    phase_weight: Optional[float] = Field(None, ge=0, le=1)
+    unmet_need: Optional[float] = Field(None, ge=0, le=1)
+    complexity_penalty: Optional[float] = Field(None, ge=0, le=1)
+    
+    # Probability of Success
+    prob_of_success: Optional[float] = Field(None, ge=0, le=1)
+    
+    # Expected impact
+    expected_impact: Optional[ExpectedImpact] = None
+    
+    # Status
+    status: str = Field(default="UPCOMING", max_length=50)
+    
+    # Provenance (required!)
+    source_provenance: List[SourceProvenanceContract] = Field(
+        ..., 
+        min_length=1, 
+        description="At least one source provenance required"
+    )
+    
+    class Config:
+        use_enum_values = True
+    
+    @model_validator(mode="after")
+    def validate_date_window(cls, values):
+        """Validate event window dates"""
+        start = values.event_window_start
+        end = values.event_window_end
+        expected = values.expected_date
+        
+        if start and end and start > end:
+            raise ValueError('event_window_start must be <= event_window_end')
+        
+        if expected and start and expected < start:
+            raise ValueError('expected_date must be within window')
+        
+        if expected and end and expected > end:
+            raise ValueError('expected_date must be within window')
+        
+        return values
+
+
+class CatalystEventUpdateContract(BaseModel):
+    """Contract for updating catalyst events"""
+    title: Optional[str] = Field(None, min_length=1, max_length=500)
+    description: Optional[str] = None
+    
+    # Timeline updates
+    event_window_start: Optional[date] = None
+    event_window_end: Optional[date] = None
+    expected_date: Optional[date] = None
+    date_confidence: Optional[DateConfidence] = None
+    actual_date: Optional[date] = None
+    
+    # Clinical updates
+    endpoint: Optional[str] = Field(None, max_length=255)
+    indication: Optional[str] = Field(None, max_length=255)
+    
+    # Outcome
+    actual_outcome: Optional[OutcomeType] = None
+    actual_move_pct: Optional[float] = None
+    
+    # Status
+    status: Optional[str] = Field(None, max_length=50)
+    
+    # Provenance for update
+    source_provenance: Optional[List[SourceProvenanceContract]] = None
+    
+    class Config:
+        use_enum_values = True
+
+
+class CatalystEventDetailResponse(BaseModel):
+    """Catalyst event response with full details and provenance"""
+    id: int
+    company_id: int
+    program_id: Optional[int] = None
+    trial_id: Optional[int] = None
+    
+    event_type: str
+    title: str
+    description: Optional[str] = None
+    
+    # Timeline
+    event_window_start: Optional[date] = None
+    event_window_end: Optional[date] = None
+    expected_date: Optional[date] = None
+    actual_date: Optional[date] = None
+    date_confidence: Optional[str] = None
+    timing_clarity_score: Optional[float] = None
+    
+    # Clinical details
+    endpoint: Optional[str] = None
+    primary_endpoint_type: Optional[str] = None
+    control_type: Optional[str] = None
+    indication: Optional[str] = None
+    trial_nct_id: Optional[str] = None
+    trial_phase: Optional[str] = None
+    trial_design: Optional[str] = None
+    target_gene: Optional[str] = None
+    n: Optional[int] = None
+    
+    # Regulatory designations
+    orphan: bool = False
+    fast_track: bool = False
+    breakthrough: bool = False
+    
+    # Scoring
+    event_leverage: Optional[float] = None
+    endpoint_rigor: Optional[float] = None
+    market_depth: Optional[float] = None
+    phase_weight: Optional[float] = None
+    unmet_need: Optional[float] = None
+    complexity_penalty: Optional[float] = None
+    quality_score: Optional[float] = None
+    
+    # Probability of Success
+    prob_of_success: Optional[float] = None
+    pos_overridden: bool = False
+    
+    # Expected impact
+    expected_impact: Optional[str] = None
+    
+    # Outcome
+    actual_outcome: Optional[str] = None
+    actual_move_pct: Optional[float] = None
+    
+    # Status
+    status: str
+    last_reviewed_at: Optional[datetime] = None
+    
+    # Metadata
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    # Evidence array with provenance
+    evidence: List[SourceProvenanceResponse] = Field(default_factory=list)
+    
+    # Analyst notes
+    analyst_notes: List[AnalystNoteResponse] = Field(default_factory=list)
+    
+    class Config:
+        from_attributes = True
+
+
+class CatalystEventListResponse(BaseModel):
+    """Paginated list of catalyst events"""
+    data: List[CatalystEventDetailResponse]
+    total: int
+    page: int
+    page_size: int
+    filters: Dict[str, Any]
+
+
+# ============================================================================
 # Export All Contracts
 # ============================================================================
 
@@ -535,6 +856,10 @@ __all__ = [
     'EventType',
     'OutcomeType',
     'CompanyType',
+    'DateConfidence',
+    'SourceType',
+    'CatalystEventType',
+    'ExpectedImpact',
     # Entity contracts
     'CompanyContract',
     'ProgramContract',
@@ -542,6 +867,18 @@ __all__ = [
     'CatalystEventContract',
     'EvidenceContract',
     'ProviderRawContract',
+    # Provenance contracts
+    'SourceProvenanceContract',
+    'SourceProvenanceResponse',
+    'EntitySourceLinkContract',
+    'AliasMapContract',
+    'AnalystNoteContract',
+    'AnalystNoteResponse',
+    # Enhanced catalyst contracts
+    'CatalystEventCreateContract',
+    'CatalystEventUpdateContract',
+    'CatalystEventDetailResponse',
+    'CatalystEventListResponse',
     # Feature and prediction contracts
     'FeatureSnapshotContract',
     'PredictionContract',
