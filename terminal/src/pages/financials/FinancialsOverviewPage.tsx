@@ -1,14 +1,12 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Panel, Metric } from '../../../../frontend-components/src/terminal';
+import { API_ENDPOINTS, apiFetch } from '../../config/api';
 
 const fetchFinancialsOverview = async () => {
   try {
-    const response = await fetch('http://localhost:8000/api/v1/financials/overview');
-    if (!response.ok) {
-      return getMockOverviewData();
-    }
-    return await response.json();
+    const data = await apiFetch(API_ENDPOINTS.FINANCIALS.OVERVIEW);
+    return data;
   } catch {
     console.log('Backend unavailable, using mock data');
     return getMockOverviewData();
