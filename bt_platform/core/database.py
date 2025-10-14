@@ -803,6 +803,215 @@ class CompanyOwnership(Base):
     )
 
 
+# ============================================================================
+# KOL (KEY OPINION LEADER) TRACKING MODELS
+# ============================================================================
+
+class KOLSource(Base):
+    """KOL data source tracking and health monitoring"""
+    __tablename__ = "kol_sources"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    source_name = Column(String, unique=True, nullable=False, index=True)
+    source_type = Column(String, nullable=False, index=True)  # social_media, news, academic, regulatory, conference
+    platform = Column(String)  # Twitter/X, LinkedIn, PubMed, etc.
+    
+    # Source configuration
+    scraper_class = Column(String)  # Java class name for scraper
+    scraper_config = Column(JSON)  # Configuration parameters
+    update_frequency = Column(String)  # hourly, daily, weekly
+    
+    # Health and reliability metrics
+    is_active = Column(Boolean, default=True, index=True)
+    reliability_score = Column(Float, default=1.0)  # 0-1, based on historical accuracy
+    last_successful_scrape = Column(DateTime, index=True)
+    last_failed_scrape = Column(DateTime)
+    consecutive_failures = Column(Integer, default=0)
+    
+    # Statistics
+    total_signals_collected = Column(Integer, default=0)
+    avg_signal_quality = Column(Float)  # 0-1
+    
+    # Metadata
+    description = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_kol_source_type', 'source_type', 'is_active'),
+    )
+
+
+class KOLProfile(Base):
+    """Individual Key Opinion Leader profiles"""
+    __tablename__ = "kol_profiles"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False, index=True)
+    username = Column(String)  # Social media username/handle
+    platform = Column(String)  # Primary platform
+    
+    # KOL classification
+    kol_type = Column(String, index=True)  # analyst, researcher, clinician, investor, executive
+    specialty = Column(String, index=True)  # Therapeutic area focus
+    affiliation = Column(String)  # Institution/Company
+    
+    # Credibility metrics
+    credibility_score = Column(Float, default=0.5)  # 0-1, based on track record
+    influence_score = Column(Float, default=0.5)  # 0-1, follower count, citations, etc.
+    accuracy_score = Column(Float, default=0.5)  # 0-1, historical prediction accuracy
+    
+    # Contact/Profile
+    profile_url = Column(String)
+    email = Column(String)
+    
+    # Statistics
+    total_signals = Column(Integer, default=0)
+    correct_predictions = Column(Integer, default=0)
+    incorrect_predictions = Column(Integer, default=0)
+    
+    # Status
+    is_active = Column(Boolean, default=True, index=True)
+    last_activity = Column(DateTime, index=True)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_kol_profile_type_specialty', 'kol_type', 'specialty'),
+        Index('idx_kol_profile_credibility', 'credibility_score'),
+    )
+
+
+class KOLSignal(Base):
+    """Individual KOL signals and opinions"""
+    __tablename__ = "kol_signals"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Source tracking
+    source_id = Column(Integer, ForeignKey('kol_sources.id'), nullable=False, index=True)
+    kol_profile_id = Column(Integer, ForeignKey('kol_profiles.id'), index=True)
+    
+    # Signal content
+    signal_type = Column(String, nullable=False, index=True)  # bullish, bearish, neutral, upgrade, downgrade
+    signal_text = Column(Text, nullable=False)
+    signal_sentiment = Column(Float)  # -1 (bearish) to 1 (bullish)
+    
+    # Entity links
+    company_ticker = Column(String, index=True)
+    drug_name = Column(String, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), index=True)
+    
+    # Signal metadata
+    signal_date = Column(DateTime, nullable=False, index=True)
+    platform = Column(String)  # Twitter, LinkedIn, etc.
+    post_url = Column(String)
+    
+    # Signal quality and impact
+    quality_score = Column(Float)  # 0-1, signal quality assessment
+    impact_score = Column(Float)  # 0-1, expected market impact
+    confidence_level = Column(Float)  # 0-1, KOL's stated confidence
+    
+    # Verification and outcomes
+    is_verified = Column(Boolean, default=False)
+    outcome = Column(String)  # correct, incorrect, pending
+    outcome_date = Column(DateTime)
+    
+    # Raw data
+    raw_data = Column(JSON)  # Original scraped data
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_kol_signal_date_type', 'signal_date', 'signal_type'),
+        Index('idx_kol_signal_ticker', 'company_ticker', 'signal_date'),
+        Index('idx_kol_signal_quality', 'quality_score'),
+        Index('idx_kol_signal_catalyst', 'catalyst_id'),
+    )
+
+
+class KOLScore(Base):
+    """Aggregated KOL scoring for companies/assets"""
+    __tablename__ = "kol_scores"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Entity identification
+    entity_type = Column(String, nullable=False, index=True)  # company, drug, catalyst
+    entity_id = Column(String, nullable=False, index=True)  # ticker, drug_id, catalyst_id
+    entity_name = Column(String)
+    
+    # Aggregated scores
+    aggregate_sentiment = Column(Float)  # -1 to 1, weighted average of signals
+    bullish_signal_count = Column(Integer, default=0)
+    bearish_signal_count = Column(Integer, default=0)
+    neutral_signal_count = Column(Integer, default=0)
+    
+    # Weighted scores (considering KOL credibility)
+    weighted_sentiment = Column(Float)  # Credibility-weighted sentiment
+    confidence_score = Column(Float)  # 0-1, based on signal quality and KOL credibility
+    
+    # Predictive scores
+    catalyst_probability_adjustment = Column(Float)  # -0.5 to +0.5, adjustment to base probability
+    expected_price_impact = Column(Float)  # Expected % price movement
+    
+    # Time window
+    score_date = Column(DateTime, nullable=False, index=True)
+    lookback_days = Column(Integer, default=30)  # Days of signals considered
+    
+    # Signal composition
+    signal_count = Column(Integer, default=0)
+    top_kols_count = Column(Integer, default=0)  # Number of high-credibility KOLs
+    
+    # Metadata
+    calculation_timestamp = Column(DateTime, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_kol_score_entity', 'entity_type', 'entity_id', 'score_date'),
+        Index('idx_kol_score_sentiment', 'weighted_sentiment'),
+    )
+
+
+class KOLAlgorithmRun(Base):
+    """Track KOL ranking algorithm executions"""
+    __tablename__ = "kol_algorithm_runs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    run_timestamp = Column(DateTime, nullable=False, index=True)
+    algorithm_version = Column(String, nullable=False)  # Version tracking
+    
+    # Run parameters
+    lookback_days = Column(Integer)
+    min_kol_credibility = Column(Float)
+    min_signal_quality = Column(Float)
+    
+    # Run statistics
+    signals_processed = Column(Integer)
+    entities_scored = Column(Integer)
+    top_kols_included = Column(Integer)
+    
+    # Results summary
+    top_bullish_entity = Column(String)
+    top_bearish_entity = Column(String)
+    highest_confidence_signal = Column(String)
+    
+    # Performance metrics
+    execution_time_ms = Column(Integer)
+    status = Column(String)  # success, failed, partial
+    error_message = Column(Text)
+    
+    # Metadata
+    run_by = Column(String)  # User/system identifier
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    __table_args__ = (
+        Index('idx_kol_run_timestamp', 'run_timestamp'),
+    )
+
+
 # Database initialization
 async def init_db():
     """Initialize database tables"""
