@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Panel } from '@biotech-terminal/frontend-components/terminal';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import './CompanyProfilePage.css';
 
 interface CompanyProfile {
@@ -114,8 +115,6 @@ export const CompanyProfilePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'pipeline' | 'catalysts' | 'sources' | 'ownership'>('overview');
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
-
   useEffect(() => {
     if (!ticker) {
       setError('No ticker provided');
@@ -133,36 +132,24 @@ export const CompanyProfilePage: React.FC = () => {
     setError(null);
 
     try {
-      // Load all company data in parallel
+      // Load all company data in parallel using centralized API endpoints
       const [
-        profileRes,
-        sourcesRes,
-        articlesRes,
-        ownershipRes,
-        pipelineRes,
-        catalystsRes,
-        stockRes,
+        profileData,
+        sourcesData,
+        articlesData,
+        ownershipData,
+        pipelineData,
+        catalystsData,
+        // stockDataRes, // TODO: Add when stock-chart endpoint is available
       ] = await Promise.all([
-        fetch(`${API_BASE}/companies/${ticker}/profile`),
-        fetch(`${API_BASE}/companies/${ticker}/sources?limit=20`),
-        fetch(`${API_BASE}/companies/${ticker}/articles?days=90&limit=20`),
-        fetch(`${API_BASE}/companies/${ticker}/ownership?top_n=20`),
-        fetch(`${API_BASE}/companies/${ticker}/pipeline`),
-        fetch(`${API_BASE}/companies/${ticker}/catalysts?upcoming_days=90`),
-        fetch(`${API_BASE}/companies/${ticker}/stock-chart?days=90`),
+        apiFetch<CompanyProfile>(API_ENDPOINTS.COMPANIES.PROFILE(ticker)),
+        apiFetch<{ sources: CompanySource[] }>(`${API_ENDPOINTS.COMPANIES.SOURCES(ticker)}?limit=20`),
+        apiFetch<{ articles: CompanyArticle[] }>(`${API_ENDPOINTS.COMPANIES.ARTICLES(ticker)}?days=90&limit=20`),
+        apiFetch<{ ownership: OwnershipRecord[] }>(`${API_ENDPOINTS.COMPANIES.OWNERSHIP(ticker)}?top_n=20`),
+        apiFetch<{ pipeline: PipelineByTA[] }>(API_ENDPOINTS.COMPANIES.PIPELINE(ticker)),
+        apiFetch<{ catalysts: Catalyst[] }>(`${API_ENDPOINTS.COMPANIES.CATALYSTS(ticker)}?upcoming_days=90`),
+        // apiFetch<{ prices: StockDataPoint[] }>(`${API_ENDPOINTS.COMPANIES.FINANCIALS(ticker)}?days=90`),
       ]);
-
-      if (!profileRes.ok) {
-        throw new Error(`Failed to load company profile: ${profileRes.statusText}`);
-      }
-
-      const profileData = await profileRes.json();
-      const sourcesData = await sourcesRes.json();
-      const articlesData = await articlesRes.json();
-      const ownershipData = await ownershipRes.json();
-      const pipelineData = await pipelineRes.json();
-      const catalystsData = await catalystsRes.json();
-      const stockDataRes = await stockRes.json();
 
       setProfile(profileData);
       setSources(sourcesData.sources || []);
@@ -170,7 +157,7 @@ export const CompanyProfilePage: React.FC = () => {
       setOwnership(ownershipData.ownership || []);
       setPipeline(pipelineData.pipeline || []);
       setCatalysts(catalystsData.catalysts || []);
-      setStockData(stockDataRes.prices || []);
+      // setStockData(stockDataRes.prices || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load company data');
     } finally {

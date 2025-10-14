@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import './NewsPage.css';
 
 interface Article {
@@ -49,8 +50,7 @@ export function NewsPage() {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/api/v1/news/latest?limit=20');
-      const data = await response.json();
+      const data = await apiFetch<{ articles: Article[] }>(`${API_ENDPOINTS.NEWS.LATEST}?limit=20`);
       setArticles(data.articles || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load news');
@@ -61,8 +61,7 @@ export function NewsPage() {
 
   const fetchDiff = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v1/news/diff?since=1h');
-      const data = await response.json();
+      const data = await apiFetch<NewsDiff>(`${API_ENDPOINTS.NEWS.DIFF}?since=1h`);
       setDiff(data);
     } catch (err) {
       console.error('Failed to fetch diff:', err);

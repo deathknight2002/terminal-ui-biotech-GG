@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Panel } from '../../../../frontend-components/src/terminal';
+import { API_ENDPOINTS, apiFetch } from '../../config/api';
 
 export function LoECliffPage() {
+  const [loeEvents, setLoeEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLoEData = async () => {
+      try {
+        const data = await apiFetch(API_ENDPOINTS.FINANCIALS.LOE);
+        setLoeEvents(data.events || getMockLoEData());
+      } catch {
+        setLoeEvents(getMockLoEData());
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLoEData();
+  }, []);
+
   // Mock LoE timeline data
-  const loeEvents = [
+  const getMockLoEData = () => [
     {
       asset: 'Nuvalent Lead Asset',
       region: 'US',
@@ -40,7 +58,10 @@ export function LoECliffPage() {
         </div>
       </div>
 
-      <Panel title="LOE EVENTS TIMELINE" cornerBrackets>
+      {loading ? (
+        <div style={{ padding: '2rem', textAlign: 'center' }}>Loading LoE data...</div>
+      ) : (
+        <Panel title="LOE EVENTS TIMELINE" cornerBrackets>
         <div style={{ padding: '1rem' }}>
           <div style={{ marginBottom: '2rem' }}>
             <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
@@ -114,20 +135,23 @@ export function LoECliffPage() {
           </table>
         </div>
       </Panel>
+      )}
 
-      <Panel title="EROSION MODEL" cornerBrackets>
-        <div style={{ padding: '1rem', color: 'var(--text-secondary)' }}>
-          <div style={{ marginBottom: '0.5rem' }}>
-            <strong>Erosion Assumptions:</strong>
+      {!loading && (
+        <Panel title="EROSION MODEL" cornerBrackets>
+          <div style={{ padding: '1rem', color: 'var(--text-secondary)' }}>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <strong>Erosion Assumptions:</strong>
+            </div>
+            <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+              <li>Year 1 post-LoE: 55-60% revenue erosion (generic entry)</li>
+              <li>Year 2 post-LoE: Additional 20-25% erosion (market stabilization)</li>
+              <li>Steady state: 80-85% total branded market share loss</li>
+              <li>Region-specific curves applied based on historical precedent</li>
+            </ul>
           </div>
-          <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
-            <li>Year 1 post-LoE: 55-60% revenue erosion (generic entry)</li>
-            <li>Year 2 post-LoE: Additional 20-25% erosion (market stabilization)</li>
-            <li>Steady state: 80-85% total branded market share loss</li>
-            <li>Region-specific curves applied based on historical precedent</li>
-          </ul>
-        </div>
-      </Panel>
+        </Panel>
+      )}
     </div>
   );
 }

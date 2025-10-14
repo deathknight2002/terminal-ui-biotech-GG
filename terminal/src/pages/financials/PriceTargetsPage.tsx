@@ -1,14 +1,12 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Panel } from '../../../../frontend-components/src/terminal';
+import { API_ENDPOINTS, apiFetch } from '../../config/api';
 
 const fetchPriceTargets = async () => {
   try {
-    const response = await fetch('http://localhost:8000/api/v1/financials/price-targets?ticker=NUVL');
-    if (!response.ok) {
-      return getMockPriceTargets();
-    }
-    return await response.json();
+    const data = await apiFetch(`${API_ENDPOINTS.FINANCIALS.PRICE_TARGETS}?ticker=NUVL`);
+    return data;
   } catch {
     return getMockPriceTargets();
   }

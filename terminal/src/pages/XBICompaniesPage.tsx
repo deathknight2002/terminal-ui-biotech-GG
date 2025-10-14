@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Panel } from '@biotech-terminal/frontend-components/terminal';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import './XBICompaniesPage.css';
 
 interface XBICompany {
@@ -39,8 +40,6 @@ export const XBICompaniesPage: React.FC = () => {
   const [totalResults, setTotalResults] = useState(0);
   const pageSize = 20;
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
-
   useEffect(() => {
     loadCompanies();
   }, [searchTerm, companyTypeFilter, minMarketCap, maxMarketCap, currentPage]);
@@ -61,13 +60,9 @@ export const XBICompaniesPage: React.FC = () => {
       if (minMarketCap) params.append('min_market_cap', minMarketCap);
       if (maxMarketCap) params.append('max_market_cap', maxMarketCap);
 
-      const response = await fetch(`${API_BASE}/companies/xbi/constituents?${params}`);
+      const url = `${API_ENDPOINTS.COMPANIES.XBI_LIST}/constituents?${params}`;
+      const data = await apiFetch<XBIResponse>(url);
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch XBI companies: ${response.statusText}`);
-      }
-
-      const data: XBIResponse = await response.json();
       setCompanies(data.constituents);
       setTotalResults(data.total);
     } catch (err) {

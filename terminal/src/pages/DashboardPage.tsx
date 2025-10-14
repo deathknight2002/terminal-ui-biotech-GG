@@ -7,16 +7,13 @@ import type {
   Catalyst,
   PortfolioPosition 
 } from '../../../frontend-components/src/types/biotech';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import styles from './DashboardPage.module.css';
 
 // Fetch data from our backend - LIVE data only
 const fetchDashboardData = async () => {
   try {
-    const response = await fetch('http://localhost:3001/api/biotech/dashboard');
-    if (!response.ok) {
-      throw new Error('Failed to fetch dashboard data');
-    }
-    const data = await response.json();
+    const data = await apiFetch(API_ENDPOINTS.BIOTECH.DASHBOARD);
     console.log('Dashboard data received:', data);
     return data;
   } catch (error) {
@@ -72,7 +69,7 @@ export function DashboardPage() {
         <div className={styles.error}>
           <div>Failed to load dashboard data</div>
           <div className={styles.errorMessage}>
-            Backend connection failed - check if Node.js server is running on port 3001
+            Backend connection failed - check if Python FastAPI server is running on port 8000
           </div>
         </div>
       </div>
