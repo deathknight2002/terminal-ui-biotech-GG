@@ -27,6 +27,12 @@ const envSchema = z.object({
   CLINICALTRIALS_API_KEY: z.string().optional(),
   EDGAR_API_KEY: z.string().optional(),
   
+  // Advanced Intelligence APIs
+  OPENFDA_API_KEY: z.string().optional(),
+  PUBMED_API_KEY: z.string().optional(),
+  PUBMED_EMAIL: z.string().optional(),
+  PROTEIN_DATA_BANK_API_KEY: z.string().optional(),
+  
   // Dagster
   DAGSTER_HOME: z.string().default('./dagster_home'),
   DAGSTER_POSTGRES_DB: z.string().optional(),
@@ -88,6 +94,10 @@ export const config = {
     fda: env.FDA_API_KEY,
     clinicalTrials: env.CLINICALTRIALS_API_KEY,
     edgar: env.EDGAR_API_KEY,
+    openFDA: env.OPENFDA_API_KEY,
+    pubmed: env.PUBMED_API_KEY,
+    pubmedEmail: env.PUBMED_EMAIL,
+    proteinDataBank: env.PROTEIN_DATA_BANK_API_KEY,
   },
   
   // Dagster

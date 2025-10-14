@@ -45,6 +45,12 @@ class Settings(BaseSettings):
     FDA_API_KEY: str = ""
     CLINICALTRIALS_API_KEY: str = ""
     PUBMED_API_KEY: str = ""
+    PUBMED_EMAIL: str = "biotech-terminal@example.com"
+    
+    # Advanced Intelligence APIs
+    OPENFDA_API_KEY: str = ""
+    PROTEIN_DATA_BANK_API_KEY: str = ""
+    UNIPROT_API_KEY: str = ""
 
     # Data Lake / Ingestion
     DATA_LAKE_DIR: str = os.path.join("data", "lake")

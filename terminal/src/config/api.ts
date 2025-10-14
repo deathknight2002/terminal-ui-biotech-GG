@@ -89,6 +89,19 @@ export const API_ENDPOINTS = {
     OPPORTUNITIES: `${API_BASE_URL}/insights/opportunities`,
   },
   
+  // Advanced Intelligence - NEW
+  INTELLIGENCE: {
+    DASHBOARD: `${API_BASE_URL}/intelligence/dashboard`,
+    COMPREHENSIVE: (drugName: string) => `${API_BASE_URL}/intelligence/comprehensive/${encodeURIComponent(drugName)}`,
+    FDA_APPROVALS: `${API_BASE_URL}/intelligence/fda/approvals`,
+    SAFETY_SIGNALS: (drugName: string) => `${API_BASE_URL}/intelligence/safety/signals/${encodeURIComponent(drugName)}`,
+    LITERATURE_SENTIMENT: (drugName: string) => `${API_BASE_URL}/intelligence/literature/sentiment/${encodeURIComponent(drugName)}`,
+    TRIAL_SUCCESS_PREDICTION: `${API_BASE_URL}/intelligence/trials/predict-success`,
+    TRIAL_TIMELINE: (nctId: string) => `${API_BASE_URL}/intelligence/trials/timeline/${nctId}`,
+    COMPETITIVE_LANDSCAPE: `${API_BASE_URL}/intelligence/trials/competitive-landscape`,
+    MOLECULAR_TARGETS: (drugName: string) => `${API_BASE_URL}/intelligence/molecular/targets/${encodeURIComponent(drugName)}`,
+  },
+  
   // Financial Modeling
   FINANCIALS: {
     OVERVIEW: `${API_BASE_URL}/financials/overview`,
