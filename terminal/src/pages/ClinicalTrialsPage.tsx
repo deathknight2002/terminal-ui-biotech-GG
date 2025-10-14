@@ -4,6 +4,7 @@ import {
   ClinicalTrialsTimeline,
   type ClinicalTrial
 } from '../../../frontend-components/src/biotech';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 
 // Mock data for sophisticated trials display
 const DEFAULT_TRIALS: ClinicalTrial[] = [
@@ -59,11 +60,7 @@ const DEFAULT_TRIALS: ClinicalTrial[] = [
 
 const fetchTrialsData = async () => {
   try {
-    const response = await fetch('http://localhost:3001/api/biotech/trials');
-    if (!response.ok) {
-      return DEFAULT_TRIALS;
-    }
-    const data = await response.json();
+    const data = await apiFetch<{ trials: ClinicalTrial[] }>(API_ENDPOINTS.BIOTECH.TRIALS);
     return data.trials || DEFAULT_TRIALS;
   } catch {
     console.log('Backend unavailable, using default trials data');

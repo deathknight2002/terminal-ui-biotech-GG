@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import './CatalystCalendarPage.css';
 
 interface CatalystEvent {
@@ -37,10 +38,8 @@ export function CatalystCalendarPage() {
       setLoading(true);
       const fromDate = `${selectedMonth}-01`;
       const toDate = `${selectedMonth}-31`;
-      const response = await fetch(
-        `http://localhost:8000/api/v1/catalysts/calendar?from_date=${fromDate}&to_date=${toDate}`
-      );
-      const data = await response.json();
+      const url = `${API_ENDPOINTS.CATALYSTS.CALENDAR}?from_date=${fromDate}&to_date=${toDate}`;
+      const data = await apiFetch<{ events: CatalystEvent[] }>(url);
       setEvents(data.events || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load catalysts');

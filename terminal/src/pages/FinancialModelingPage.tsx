@@ -7,6 +7,7 @@ import type {
   Asset,
   FinancialProjection
 } from '../../../frontend-components/src/types/biotech';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 
 // Sample sophisticated biotech asset for financial modeling
 const SAMPLE_ASSET: Asset = {
@@ -93,11 +94,9 @@ const SAMPLE_PROJECTION: FinancialProjection = {
 
 const fetchFinancialData = async () => {
   try {
-    const response = await fetch('http://localhost:3001/api/biotech/financial-models');
-    if (!response.ok) {
-      return { asset: SAMPLE_ASSET, projection: SAMPLE_PROJECTION };
-    }
-    const data = await response.json();
+    const data = await apiFetch<{ asset: Asset; projection: FinancialProjection }>(
+      API_ENDPOINTS.BIOTECH.FINANCIAL_MODELS
+    );
     return data || { asset: SAMPLE_ASSET, projection: SAMPLE_PROJECTION };
   } catch {
     console.log('Backend unavailable, using sophisticated sample data');

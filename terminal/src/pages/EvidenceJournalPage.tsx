@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
 import { RefreshModeToggle } from '../../../frontend-components/src/terminal/molecules/RefreshModeToggle/RefreshModeToggle';
 import type { RefreshMode } from '../../../src/types/biotech';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import './EvidenceJournalPage.css';
 
 /**
@@ -30,7 +31,10 @@ export function EvidenceJournalPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [refreshMode, setRefreshMode] = useState<RefreshMode>('manual');
-  const [lastRefreshed] = useState<string>(new Date().toISOString());
+  const [lastRefreshed, setLastRefreshed] = useState<string>(new Date().toISOString());
+  const [evidenceData, setEvidenceData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Determine active tab from route
   const getActiveTabFromRoute = (): 'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal' => {
@@ -43,6 +47,26 @@ export function EvidenceJournalPage() {
   };
 
   const [activeTab, setActiveTab] = useState<'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal'>(getActiveTabFromRoute());
+
+  // Fetch evidence journal data from backend
+  useEffect(() => {
+    const fetchEvidenceData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await apiFetch(API_ENDPOINTS.EVIDENCE.JOURNAL);
+        setEvidenceData(data);
+        setLastRefreshed(new Date().toISOString());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load evidence data');
+        console.error('Error loading evidence journal:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvidenceData();
+  }, []);
 
   // Update active tab when route changes
   useEffect(() => {
@@ -112,18 +136,24 @@ export function EvidenceJournalPage() {
       </div>
 
       <div className="journal-content">
-        {activeTab === 'today' && <TodaysEvidenceView refreshMode={refreshMode} />}
-        {activeTab === 'catalysts' && <CatalystBoardView />}
-        {activeTab === 'moa' && <MoaExplorerView />}
-        {activeTab === 'scorecard' && <CompanyScorecardView />}
-        {activeTab === 'journal' && <JournalNotebookView />}
+        {loading && <div className="loading-message">Loading evidence data...</div>}
+        {error && <div className="error-message">Error: {error}</div>}
+        {!loading && !error && (
+          <>
+            {activeTab === 'today' && <TodaysEvidenceView refreshMode={refreshMode} evidenceData={evidenceData} />}
+            {activeTab === 'catalysts' && <CatalystBoardView evidenceData={evidenceData} />}
+            {activeTab === 'moa' && <MoaExplorerView evidenceData={evidenceData} />}
+            {activeTab === 'scorecard' && <CompanyScorecardView evidenceData={evidenceData} />}
+            {activeTab === 'journal' && <JournalNotebookView evidenceData={evidenceData} />}
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 // Today's Evidence View
-function TodaysEvidenceView({ refreshMode }: { refreshMode: RefreshMode }) {
+function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: RefreshMode; evidenceData: any }) {
   return (
     <div className="todays-evidence-view">
       <Panel title="TODAY'S EVIDENCE" cornerBrackets>
@@ -188,7 +218,7 @@ function TodaysEvidenceView({ refreshMode }: { refreshMode: RefreshMode }) {
 }
 
 // Catalyst Board View
-function CatalystBoardView() {
+function CatalystBoardView({ evidenceData }: { evidenceData: any }) {
   return (
     <div className="catalyst-board-view">
       <Panel title="CATALYST BOARD" subtitle="Next 90-180 days" cornerBrackets>

@@ -2,10 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
 import { MetricCard } from '../../../frontend-components/src/terminal/molecules/MetricCard/MetricCard';
+import { API_CONFIG } from '../config/api';
 import styles from './EpidemiologyPage.module.css';
 
-// Backend API URL
-const API_URL = 'http://localhost:3001/api';
+// Backend API URL (using Python FastAPI backend)
+const API_URL = `${API_CONFIG.BASE_URL}/api`;
 
 // Fetch disease data from backend
 const fetchDiseaseData = async (diseaseId?: string) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import './CompetitorsPage.css';
 
 interface CompanyComparison {
@@ -36,8 +37,8 @@ export function CompetitorsPage() {
   const fetchComparisons = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/api/v1/competition/compare?companies=pfizer,moderna,biontech,regeneron,gilead,abbvie');
-      const data = await response.json();
+      const url = `${API_ENDPOINTS.COMPETITION.COMPARE}?companies=pfizer,moderna,biontech,regeneron,gilead,abbvie`;
+      const data = await apiFetch<{ comparisons: CompanyComparison[] }>(url);
       setCompanies(data.comparisons || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load comparisons');

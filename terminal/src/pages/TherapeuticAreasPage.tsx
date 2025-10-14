@@ -13,6 +13,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { TherapeuticAreaRadarChart } from '../../../src/components/visualizations/TherapeuticAreaRadarChart/TherapeuticAreaRadarChart';
+import { API_ENDPOINTS, apiFetch } from '../config/api';
 import styles from './TherapeuticAreasPage.module.css';
 
 interface TherapeuticArea {
@@ -67,15 +68,11 @@ export const TherapeuticAreasPage: React.FC = () => {
     
     try {
       // Fetch all therapeutic areas
-      const areasResponse = await fetch('http://localhost:8000/api/v1/therapeutic-areas/areas');
-      if (!areasResponse.ok) throw new Error('Failed to fetch therapeutic areas');
-      const areasData = await areasResponse.json();
+      const areasData = await apiFetch<{ areas: TherapeuticArea[] }>(API_ENDPOINTS.THERAPEUTIC_AREAS.LIST);
       setAreas(areasData.areas);
 
       // Fetch radar chart comparison data
-      const radarResponse = await fetch('http://localhost:8000/api/v1/therapeutic-areas/areas/compare/radar');
-      if (!radarResponse.ok) throw new Error('Failed to fetch radar data');
-      const radarData = await radarResponse.json();
+      const radarData = await apiFetch<RadarChartData>(API_ENDPOINTS.THERAPEUTIC_AREAS.COMPARE_RADAR);
       setRadarData(radarData);
       
       setLastRefreshed(new Date());
