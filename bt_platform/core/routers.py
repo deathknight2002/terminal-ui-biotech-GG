@@ -5,7 +5,7 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol
+from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol, fda, trials, research
 
 # Main API router
 api_router = APIRouter()
@@ -124,4 +124,25 @@ api_router.include_router(
 api_router.include_router(
     kol.router,
     tags=["kol"]
+)
+
+# FDA Intelligence endpoints
+api_router.include_router(
+    fda.router,
+    prefix="/fda",
+    tags=["fda-intelligence"]
+)
+
+# Clinical Trials Intelligence endpoints
+api_router.include_router(
+    trials.router,
+    prefix="/trials",
+    tags=["clinical-trials"]
+)
+
+# Research Intelligence endpoints (PubMed)
+api_router.include_router(
+    research.router,
+    prefix="/research",
+    tags=["research-intelligence"]
 )
