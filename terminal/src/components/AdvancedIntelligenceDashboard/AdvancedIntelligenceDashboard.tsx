@@ -21,16 +21,6 @@ interface SafetySignal {
   top_reactions: Array<{ reaction: string; count: number }>;
 }
 
-interface LiteratureSentiment {
-  drug: string;
-  total_analyzed: number;
-  sentiment: string;
-  positive_articles: number;
-  negative_articles: number;
-  neutral_articles: number;
-  confidence: number;
-}
-
 interface ComprehensiveIntelligence {
   drug_name: string;
   analysis_date: string;
