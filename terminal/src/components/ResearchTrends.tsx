@@ -244,7 +244,7 @@ export const ResearchTrends: React.FC = () => {
                         <td className="p-3 text-center">
                           {topic.is_accelerating ? (
                             <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded text-xs font-mono">
-                              🔥 ACCELERATING
+                              <span role="img" aria-label="Accelerating trend">🔥</span> ACCELERATING
                             </span>
                           ) : (
                             <span className="px-2 py-1 bg-blue-500/20 text-blue-500 rounded text-xs font-mono">
