@@ -5,6 +5,8 @@ import com.biotech.kol.scrapers.BaseKOLScraper;
 import com.biotech.kol.scrapers.BioPharmCatalystScraper;
 import com.biotech.kol.scrapers.KOLScraper;
 import com.biotech.kol.scrapers.SeekingAlphaBiotechScraper;
+import com.biotech.kol.scrapers.StockTwitsScraper;
+import com.biotech.kol.scrapers.TwitterBiotechScraper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -35,12 +37,15 @@ public class Main {
         // Initialize all scrapers
         this.scrapers = Arrays.asList(
             new BioPharmCatalystScraper(),
-            new SeekingAlphaBiotechScraper()
+            new SeekingAlphaBiotechScraper(),
+            new StockTwitsScraper(),
+            new TwitterBiotechScraper()
             // Add more scrapers here:
-            // new TwitterBiotechScraper(),
             // new LinkedInBiotechScraper(),
             // new FDAAdvisoryCommitteeScraper(),
             // new PubMedKOLScraper(),
+            // new ClinicalTrialsInvestigatorScraper(),
+            // new ConferenceSpeakerScraper(),
             // etc.
         );
         
