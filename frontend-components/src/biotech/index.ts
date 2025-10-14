@@ -46,3 +46,6 @@ export type {
   CatalystScoringRadarProps,
   CatalystScore
 } from './organisms/CatalystScoringRadar';
+
+export { KOLTracker } from './organisms/KOLTracker';
+export type { default as KOLTrackerProps } from './organisms/KOLTracker';
