@@ -59,11 +59,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Add caching middleware for manual-refresh model
 # Implements Cache-Control headers and conditional requests (ETag/Last-Modified)
+# NOTE: Must be added BEFORE GZipMiddleware so it sees uncompressed content
 app.add_middleware(CachingMiddleware, default_ttl=1800)  # 30 minutes default
+
+# Add GZip compression after caching middleware
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 # Health check endpoint

@@ -729,11 +729,11 @@ class CatalystEventCreateContract(BaseModel):
         use_enum_values = True
     
     @model_validator(mode="after")
-    def validate_date_window(cls, values):
+    def validate_date_window(self):
         """Validate event window dates"""
-        start = values.event_window_start
-        end = values.event_window_end
-        expected = values.expected_date
+        start = self.event_window_start
+        end = self.event_window_end
+        expected = self.expected_date
         
         if start and end and start > end:
             raise ValueError('event_window_start must be <= event_window_end')
@@ -743,6 +743,8 @@ class CatalystEventCreateContract(BaseModel):
         
         if expected and end and expected > end:
             raise ValueError('expected_date must be within window')
+        
+        return self
         
         return values
 

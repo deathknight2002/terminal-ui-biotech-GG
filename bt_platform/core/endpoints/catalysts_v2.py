@@ -58,7 +58,14 @@ def parse_quarter(quarter_str: str) -> tuple[date, date]:
     if 'Q' in quarter_str:
         parts = quarter_str.replace('Q', '').replace('-', ' ').split()
         if len(parts) == 2:
-            q, year = int(parts[0]), int(parts[1])
+            # Determine which part is the quarter (1-4) and which is the year (20XX)
+            part0, part1 = int(parts[0]), int(parts[1])
+            if 1 <= part0 <= 4:
+                q, year = part0, part1
+            elif 1 <= part1 <= 4:
+                q, year = part1, part0
+            else:
+                raise ValueError(f"Invalid quarter format: {quarter_str}")
         else:
             raise ValueError(f"Invalid quarter format: {quarter_str}")
     else:

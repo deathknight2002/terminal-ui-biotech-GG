@@ -1016,9 +1016,14 @@ class KOLAlgorithmRun(Base):
 async def init_db():
     """Initialize database tables"""
     try:
-        # Create all tables
+        # Create all tables from database.py Base
         Base.metadata.create_all(bind=engine)
-        logger.info("✅ Database tables created successfully")
+        logger.info("✅ Database tables from database.py created successfully")
+        
+        # Also create tables from schema.py Base (for CatalystEvent, etc.)
+        from .schema import Base as SchemaBase
+        SchemaBase.metadata.create_all(bind=engine)
+        logger.info("✅ Database tables from schema.py created successfully")
         
         # Seed with sample data if empty
         from .seed_data import seed_database
