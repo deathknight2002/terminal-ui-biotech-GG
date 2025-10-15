@@ -153,6 +153,7 @@ export function EvidenceJournalPage() {
 }
 
 // Today's Evidence View
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: RefreshMode; evidenceData: any }) {
   return (
     <div className="todays-evidence-view">
@@ -218,6 +219,7 @@ function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: Refres
 }
 
 // Catalyst Board View
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function CatalystBoardView({ evidenceData }: { evidenceData: any }) {
   return (
     <div className="catalyst-board-view">
