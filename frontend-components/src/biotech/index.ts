@@ -48,7 +48,7 @@ export type {
 } from './organisms/CatalystScoringRadar';
 
 export { KOLTracker } from './organisms/KOLTracker';
-export type { default as KOLTrackerProps } from './organisms/KOLTracker';
+export type { KOLTrackerProps } from './organisms/KOLTracker/KOLTracker';
 
 // ML/AI Components - Advanced Analytics
 export { ABTestingDashboard } from './organisms/ABTestingDashboard';

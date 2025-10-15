@@ -109,13 +109,39 @@ See [docs/IOS_PWA_GUIDE.md](docs/IOS_PWA_GUIDE.md) for detailed iOS installation
 ✅ **Offline app shell** - Cached static assets work offline  
 ✅ **Service worker** - Static assets only, no dynamic data caching
 
+### Native iOS App (Personal Use)
+
+For personal use on your iPhone/iPad, we've set up **Capacitor** to build a native iOS app:
+
+**Quick Start:**
+```bash
+npm run build:mobile        # Build web assets
+cd mobile
+npm run cap:open:ios        # Open in Xcode
+# Select your device and click Run (▶)
+```
+
+**Features:**
+- ✅ Native iOS app experience
+- ✅ No App Store submission required for personal use
+- ✅ Install directly on your device via Xcode
+- ✅ Same functionality as PWA but with native wrapper
+- ✅ Full access to device capabilities if needed
+
+**Complete Setup Guide**: [docs/IOS_NATIVE_APP_GUIDE.md](docs/IOS_NATIVE_APP_GUIDE.md)
+
+**Requirements:**
+- macOS with Xcode 14.0+
+- Apple ID (free, no developer membership required for personal use)
+- iOS device running iOS 14.0+
+
 ### Optional: Native App Wrappers
 
-For App Store distribution, wrap with:
-- **Capacitor** (iOS/Android) - See `/mobile` directory
+For App Store distribution or advanced native features:
+- **Capacitor** (iOS/Android) - Already configured in `/mobile` directory
 - **SwiftUI + WKWebView** - Custom native shell
 
-See [docs/IOS_PWA_GUIDE.md](docs/IOS_PWA_GUIDE.md) for Capacitor and SwiftUI setup instructions.
+See [docs/IOS_NATIVE_APP_GUIDE.md](docs/IOS_NATIVE_APP_GUIDE.md) for Capacitor setup and [docs/IOS_PWA_GUIDE.md](docs/IOS_PWA_GUIDE.md) for PWA alternative.
 
 ## � Platform Architecture
 
