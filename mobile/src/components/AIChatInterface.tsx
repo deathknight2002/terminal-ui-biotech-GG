@@ -1,4 +1,5 @@
 import { FC, useState, useRef, useEffect } from 'react';
+import { useHapticFeedback } from '../hooks/useHapticFeedback';
 import './AIChatInterface.css';
 
 export interface ChatMessage {
@@ -27,6 +28,7 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { triggerHaptic } = useHapticFeedback();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -37,15 +39,22 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
+    await triggerHaptic('light');
     const message = inputValue.trim();
     setInputValue('');
     await onSendMessage(message);
   };
 
-  const handleVoiceInput = () => {
+  const handleVoiceInput = async () => {
+    await triggerHaptic('medium');
     // Placeholder for voice input - would use Web Speech API or Capacitor plugin
     console.log('Voice input requested');
     // TODO: Implement speech-to-text
+  };
+
+  const handleSuggestionClick = async (suggestion: string) => {
+    await triggerHaptic('light');
+    setInputValue(suggestion);
   };
 
   const formatTime = (date: Date) => {
@@ -85,19 +94,19 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
             <div className="suggestion-chips">
               <button
                 className="suggestion-chip"
-                onClick={() => setInputValue('What are the top biotech companies by market cap?')}
+                onClick={() => handleSuggestionClick('What are the top biotech companies by market cap?')}
               >
                 Top Companies
               </button>
               <button
                 className="suggestion-chip"
-                onClick={() => setInputValue('Show me Phase III trials in oncology')}
+                onClick={() => handleSuggestionClick('Show me Phase III trials in oncology')}
               >
                 Clinical Trials
               </button>
               <button
                 className="suggestion-chip"
-                onClick={() => setInputValue('Upcoming FDA decisions this quarter')}
+                onClick={() => handleSuggestionClick('Upcoming FDA decisions this quarter')}
               >
                 FDA Catalysts
               </button>

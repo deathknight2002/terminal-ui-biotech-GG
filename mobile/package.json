@@ -20,6 +20,7 @@
     "cap:run:ios": "cap run ios"
   },
   "dependencies": {
+    "@aparajita/capacitor-biometric-auth": "^9.0.0",
     "@biotech-terminal/frontend-components": "file:../frontend-components",
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",

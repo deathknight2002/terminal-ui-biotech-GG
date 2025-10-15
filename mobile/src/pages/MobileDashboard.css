@@ -2,6 +2,55 @@
 
 .mobile-dashboard {
   width: 100%;
+  position: relative;
+}
+
+/* Pull to Refresh Indicator */
+.pull-to-refresh-indicator {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 20, 30, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 50%;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.refresh-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.refresh-arrow {
+  font-size: 24px;
+  color: #fff;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .mobile-dashboard-header {

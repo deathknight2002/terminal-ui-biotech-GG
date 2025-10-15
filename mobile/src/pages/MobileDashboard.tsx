@@ -1,6 +1,8 @@
 import { FC, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InteractiveStockChart } from '../components/InteractiveStockChart';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import { useHapticFeedback } from '../hooks/useHapticFeedback';
 import './MobileDashboard.css';
 
 // Sample data for dashboard metrics
@@ -42,7 +44,20 @@ const generatePortfolioData = () => {
 export const MobileDashboard: FC = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [portfolioData] = useState(() => generatePortfolioData());
+  const [portfolioData, setPortfolioData] = useState(() => generatePortfolioData());
+  const { triggerHaptic } = useHapticFeedback();
+
+  // Pull to refresh functionality
+  const handleRefresh = async () => {
+    await triggerHaptic('medium');
+    // Simulate data refresh
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setPortfolioData(generatePortfolioData());
+    setCurrentTime(new Date());
+    await triggerHaptic('success');
+  };
+
+  const { isRefreshing, pullDistance } = usePullToRefresh(handleRefresh);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -52,12 +67,35 @@ export const MobileDashboard: FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleCompanyClick = () => {
+  const handleCompanyClick = async () => {
+    await triggerHaptic('light');
     navigate('/company/VRTX');
+  };
+
+  const handleChatClick = async () => {
+    await triggerHaptic('light');
+    navigate('/chat');
   };
 
   return (
     <div className="mobile-dashboard">
+      {/* Pull to Refresh Indicator */}
+      {pullDistance > 0 && (
+        <div
+          className="pull-to-refresh-indicator"
+          style={{
+            opacity: Math.min(pullDistance / 80, 1),
+            transform: `translateY(${Math.min(pullDistance, 80)}px)`,
+          }}
+        >
+          {isRefreshing ? (
+            <div className="refresh-spinner" />
+          ) : (
+            <div className="refresh-arrow">↓</div>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <div className="mobile-dashboard-header">
         <div className="mobile-page-title">Dashboard</div>
@@ -139,7 +177,7 @@ export const MobileDashboard: FC = () => {
             <div className="mobile-action-icon">🏢</div>
             <div className="mobile-action-label">Companies</div>
           </button>
-          <button className="mobile-action-button ios-touch-feedback" onClick={() => navigate('/chat')}>
+          <button className="mobile-action-button ios-touch-feedback" onClick={handleChatClick}>
             <div className="mobile-action-icon">🤖</div>
             <div className="mobile-action-label">AI Assistant</div>
           </button>
