@@ -78,7 +78,7 @@ async def get_price_targets(
     return {
         "ticker": ticker,
         "count": len(targets),
-        "targets": [
+        "price_targets": [
             {
                 "id": t.id,
                 "source": t.source,
@@ -111,7 +111,7 @@ async def create_price_target(
     db.commit()
     db.refresh(target)
     
-    return {"id": target.id, "status": "created"}
+    return {"id": target.id, "status": "success"}
 
 
 @router.get("/consensus")
@@ -133,7 +133,7 @@ async def get_consensus_estimates(
         "ticker": ticker,
         "metric": metric,
         "count": len(estimates),
-        "estimates": [
+        "consensus_estimates": [
             {
                 "id": e.id,
                 "ticker": e.ticker,

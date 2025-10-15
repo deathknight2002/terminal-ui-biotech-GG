@@ -54,8 +54,14 @@ async def get_loe_timeline(
         
         timeline_data[year]["total_revenue_at_risk"] += expiry.peak_revenue_before_loe or 0
     
+    # Flatten all events for backward compatibility
+    all_events = []
+    for year_data in timeline_data.values():
+        all_events.extend(year_data["events"])
+    
     return {
         "timeline": list(timeline_data.values()),
+        "events": all_events,  # Add flattened events list for compatibility
         "total_events": len(expiries),
         "filters": {
             "ticker": ticker,
