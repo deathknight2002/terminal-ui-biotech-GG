@@ -1064,7 +1064,7 @@ export interface AppModule {
   id: string;
   name: string;
   description: string;
-  category: "news" | "science" | "catalysts" | "trials" | "companies" | "analytics" | "data" | "tools";
+  category: "news" | "science" | "catalysts" | "trials" | "companies" | "analytics" | "data" | "tools" | "regulatory";
   icon: string;
   path: string;
   functionCode?: string;
