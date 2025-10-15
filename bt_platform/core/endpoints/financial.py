@@ -5,17 +5,19 @@ Comprehensive financial modeling endpoints for valuation, consensus estimates,
 price targets, LoE tracking, and report generation.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from sqlalchemy.orm import Session
-from typing import Dict, List, Any, Optional
 from datetime import datetime
-import json
+from typing import Any, Dict, Optional
 
-from ..database import (
-    get_db, PriceTarget, ConsensusEstimate, RevenueLine,
-    PatentExpiry, ValuationRun, ReportArtifact
-)
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from sqlalchemy.orm import Session
+
 from ...logic.valuation import ValuationEngine
+from ..database import (
+    ConsensusEstimate,
+    PriceTarget,
+    ValuationRun,
+    get_db,
+)
 
 router = APIRouter()
 valuation_engine = ValuationEngine()
@@ -32,14 +34,14 @@ async def get_financial_overview(ticker: Optional[str] = None, db: Session = Dep
     last_run = db.query(ValuationRun).filter(
         ValuationRun.ticker == ticker if ticker else True
     ).order_by(ValuationRun.run_timestamp.desc()).first()
-    
+
     # Get price targets
     price_targets = db.query(PriceTarget).filter(
         PriceTarget.ticker == ticker if ticker else True
     ).order_by(PriceTarget.date.desc()).limit(10).all()
-    
+
     pt_values = [pt.price_target for pt in price_targets]
-    
+
     return {
         "ticker": ticker,
         "last_refresh": datetime.utcnow().isoformat(),
@@ -72,9 +74,9 @@ async def get_price_targets(
     query = db.query(PriceTarget)
     if ticker:
         query = query.filter(PriceTarget.ticker == ticker)
-    
+
     targets = query.order_by(PriceTarget.date.desc()).limit(limit).all()
-    
+
     return {
         "ticker": ticker,
         "count": len(targets),
@@ -106,11 +108,11 @@ async def create_price_target(
         rationale=data.get("rationale"),
         currency=data.get("currency", "USD")
     )
-    
+
     db.add(target)
     db.commit()
     db.refresh(target)
-    
+
     return {"id": target.id, "status": "created"}
 
 
@@ -126,9 +128,9 @@ async def get_consensus_estimates(
         query = query.filter(ConsensusEstimate.ticker == ticker)
     if metric:
         query = query.filter(ConsensusEstimate.metric == metric)
-    
+
     estimates = query.all()
-    
+
     return {
         "ticker": ticker,
         "metric": metric,
@@ -206,7 +208,7 @@ async def run_valuation(
             financial_assumptions=data["financial_assumptions"],
             loe_events=data.get("loe_events")
         )
-        
+
         # Save to database
         run = ValuationRun(
             ticker=data["ticker"],
@@ -217,11 +219,11 @@ async def run_valuation(
             version=results["version"],
             user=data.get("user", "system")
         )
-        
+
         db.add(run)
         db.commit()
         db.refresh(run)
-        
+
         return {
             "status": "success",
             "run_id": run.id,
@@ -241,9 +243,9 @@ async def get_valuation_audit(
     query = db.query(ValuationRun)
     if ticker:
         query = query.filter(ValuationRun.ticker == ticker)
-    
+
     runs = query.order_by(ValuationRun.run_timestamp.desc()).limit(limit).all()
-    
+
     return {
         "ticker": ticker,
         "count": len(runs),

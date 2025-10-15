@@ -4,43 +4,42 @@ Admin API Endpoints
 Manual data ingestion and administrative operations.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from typing import Optional, List
-from datetime import datetime, timedelta
-import logging
 import hashlib
+import logging
 import random
-import asyncio
-
-from ..database import (
-    get_db,
-    Article,
-    Sentiment,
-    Catalyst,
-    Therapeutic,
-    Company,
-    EpidemiologyDisease,
-    DataIngestionLog
-)
 
 # Import scraper framework
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from ..database import (
+    Article,
+    Catalyst,
+    Company,
+    DataIngestionLog,
+    Sentiment,
+    get_db,
+)
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from bt_platform.scrapers.base.registry import ScraperRegistry
 from bt_platform.scrapers.sites import (
-    FierceScraper,
     BusinessWireScraper,
-    GlobeNewswireScraper,
-    PRNewswireScraper,
-    FDAScraper,
-    EMAScraper,
-    MHRAScraper,
     ClinicalTrialsScraper,
     EDGARScraper,
+    EMAScraper,
+    FDAScraper,
+    FierceScraper,
+    GlobeNewswireScraper,
+    MHRAScraper,
+    PRNewswireScraper,
 )
 
 logger = logging.getLogger(__name__)
@@ -67,7 +66,7 @@ class IngestRequest(BaseModel):
     sources: List[str]  # List of source keys
     since: Optional[str] = "7d"  # Time window: "7d", "2024-01-01", etc.
     limit: Optional[int] = 50  # Max items per source
-    
+
 
 class ScraperPreviewRequest(BaseModel):
     source: str
@@ -84,7 +83,7 @@ async def manual_ingest(
     Performs on-demand data pulls only. No background jobs or cron schedulers.
     """
     start_time = datetime.utcnow()
-    
+
     # Parse since parameter
     since_date = None
     if request.since:
@@ -99,7 +98,7 @@ async def manual_ingest(
                 since_date = datetime.fromisoformat(request.since)
             except ValueError:
                 raise HTTPException(status_code=400, detail=f"Invalid since format: {request.since}")
-    
+
     # Create ingestion log
     log = DataIngestionLog(
         pipeline_name="scraper_ingest",
@@ -109,7 +108,7 @@ async def manual_ingest(
     )
     db.add(log)
     db.commit()
-    
+
     try:
         results = {
             "sources": request.sources,
@@ -120,10 +119,10 @@ async def manual_ingest(
             "by_source": {},
             "errors": []
         }
-        
+
         # Load registry
         registry = ScraperRegistry()
-        
+
         # Run scrapers for each source
         for source_key in request.sources:
             source_result = {
@@ -132,7 +131,7 @@ async def manual_ingest(
                 "updated": 0,
                 "errors": []
             }
-            
+
             try:
                 # Get scraper class
                 scraper_class = SCRAPER_MAP.get(source_key.lower())
@@ -140,7 +139,7 @@ async def manual_ingest(
                     source_result["errors"].append(f"Unknown source: {source_key}")
                     results["by_source"][source_key] = source_result
                     continue
-                
+
                 # Get config
                 config = registry.get_scraper(source_key.lower())
                 if not config:
@@ -154,7 +153,7 @@ async def manual_ingest(
                         'max_concurrent': config.max_concurrent,
                         'user_agent': config.user_agent,
                     }
-                
+
                 # Create and run scraper
                 scraper = scraper_class(config_dict)
                 scraper_results = await scraper.run(
@@ -162,7 +161,7 @@ async def manual_ingest(
                     limit=request.limit,
                     dry_run=False,
                 )
-                
+
                 # Process results and insert into database
                 for scraper_result in scraper_results:
                     try:
@@ -170,7 +169,7 @@ async def manual_ingest(
                         existing = db.query(Article).filter(
                             Article.hash == scraper_result.hash
                         ).first()
-                        
+
                         if existing:
                             # Update existing article
                             existing.ingested_at = datetime.utcnow()
@@ -189,28 +188,28 @@ async def manual_ingest(
                             )
                             db.add(article)
                             db.flush()
-                            
+
                             source_result["inserted"] += 1
-                        
+
                         source_result["processed"] += 1
-                        
+
                     except Exception as e:
                         logger.error(f"Error processing result: {e}")
                         source_result["errors"].append(str(e))
-                
+
                 db.commit()
-                
+
             except Exception as e:
                 logger.error(f"Error scraping {source_key}: {e}")
                 source_result["errors"].append(str(e))
-            
+
             results["by_source"][source_key] = source_result
             results["records_processed"] += source_result["processed"]
             results["records_inserted"] += source_result["inserted"]
             results["records_updated"] += source_result["updated"]
             if source_result["errors"]:
                 results["errors"].extend([f"{source_key}: {e}" for e in source_result["errors"]])
-        
+
         # Update log
         end_time = datetime.utcnow()
         log.end_time = end_time
@@ -219,21 +218,21 @@ async def manual_ingest(
         log.records_inserted = results["records_inserted"]
         log.records_updated = results["records_updated"]
         log.execution_metadata = results
-        
+
         db.commit()
-        
+
         results["completed_at"] = end_time.isoformat()
         results["duration_seconds"] = (end_time - start_time).total_seconds()
-        
+
         return results
-        
+
     except Exception as e:
         logger.error(f"Ingestion error: {e}")
         log.status = "failed"
         log.end_time = datetime.utcnow()
         log.error_message = str(e)
         db.commit()
-        
+
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
 
 
@@ -251,7 +250,7 @@ async def scrape_preview(
         scraper_class = SCRAPER_MAP.get(source.lower())
         if not scraper_class:
             raise HTTPException(status_code=404, detail=f"Unknown source: {source}")
-        
+
         # Get config
         registry = ScraperRegistry()
         config = registry.get_scraper(source.lower())
@@ -265,7 +264,7 @@ async def scrape_preview(
                 'max_rps': config.max_requests_per_second,
                 'user_agent': config.user_agent,
             }
-        
+
         # Create scraper and run
         scraper = scraper_class(config_dict)
         results = await scraper.run(
@@ -274,14 +273,14 @@ async def scrape_preview(
             dry_run=True,
             save_fixture=True,
         )
-        
+
         if not results:
             return {
                 "error": "No results returned from scraper"
             }
-        
+
         result = results[0]
-        
+
         return {
             "normalized": {
                 "content_type": result.content_type.value,
@@ -298,7 +297,7 @@ async def scrape_preview(
             "hash": result.hash,
             "fingerprint": result.fingerprint,
         }
-        
+
     except Exception as e:
         logger.error(f"Preview error: {e}")
         raise HTTPException(status_code=500, detail=f"Preview failed: {str(e)}")
@@ -316,21 +315,21 @@ async def scrape_stats(db: Session = Depends(get_db)):
             latest_article = db.query(Article).filter(
                 Article.source == source_key
             ).order_by(Article.ingested_at.desc()).first()
-            
+
             if latest_article:
                 last_refresh[source_key] = latest_article.ingested_at.isoformat()
-        
+
         # Get article counts per source
         source_counts = {}
         for source_key in SCRAPER_MAP.keys():
             count = db.query(Article).filter(Article.source == source_key).count()
             source_counts[source_key] = count
-        
+
         # Get recent ingestion logs
         recent_logs = db.query(DataIngestionLog).filter(
             DataIngestionLog.pipeline_name == 'scraper_ingest'
         ).order_by(DataIngestionLog.start_time.desc()).limit(10).all()
-        
+
         # Calculate throughput (items/minute) from recent logs
         throughput = {}
         for source_key in SCRAPER_MAP.keys():
@@ -343,7 +342,7 @@ async def scrape_stats(db: Session = Depends(get_db)):
                 ) / len(source_logs)
                 if avg_duration > 0:
                     throughput[source_key] = round(avg_items / avg_duration, 2)
-        
+
         # Calculate dedupe rate (percentage of duplicates)
         dedupe_rate = {}
         for source_key in SCRAPER_MAP.keys():
@@ -355,7 +354,7 @@ async def scrape_stats(db: Session = Depends(get_db)):
                     dedupe_rate[source_key] = round(
                         (total_processed - total_inserted) / total_processed, 2
                     )
-        
+
         return {
             "last_refresh": last_refresh,
             "source_counts": source_counts,
@@ -364,7 +363,7 @@ async def scrape_stats(db: Session = Depends(get_db)):
             "total_articles": db.query(Article).count(),
             "available_sources": list(SCRAPER_MAP.keys()),
         }
-        
+
     except Exception as e:
         logger.error(f"Stats error: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get stats: {str(e)}")
@@ -378,22 +377,22 @@ async def _ingest_news(db: Session):
     processed = 0
     inserted = 0
     errors = []
-    
+
     try:
         # Mock: Generate a few sample articles
         sources = ["FierceBiotech", "ScienceDaily", "BioSpace", "Endpoints News"]
-        
+
         for i in range(3):
             # Create article hash
             title = f"Breaking: New Development in Oncology Research {random.randint(1000, 9999)}"
             url = f"https://example.com/article/{random.randint(10000, 99999)}"
             content_hash = hashlib.md5(f"{title}{url}".encode()).hexdigest()
-            
+
             # Check if already exists
             existing = db.query(Article).filter(Article.hash == content_hash).first()
             if existing:
                 continue
-            
+
             article = Article(
                 title=title,
                 url=url,
@@ -406,7 +405,7 @@ async def _ingest_news(db: Session):
             )
             db.add(article)
             db.flush()
-            
+
             # Add sentiments
             for domain in ["regulatory", "clinical", "mna"]:
                 sentiment = Sentiment(
@@ -416,16 +415,16 @@ async def _ingest_news(db: Session):
                     rationale=f"Sample {domain} sentiment analysis"
                 )
                 db.add(sentiment)
-            
+
             inserted += 1
             processed += 1
-        
+
         db.commit()
-        
+
     except Exception as e:
         logger.error(f"News ingestion error: {e}")
         errors.append(str(e))
-    
+
     return {
         "processed": processed,
         "inserted": inserted,
@@ -451,15 +450,15 @@ async def _ingest_catalysts(db: Session):
     processed = 0
     inserted = 0
     errors = []
-    
+
     try:
         # Mock: Generate sample catalysts
         companies = db.query(Company).limit(3).all()
-        
+
         for company in companies:
             catalyst = Catalyst(
                 name=f"Phase II Data Readout - {company.name}",
-                title=f"Phase II Data Readout",
+                title="Phase II Data Readout",
                 company=company.name,
                 drug=f"Drug-{random.randint(100, 999)}",
                 kind="Clinical Data",
@@ -474,13 +473,13 @@ async def _ingest_catalysts(db: Session):
             db.add(catalyst)
             inserted += 1
             processed += 1
-        
+
         db.commit()
-        
+
     except Exception as e:
         logger.error(f"Catalysts ingestion error: {e}")
         errors.append(str(e))
-    
+
     return {
         "processed": processed,
         "inserted": inserted,
@@ -495,22 +494,22 @@ async def _ingest_news(db: Session):
     processed = 0
     inserted = 0
     errors = []
-    
+
     try:
         # Mock: Generate a few sample articles
         sources = ["FierceBiotech", "ScienceDaily", "BioSpace", "Endpoints News"]
-        
+
         for i in range(3):
             # Create article hash
             title = f"Breaking: New Development in Oncology Research {random.randint(1000, 9999)}"
             url = f"https://example.com/article/{random.randint(10000, 99999)}"
             content_hash = hashlib.md5(f"{title}{url}".encode()).hexdigest()
-            
+
             # Check if already exists
             existing = db.query(Article).filter(Article.hash == content_hash).first()
             if existing:
                 continue
-            
+
             article = Article(
                 title=title,
                 url=url,
@@ -523,7 +522,7 @@ async def _ingest_news(db: Session):
             )
             db.add(article)
             db.flush()
-            
+
             # Add sentiments
             for domain in ["regulatory", "clinical", "mna"]:
                 sentiment = Sentiment(
@@ -533,16 +532,16 @@ async def _ingest_news(db: Session):
                     rationale=f"Sample {domain} sentiment analysis"
                 )
                 db.add(sentiment)
-            
+
             inserted += 1
             processed += 1
-        
+
         db.commit()
-        
+
     except Exception as e:
         logger.error(f"News ingestion error: {e}")
         errors.append(str(e))
-    
+
     return {
         "processed": processed,
         "inserted": inserted,
@@ -568,15 +567,15 @@ async def _ingest_catalysts(db: Session):
     processed = 0
     inserted = 0
     errors = []
-    
+
     try:
         # Mock: Generate sample catalysts
         companies = db.query(Company).limit(3).all()
-        
+
         for company in companies:
             catalyst = Catalyst(
                 name=f"Phase II Data Readout - {company.name}",
-                title=f"Phase II Data Readout",
+                title="Phase II Data Readout",
                 company=company.name,
                 drug=f"Drug-{random.randint(100, 999)}",
                 kind="Clinical Data",
@@ -591,13 +590,13 @@ async def _ingest_catalysts(db: Session):
             db.add(catalyst)
             inserted += 1
             processed += 1
-        
+
         db.commit()
-        
+
     except Exception as e:
         logger.error(f"Catalysts ingestion error: {e}")
         errors.append(str(e))
-    
+
     return {
         "processed": processed,
         "inserted": inserted,
@@ -617,7 +616,7 @@ async def get_ingestion_history(
         logs = db.query(DataIngestionLog).order_by(
             DataIngestionLog.start_time.desc()
         ).limit(limit).all()
-        
+
         return {
             "logs": [
                 {
@@ -635,7 +634,7 @@ async def get_ingestion_history(
                 for log in logs
             ]
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching ingestion history: {e}")
         raise HTTPException(status_code=500, detail=str(e))

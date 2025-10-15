@@ -4,14 +4,15 @@ Reports and export endpoints
 Generate XLSX, PPTX, and PDF reports.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import Dict, Any, Optional
-from datetime import datetime, timedelta
 import hashlib
 import json
+from datetime import datetime, timedelta
+from typing import Any, Dict, Optional
 
-from ..database import get_db, ReportArtifact, ValuationRun
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from ..database import ReportArtifact, ValuationRun, get_db
 
 router = APIRouter()
 
@@ -34,24 +35,24 @@ async def export_report(
     template_id = data.get("template_id")
     file_type = data.get("file_type", "xlsx")
     params = data.get("params", {})
-    
+
     # Get latest valuation run for this ticker
     run = db.query(ValuationRun).filter(
         ValuationRun.ticker == ticker
     ).order_by(ValuationRun.run_timestamp.desc()).first()
-    
+
     if not run:
         raise HTTPException(status_code=404, detail="No valuation run found for ticker")
-    
+
     # Generate file (mock implementation)
     # In production, this would call actual report generators
     file_name = f"{ticker}_{template_id}_{datetime.now().strftime('%Y%m%d')}.{file_type}"
     file_path = f"/reports/{file_name}"
-    
+
     # Calculate file hash
     content = json.dumps({"run_id": run.id, "params": params})
     file_hash = hashlib.sha256(content.encode()).hexdigest()
-    
+
     # Create artifact record
     artifact = ReportArtifact(
         file_type=file_type,
@@ -65,11 +66,11 @@ async def export_report(
         expiry_date=datetime.utcnow() + timedelta(days=7),
         generated_by=data.get("user", "system")
     )
-    
+
     db.add(artifact)
     db.commit()
     db.refresh(artifact)
-    
+
     return {
         "status": "success",
         "artifact_id": artifact.id,
@@ -89,13 +90,13 @@ async def download_report(
     artifact = db.query(ReportArtifact).filter(
         ReportArtifact.file_hash == file_hash
     ).first()
-    
+
     if not artifact:
         raise HTTPException(status_code=404, detail="Report not found")
-    
+
     if artifact.expiry_date and artifact.expiry_date < datetime.utcnow():
         raise HTTPException(status_code=410, detail="Download link expired")
-    
+
     return {
         "file_path": artifact.file_path,
         "file_type": artifact.file_type,
@@ -113,16 +114,16 @@ async def list_reports(
 ) -> dict:
     """List generated reports."""
     query = db.query(ReportArtifact)
-    
+
     if ticker:
         query = query.filter(ReportArtifact.ticker == ticker)
     if template_id:
         query = query.filter(ReportArtifact.template_id == template_id)
-    
+
     artifacts = query.order_by(
         ReportArtifact.generated_at.desc()
     ).limit(limit).all()
-    
+
     return {
         "count": len(artifacts),
         "reports": [

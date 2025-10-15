@@ -12,14 +12,16 @@ Provides canonical backend storage for:
 Supports historical querying, filtering, aggregation, versioning, and linkage.
 """
 
+from datetime import datetime
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import desc, func, or_
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, or_, desc, func
-from datetime import datetime, timedelta, date
-from typing import Optional, List, Dict, Any
+
+from ..contracts import EventRelationshipContract, ScienceEventContract
 from ..database import get_db
-from ..schema import ScienceEvent, Evidence, EventRelationship
-from ..contracts import ScienceEventContract, EventRelationshipContract
+from ..schema import EventRelationship, ScienceEvent
 
 router = APIRouter()
 
@@ -61,11 +63,11 @@ async def create_science_event(
         version=1,
         is_current=True
     )
-    
+
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
-    
+
     return {
         "id": db_event.id,
         "event_type": db_event.event_type,
@@ -100,59 +102,59 @@ async def list_science_events(
     confidence/impact scores, and tags.
     """
     query = db.query(ScienceEvent)
-    
+
     # Apply filters
     if current_only:
         query = query.filter(ScienceEvent.is_current == True)
-    
+
     if event_type:
         query = query.filter(ScienceEvent.event_type == event_type)
-    
+
     if event_category:
         query = query.filter(ScienceEvent.event_category == event_category)
-    
+
     if entity_type:
         query = query.filter(ScienceEvent.entity_type == entity_type)
-    
+
     if entity_id:
         query = query.filter(ScienceEvent.entity_id == entity_id)
-    
+
     if source_type:
         query = query.filter(ScienceEvent.source_type == source_type)
-    
+
     if evidence_class:
         query = query.filter(ScienceEvent.evidence_class == evidence_class)
-    
+
     if from_date:
         from_dt = datetime.fromisoformat(from_date.replace('Z', '+00:00'))
         query = query.filter(ScienceEvent.event_date >= from_dt)
-    
+
     if to_date:
         to_dt = datetime.fromisoformat(to_date.replace('Z', '+00:00'))
         query = query.filter(ScienceEvent.event_date <= to_dt)
-    
+
     if min_confidence is not None:
         query = query.filter(ScienceEvent.confidence_score >= min_confidence)
-    
+
     if min_impact is not None:
         query = query.filter(ScienceEvent.impact_score >= min_impact)
-    
+
     if tags:
         tag_list = [t.strip() for t in tags.split(',')]
         # Filter events that have any of the specified tags
         query = query.filter(
             or_(*[ScienceEvent.tags.contains([tag]) for tag in tag_list])
         )
-    
+
     # Order by event date descending
     query = query.order_by(desc(ScienceEvent.event_date))
-    
+
     # Get total count before pagination
     total = query.count()
-    
+
     # Apply pagination
     events = query.offset(offset).limit(limit).all()
-    
+
     return {
         "events": [
             {
@@ -193,10 +195,10 @@ async def get_science_event(
     Get detailed information about a specific science event.
     """
     event = db.query(ScienceEvent).filter(ScienceEvent.id == event_id).first()
-    
+
     if not event:
         raise HTTPException(status_code=404, detail="Science event not found")
-    
+
     return {
         "id": event.id,
         "event_type": event.event_type,
@@ -244,10 +246,10 @@ async def get_event_history(
     current_event = db.query(ScienceEvent).filter(
         ScienceEvent.id == event_id
     ).first()
-    
+
     if not current_event:
         raise HTTPException(status_code=404, detail="Science event not found")
-    
+
     # If this is a version, find the root
     root_id = event_id
     while current_event.parent_version_id is not None:
@@ -255,18 +257,18 @@ async def get_event_history(
         current_event = db.query(ScienceEvent).filter(
             ScienceEvent.id == root_id
         ).first()
-    
+
     # Get all versions starting from root
     versions = []
     queue = [root_id]
     visited = set()
-    
+
     while queue:
         current_id = queue.pop(0)
         if current_id in visited:
             continue
         visited.add(current_id)
-        
+
         event = db.query(ScienceEvent).filter(ScienceEvent.id == current_id).first()
         if event:
             versions.append(event)
@@ -275,10 +277,10 @@ async def get_event_history(
                 ScienceEvent.parent_version_id == current_id
             ).all()
             queue.extend([child.id for child in children])
-    
+
     # Sort by version number
     versions.sort(key=lambda x: x.version)
-    
+
     return {
         "versions": [
             {
@@ -312,13 +314,13 @@ async def update_science_event(
         ScienceEvent.id == event_id,
         ScienceEvent.is_current == True
     ).first()
-    
+
     if not current_event:
         raise HTTPException(status_code=404, detail="Science event not found or not current")
-    
+
     # Mark current event as not current
     current_event.is_current = False
-    
+
     # Create new version
     new_event = ScienceEvent(
         event_type=event.event_type,
@@ -349,11 +351,11 @@ async def update_science_event(
         is_current=True,
         change_summary=change_summary
     )
-    
+
     db.add(new_event)
     db.commit()
     db.refresh(new_event)
-    
+
     return {
         "id": new_event.id,
         "version": new_event.version,
@@ -381,21 +383,21 @@ async def get_entity_timeline(
         ScienceEvent.entity_id == entity_id,
         ScienceEvent.is_current == True
     )
-    
+
     if from_date:
         from_dt = datetime.fromisoformat(from_date.replace('Z', '+00:00'))
         query = query.filter(ScienceEvent.event_date >= from_dt)
-    
+
     if to_date:
         to_dt = datetime.fromisoformat(to_date.replace('Z', '+00:00'))
         query = query.filter(ScienceEvent.event_date <= to_dt)
-    
+
     if event_types:
         type_list = [t.strip() for t in event_types.split(',')]
         query = query.filter(ScienceEvent.event_type.in_(type_list))
-    
+
     events = query.order_by(ScienceEvent.event_date).all()
-    
+
     return {
         "entity_type": entity_type,
         "entity_id": entity_id,
@@ -433,10 +435,10 @@ async def create_event_relationship(
     # Verify both events exist
     source = db.query(ScienceEvent).filter(ScienceEvent.id == relationship.source_event_id).first()
     target = db.query(ScienceEvent).filter(ScienceEvent.id == relationship.target_event_id).first()
-    
+
     if not source or not target:
         raise HTTPException(status_code=404, detail="One or both events not found")
-    
+
     db_rel = EventRelationship(
         source_event_id=relationship.source_event_id,
         target_event_id=relationship.target_event_id,
@@ -445,11 +447,11 @@ async def create_event_relationship(
         confidence=relationship.confidence,
         event_metadata=relationship.metadata
     )
-    
+
     db.add(db_rel)
     db.commit()
     db.refresh(db_rel)
-    
+
     return {
         "id": db_rel.id,
         "source_event_id": db_rel.source_event_id,
@@ -472,20 +474,20 @@ async def get_event_relationships(
     Returns incoming, outgoing, or both relationship directions.
     """
     query_conditions = []
-    
+
     if direction in ["incoming", "both"]:
         query_conditions.append(EventRelationship.target_event_id == event_id)
-    
+
     if direction in ["outgoing", "both"]:
         query_conditions.append(EventRelationship.source_event_id == event_id)
-    
+
     query = db.query(EventRelationship).filter(or_(*query_conditions))
-    
+
     if relationship_type:
         query = query.filter(EventRelationship.relationship_type == relationship_type)
-    
+
     relationships = query.all()
-    
+
     return {
         "event_id": event_id,
         "relationships": [
@@ -517,20 +519,20 @@ async def aggregate_events_by_type(
         ScienceEvent.event_type,
         func.count(ScienceEvent.id).label('count')
     ).filter(ScienceEvent.is_current == True)
-    
+
     if from_date:
         from_dt = datetime.fromisoformat(from_date.replace('Z', '+00:00'))
         query = query.filter(ScienceEvent.event_date >= from_dt)
-    
+
     if to_date:
         to_dt = datetime.fromisoformat(to_date.replace('Z', '+00:00'))
         query = query.filter(ScienceEvent.event_date <= to_dt)
-    
+
     if entity_type:
         query = query.filter(ScienceEvent.entity_type == entity_type)
-    
+
     results = query.group_by(ScienceEvent.event_type).all()
-    
+
     return {
         "aggregations": [
             {
@@ -554,7 +556,7 @@ async def search_science_events(
     Searches title, description, summary, and content fields.
     """
     search_pattern = f"%{q}%"
-    
+
     events = db.query(ScienceEvent).filter(
         ScienceEvent.is_current == True,
         or_(
@@ -564,7 +566,7 @@ async def search_science_events(
             ScienceEvent.content.ilike(search_pattern)
         )
     ).order_by(desc(ScienceEvent.event_date)).limit(limit).all()
-    
+
     return {
         "query": q,
         "results": [

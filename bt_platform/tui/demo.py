@@ -5,14 +5,10 @@ TUI Demo Script
 Demonstrates the Biotech Terminal TUI features for testing and screenshots.
 """
 
-import asyncio
-import sys
-from textual.app import App
-from textual.widgets import Static
 
 # Import the TUI app components
-from bt_platform.tui.services import WatchlistManager, RecentAssetsTracker
 from bt_platform.tui.helpers import get_risk_metrics
+from bt_platform.tui.services import RecentAssetsTracker, WatchlistManager
 
 
 def demo_services():
@@ -26,12 +22,12 @@ def demo_services():
     print("1. WATCHLIST MANAGER DEMO")
     print("-" * 60)
     watchlist = WatchlistManager()
-    
+
     print("Adding assets to watchlist...")
     watchlist.add("BCRX-001")
     watchlist.add("SRPT-001")
     watchlist.add("BEAM-001")
-    
+
     print(f"Current watchlist ({watchlist.count()} assets):")
     for asset in watchlist.get_all():
         print(f"  • {asset}")
@@ -41,12 +37,12 @@ def demo_services():
     print("2. RECENT ASSETS TRACKER DEMO")
     print("-" * 60)
     tracker = RecentAssetsTracker()
-    
+
     print("Viewing assets in sequence...")
     tracker.add("BCRX-001")
     tracker.add("NTLA-001")
     tracker.add("REGN-001")
-    
+
     print(f"Recent assets (last {tracker.count()}):")
     for i, asset in enumerate(tracker.get_all(), 1):
         print(f"  {i}. {asset}")
@@ -55,9 +51,9 @@ def demo_services():
     # Demo Risk Metrics
     print("3. RISK METRICS DEMO")
     print("-" * 60)
-    
+
     test_assets = ["BCRX-001", "SRPT-001", "BEAM-001"]
-    
+
     for asset_id in test_assets:
         metrics = get_risk_metrics(asset_id)
         if metrics:

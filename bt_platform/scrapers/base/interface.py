@@ -8,8 +8,8 @@ discover → fetch → parse → normalize → link → upsert
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 
 class ContentType(Enum):
@@ -30,21 +30,21 @@ class ScraperResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
     raw_html: Optional[str] = None
     fixture_path: Optional[str] = None
-    
+
     # Deduplication fields
     url: str = ""
     hash: str = ""
     fingerprint: str = ""
-    
+
     # Linking fields
     companies: List[str] = field(default_factory=list)
     diseases: List[str] = field(default_factory=list)
     catalysts: List[str] = field(default_factory=list)
-    
+
     # Quality metrics
     confidence: float = 1.0
     link_valid: bool = True
-    
+
     # Timestamps
     published_at: Optional[datetime] = None
     scraped_at: datetime = field(default_factory=datetime.utcnow)
@@ -56,12 +56,12 @@ class ScraperInterface(ABC):
     
     Pipeline: discover → fetch → parse → normalize → link → upsert
     """
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
         self.name = self.__class__.__name__
         self.source_key = self.config.get("source_key", self.name.lower())
-    
+
     @abstractmethod
     async def discover(
         self,
@@ -83,7 +83,7 @@ class ScraperInterface(ABC):
             List of URLs to scrape
         """
         pass
-    
+
     @abstractmethod
     async def fetch(
         self,
@@ -101,7 +101,7 @@ class ScraperInterface(ABC):
             List of raw responses with metadata
         """
         pass
-    
+
     @abstractmethod
     async def parse(
         self,
@@ -120,7 +120,7 @@ class ScraperInterface(ABC):
             Parsed structured data
         """
         pass
-    
+
     @abstractmethod
     async def normalize(
         self,
@@ -136,7 +136,7 @@ class ScraperInterface(ABC):
             ScraperResult with normalized data
         """
         pass
-    
+
     @abstractmethod
     async def link(
         self,
@@ -154,7 +154,7 @@ class ScraperInterface(ABC):
             ScraperResult with linked entities
         """
         pass
-    
+
     async def upsert(
         self,
         result: ScraperResult,
@@ -175,7 +175,7 @@ class ScraperInterface(ABC):
             return True
         # Actual DB logic handled by caller
         return True
-    
+
     async def run(
         self,
         since: Optional[datetime] = None,
@@ -203,43 +203,43 @@ class ScraperInterface(ABC):
             limit=limit,
             **kwargs
         )
-        
+
         if not urls:
             return []
-        
+
         # Fetch content
         raw_contents = await self.fetch(urls)
-        
+
         results = []
         for raw_content in raw_contents:
             try:
                 # Parse
                 parsed = await self.parse(raw_content)
-                
+
                 # Normalize
                 result = await self.normalize(parsed)
-                
+
                 # Link entities
                 result = await self.link(result)
-                
+
                 # Save fixture if requested
                 if save_fixture:
                     result.fixture_path = await self._save_fixture(
                         raw_content, parsed, result
                     )
-                
+
                 # Upsert
                 await self.upsert(result, dry_run=dry_run)
-                
+
                 results.append(result)
-                
+
             except Exception as e:
                 # Log error but continue processing
                 print(f"Error processing {raw_content.get('url', 'unknown')}: {e}")
                 continue
-        
+
         return results
-    
+
     async def _save_fixture(
         self,
         raw_content: Dict[str, Any],
@@ -252,18 +252,19 @@ class ScraperInterface(ABC):
         Returns:
             Path to saved fixture
         """
-        import orjson
         from pathlib import Path
-        
+
+        import orjson
+
         # Create fixture directory
         timestamp = datetime.utcnow().strftime("%Y%m%d")
         fixture_dir = Path("tmp/fixtures") / self.source_key / timestamp
         fixture_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Generate unique filename
         url_hash = result.hash or "unknown"
         fixture_file = fixture_dir / f"{url_hash}.json"
-        
+
         # Save fixture
         fixture_data = {
             "url": result.url,
@@ -276,8 +277,8 @@ class ScraperInterface(ABC):
             },
             "scraped_at": result.scraped_at.isoformat(),
         }
-        
+
         with open(fixture_file, "wb") as f:
             f.write(orjson.dumps(fixture_data, option=orjson.OPT_INDENT_2))
-        
+
         return str(fixture_file)

@@ -5,13 +5,13 @@ API endpoints for therapeutic area comparisons, science attributes,
 and spider web/radar chart visualizations.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from pydantic import BaseModel
 from typing import Dict, List, Optional
-from datetime import datetime
 
-from ..database import get_db, Company, Drug
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from ..database import get_db
 
 router = APIRouter()
 
@@ -135,7 +135,7 @@ def compare_radar(areas: List[str] = Query(..., alias="areas")):
             status_code=400,
             detail=f"Unknown areas: {', '.join(missing)}"
         )
-    
+
     return {
         "attributes": ATTRS,
         "series": [
@@ -163,13 +163,13 @@ async def get_area_companies(
     New implementations should use data/companies.yaml for company data.
     """
     area_id_upper = area_id.upper()
-    
+
     if area_id_upper not in DB:
         raise HTTPException(
             status_code=404,
             detail=f"Therapeutic area '{area_id}' not found"
         )
-    
+
     # Return empty list as this is now handled by YAML files
     return {
         "therapeutic_area": area_id_upper,

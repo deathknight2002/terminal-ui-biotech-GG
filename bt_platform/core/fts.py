@@ -4,10 +4,11 @@ Full-Text Search (FTS) Implementation
 SQLite FTS5 virtual tables for efficient full-text search.
 """
 
-from typing import List, Dict, Any, Optional
+import logging
+from typing import Any, Dict, List, Optional
+
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +19,13 @@ class FTSIndex:
     
     Creates virtual tables for efficient text search across entities.
     """
-    
+
     def __init__(self, db: Session):
         self.db = db
-    
+
     def create_indexes(self) -> None:
         """Create FTS5 virtual tables for all searchable entities."""
-        
+
         # Companies FTS index
         self.db.execute(text("""
             CREATE VIRTUAL TABLE IF NOT EXISTS companies_fts USING fts5(
@@ -37,7 +38,7 @@ class FTSIndex:
                 content_rowid='id'
             );
         """))
-        
+
         # Trials FTS index
         self.db.execute(text("""
             CREATE VIRTUAL TABLE IF NOT EXISTS trials_fts USING fts5(
@@ -51,7 +52,7 @@ class FTSIndex:
                 content_rowid='id'
             );
         """))
-        
+
         # Articles FTS index
         self.db.execute(text("""
             CREATE VIRTUAL TABLE IF NOT EXISTS articles_fts USING fts5(
@@ -63,7 +64,7 @@ class FTSIndex:
                 content_rowid='id'
             );
         """))
-        
+
         # Diseases FTS index
         self.db.execute(text("""
             CREATE VIRTUAL TABLE IF NOT EXISTS diseases_fts USING fts5(
@@ -76,7 +77,7 @@ class FTSIndex:
                 content_rowid='id'
             );
         """))
-        
+
         # Catalysts FTS index
         self.db.execute(text("""
             CREATE VIRTUAL TABLE IF NOT EXISTS catalysts_fts USING fts5(
@@ -89,7 +90,7 @@ class FTSIndex:
                 content_rowid='id'
             );
         """))
-        
+
         # Therapeutics FTS index
         self.db.execute(text("""
             CREATE VIRTUAL TABLE IF NOT EXISTS therapeutics_fts USING fts5(
@@ -103,13 +104,13 @@ class FTSIndex:
                 content_rowid='id'
             );
         """))
-        
+
         self.db.commit()
         logger.info("Created FTS5 indexes")
-    
+
     def create_triggers(self) -> None:
         """Create triggers to keep FTS indexes in sync with source tables."""
-        
+
         # Companies triggers
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS companies_ai AFTER INSERT ON companies BEGIN
@@ -117,13 +118,13 @@ class FTSIndex:
                 VALUES (new.id, new.ticker, new.name, new.description, new.therapeutic_areas);
             END;
         """))
-        
+
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS companies_ad AFTER DELETE ON companies BEGIN
                 DELETE FROM companies_fts WHERE id = old.id;
             END;
         """))
-        
+
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS companies_au AFTER UPDATE ON companies BEGIN
                 UPDATE companies_fts SET 
@@ -134,7 +135,7 @@ class FTSIndex:
                 WHERE id = old.id;
             END;
         """))
-        
+
         # Trials triggers
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS trials_ai AFTER INSERT ON clinical_trials BEGIN
@@ -142,13 +143,13 @@ class FTSIndex:
                 VALUES (new.id, new.nct_id, new.title, new.condition, new.sponsor, new.intervention);
             END;
         """))
-        
+
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS trials_ad AFTER DELETE ON clinical_trials BEGIN
                 DELETE FROM trials_fts WHERE id = old.id;
             END;
         """))
-        
+
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS trials_au AFTER UPDATE ON clinical_trials BEGIN
                 UPDATE trials_fts SET 
@@ -160,7 +161,7 @@ class FTSIndex:
                 WHERE id = old.id;
             END;
         """))
-        
+
         # Articles triggers
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS articles_ai AFTER INSERT ON articles BEGIN
@@ -168,13 +169,13 @@ class FTSIndex:
                 VALUES (new.id, new.title, new.summary, new.source);
             END;
         """))
-        
+
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS articles_ad AFTER DELETE ON articles BEGIN
                 DELETE FROM articles_fts WHERE id = old.id;
             END;
         """))
-        
+
         self.db.execute(text("""
             CREATE TRIGGER IF NOT EXISTS articles_au AFTER UPDATE ON articles BEGIN
                 UPDATE articles_fts SET 
@@ -184,10 +185,10 @@ class FTSIndex:
                 WHERE id = old.id;
             END;
         """))
-        
+
         self.db.commit()
         logger.info("Created FTS5 triggers")
-    
+
     def rebuild_index(self, table_name: str) -> None:
         """
         Rebuild FTS index for a specific table.
@@ -198,7 +199,7 @@ class FTSIndex:
         self.db.execute(text(f"INSERT INTO {table_name}({table_name}) VALUES('rebuild');"))
         self.db.commit()
         logger.info(f"Rebuilt FTS index: {table_name}")
-    
+
     def rebuild_all_indexes(self) -> None:
         """Rebuild all FTS indexes."""
         fts_tables = [
@@ -209,13 +210,13 @@ class FTSIndex:
             'catalysts_fts',
             'therapeutics_fts'
         ]
-        
+
         for table in fts_tables:
             try:
                 self.rebuild_index(table)
             except Exception as e:
                 logger.warning(f"Could not rebuild {table}: {e}")
-    
+
     def optimize_indexes(self) -> None:
         """Optimize all FTS indexes."""
         fts_tables = [
@@ -226,13 +227,13 @@ class FTSIndex:
             'catalysts_fts',
             'therapeutics_fts'
         ]
-        
+
         for table in fts_tables:
             try:
                 self.db.execute(text(f"INSERT INTO {table}({table}) VALUES('optimize');"))
             except Exception as e:
                 logger.warning(f"Could not optimize {table}: {e}")
-        
+
         self.db.commit()
         logger.info("Optimized FTS indexes")
 
@@ -256,10 +257,10 @@ def search_fts(
         List of search results with scores
     """
     results = []
-    
+
     # Sanitize query for FTS5
     fts_query = query.replace('"', '""')
-    
+
     # Search companies
     if not entity_type or entity_type == 'companies':
         try:
@@ -278,7 +279,7 @@ def search_fts(
                 ORDER BY rank
                 LIMIT :limit
             """), {"query": fts_query, "limit": limit}).fetchall()
-            
+
             for row in company_results:
                 results.append({
                     "type": "company",
@@ -291,7 +292,7 @@ def search_fts(
                 })
         except Exception as e:
             logger.error(f"Error searching companies: {e}")
-    
+
     # Search trials
     if not entity_type or entity_type == 'trials':
         try:
@@ -311,7 +312,7 @@ def search_fts(
                 ORDER BY rank
                 LIMIT :limit
             """), {"query": fts_query, "limit": limit}).fetchall()
-            
+
             for row in trial_results:
                 results.append({
                     "type": "trial",
@@ -325,7 +326,7 @@ def search_fts(
                 })
         except Exception as e:
             logger.error(f"Error searching trials: {e}")
-    
+
     # Search articles
     if not entity_type or entity_type == 'articles':
         try:
@@ -346,7 +347,7 @@ def search_fts(
                 ORDER BY rank
                 LIMIT :limit
             """), {"query": fts_query, "limit": limit}).fetchall()
-            
+
             for row in article_results:
                 results.append({
                     "type": "article",
@@ -360,7 +361,7 @@ def search_fts(
                 })
         except Exception as e:
             logger.error(f"Error searching articles: {e}")
-    
+
     # Search diseases
     if not entity_type or entity_type == 'diseases':
         try:
@@ -381,7 +382,7 @@ def search_fts(
                 ORDER BY rank
                 LIMIT :limit
             """), {"query": fts_query, "limit": limit}).fetchall()
-            
+
             for row in disease_results:
                 results.append({
                     "type": "disease",
@@ -395,10 +396,10 @@ def search_fts(
                 })
         except Exception as e:
             logger.error(f"Error searching diseases: {e}")
-    
+
     # Sort by score
     results.sort(key=lambda x: x["score"], reverse=False)  # Lower rank is better in FTS5
-    
+
     return results[:limit]
 
 

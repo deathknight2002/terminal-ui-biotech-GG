@@ -5,10 +5,11 @@ Uses SimHash for content fingerprinting and MinHash LSH for near-duplicate detec
 """
 
 import hashlib
-from typing import List, Set, Optional
-from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-from simhash import Simhash
+from typing import List
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+
 from datasketch import MinHash, MinHashLSH
+from simhash import Simhash
 
 
 def canonical_url(url: str) -> str:
@@ -24,24 +25,24 @@ def canonical_url(url: str) -> str:
         Canonical URL
     """
     parsed = urlparse(url.lower().strip())
-    
+
     # Remove common tracking parameters
     tracking_params = {
         'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
         'fbclid', 'gclid', 'msclkid', '_ga', 'mc_cid', 'mc_eid',
     }
-    
+
     # Parse and filter query parameters
     query_params = parse_qs(parsed.query)
     filtered_params = {
         k: v for k, v in query_params.items()
         if k not in tracking_params
     }
-    
+
     # Sort parameters for consistency
     sorted_params = sorted(filtered_params.items())
     new_query = urlencode(sorted_params, doseq=True)
-    
+
     # Rebuild URL
     canonical = urlunparse((
         parsed.scheme,
@@ -51,7 +52,7 @@ def canonical_url(url: str) -> str:
         new_query,
         '',  # Remove fragment
     ))
-    
+
     return canonical
 
 
@@ -121,7 +122,7 @@ class MinHashDeduplicator:
     Useful for detecting press release reprints across BusinessWire,
     PRNewswire, GlobeNewswire, etc.
     """
-    
+
     def __init__(
         self,
         threshold: float = 0.8,  # Jaccard similarity threshold
@@ -129,24 +130,24 @@ class MinHashDeduplicator:
     ):
         self.threshold = threshold
         self.num_perm = num_perm
-        
+
         # Create LSH index
         self.lsh = MinHashLSH(threshold=threshold, num_perm=num_perm)
-        
+
         # Store MinHashes by ID
         self.minhashes = {}
-    
+
     def _create_minhash(self, text: str) -> MinHash:
         """Create MinHash from text"""
         m = MinHash(num_perm=self.num_perm)
-        
+
         # Tokenize text into words
         words = text.lower().split()
         for word in words:
             m.update(word.encode('utf-8'))
-        
+
         return m
-    
+
     def add(self, doc_id: str, text: str):
         """
         Add document to index.
@@ -158,7 +159,7 @@ class MinHashDeduplicator:
         minhash = self._create_minhash(text)
         self.lsh.insert(doc_id, minhash)
         self.minhashes[doc_id] = minhash
-    
+
     def query(self, text: str) -> List[str]:
         """
         Find near-duplicates of text.
@@ -171,7 +172,7 @@ class MinHashDeduplicator:
         """
         minhash = self._create_minhash(text)
         return self.lsh.query(minhash)
-    
+
     def is_duplicate(self, text: str) -> bool:
         """
         Check if text is a duplicate of anything in index.
@@ -183,7 +184,7 @@ class MinHashDeduplicator:
             True if duplicate found
         """
         return len(self.query(text)) > 0
-    
+
     def get_clusters(self) -> List[List[str]]:
         """
         Get all duplicate clusters.
@@ -193,19 +194,19 @@ class MinHashDeduplicator:
         """
         clusters = []
         seen = set()
-        
+
         for doc_id in self.minhashes:
             if doc_id in seen:
                 continue
-            
+
             # Query duplicates
             cluster = self.query_by_id(doc_id)
             if cluster:
                 clusters.append(cluster)
                 seen.update(cluster)
-        
+
         return clusters
-    
+
     def query_by_id(self, doc_id: str) -> List[str]:
         """
         Find near-duplicates of a document by ID.
@@ -218,7 +219,7 @@ class MinHashDeduplicator:
         """
         if doc_id not in self.minhashes:
             return []
-        
+
         minhash = self.minhashes[doc_id]
         return self.lsh.query(minhash)
 
@@ -236,17 +237,17 @@ def extract_text_content(html: str) -> str:
         Plain text content
     """
     from bs4 import BeautifulSoup
-    
+
     soup = BeautifulSoup(html, 'lxml')
-    
+
     # Remove script, style, nav, footer, header
     for tag in soup(['script', 'style', 'nav', 'footer', 'header', 'aside']):
         tag.decompose()
-    
+
     # Get text
     text = soup.get_text(separator=' ', strip=True)
-    
+
     # Clean whitespace
     text = ' '.join(text.split())
-    
+
     return text

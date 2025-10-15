@@ -4,16 +4,15 @@ Regulatory Authority Scrapers
 FDA, EMA, MHRA scrapers for regulatory news and approvals.
 """
 
-from typing import Dict, List, Optional, Any
-from datetime import datetime
+from typing import Any, Dict, Optional
 
-from bt_platform.scrapers.sites.press_release_scraper import PressReleaseScraper
 from bt_platform.scrapers.base.interface import ContentType, ScraperResult
+from bt_platform.scrapers.sites.press_release_scraper import PressReleaseScraper
 
 
 class RegulatorScraper(PressReleaseScraper):
     """Base class for regulatory authority scrapers"""
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """Normalize to regulatory format"""
         result = await super().normalize(parsed_data)
@@ -24,7 +23,7 @@ class RegulatorScraper(PressReleaseScraper):
 
 class FDAScraper(RegulatorScraper):
     """FDA news and approvals scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.fda.gov')
@@ -36,7 +35,7 @@ class FDAScraper(RegulatorScraper):
 
 class EMAScraper(RegulatorScraper):
     """EMA (European Medicines Agency) scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.ema.europa.eu')
@@ -48,7 +47,7 @@ class EMAScraper(RegulatorScraper):
 
 class MHRAScraper(RegulatorScraper):
     """MHRA (UK) scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.gov.uk')

@@ -3,18 +3,24 @@ KOL (Key Opinion Leader) Tracking API Endpoints
 Provides endpoints for KOL signal ingestion, retrieval, and scoring
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
-from sqlalchemy import desc, func
-from typing import List, Optional
-from datetime import datetime, timedelta
-import subprocess
 import json
-import os
+import subprocess
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import List, Optional
 
-from ..database import get_db, KOLSource, KOLProfile, KOLSignal, KOLScore, KOLAlgorithmRun
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
+from sqlalchemy import desc, func
+from sqlalchemy.orm import Session
+
+from ..database import (
+    KOLProfile,
+    KOLScore,
+    KOLSignal,
+    KOLSource,
+    get_db,
+)
 
 router = APIRouter(prefix="/api/v1/kol", tags=["kol"])
 
@@ -31,7 +37,7 @@ class KOLSourceResponse(BaseModel):
     is_active: bool
     reliability_score: float
     total_signals_collected: int
-    
+
     class Config:
         from_attributes = True
 
@@ -45,7 +51,7 @@ class KOLProfileResponse(BaseModel):
     influence_score: float
     accuracy_score: float
     total_signals: int
-    
+
     class Config:
         from_attributes = True
 
@@ -61,7 +67,7 @@ class KOLSignalResponse(BaseModel):
     signal_date: datetime
     quality_score: Optional[float]
     impact_score: Optional[float]
-    
+
     class Config:
         from_attributes = True
 
@@ -76,7 +82,7 @@ class KOLScoreResponse(BaseModel):
     confidence_score: Optional[float]
     signal_count: int
     score_date: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -100,13 +106,13 @@ async def list_kol_sources(
     List all KOL data sources with health metrics
     """
     query = db.query(KOLSource)
-    
+
     if is_active is not None:
         query = query.filter(KOLSource.is_active == is_active)
-    
+
     if source_type:
         query = query.filter(KOLSource.source_type == source_type)
-    
+
     sources = query.all()
     return sources
 
@@ -123,16 +129,16 @@ async def list_kol_profiles(
     List KOL profiles with credibility metrics
     """
     query = db.query(KOLProfile).filter(KOLProfile.is_active == True)
-    
+
     if kol_type:
         query = query.filter(KOLProfile.kol_type == kol_type)
-    
+
     if specialty:
         query = query.filter(KOLProfile.specialty == specialty)
-    
+
     if min_credibility:
         query = query.filter(KOLProfile.credibility_score >= min_credibility)
-    
+
     profiles = query.order_by(desc(KOLProfile.credibility_score)).limit(limit).all()
     return profiles
 
@@ -150,18 +156,18 @@ async def list_kol_signals(
     Retrieve KOL signals with filters
     """
     cutoff_date = datetime.utcnow() - timedelta(days=days_back)
-    
+
     query = db.query(KOLSignal).filter(KOLSignal.signal_date >= cutoff_date)
-    
+
     if ticker:
         query = query.filter(KOLSignal.company_ticker == ticker.upper())
-    
+
     if signal_type:
         query = query.filter(KOLSignal.signal_type == signal_type)
-    
+
     if min_quality:
         query = query.filter(KOLSignal.quality_score >= min_quality)
-    
+
     signals = query.order_by(desc(KOLSignal.signal_date)).limit(limit).all()
     return signals
 
@@ -178,13 +184,13 @@ async def list_kol_scores(
     Get ranked entities by KOL scores
     """
     cutoff_date = datetime.utcnow() - timedelta(days=lookback_days)
-    
+
     query = db.query(KOLScore).filter(
         KOLScore.entity_type == entity_type,
         KOLScore.score_date >= cutoff_date,
         KOLScore.signal_count >= min_signal_count
     )
-    
+
     # Order by weighted sentiment (most bullish first)
     scores = query.order_by(desc(KOLScore.weighted_sentiment)).limit(limit).all()
     return scores
@@ -204,14 +210,14 @@ async def trigger_kol_scraping(
         java_scrapers_dir = Path(__file__).parent.parent.parent.parent / "backend" / "java-scrapers"
         jar_path = java_scrapers_dir / "target" / "kol-scrapers-1.0.0.jar"
         output_path = java_scrapers_dir / request.output_file
-        
+
         # Check if JAR exists
         if not jar_path.exists():
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Java scraper JAR not found at {jar_path}. Run 'mvn package' first."
             )
-        
+
         # Run Java scrapers in background
         # In production, use a task queue like Celery or RQ
         subprocess.Popen(
@@ -219,14 +225,14 @@ async def trigger_kol_scraping(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        
+
         return {
             "status": "scraping_started",
             "message": "KOL scraping job started in background",
             "output_file": str(output_path),
             "estimated_time_seconds": 120
         }
-        
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -244,29 +250,29 @@ async def ingest_kol_signals(
     """
     try:
         # Read JSON file
-        with open(file_path, 'r') as f:
+        with open(file_path) as f:
             data = json.load(f)
-        
+
         signals_data = data.get('signals', [])
         ingested_count = 0
         skipped_count = 0
-        
+
         for signal_data in signals_data:
             try:
                 # Check if signal already exists (by URL or unique identifier)
                 existing = db.query(KOLSignal).filter(
                     KOLSignal.post_url == signal_data.get('post_url')
                 ).first()
-                
+
                 if existing:
                     skipped_count += 1
                     continue
-                
+
                 # Get or create source
                 source = db.query(KOLSource).filter(
                     KOLSource.source_name == signal_data.get('source_name')
                 ).first()
-                
+
                 if not source:
                     source = KOLSource(
                         source_name=signal_data.get('source_name', 'Unknown'),
@@ -276,7 +282,7 @@ async def ingest_kol_signals(
                     )
                     db.add(source)
                     db.flush()
-                
+
                 # Create signal
                 signal = KOLSignal(
                     source_id=source.id,
@@ -293,23 +299,23 @@ async def ingest_kol_signals(
                     confidence_level=signal_data.get('confidence_level'),
                     raw_data=signal_data.get('raw_data')
                 )
-                
+
                 db.add(signal)
                 ingested_count += 1
-                
+
             except Exception as e:
                 print(f"Failed to ingest signal: {e}")
                 continue
-        
+
         db.commit()
-        
+
         return {
             "status": "success",
             "signals_ingested": ingested_count,
             "signals_skipped": skipped_count,
             "total_processed": len(signals_data)
         }
-        
+
     except FileNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -331,16 +337,16 @@ async def kol_system_health(db: Session = Depends(get_db)):
     try:
         total_sources = db.query(func.count(KOLSource.id)).scalar()
         active_sources = db.query(func.count(KOLSource.id)).filter(KOLSource.is_active == True).scalar()
-        
+
         total_signals = db.query(func.count(KOLSignal.id)).scalar()
         recent_signals = db.query(func.count(KOLSignal.id)).filter(
             KOLSignal.signal_date >= datetime.utcnow() - timedelta(days=7)
         ).scalar()
-        
+
         avg_quality = db.query(func.avg(KOLSignal.quality_score)).filter(
             KOLSignal.signal_date >= datetime.utcnow() - timedelta(days=30)
         ).scalar()
-        
+
         return {
             "status": "healthy",
             "total_sources": total_sources,

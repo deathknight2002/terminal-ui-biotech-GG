@@ -7,7 +7,7 @@ Per-host rate limiting with token buckets and jitter.
 import asyncio
 import random
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, Optional
 from urllib.parse import urlparse
 
@@ -22,7 +22,7 @@ class TokenBucketRateLimiter:
     - Jitter to avoid thundering herd
     - Configurable capacity and refill rate
     """
-    
+
     def __init__(
         self,
         default_rate: float = 1.0,  # requests per second
@@ -32,7 +32,7 @@ class TokenBucketRateLimiter:
         self.default_rate = default_rate
         self.default_capacity = default_capacity
         self.jitter_range = jitter_range
-        
+
         # Per-host buckets
         self.buckets: Dict[str, Dict] = defaultdict(
             lambda: {
@@ -42,20 +42,20 @@ class TokenBucketRateLimiter:
                 "last_refill": datetime.utcnow(),
             }
         )
-        
+
         # Per-host locks
         self.locks: Dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
-    
+
     def _get_host(self, url: str) -> str:
         """Extract host from URL"""
         return urlparse(url).netloc
-    
+
     def _refill_bucket(self, host: str):
         """Refill tokens based on elapsed time"""
         bucket = self.buckets[host]
         now = datetime.utcnow()
         elapsed = (now - bucket["last_refill"]).total_seconds()
-        
+
         # Calculate tokens to add
         tokens_to_add = elapsed * bucket["rate"]
         bucket["tokens"] = min(
@@ -63,7 +63,7 @@ class TokenBucketRateLimiter:
             bucket["tokens"] + tokens_to_add
         )
         bucket["last_refill"] = now
-    
+
     async def acquire(
         self,
         url: str,
@@ -82,35 +82,35 @@ class TokenBucketRateLimiter:
             True if tokens acquired, False if timeout
         """
         host = self._get_host(url)
-        
+
         async with self.locks[host]:
             start_time = datetime.utcnow()
-            
+
             while True:
                 # Refill bucket
                 self._refill_bucket(host)
-                
+
                 # Check if enough tokens
                 bucket = self.buckets[host]
                 if bucket["tokens"] >= tokens:
                     bucket["tokens"] -= tokens
-                    
+
                     # Add jitter
                     jitter = random.uniform(*self.jitter_range)
                     await asyncio.sleep(jitter * (1.0 / bucket["rate"]))
-                    
+
                     return True
-                
+
                 # Check timeout
                 if max_wait is not None:
                     elapsed = (datetime.utcnow() - start_time).total_seconds()
                     if elapsed >= max_wait:
                         return False
-                
+
                 # Wait for refill
                 wait_time = tokens / bucket["rate"]
                 await asyncio.sleep(wait_time)
-    
+
     def set_rate(self, host: str, rate: float, capacity: Optional[int] = None):
         """
         Set custom rate for a specific host.
@@ -122,13 +122,13 @@ class TokenBucketRateLimiter:
         """
         if capacity is None:
             capacity = int(rate * 10)
-        
+
         self.buckets[host].update({
             "rate": rate,
             "capacity": capacity,
             "tokens": capacity,
         })
-    
+
     def reset(self, host: Optional[str] = None):
         """
         Reset rate limiter.
@@ -144,7 +144,7 @@ class TokenBucketRateLimiter:
             for bucket in self.buckets.values():
                 bucket["tokens"] = bucket["capacity"]
                 bucket["last_refill"] = datetime.utcnow()
-    
+
     def get_stats(self, host: Optional[str] = None) -> Dict:
         """
         Get rate limiter statistics.
@@ -166,7 +166,7 @@ class TokenBucketRateLimiter:
                     "utilization": 1.0 - (bucket["tokens"] / bucket["capacity"]),
                 }
             return {}
-        
+
         return {
             host: {
                 "tokens": bucket["tokens"],

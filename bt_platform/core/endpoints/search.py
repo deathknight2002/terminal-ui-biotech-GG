@@ -4,20 +4,21 @@ Search API Endpoints
 Unified search across multiple entity types with FTS5 support.
 """
 
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
-from sqlalchemy import or_, func
-from typing import List, Dict, Any, Optional
 import logging
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
 
 from ..database import (
-    get_db,
-    EpidemiologyDisease,
-    Company,
-    Therapeutic,
-    Catalyst,
     Article,
-    ClinicalTrial
+    Catalyst,
+    ClinicalTrial,
+    Company,
+    EpidemiologyDisease,
+    Therapeutic,
+    get_db,
 )
 from ..fts import search_fts
 
@@ -44,7 +45,7 @@ async def global_search(
         if use_fts:
             # Use FTS5 for fast full-text search
             results = search_fts(db, q, entity_type=type, limit=limit)
-            
+
             return {
                 "query": q,
                 "count": len(results),
@@ -54,7 +55,7 @@ async def global_search(
         else:
             # Fallback to LIKE queries
             return await unified_search(q=q, limit=limit, db=db)
-            
+
     except Exception as e:
         logger.error(f"Global search error: {e}")
         # Fallback to LIKE queries on error
@@ -92,7 +93,7 @@ async def unified_search(
             "trials": [],
             "method": "like"
         }
-        
+
         # Search diseases
         diseases = db.query(EpidemiologyDisease).filter(
             or_(
@@ -101,7 +102,7 @@ async def unified_search(
                 EpidemiologyDisease.icd10_code.ilike(search_pattern)
             )
         ).filter(EpidemiologyDisease.is_active == True).limit(limit).all()
-        
+
         results["diseases"] = [
             {
                 "id": d.id,
@@ -112,7 +113,7 @@ async def unified_search(
             }
             for d in diseases
         ]
-        
+
         # Search companies
         companies = db.query(Company).filter(
             or_(
@@ -120,7 +121,7 @@ async def unified_search(
                 Company.ticker.ilike(search_pattern)
             )
         ).limit(limit).all()
-        
+
         results["companies"] = [
             {
                 "id": c.id,
@@ -131,7 +132,7 @@ async def unified_search(
             }
             for c in companies
         ]
-        
+
         # Search therapeutics
         therapeutics = db.query(Therapeutic).filter(
             or_(
@@ -140,7 +141,7 @@ async def unified_search(
                 Therapeutic.target.ilike(search_pattern)
             )
         ).limit(limit).all()
-        
+
         results["therapeutics"] = [
             {
                 "id": t.id,
@@ -152,7 +153,7 @@ async def unified_search(
             }
             for t in therapeutics
         ]
-        
+
         # Search catalysts
         catalysts = db.query(Catalyst).filter(
             or_(
@@ -162,7 +163,7 @@ async def unified_search(
                 Catalyst.company.ilike(search_pattern)
             )
         ).limit(limit).all()
-        
+
         results["catalysts"] = [
             {
                 "id": c.id,
@@ -174,7 +175,7 @@ async def unified_search(
             }
             for c in catalysts
         ]
-        
+
         # Search articles
         articles = db.query(Article).filter(
             or_(
@@ -182,7 +183,7 @@ async def unified_search(
                 Article.summary.ilike(search_pattern)
             )
         ).filter(Article.link_valid == True).limit(limit).all()
-        
+
         results["articles"] = [
             {
                 "id": a.id,
@@ -193,7 +194,7 @@ async def unified_search(
             }
             for a in articles
         ]
-        
+
         # Search clinical trials
         trials = db.query(ClinicalTrial).filter(
             or_(
@@ -202,7 +203,7 @@ async def unified_search(
                 ClinicalTrial.sponsor.ilike(search_pattern)
             )
         ).limit(limit).all()
-        
+
         results["trials"] = [
             {
                 "id": t.id,
@@ -214,9 +215,9 @@ async def unified_search(
             }
             for t in trials
         ]
-        
+
         return results
-        
+
     except Exception as e:
         logger.error(f"Search error: {e}")
         return {

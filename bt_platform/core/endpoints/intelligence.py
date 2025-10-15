@@ -9,16 +9,17 @@ Advanced biotech intelligence features powered by multiple data sources:
 - Competitive intelligence radar
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from typing import Optional, List
 from datetime import datetime
+from typing import Optional
 
-from ..database import get_db
-from ...providers.openfda_provider import OpenFDAProvider
-from ...providers.pubmed_provider import PubMedProvider
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
+
 from ...providers.clinicaltrials_provider import ClinicalTrialsProvider
+from ...providers.openfda_provider import OpenFDAProvider
 from ...providers.pdb_provider import ProteinDataBankProvider
+from ...providers.pubmed_provider import PubMedProvider
+from ..database import get_db
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ async def get_recent_fda_approvals(
     provider = OpenFDAProvider()
     try:
         approvals = await provider.get_drug_approvals(days=days)
-        
+
         # Format the results
         formatted_approvals = []
         for approval in approvals:
@@ -45,7 +46,7 @@ async def get_recent_fda_approvals(
                     "application_number": approval.get("application_number"),
                     "sponsor": approval.get("sponsor_name")
                 })
-        
+
         return {
             "total_approvals": len(formatted_approvals),
             "days_analyzed": days,
@@ -80,7 +81,7 @@ async def analyze_literature_sentiment(
     try:
         sentiment = await provider.analyze_research_sentiment(drug_name)
         publications = await provider.search_drug_publications(drug_name, years_back=3)
-        
+
         return {
             "sentiment_analysis": sentiment,
             "publication_trends": publications,
@@ -161,7 +162,7 @@ async def get_comprehensive_intelligence(
     pubmed_provider = PubMedProvider()
     ct_provider = ClinicalTrialsProvider()
     pdb_provider = ProteinDataBankProvider()
-    
+
     try:
         # Fetch data from all sources in parallel-ish manner
         safety_signals = await fda_provider.analyze_safety_signals(drug_name)
@@ -169,32 +170,32 @@ async def get_comprehensive_intelligence(
         publications = await pubmed_provider.search_drug_publications(drug_name, years_back=3)
         clinical_trials = await ct_provider.get_trials_by_drug(drug_name, limit=30)
         molecular_targets = await pdb_provider.analyze_drug_targets(drug_name)
-        
+
         # Get drug labels for additional context
         drug_labels = await fda_provider.get_drug_labels(drug_name)
-        
+
         # Calculate overall risk score (0-100)
         risk_score = 50  # Base score
-        
+
         # Adjust based on safety signals
         if safety_signals.get("signal_strength") == "high":
             risk_score += 20
         elif safety_signals.get("signal_strength") == "low":
             risk_score -= 10
-        
+
         # Adjust based on sentiment
         if literature_sentiment.get("sentiment") == "positive":
             risk_score -= 15
         elif literature_sentiment.get("sentiment") == "negative":
             risk_score += 15
-        
+
         # Adjust based on trial count
         active_trials = sum(1 for t in clinical_trials if t.get("status") in ["RECRUITING", "ACTIVE_NOT_RECRUITING"])
         if active_trials > 5:
             risk_score -= 10
-        
+
         risk_score = max(0, min(100, risk_score))  # Clamp to 0-100
-        
+
         # Determine risk category
         if risk_score < 30:
             risk_category = "Low Risk"
@@ -202,7 +203,7 @@ async def get_comprehensive_intelligence(
             risk_category = "Moderate Risk"
         else:
             risk_category = "High Risk"
-        
+
         return {
             "drug_name": drug_name,
             "analysis_date": datetime.now().isoformat(),
@@ -257,14 +258,14 @@ async def get_intelligence_dashboard(
 ):
     """Get aggregated intelligence dashboard data"""
     fda_provider = OpenFDAProvider()
-    
+
     try:
         # Get recent approvals
         recent_approvals = await fda_provider.get_drug_approvals(days=30)
-        
+
         # Get recent recalls
         recent_recalls = await fda_provider.get_drug_recalls()
-        
+
         return {
             "last_updated": datetime.now().isoformat(),
             "metrics": [

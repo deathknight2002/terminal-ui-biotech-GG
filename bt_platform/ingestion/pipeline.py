@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Mapping, Sequence
 
 import pandas as pd
 import polars as pl
-from pypfopt import EfficientFrontier, expected_returns, risk_models
 import quantstats as qs
+from pypfopt import EfficientFrontier, expected_returns, risk_models
 
 from .config import IngestionPaths
-from .duckdb_manager import DuckDBManager, DataFrameLike
+from .duckdb_manager import DataFrameLike, DuckDBManager
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ class IngestionContext:
     db: DuckDBManager
 
     @classmethod
-    def bootstrap(cls, paths: IngestionPaths | None = None) -> "IngestionContext":
+    def bootstrap(cls, paths: IngestionPaths | None = None) -> IngestionContext:
         paths = paths or IngestionPaths.from_settings()
         paths.ensure()
         manager = DuckDBManager(paths.duckdb_path, paths.parquet_dir)

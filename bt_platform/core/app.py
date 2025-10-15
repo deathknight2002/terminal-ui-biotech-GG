@@ -5,21 +5,20 @@ FastAPI-based biotech data platform with providers, extensions,
 and real-time analytics.
 """
 
-from fastapi import FastAPI, HTTPException
+import logging
+from contextlib import asynccontextmanager
+
+import uvicorn
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
-import logging
-from typing import Dict, Any
-import uvicorn
 
 from .config import settings
 from .database import init_db
+from .middleware.caching import CachingMiddleware
 from .routers import api_router
 from .websocket import websocket_router
-from .middleware.caching import CachingMiddleware
-
 
 # Configure logging
 logging.basicConfig(

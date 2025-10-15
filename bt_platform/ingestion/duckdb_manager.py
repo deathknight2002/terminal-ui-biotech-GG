@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator, Mapping, Sequence
 
 import duckdb
 import pandas as pd

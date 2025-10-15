@@ -8,11 +8,12 @@ REST API endpoints for:
 - Model training and evaluation
 """
 
-from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
 import logging
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ ml_router = APIRouter(prefix="/ml", tags=["ml"])
 class SentimentRequest(BaseModel):
     """Request model for sentiment analysis."""
     texts: List[str] = Field(..., description="List of texts to analyze", min_items=1, max_items=100)
-    
+
 
 class SentimentScore(BaseModel):
     """Sentiment score for a single text."""
@@ -90,11 +91,14 @@ _backtest_engine = None
 def get_sentiment_model():
     """Get or create sentiment model instance."""
     global _sentiment_model
-    
+
     if _sentiment_model is None:
         try:
-            from ml.sentiment.trainer import SentimentTrainer, create_sample_training_data
-            
+            from ml.sentiment.trainer import (
+                SentimentTrainer,
+                create_sample_training_data,
+            )
+
             # Try to load pre-trained model
             try:
                 _sentiment_model = SentimentTrainer.load('/tmp/sentiment_model.joblib')
@@ -110,14 +114,14 @@ def get_sentiment_model():
         except Exception as e:
             logger.error(f"Failed to initialize sentiment model: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize model: {str(e)}")
-    
+
     return _sentiment_model
 
 
 def get_backtest_engine():
     """Get or create backtest engine instance."""
     global _backtest_engine
-    
+
     if _backtest_engine is None:
         try:
             from ml.backtesting.engine import BacktestEngine
@@ -126,7 +130,7 @@ def get_backtest_engine():
         except Exception as e:
             logger.error(f"Failed to initialize backtest engine: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize engine: {str(e)}")
-    
+
     return _backtest_engine
 
 
@@ -158,16 +162,16 @@ async def predict_sentiment(request: SentimentRequest):
     """
     try:
         model = get_sentiment_model()
-        
+
         # Get predictions
         scores = model.get_sentiment_scores(request.texts)
-        
+
         return SentimentResponse(
             results=[SentimentScore(**score) for score in scores],
             model_version="1.0.0",
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except Exception as e:
         logger.error(f"Sentiment prediction failed: {e}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
@@ -182,7 +186,7 @@ async def get_sentiment_model_info():
     """
     try:
         model = get_sentiment_model()
-        
+
         return ModelInfo(
             model_type="sentiment_classifier",
             version="1.0.0",
@@ -190,7 +194,7 @@ async def get_sentiment_model_info():
             metrics=model.metrics if model.is_fitted else None,
             last_trained=datetime.utcnow().isoformat() if model.is_fitted else None
         )
-    
+
     except Exception as e:
         logger.error(f"Failed to get model info: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get info: {str(e)}")
@@ -209,18 +213,18 @@ async def get_top_features(n: int = Query(20, ge=5, le=100)):
     """
     try:
         model = get_sentiment_model()
-        
+
         if not model.is_fitted:
             raise HTTPException(status_code=400, detail="Model is not trained")
-        
+
         features = model.get_top_features(n=n)
-        
+
         return {
             "top_features": features,
             "n_features": n,
             "model_version": "1.0.0"
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -261,10 +265,10 @@ async def run_backtest(request: BacktestRequest):
     """
     try:
         engine = get_backtest_engine()
-        
+
         # Update engine parameters
         engine.move_threshold = request.move_threshold
-        
+
         # Run backtest
         results = engine.run_expanding_window_backtest(
             events_df=None,  # Uses synthetic data
@@ -273,7 +277,7 @@ async def run_backtest(request: BacktestRequest):
             min_train_days=request.min_train_days,
             step_days=request.step_days
         )
-        
+
         return BacktestResponse(
             num_windows=results['num_windows'],
             total_train_events=results['total_train_events'],
@@ -289,7 +293,7 @@ async def run_backtest(request: BacktestRequest):
             long_short_ir_std=results['long_short_ir_std'],
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except Exception as e:
         logger.error(f"Backtest failed: {e}")
         raise HTTPException(status_code=500, detail=f"Backtest failed: {str(e)}")
@@ -305,18 +309,18 @@ async def get_backtest_summary():
     """
     try:
         engine = get_backtest_engine()
-        
+
         if not engine.results:
             raise HTTPException(status_code=404, detail="No backtest results available. Run backtest first.")
-        
+
         summary = engine.get_summary_report()
-        
+
         return {
             "summary": summary,
             "results": engine.results,
             "timestamp": datetime.utcnow().isoformat()
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -339,7 +343,7 @@ async def ml_health_check():
         "status": "healthy",
         "services": {}
     }
-    
+
     # Check sentiment model
     try:
         model = get_sentiment_model()
@@ -353,7 +357,7 @@ async def ml_health_check():
             "error": str(e)
         }
         status["status"] = "degraded"
-    
+
     # Check backtest engine
     try:
         engine = get_backtest_engine()
@@ -367,7 +371,7 @@ async def ml_health_check():
             "error": str(e)
         }
         status["status"] = "degraded"
-    
+
     return status
 
 

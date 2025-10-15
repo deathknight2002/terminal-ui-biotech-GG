@@ -6,24 +6,23 @@ clinical trials, and drug development information.
 """
 
 import asyncio
-import random
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
+from datetime import datetime
+from typing import Any, Dict, List
 
 from .base import Provider
 
 
 class BiotechProvider(Provider):
     """Provider for biotech and pharmaceutical data"""
-    
+
     def __init__(self):
         super().__init__("biotech")
         self._cache = {}
         self._cache_ttl = 3600  # 1 hour cache
-    
+
     async def fetch_data(self, data_type: str = "drugs", **kwargs) -> Dict[str, Any]:
         """Fetch biotech data"""
-        
+
         if data_type == "drugs":
             return await self._fetch_drug_data(**kwargs)
         elif data_type == "trials":
@@ -34,12 +33,12 @@ class BiotechProvider(Provider):
             return await self._fetch_company_data(**kwargs)
         else:
             raise ValueError(f"Unknown data type: {data_type}")
-    
+
     async def _fetch_drug_data(self, **kwargs) -> Dict[str, Any]:
         """Fetch drug pipeline data"""
         # Simulate API call with sample data
         await asyncio.sleep(0.1)  # Simulate network delay
-        
+
         drugs = [
             {
                 "name": "Pembrolizumab",
@@ -55,7 +54,7 @@ class BiotechProvider(Provider):
             },
             {
                 "name": "Adalimumab",
-                "brand_name": "Humira", 
+                "brand_name": "Humira",
                 "company": "AbbVie",
                 "therapeutic_area": "Immunology",
                 "indication": "Rheumatoid arthritis, Crohn's disease",
@@ -69,7 +68,7 @@ class BiotechProvider(Provider):
                 "name": "Trastuzumab",
                 "brand_name": "Herceptin",
                 "company": "Roche",
-                "therapeutic_area": "Oncology", 
+                "therapeutic_area": "Oncology",
                 "indication": "HER2+ breast cancer",
                 "phase": "Approved",
                 "mechanism": "HER2 inhibitor",
@@ -78,18 +77,18 @@ class BiotechProvider(Provider):
                 "peak_sales": 7_000_000_000
             }
         ]
-        
+
         return {
             "data": drugs,
             "count": len(drugs),
             "source": "biotech_provider",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def _fetch_trial_data(self, **kwargs) -> Dict[str, Any]:
         """Fetch clinical trial data"""
         await asyncio.sleep(0.1)
-        
+
         trials = [
             {
                 "nct_id": "NCT05014152",
@@ -118,18 +117,18 @@ class BiotechProvider(Provider):
                 "primary_endpoint": "HbA1c reduction"
             }
         ]
-        
+
         return {
             "data": trials,
             "count": len(trials),
             "source": "biotech_provider",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def _fetch_approval_data(self, **kwargs) -> Dict[str, Any]:
         """Fetch FDA approval data"""
         await asyncio.sleep(0.1)
-        
+
         approvals = [
             {
                 "drug_name": "Pluvicto",
@@ -152,18 +151,18 @@ class BiotechProvider(Provider):
                 "orphan_drug": True
             }
         ]
-        
+
         return {
             "data": approvals,
             "count": len(approvals),
             "source": "biotech_provider",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def _fetch_company_data(self, **kwargs) -> Dict[str, Any]:
         """Fetch biotech company data"""
         await asyncio.sleep(0.1)
-        
+
         companies = [
             {
                 "name": "Amgen Inc",
@@ -178,7 +177,7 @@ class BiotechProvider(Provider):
             },
             {
                 "name": "Vertex Pharmaceuticals",
-                "ticker": "VRTX", 
+                "ticker": "VRTX",
                 "company_type": "Biotech",
                 "market_cap": 85_000_000_000,
                 "headquarters": "Boston, MA",
@@ -188,14 +187,14 @@ class BiotechProvider(Provider):
                 "pipeline_count": 12
             }
         ]
-        
+
         return {
             "data": companies,
             "count": len(companies),
             "source": "biotech_provider",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     def get_schema(self) -> Dict[str, Any]:
         """Get data schema for biotech provider"""
         return {
@@ -216,12 +215,12 @@ class BiotechProvider(Provider):
                 "optional": ["market_cap", "headquarters", "pipeline_count"]
             }
         }
-    
+
     async def get_therapeutic_areas(self) -> List[str]:
         """Get list of therapeutic areas"""
         return [
             "Oncology",
-            "Immunology", 
+            "Immunology",
             "Neurology",
             "Cardiovascular",
             "Rare Disease",
@@ -231,33 +230,33 @@ class BiotechProvider(Provider):
             "Endocrinology",
             "Gastroenterology"
         ]
-    
+
     async def get_development_phases(self) -> List[str]:
         """Get list of development phases"""
         return [
             "Discovery",
             "Preclinical",
             "Phase I",
-            "Phase II", 
+            "Phase II",
             "Phase III",
             "Filed",
             "Approved",
             "Discontinued"
         ]
-    
+
     async def search_drugs(self, query: str, limit: int = 50) -> Dict[str, Any]:
         """Search for drugs by name or indication"""
         # Simulate search functionality
         all_drugs = await self._fetch_drug_data()
-        
+
         # Simple text search simulation
         filtered_drugs = [
             drug for drug in all_drugs["data"]
-            if query.lower() in drug["name"].lower() 
+            if query.lower() in drug["name"].lower()
             or query.lower() in drug.get("indication", "").lower()
             or query.lower() in drug.get("company", "").lower()
         ]
-        
+
         return {
             "data": filtered_drugs[:limit],
             "count": len(filtered_drugs),

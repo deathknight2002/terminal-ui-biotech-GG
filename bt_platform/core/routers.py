@@ -5,7 +5,32 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol, intelligence, fda, trials, research, ml_endpoints
+
+from .endpoints import (
+    admin,
+    analytics,
+    biotech,
+    catalysts,
+    catalysts_v2,
+    company_profile,
+    competition,
+    evidence,
+    fda,
+    financial,
+    insights,
+    intelligence,
+    kol,
+    loe,
+    market,
+    ml_endpoints,
+    news,
+    reports,
+    research,
+    science_events,
+    search,
+    therapeutic_areas,
+    trials,
+)
 
 # Main API router
 api_router = APIRouter()
@@ -19,7 +44,7 @@ api_router.include_router(
 
 api_router.include_router(
     financial.router,
-    prefix="/financials", 
+    prefix="/financials",
     tags=["financials"]
 )
 

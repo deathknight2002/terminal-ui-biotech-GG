@@ -5,9 +5,10 @@ Endpoints for scientific literature from PubMed, including publication search,
 trend analysis, and research velocity tracking.
 """
 
-from fastapi import APIRouter, Query, HTTPException, Path
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Path, Query
 
 from ...providers.pubmed_provider import PubMedProvider
 
@@ -61,10 +62,10 @@ async def get_publication_details(
     """
     try:
         result = await pubmed_provider.get_publication_details(pmid=pmid)
-        
+
         if result.get("error"):
             raise HTTPException(status_code=404, detail=result["error"])
-        
+
         return result
     except HTTPException:
         raise
@@ -163,10 +164,10 @@ async def get_research_dashboard(
             "gene therapy",
             "CRISPR"
         ]
-        
+
         if therapeutic_area:
             research_areas = [therapeutic_area]
-        
+
         # Get trends for each area (last 5 years)
         area_trends = []
         for area in research_areas[:5]:  # Limit to 5 to avoid too many requests
@@ -179,7 +180,7 @@ async def get_research_dashboard(
                 "trends": trends.get("data", []),
                 "total_publications": sum(t.get("count", 0) for t in trends.get("data", []))
             })
-        
+
         # Get recent publications in therapeutic area
         recent_publications = []
         if therapeutic_area:
@@ -189,7 +190,7 @@ async def get_research_dashboard(
                 sort="pub_date"
             )
             recent_publications = pubs.get("data", [])
-        
+
         return {
             "research_trends": area_trends,
             "recent_publications": recent_publications,
@@ -224,22 +225,22 @@ async def identify_hot_topics(
             f"{therapeutic_area} AND precision medicine",
             f"{therapeutic_area} AND combination therapy"
         ]
-        
+
         hot_topics = []
-        
+
         for query in base_queries:
             trends = await pubmed_provider.analyze_publication_trends(
                 query=query,
                 years=years
             )
-            
+
             trend_data = trends.get("data", [])
             if len(trend_data) >= 2:
                 # Calculate growth rate
                 recent_count = sum(t.get("count", 0) for t in trend_data[-2:])
                 older_count = sum(t.get("count", 0) for t in trend_data[:2]) + 1  # Avoid division by zero
                 growth_rate = ((recent_count - older_count) / older_count) * 100
-                
+
                 hot_topics.append({
                     "topic": query,
                     "growth_rate": round(growth_rate, 1),
@@ -248,10 +249,10 @@ async def identify_hot_topics(
                     "is_accelerating": growth_rate > 50,
                     "trends": trend_data
                 })
-        
+
         # Sort by growth rate
         hot_topics.sort(key=lambda x: x["growth_rate"], reverse=True)
-        
+
         return {
             "hot_topics": hot_topics,
             "therapeutic_area": therapeutic_area,
@@ -280,21 +281,21 @@ async def analyze_competitive_research(
     try:
         competitor_list = [c.strip() for c in competitors.split(",")]
         all_companies = [company] + competitor_list
-        
+
         company_research = []
-        
+
         for comp in all_companies[:6]:  # Limit to 6 companies to avoid rate limits
             trends = await pubmed_provider.analyze_publication_trends(
                 query=f'"{comp}"[Affiliation]',
                 years=years
             )
-            
+
             company_research.append({
                 "company": comp,
                 "trends": trends.get("data", []),
                 "total_publications": sum(t.get("count", 0) for t in trends.get("data", []))
             })
-        
+
         return {
             "company_research": company_research,
             "focus_company": company,

@@ -4,12 +4,11 @@ Generic Rate Limiter and Cache Utility
 Per-domain rate limiting with token bucket algorithm and response caching.
 """
 
-import time
 import hashlib
+import time
 from collections import defaultdict
 from functools import wraps
-from typing import Callable, Dict, Any, Optional
-
+from typing import Any, Callable, Dict, Optional
 
 # Token buckets per domain
 _BUCKETS: Dict[str, Dict[str, float]] = defaultdict(
@@ -54,25 +53,25 @@ def rate_limited(
             # Generate cache key from URL and params
             key_src = url + repr(sorted(kwargs.get("params", {}).items()))
             key = hashlib.sha256(key_src.encode()).hexdigest()
-            
+
             # Check cache first
             if key in _CACHE:
                 entry = _CACHE[key]
                 if entry["exp"] > time.time():
                     return entry["data"]
-            
+
             # Get or create bucket for this domain
             bucket = _BUCKETS[domain]
-            
+
             # Wait for available token
             _tick(bucket, burst, rps)
             while bucket["tokens"] < 1:
                 time.sleep(0.2)
                 _tick(bucket, burst, rps)
-            
+
             # Consume token
             bucket["tokens"] -= 1
-            
+
             # Make request with retry on failure
             try:
                 data = fn(url, **kwargs)
@@ -82,7 +81,7 @@ def rate_limited(
                 # Retry once after delay
                 time.sleep(1.0)
                 return fn(url, **kwargs)
-        
+
         return wrapper
     return decorator
 
@@ -131,7 +130,7 @@ def get_cache_stats() -> Dict[str, Any]:
     """
     now = time.time()
     valid_entries = sum(1 for entry in _CACHE.values() if entry["exp"] > now)
-    
+
     return {
         "total_entries": len(_CACHE),
         "valid_entries": valid_entries,

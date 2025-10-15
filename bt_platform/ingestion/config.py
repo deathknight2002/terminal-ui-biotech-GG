@@ -17,7 +17,7 @@ class IngestionPaths:
     duckdb_path: Path
 
     @classmethod
-    def from_settings(cls) -> "IngestionPaths":
+    def from_settings(cls) -> IngestionPaths:
         data_lake = Path(settings.DATA_LAKE_DIR)
         parquet_dir = Path(settings.PARQUET_DIR)
         duckdb_path = Path(settings.DUCKDB_PATH)

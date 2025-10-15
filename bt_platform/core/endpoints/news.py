@@ -4,14 +4,21 @@ News API Endpoints
 News articles with sentiment analysis and verification.
 """
 
-from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy.orm import Session
-from sqlalchemy import desc
-from typing import List, Optional
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
+from typing import Optional
 
-from ..database import get_db, Article, Sentiment, ArticleDisease, ArticleCompany, ArticleCatalyst
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import desc
+from sqlalchemy.orm import Session
+
+from ..database import (
+    Article,
+    ArticleCatalyst,
+    ArticleCompany,
+    ArticleDisease,
+    get_db,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,15 +37,15 @@ async def get_latest_news(
     """
     try:
         query = db.query(Article)
-        
+
         if valid_only:
             query = query.filter(Article.link_valid == True)
-        
+
         if source:
             query = query.filter(Article.source == source)
-        
+
         articles = query.order_by(desc(Article.published_at)).limit(limit).all()
-        
+
         result = []
         for article in articles:
             # Get sentiments
@@ -48,7 +55,7 @@ async def get_latest_news(
                     "score": sentiment.score,
                     "rationale": sentiment.rationale
                 }
-            
+
             result.append({
                 "id": article.id,
                 "title": article.title,
@@ -61,7 +68,7 @@ async def get_latest_news(
                 "sentiments": sentiments_data,
                 "ingested_at": article.ingested_at.isoformat() if article.ingested_at else None
             })
-        
+
         return {
             "articles": result,
             "count": len(result),
@@ -70,7 +77,7 @@ async def get_latest_news(
                 "valid_only": valid_only
             }
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching latest news: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -86,10 +93,10 @@ async def get_article(
     """
     try:
         article = db.query(Article).filter(Article.id == article_id).first()
-        
+
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
-        
+
         # Get sentiments
         sentiments_data = {}
         for sentiment in article.sentiments:
@@ -97,12 +104,12 @@ async def get_article(
                 "score": sentiment.score,
                 "rationale": sentiment.rationale
             }
-        
+
         # Get related diseases
         disease_links = db.query(ArticleDisease).filter(
             ArticleDisease.article_id == article_id
         ).all()
-        
+
         related_diseases = [
             {
                 "disease_id": link.disease_id,
@@ -110,12 +117,12 @@ async def get_article(
             }
             for link in disease_links
         ]
-        
+
         # Get related companies
         company_links = db.query(ArticleCompany).filter(
             ArticleCompany.article_id == article_id
         ).all()
-        
+
         related_companies = [
             {
                 "company_id": link.company_id,
@@ -123,12 +130,12 @@ async def get_article(
             }
             for link in company_links
         ]
-        
+
         # Get related catalysts
         catalyst_links = db.query(ArticleCatalyst).filter(
             ArticleCatalyst.article_id == article_id
         ).all()
-        
+
         related_catalysts = [
             {
                 "catalyst_id": link.catalyst_id,
@@ -136,7 +143,7 @@ async def get_article(
             }
             for link in catalyst_links
         ]
-        
+
         return {
             "id": article.id,
             "title": article.title,
@@ -154,7 +161,7 @@ async def get_article(
             "ingested_at": article.ingested_at.isoformat() if article.ingested_at else None,
             "created_at": article.created_at.isoformat() if article.created_at else None
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -169,14 +176,14 @@ async def get_news_sources(db: Session = Depends(get_db)):
     """
     try:
         from sqlalchemy import func
-        
+
         sources = db.query(
             Article.source,
             func.count(Article.id).label('count')
         ).filter(
             Article.link_valid == True
         ).group_by(Article.source).all()
-        
+
         return {
             "sources": [
                 {
@@ -186,7 +193,7 @@ async def get_news_sources(db: Session = Depends(get_db)):
                 for source, count in sources
             ]
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching news sources: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -222,22 +229,22 @@ async def get_news_diff(
         else:
             # Default to last hour
             since_dt = datetime.utcnow() - timedelta(hours=1)
-        
+
         # Get new articles
         new_articles = db.query(Article).filter(
             Article.created_at >= since_dt,
             Article.link_valid == True
         ).order_by(desc(Article.created_at)).all()
-        
+
         # Get updated articles (ingested_at > created_at means it was re-ingested/updated)
         updated_articles = db.query(Article).filter(
             Article.ingested_at >= since_dt,
             Article.created_at < since_dt,
             Article.link_valid == True
         ).order_by(desc(Article.ingested_at)).all()
-        
+
         highlights = []
-        
+
         # Add new articles to highlights
         for article in new_articles[:10]:  # Limit to 10 highlights
             highlights.append({
@@ -248,7 +255,7 @@ async def get_news_diff(
                 "article_id": article.id,
                 "url": article.url
             })
-        
+
         # Add updated articles to highlights
         for article in updated_articles[:5]:  # Limit to 5 highlights
             highlights.append({
@@ -259,7 +266,7 @@ async def get_news_diff(
                 "article_id": article.id,
                 "url": article.url
             })
-        
+
         return {
             "since": since_dt.isoformat(),
             "changes": {
@@ -270,7 +277,7 @@ async def get_news_diff(
             "highlights": highlights,
             "last_check": datetime.utcnow().isoformat()
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:

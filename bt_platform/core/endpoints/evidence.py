@@ -9,10 +9,12 @@ API endpoints for science-first biotech intelligence:
 - Journal entries
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from typing import Optional, List
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
+
 from ..database import get_db
 
 router = APIRouter()
@@ -34,7 +36,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
     All data includes mandatory provenance (source.url, source.domain, pulledAt).
     """
     now = datetime.utcnow().isoformat()
-    
+
     # Companies with provenance
     companies = [
         {
@@ -64,7 +66,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             ]
         }
     ]
-    
+
     # Assets with targets and MoA
     assets = [
         {
@@ -92,7 +94,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             ]
         }
     ]
-    
+
     # Trials with endpoints
     trials = [
         {
@@ -131,7 +133,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             ]
         }
     ]
-    
+
     # Catalysts with confidence and rationale
     catalysts = [
         {
@@ -160,7 +162,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             "rationale": "Drugs@FDA PDUFA date listed; FDA acceptance letter dated 2025-09-20"
         }
     ]
-    
+
     # Evidence with mandatory provenance
     evidence = [
         {
@@ -229,7 +231,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             ]
         }
     ]
-    
+
     # Endpoint truth by indication (expanded with regulator-grade anchors)
     endpointTruth = [
         {
@@ -547,7 +549,7 @@ async def get_evidence_journal(db: Session = Depends(get_db)):
             ]
         }
     ]
-    
+
     return {
         "companies": companies,
         "assets": assets,
@@ -573,7 +575,7 @@ async def get_todays_evidence(db: Session = Depends(get_db)):
     # - FDA openFDA for label updates
     # - FDA AdComm calendar for meeting changes
     # - SEC EDGAR for 8-K filings mentioning clinical endpoints
-    
+
     return {
         "last_refresh": datetime.utcnow().isoformat(),
         "new_trial_events": [
@@ -645,9 +647,9 @@ async def get_catalyst_timeline(
     # - AdComm meetings from FDA calendar
     # - Trial readout windows from ClinicalTrials.gov + company 8-Ks
     # - EMA CHMP opinions from EMA website
-    
+
     end_date = datetime.utcnow() + timedelta(days=days)
-    
+
     return {
         "timeline_start": datetime.utcnow().isoformat(),
         "timeline_end": end_date.isoformat(),
@@ -719,7 +721,7 @@ async def get_moa_data(
     # - Open Targets GraphQL API for genetic associations
     # - ChEMBL API for IC50/Ki data
     # - Internal database for competitor mapping
-    
+
     # Pre-defined targets from problem statement
     target_data = {
         "IL-23": {
@@ -789,7 +791,7 @@ async def get_moa_data(
             "differentiation_score": 88
         }
     }
-    
+
     target_key = target.upper().replace("/", "")
     if "TL1A" in target_key:
         target_key = "TL1A"
@@ -797,10 +799,10 @@ async def get_moa_data(
         target_key = "Factor XI"
     elif "IL-23" in target_key or "IL23" in target_key:
         target_key = "IL-23"
-    
+
     if target_key in target_data:
         return target_data[target_key]
-    
+
     # Default response for unknown targets
     return {
         "target": target,
@@ -838,7 +840,7 @@ async def get_company_scorecard(
     # - Aggregate evidence from multiple sources
     # - Pull latest 10-K/10-Q from SEC for cash runway
     # - Link to catalyst timeline
-    
+
     return {
         "company": {
             "name": company,
@@ -915,7 +917,7 @@ async def get_journal_entries(
     """
     # Mock data for demonstration
     # In production, this would query user's saved journal entries from database
-    
+
     return {
         "entries": [
             {
@@ -959,9 +961,9 @@ async def create_journal_entry(
     """
     # Mock implementation
     # In production, this would insert into database with user authentication
-    
+
     entry_id = f"journal-{datetime.utcnow().timestamp()}"
-    
+
     return {
         "id": entry_id,
         "user_id": user_id or "demo-user",

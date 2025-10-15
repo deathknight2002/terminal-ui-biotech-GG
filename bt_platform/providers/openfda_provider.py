@@ -6,26 +6,27 @@ using the public OpenFDA API (https://open.fda.gov/).
 """
 
 import asyncio
-import httpx
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
+from datetime import datetime
+from typing import Any, Dict, Optional
 from urllib.parse import urlencode
+
+import httpx
 
 from .base import Provider
 
 
 class OpenFDAProvider(Provider):
     """Provider for FDA data via OpenFDA API"""
-    
+
     BASE_URL = "https://api.fda.gov"
-    
+
     def __init__(self):
         super().__init__("openfda")
         self._cache = {}
         self._cache_ttl = 3600  # 1 hour cache
         self._rate_limit_delay = 0.25  # 250ms between requests (4 req/sec limit)
         self._last_request_time = 0.0
-    
+
     async def _rate_limit(self):
         """Implement rate limiting to respect FDA API limits"""
         now = asyncio.get_event_loop().time()
@@ -33,15 +34,15 @@ class OpenFDAProvider(Provider):
         if time_since_last < self._rate_limit_delay:
             await asyncio.sleep(self._rate_limit_delay - time_since_last)
         self._last_request_time = asyncio.get_event_loop().time()
-    
+
     async def _make_request(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Make HTTP request to OpenFDA API with rate limiting"""
         await self._rate_limit()
-        
+
         url = f"{self.BASE_URL}{endpoint}"
         query_string = urlencode(params)
         full_url = f"{url}?{query_string}"
-        
+
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.get(full_url)
@@ -53,10 +54,10 @@ class OpenFDAProvider(Provider):
         except Exception as e:
             self.logger.error(f"Unexpected error in OpenFDA request: {e}")
             return {"error": str(e), "results": []}
-    
+
     async def fetch_data(self, data_type: str = "approvals", **kwargs) -> Dict[str, Any]:
         """Fetch FDA data by type"""
-        
+
         if data_type == "approvals":
             return await self.fetch_drug_approvals(**kwargs)
         elif data_type == "adverse_events":
@@ -69,9 +70,9 @@ class OpenFDAProvider(Provider):
             return await self.fetch_drug_labels(**kwargs)
         else:
             raise ValueError(f"Unknown data type: {data_type}")
-    
+
     async def fetch_drug_approvals(
-        self, 
+        self,
         limit: int = 100,
         search: Optional[str] = None,
         date_from: Optional[str] = None,
@@ -89,29 +90,29 @@ class OpenFDAProvider(Provider):
         params = {
             "limit": min(limit, 1000),
         }
-        
+
         # Build search query
         search_parts = []
         if search:
             search_parts.append(search)
-        
+
         if date_from or date_to:
             date_from_str = date_from or "1900-01-01"
             date_to_str = date_to or datetime.now().strftime("%Y-%m-%d")
             search_parts.append(f"submissions.submission_status_date:[{date_from_str}+TO+{date_to_str}]")
-        
+
         if search_parts:
             params["search"] = "+AND+".join(search_parts)
-        
+
         result = await self._make_request("/drug/drugsfda.json", params)
-        
+
         # Transform results to our schema
         approvals = []
         for item in result.get("results", []):
             products = item.get("products", [])
             submissions = item.get("submissions", [])
             openfda = item.get("openfda", {})
-            
+
             for product in products:
                 approval = {
                     "application_number": item.get("application_number"),
@@ -127,15 +128,15 @@ class OpenFDAProvider(Provider):
                     "indications": openfda.get("indications_and_usage", [""])[0] if openfda.get("indications_and_usage") else None,
                     "manufacturer": openfda.get("manufacturer_name", [""])[0] if openfda.get("manufacturer_name") else None,
                 }
-                
+
                 # Add submission dates if available
                 if submissions:
                     latest_submission = max(submissions, key=lambda s: s.get("submission_status_date", ""))
                     approval["approval_date"] = latest_submission.get("submission_status_date")
                     approval["submission_type"] = latest_submission.get("submission_type")
-                
+
                 approvals.append(approval)
-        
+
         return {
             "data": approvals,
             "count": len(approvals),
@@ -144,7 +145,7 @@ class OpenFDAProvider(Provider):
             "endpoint": "drug/drugsfda",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def fetch_adverse_events(
         self,
         limit: int = 100,
@@ -168,33 +169,33 @@ class OpenFDAProvider(Provider):
         params = {
             "limit": min(limit, 1000),
         }
-        
+
         search_parts = []
         if drug_name:
             search_parts.append(f'patient.drug.openfda.brand_name:"{drug_name}"')
-        
+
         if reaction:
             search_parts.append(f'patient.reaction.reactionmeddrapt:"{reaction}"')
-        
+
         if serious:
             search_parts.append("serious:1")
-        
+
         if date_from or date_to:
             date_from_str = date_from or "19900101"
             date_to_str = date_to or datetime.now().strftime("%Y%m%d")
             search_parts.append(f"receivedate:[{date_from_str}+TO+{date_to_str}]")
-        
+
         if search_parts:
             params["search"] = "+AND+".join(search_parts)
-        
+
         result = await self._make_request("/drug/event.json", params)
-        
+
         events = []
         for item in result.get("results", []):
             patient = item.get("patient", {})
             reactions = patient.get("reaction", [])
             drugs = patient.get("drug", [])
-            
+
             event = {
                 "safety_report_id": item.get("safetyreportid"),
                 "receive_date": item.get("receivedate"),
@@ -220,7 +221,7 @@ class OpenFDAProvider(Provider):
                 "outcomes": item.get("patient", {}).get("patientdeath") or "Unknown",
             }
             events.append(event)
-        
+
         return {
             "data": events,
             "count": len(events),
@@ -229,7 +230,7 @@ class OpenFDAProvider(Provider):
             "endpoint": "drug/event",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def fetch_drug_recalls(
         self,
         limit: int = 100,
@@ -251,24 +252,24 @@ class OpenFDAProvider(Provider):
         params = {
             "limit": min(limit, 1000),
         }
-        
+
         search_parts = []
         if classification:
             search_parts.append(f'classification:"{classification}"')
-        
+
         if status:
             search_parts.append(f'status:"{status}"')
-        
+
         if date_from or date_to:
             date_from_str = date_from or "1900-01-01"
             date_to_str = date_to or datetime.now().strftime("%Y-%m-%d")
             search_parts.append(f"report_date:[{date_from_str}+TO+{date_to_str}]")
-        
+
         if search_parts:
             params["search"] = "+AND+".join(search_parts)
-        
+
         result = await self._make_request("/drug/enforcement.json", params)
-        
+
         recalls = []
         for item in result.get("results", []):
             recall = {
@@ -286,7 +287,7 @@ class OpenFDAProvider(Provider):
                 "code_info": item.get("code_info"),
             }
             recalls.append(recall)
-        
+
         return {
             "data": recalls,
             "count": len(recalls),
@@ -295,7 +296,7 @@ class OpenFDAProvider(Provider):
             "endpoint": "drug/enforcement",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def fetch_enforcement_reports(
         self,
         limit: int = 100,
@@ -311,7 +312,7 @@ class OpenFDAProvider(Provider):
             date_from=date_from,
             date_to=date_to
         )
-    
+
     async def fetch_drug_labels(
         self,
         limit: int = 100,
@@ -329,19 +330,19 @@ class OpenFDAProvider(Provider):
         params = {
             "limit": min(limit, 1000),
         }
-        
+
         search_parts = []
         if brand_name:
             search_parts.append(f'openfda.brand_name:"{brand_name}"')
-        
+
         if generic_name:
             search_parts.append(f'openfda.generic_name:"{generic_name}"')
-        
+
         if search_parts:
             params["search"] = "+AND+".join(search_parts)
-        
+
         result = await self._make_request("/drug/label.json", params)
-        
+
         labels = []
         for item in result.get("results", []):
             openfda = item.get("openfda", {})
@@ -360,7 +361,7 @@ class OpenFDAProvider(Provider):
                 "contraindications": item.get("contraindications", [""])[0] if item.get("contraindications") else None,
             }
             labels.append(label)
-        
+
         return {
             "data": labels,
             "count": len(labels),
@@ -369,7 +370,7 @@ class OpenFDAProvider(Provider):
             "endpoint": "drug/label",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def count_adverse_events_by_drug(
         self,
         limit: int = 20,
@@ -383,28 +384,28 @@ class OpenFDAProvider(Provider):
             "count": "patient.drug.openfda.brand_name.exact",
             "limit": limit
         }
-        
+
         if date_from or date_to:
             date_from_str = date_from or "19900101"
             date_to_str = date_to or datetime.now().strftime("%Y%m%d")
             params["search"] = f"receivedate:[{date_from_str}+TO+{date_to_str}]"
-        
+
         result = await self._make_request("/drug/event.json", params)
-        
+
         counts = []
         for item in result.get("results", []):
             counts.append({
                 "drug_name": item.get("term"),
                 "event_count": item.get("count"),
             })
-        
+
         return {
             "data": counts,
             "count": len(counts),
             "source": "openfda",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     def get_schema(self) -> Dict[str, Any]:
         """Get data schema for OpenFDA provider"""
         return {

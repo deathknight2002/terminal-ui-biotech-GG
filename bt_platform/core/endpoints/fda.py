@@ -5,9 +5,10 @@ Endpoints for FDA drug approvals, adverse events, recalls, and enforcement data
 using the OpenFDA provider.
 """
 
-from fastapi import APIRouter, Query, HTTPException
-from typing import Optional, List
 from datetime import datetime, timedelta
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Query
 
 from ...providers.openfda_provider import OpenFDAProvider
 
@@ -195,20 +196,20 @@ async def get_fda_dashboard():
             limit=20,
             date_from=ninety_days_ago
         )
-        
+
         # Get top drugs by adverse events (last 30 days)
         thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime("%Y%m%d")
         adverse_counts = await fda_provider.count_adverse_events_by_drug(
             limit=10,
             date_from=thirty_days_ago
         )
-        
+
         # Get active recalls
         recalls = await fda_provider.fetch_drug_recalls(
             limit=20,
             status="Ongoing"
         )
-        
+
         return {
             "recent_approvals": approvals.get("data", []),
             "approvals_count": approvals.get("count", 0),
@@ -235,25 +236,25 @@ async def detect_safety_signals(
     """
     try:
         date_from = (datetime.now() - timedelta(days=days)).strftime("%Y%m%d")
-        
+
         # Get adverse event counts
         counts_result = await fda_provider.count_adverse_events_by_drug(
             limit=limit,
             date_from=date_from
         )
-        
+
         drugs = counts_result.get("data", [])
-        
+
         # Calculate basic statistics
         if drugs:
             event_counts = [d["event_count"] for d in drugs]
             avg_count = sum(event_counts) / len(event_counts)
-            
+
             # Flag drugs with above-average reporting
             for drug in drugs:
                 drug["above_average"] = drug["event_count"] > avg_count
                 drug["signal_strength"] = "high" if drug["event_count"] > avg_count * 2 else "moderate"
-        
+
         return {
             "data": drugs,
             "period_days": days,

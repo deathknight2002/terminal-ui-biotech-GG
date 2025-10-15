@@ -4,12 +4,13 @@ Loss of Exclusivity (LoE) endpoints
 Track patent expiries and erosion timelines.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import Dict, List, Any, Optional
 from datetime import datetime
+from typing import Any, Dict, Optional
 
-from ..database import get_db, PatentExpiry, RevenueLine
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from ..database import PatentExpiry, get_db
 
 router = APIRouter()
 
@@ -26,13 +27,13 @@ async def get_loe_timeline(
     Returns Gantt-style timeline of patent expiries and erosion curves.
     """
     query = db.query(PatentExpiry)
-    
+
     # Filter logic would go here based on ticker/company
     expiries = query.order_by(PatentExpiry.expiry_date).all()
-    
+
     # Group by year for stacked visualization
     timeline_data = {}
-    
+
     for expiry in expiries:
         year = expiry.expiry_date.year
         if year not in timeline_data:
@@ -41,7 +42,7 @@ async def get_loe_timeline(
                 "events": [],
                 "total_revenue_at_risk": 0
             }
-        
+
         timeline_data[year]["events"].append({
             "asset_id": expiry.asset_id,
             "asset_name": expiry.asset_name,
@@ -51,9 +52,9 @@ async def get_loe_timeline(
             "peak_revenue": expiry.peak_revenue_before_loe or 0,
             "erosion_curve_id": expiry.erosion_curve_id
         })
-        
+
         timeline_data[year]["total_revenue_at_risk"] += expiry.peak_revenue_before_loe or 0
-    
+
     return {
         "timeline": list(timeline_data.values()),
         "total_events": len(expiries),
@@ -73,7 +74,7 @@ async def get_loe_events_by_asset(
     events = db.query(PatentExpiry).filter(
         PatentExpiry.asset_id == asset_id
     ).all()
-    
+
     return {
         "asset_id": asset_id,
         "count": len(events),
@@ -113,9 +114,9 @@ async def create_loe_event(
         year_2_erosion_rate=data.get("year_2_erosion_rate", 0.20),
         steady_state_share=data.get("steady_state_share", 0.85)
     )
-    
+
     db.add(event)
     db.commit()
     db.refresh(event)
-    
+
     return {"id": event.id, "status": "created"}

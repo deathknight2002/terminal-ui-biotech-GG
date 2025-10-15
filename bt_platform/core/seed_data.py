@@ -4,13 +4,12 @@ Sample Data Seeding
 Populate database with realistic biotech sample data for development and testing.
 """
 
-import asyncio
 import logging
 from datetime import datetime, timedelta
-from sqlalchemy.orm import Session
-from typing import List
 
-from .database import SessionLocal, Drug, ClinicalTrial, Company, Catalyst, MarketData
+from sqlalchemy.orm import Session
+
+from .database import Catalyst, ClinicalTrial, Company, Drug, MarketData, SessionLocal
 
 logger = logging.getLogger(__name__)
 
@@ -23,27 +22,27 @@ async def seed_database():
         if db.query(Drug).first():
             logger.info("📊 Database already seeded, skipping...")
             return
-            
+
         logger.info("🌱 Seeding database with sample data...")
-        
+
         # Seed companies
         await seed_companies(db)
-        
+
         # Seed drugs
         await seed_drugs(db)
-        
+
         # Seed clinical trials
         await seed_clinical_trials(db)
-        
+
         # Seed catalysts
         await seed_catalysts(db)
-        
+
         # Seed market data
         await seed_market_data(db)
-        
+
         db.commit()
         logger.info("✅ Database seeded successfully")
-        
+
     except Exception as e:
         logger.error(f"❌ Database seeding failed: {e}")
         db.rollback()
@@ -199,7 +198,7 @@ async def seed_companies(db: Session):
             pipeline_count=11,
             therapeutic_areas="Rare Disease,Neurology,Metabolic"
         ),
-        
+
         # Cardiology Companies
         Company(
             name="Amgen Inc",
@@ -334,10 +333,10 @@ async def seed_companies(db: Session):
             therapeutic_areas="Cardiology"
         )
     ]
-    
+
     for company in companies:
         db.add(company)
-    
+
     logger.info(f"📊 Added {len(companies)} companies")
 
 
@@ -405,7 +404,7 @@ async def seed_drugs(db: Session):
             mechanism="AOC platform (antibody-conjugated oligonucleotide)",
             target="Exon 44 skipping"
         ),
-        
+
         # Cardiology Pipeline
         Drug(
             name="Aficamten",
@@ -487,7 +486,7 @@ async def seed_drugs(db: Session):
             mechanism="AAV-mediated gene therapy",
             target="SERCA2a gene delivery"
         ),
-        
+
         # Additional pipeline assets
         Drug(
             name="Vutrisiran",
@@ -510,10 +509,10 @@ async def seed_drugs(db: Session):
             target="PD-1 immune checkpoint"
         )
     ]
-    
+
     for drug in drugs:
         db.add(drug)
-    
+
     logger.info(f"💊 Added {len(drugs)} drugs")
 
 
@@ -535,7 +534,7 @@ async def seed_clinical_trials(db: Session):
         ClinicalTrial(
             nct_id="NCT05291091",
             title="Aficamten in Obstructive Hypertrophic Cardiomyopathy (SEQUOIA-HCM)",
-            phase="Phase III", 
+            phase="Phase III",
             status="Active",
             condition="Hypertrophic Cardiomyopathy",
             intervention="Aficamten",
@@ -569,17 +568,17 @@ async def seed_clinical_trials(db: Session):
             enrollment=48
         )
     ]
-    
+
     for trial in trials:
         db.add(trial)
-    
+
     logger.info(f"🔬 Added {len(trials)} clinical trials")
 
 
 async def seed_catalysts(db: Session):
     """Seed 50 'Ionis-style' stealth catalyst watchlist with scoring"""
     base_date = datetime.now()
-    
+
     # Cardiometabolic & CV outcomes (13)
     catalysts = [
         # 1. Ionis - olezarsen (apoC-III) in SHTG & FCS
@@ -791,7 +790,7 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
     ]
-    
+
     # Rare disease, neuro & respiratory (12)
     catalysts.extend([
         # 14. Scholar Rock - apitegromab (SMA) resubmission
@@ -987,7 +986,7 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
     ])
-    
+
     # Ophthalmology (1)
     catalysts.extend([
         # 26. Annexon - ANX007 (GA) Phase 3
@@ -1007,7 +1006,7 @@ async def seed_catalysts(db: Session):
             market_depth=3
         ),
     ])
-    
+
     # Oncology - ADCs, degraders, radioligands, synthetic lethality (17)
     catalysts.extend([
         # 27. ADC Therapeutics - ZYNLONTA + glofitamab (LOTIS-7)
@@ -1139,7 +1138,7 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
         # 35. Krystal - KB707 oncology pivot (see #20 above, not duplicating)
-        
+
         # 36. Keros - elritercept (KER-050) LR-MDS Phase 3
         Catalyst(
             title="Elritercept LR-MDS Phase 3 Erythroid Response",
@@ -1189,7 +1188,7 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
         # 39. Annexon - broader complement oncology angles (not duplicating with #26)
-        
+
         # 40. Repare - early PLK4/Polθ (RP-1664 / RP-3467) 1st data
         Catalyst(
             title="Repare PLK4/Polθ LIONS/POLAR First Patient Responses",
@@ -1207,7 +1206,7 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
     ])
-    
+
     # Immunology / Derm / Inflammation (6)
     catalysts.extend([
         # 41. Kymera - KT-621 (STAT6 degrader) in atopic dermatitis
@@ -1291,12 +1290,12 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
     ])
-    
+
     # Virology / ID & Respiratory (3) - some already covered above
     catalysts.extend([
         # 46. Invivyd (already #21)
         # 47. AATD space (already #25)
-        
+
         # 48. Krystal - KB407 (inhaled CF gene therapy)
         Catalyst(
             title="KB407 Inhaled CF Gene Therapy FEV1/QoL",
@@ -1314,7 +1313,7 @@ async def seed_catalysts(db: Session):
             market_depth=2
         ),
     ])
-    
+
     # Kidney / Ophthalmology spillovers & platform wild cards (2)
     catalysts.extend([
         # 49. Novartis - atrasentan (IgAN) class follow-through
@@ -1350,10 +1349,10 @@ async def seed_catalysts(db: Session):
             market_depth=3
         ),
     ])
-    
+
     for catalyst in catalysts:
         db.add(catalyst)
-    
+
     logger.info(f"📅 Added {len(catalysts)} Ionis-style stealth catalysts with scoring")
 
 
@@ -1362,16 +1361,16 @@ async def seed_market_data(db: Session):
     # Use real biotech tickers from DMD and Cardiology primers
     tickers = ["SRPT", "BMRN", "ARWR", "CYTK", "AMGN", "LLY", "PFE", "MRK"]
     base_date = datetime.now() - timedelta(days=30)
-    
+
     market_data_points = []
-    
+
     for ticker in tickers:
         # Approximate base prices for demo (in production, fetch from real API)
         base_price = {
             "SRPT": 115.0, "BMRN": 78.0, "ARWR": 28.0, "CYTK": 52.0,
             "AMGN": 295.0, "LLY": 825.0, "PFE": 28.0, "MRK": 98.0
         }[ticker]
-        
+
         for i in range(30):
             date = base_date + timedelta(days=i)
             # Simple random walk for demo
@@ -1381,19 +1380,19 @@ async def seed_market_data(db: Session):
             high_price = max(open_price, close_price) * 1.02
             low_price = min(open_price, close_price) * 0.98
             volume = (hash(f"{ticker}-vol-{i}") % 10000000) + 1000000
-            
+
             market_data_points.append(MarketData(
                 ticker=ticker,
                 timestamp=date,
                 open_price=round(open_price, 2),
                 high_price=round(high_price, 2),
-                low_price=round(low_price, 2), 
+                low_price=round(low_price, 2),
                 close_price=round(close_price, 2),
                 volume=volume,
                 market_cap=round(close_price * 1_000_000_000, 0)
             ))
-    
+
     for data_point in market_data_points:
         db.add(data_point)
-    
+
     logger.info(f"📈 Added {len(market_data_points)} market data points")

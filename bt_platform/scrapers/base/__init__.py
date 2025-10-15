@@ -1,7 +1,7 @@
 """Base scraper framework"""
 
-from .interface import ScraperInterface, ScraperResult, ContentType
-from .registry import ScraperRegistry, ScraperConfig
+from .interface import ContentType, ScraperInterface, ScraperResult
+from .registry import ScraperConfig, ScraperRegistry
 
 __all__ = [
     "ScraperInterface",

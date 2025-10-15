@@ -6,11 +6,11 @@ Type-safe data validation for all external I/O with versioned schemas.
 Implements validation contracts for ingest pipeline and API endpoints.
 """
 
-from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import Optional, List, Dict, Any, Union
 from datetime import date, datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 # ============================================================================
 # Enums for Type Safety
@@ -68,10 +68,10 @@ class CompanyContract(BaseModel):
     headquarters: Optional[str] = Field(None, max_length=100)
     founded_year: Optional[int] = Field(None, ge=1800, le=2100)
     employees: Optional[int] = Field(None, ge=0)
-    
+
     class Config:
         use_enum_values = True
-    
+
     @field_validator('ticker')
     @classmethod
     def ticker_uppercase(cls, v):
@@ -90,7 +90,7 @@ class ProgramContract(BaseModel):
     therapeutic_area: Optional[str] = Field(None, max_length=100)
     indication: Optional[str] = None
     status: str = Field(default="Active", max_length=50)
-    
+
     class Config:
         use_enum_values = True
 
@@ -119,10 +119,10 @@ class TrialContract(BaseModel):
     results_available: bool = False
     results_summary: Optional[Dict[str, Any]] = None
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
-    
+
     class Config:
         use_enum_values = True
-    
+
     @field_validator('enrollment_actual')
     @classmethod
     def actual_lte_target(cls, v, info):
@@ -158,27 +158,27 @@ class CatalystEventContract(BaseModel):
     actual_move_pct: Optional[float] = Field(None, description="Realized stock move %")
     status: str = Field(default="UPCOMING", max_length=50)
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
-    
+
     class Config:
         use_enum_values = True
-    
+
     @model_validator(mode="after")
     def validate_dates(cls, values):
         expected = values.get('expected_date')
         range_start = values.get('date_range_start')
         range_end = values.get('date_range_end')
-        
+
         if range_start and range_end and range_start > range_end:
             raise ValueError('date_range_start must be before date_range_end')
-        
+
         if expected and range_start and expected < range_start:
             raise ValueError('expected_date must be within date range')
-        
+
         if expected and range_end and expected > range_end:
             raise ValueError('expected_date must be within date range')
-        
+
         return values
-    
+
     @field_validator('sources')
     @classmethod
     def validate_sources(cls, v):
@@ -202,7 +202,7 @@ class EvidenceContract(BaseModel):
     source_url: Optional[str] = Field(None, max_length=1000)
     source_type: Optional[str] = Field(None, max_length=100)
     published_date: Optional[date] = None
-    
+
     # New fields for persistent evidence store
     event_date: Optional[datetime] = None
     entity_type: Optional[str] = Field(None, max_length=50)
@@ -211,7 +211,7 @@ class EvidenceContract(BaseModel):
     strength_score: Optional[float] = Field(None, ge=0, le=1)
     citations: Optional[List[Dict[str, Any]]] = None
     linkage_verified: bool = False
-    
+
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
 
 
@@ -222,32 +222,32 @@ class ScienceEventContract(BaseModel):
     title: str = Field(..., min_length=1, max_length=500)
     description: Optional[str] = None
     summary: Optional[str] = Field(None, max_length=1000)
-    
+
     event_date: datetime = Field(..., description="When the event occurred")
     published_date: Optional[date] = None
-    
+
     entity_type: Optional[str] = Field(None, max_length=50, description="DRUG, COMPANY, TARGET, INDICATION, TRIAL")
     entity_id: Optional[str] = Field(None, max_length=255)
     entity_name: Optional[str] = Field(None, max_length=255)
     related_entities: Optional[List[Dict[str, Any]]] = None
-    
+
     source_type: Optional[str] = Field(None, max_length=100)
     source_url: Optional[str] = Field(None, max_length=1000)
     source_metadata: Optional[Dict[str, Any]] = None
-    
+
     content: Optional[str] = None
     key_findings: Optional[List[Dict[str, Any]]] = None
     impact_assessment: Optional[str] = None
-    
+
     evidence_class: Optional[str] = Field(None, max_length=50)
     confidence_score: Optional[float] = Field(None, ge=0, le=1)
     impact_score: Optional[float] = Field(None, ge=0, le=1)
-    
+
     tags: Optional[List[str]] = None
     metadata: Optional[Dict[str, Any]] = None
-    
+
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
-    
+
     @field_validator('related_entities')
     @classmethod
     def validate_related_entities(cls, v):
@@ -266,7 +266,7 @@ class EventRelationshipContract(BaseModel):
     description: Optional[str] = None
     confidence: Optional[float] = Field(None, ge=0, le=1)
     metadata: Optional[Dict[str, Any]] = None
-    
+
     @field_validator('target_event_id')
     @classmethod
     def validate_different_events(cls, v, info):
@@ -288,7 +288,7 @@ class ProviderRawContract(BaseModel):
     parquet_partition: Optional[str] = Field(None, max_length=255, description="Partition path")
     fetch_timestamp: datetime
     processed: bool = False
-    
+
     @field_validator('content_hash')
     @classmethod
     def validate_hash_matches_content(cls, v, info):
@@ -309,7 +309,7 @@ class FeatureSnapshotContract(BaseModel):
     feature_schema_version: str = Field(..., max_length=50)
     hash: str = Field(..., pattern=r'^[a-f0-9]{64}$')
     features_json: Dict[str, Any]
-    
+
     # Core features
     phase_encoded: Optional[float] = Field(None, ge=0, le=1)
     sample_size: Optional[int] = Field(None, ge=0)
@@ -323,7 +323,7 @@ class FeatureSnapshotContract(BaseModel):
     prior_effect_size: Optional[float] = None
     safety_score: Optional[float] = Field(None, ge=0, le=1)
     class_prior_success_rate: Optional[float] = Field(None, ge=0, le=1)
-    
+
     @field_validator('features_json')
     @classmethod
     def validate_features_complete(cls, v):
@@ -345,12 +345,12 @@ class PredictionContract(BaseModel):
     """ML model prediction contract"""
     model_version: str = Field(..., max_length=100)
     model_type: str = Field(..., max_length=100)
-    
+
     # Success probability with confidence intervals
     p: float = Field(..., ge=0, le=1, description="Success probability")
     p_ci_low: Optional[float] = Field(None, ge=0, le=1)
     p_ci_high: Optional[float] = Field(None, ge=0, le=1)
-    
+
     # Return predictions
     U: float = Field(..., description="Upside return")
     D: float = Field(..., description="Downside return")
@@ -358,35 +358,35 @@ class PredictionContract(BaseModel):
     U_ci_high: Optional[float] = None
     D_ci_low: Optional[float] = None
     D_ci_high: Optional[float] = None
-    
+
     # Market baseline
     implied_move: Optional[float] = Field(None, description="Options-implied move")
     historical_baseline: Optional[float] = Field(None, description="Historical event distribution")
-    
+
     # Derived scores
     expected_torque: float = Field(..., description="p*U + (1-p)*D")
     surprise_alpha: Optional[float] = Field(None, description="Torque - max(implied, baseline)")
     event_leverage: Optional[float] = Field(None, ge=0, le=1)
     final_rank_score: float = Field(..., description="Composite ranking score")
-    
+
     # Calibration metrics
     brier_score: Optional[float] = Field(None, ge=0, le=1)
     pinball_loss: Optional[float] = Field(None, ge=0)
-    
+
     @model_validator(mode="after")
     def validate_expected_torque(cls, values):
         p = values.get('p')
         U = values.get('U')
         D = values.get('D')
         expected_torque = values.get('expected_torque')
-        
+
         if p is not None and U is not None and D is not None and expected_torque is not None:
             computed = p * U + (1 - p) * D
             if abs(computed - expected_torque) > 0.01:  # Allow small rounding error
                 raise ValueError(f'expected_torque mismatch: computed={computed}, provided={expected_torque}')
-        
+
         return values
-    
+
     @field_validator('p_ci_low')
     @classmethod
     def ci_low_lte_p(cls, v, info):
@@ -394,7 +394,7 @@ class PredictionContract(BaseModel):
         if v is not None and 'p' in values and v > values['p']:
             raise ValueError('p_ci_low must be <= p')
         return v
-    
+
     @field_validator('p_ci_high')
     @classmethod
     def ci_high_gte_p(cls, v, info):
@@ -421,20 +421,20 @@ class PriceBarContract(BaseModel):
     returns_1d: Optional[float] = None
     returns_xbi_residual: Optional[float] = None
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
-    
+
     @model_validator(mode="after")
     def validate_ohlc(cls, values):
         open_p = values.get('open')
         high = values.get('high')
         low = values.get('low')
         close = values.get('close')
-        
+
         if all([open_p, high, low, close]):
             if high < max(open_p, close):
                 raise ValueError('High must be >= max(open, close)')
             if low > min(open_p, close):
                 raise ValueError('Low must be <= min(open, close)')
-        
+
         return values
 
 
@@ -454,18 +454,18 @@ class OptionsSnapshotContract(BaseModel):
     iv_rank: Optional[float] = Field(None, ge=0, le=100)
     put_call_ratio: Optional[float] = Field(None, ge=0)
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
-    
+
     @model_validator(mode="after")
     def validate_straddle(cls, values):
         call = values.get('atm_call_price')
         put = values.get('atm_put_price')
         straddle = values.get('straddle_price')
-        
+
         if all([call, put, straddle]):
             computed = call + put
             if abs(computed - straddle) > 0.01:
                 raise ValueError(f'Straddle price mismatch: {computed} vs {straddle}')
-        
+
         return values
 
 
@@ -510,7 +510,7 @@ class CatalystRankedResponse(BaseModel):
     event_type: EventType
     title: str
     expected_date: Optional[date]
-    
+
     # Predictions
     p: float = Field(..., ge=0, le=1, description="Success probability")
     U: float
@@ -519,11 +519,11 @@ class CatalystRankedResponse(BaseModel):
     expected_torque: float
     surprise_alpha: Optional[float]
     final_rank_score: float
-    
+
     # Confidence intervals
     p_ci_low: Optional[float] = Field(None, ge=0, le=1)
     p_ci_high: Optional[float] = Field(None, ge=0, le=1)
-    
+
     class Config:
         use_enum_values = True
 
@@ -575,7 +575,7 @@ class SourceProvenanceContract(BaseModel):
     selector: Optional[str] = Field(None, max_length=500, description="CSS/XPath/JSON path selector")
     verbatim_excerpt: str = Field(..., min_length=1, description="Exact extracted text")
     source_metadata: Optional[Dict[str, Any]] = Field(None, description="Additional source metadata")
-    
+
     class Config:
         use_enum_values = True
 
@@ -584,7 +584,7 @@ class SourceProvenanceResponse(SourceProvenanceContract):
     """Source provenance response with ID"""
     id: int
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -623,7 +623,7 @@ class AnalystNoteResponse(AnalystNoteContract):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -641,23 +641,23 @@ class CatalystEventType(str, Enum):
     CHMP_OPINION = "CHMP_OPINION"
     APPROVAL = "APPROVAL"
     CRL = "CRL"
-    
+
     # Clinical
     FPI = "FPI"
     LAST_PATIENT_IN = "LAST_PATIENT_IN"
     TOPLINE_READOUT = "TOPLINE_READOUT"
     FULL_DATA_CONFERENCE = "FULL_DATA_CONFERENCE"
     DOSE_EXPANSION_DECISION = "DOSE_EXPANSION_DECISION"
-    
+
     # Commercial
     LAUNCH = "LAUNCH"
     LABEL_EXPANSION = "LABEL_EXPANSION"
     PAYER_DECISION = "PAYER_DECISION"
-    
+
     # Funding/Partnership
     MILESTONE_TRIGGER = "MILESTONE_TRIGGER"
     ATM_ACTIVATION = "ATM_ACTIVATION"
-    
+
     OTHER = "OTHER"
 
 
@@ -674,17 +674,17 @@ class CatalystEventCreateContract(BaseModel):
     company_id: int = Field(..., gt=0)
     program_id: Optional[int] = Field(None, gt=0)
     trial_id: Optional[int] = Field(None, gt=0)
-    
+
     event_type: CatalystEventType
     title: str = Field(..., min_length=1, max_length=500)
     description: Optional[str] = None
-    
+
     # Timeline
     event_window_start: Optional[date] = None
     event_window_end: Optional[date] = None
     expected_date: Optional[date] = None
     date_confidence: Optional[DateConfidence] = None
-    
+
     # Clinical details
     endpoint: Optional[str] = Field(None, max_length=255)
     primary_endpoint_type: Optional[str] = Field(None, max_length=100)
@@ -695,12 +695,12 @@ class CatalystEventCreateContract(BaseModel):
     trial_design: Optional[str] = Field(None, max_length=100)
     target_gene: Optional[str] = Field(None, max_length=100)
     n: Optional[int] = Field(None, gt=0)
-    
+
     # Regulatory designations
     orphan: bool = False
     fast_track: bool = False
     breakthrough: bool = False
-    
+
     # Scoring
     event_leverage: Optional[float] = Field(None, ge=0, le=1)
     endpoint_rigor: Optional[float] = Field(None, ge=0, le=1)
@@ -708,73 +708,71 @@ class CatalystEventCreateContract(BaseModel):
     phase_weight: Optional[float] = Field(None, ge=0, le=1)
     unmet_need: Optional[float] = Field(None, ge=0, le=1)
     complexity_penalty: Optional[float] = Field(None, ge=0, le=1)
-    
+
     # Probability of Success
     prob_of_success: Optional[float] = Field(None, ge=0, le=1)
-    
+
     # Expected impact
     expected_impact: Optional[ExpectedImpact] = None
-    
+
     # Status
     status: str = Field(default="UPCOMING", max_length=50)
-    
+
     # Provenance (required!)
     source_provenance: List[SourceProvenanceContract] = Field(
-        ..., 
-        min_length=1, 
+        ...,
+        min_length=1,
         description="At least one source provenance required"
     )
-    
+
     class Config:
         use_enum_values = True
-    
+
     @model_validator(mode="after")
     def validate_date_window(self):
         """Validate event window dates"""
         start = self.event_window_start
         end = self.event_window_end
         expected = self.expected_date
-        
+
         if start and end and start > end:
             raise ValueError('event_window_start must be <= event_window_end')
-        
+
         if expected and start and expected < start:
             raise ValueError('expected_date must be within window')
-        
+
         if expected and end and expected > end:
             raise ValueError('expected_date must be within window')
-        
+
         return self
-        
-        return values
 
 
 class CatalystEventUpdateContract(BaseModel):
     """Contract for updating catalyst events"""
     title: Optional[str] = Field(None, min_length=1, max_length=500)
     description: Optional[str] = None
-    
+
     # Timeline updates
     event_window_start: Optional[date] = None
     event_window_end: Optional[date] = None
     expected_date: Optional[date] = None
     date_confidence: Optional[DateConfidence] = None
     actual_date: Optional[date] = None
-    
+
     # Clinical updates
     endpoint: Optional[str] = Field(None, max_length=255)
     indication: Optional[str] = Field(None, max_length=255)
-    
+
     # Outcome
     actual_outcome: Optional[OutcomeType] = None
     actual_move_pct: Optional[float] = None
-    
+
     # Status
     status: Optional[str] = Field(None, max_length=50)
-    
+
     # Provenance for update
     source_provenance: Optional[List[SourceProvenanceContract]] = None
-    
+
     class Config:
         use_enum_values = True
 
@@ -785,11 +783,11 @@ class CatalystEventDetailResponse(BaseModel):
     company_id: int
     program_id: Optional[int] = None
     trial_id: Optional[int] = None
-    
+
     event_type: str
     title: str
     description: Optional[str] = None
-    
+
     # Timeline
     event_window_start: Optional[date] = None
     event_window_end: Optional[date] = None
@@ -797,7 +795,7 @@ class CatalystEventDetailResponse(BaseModel):
     actual_date: Optional[date] = None
     date_confidence: Optional[str] = None
     timing_clarity_score: Optional[float] = None
-    
+
     # Clinical details
     endpoint: Optional[str] = None
     primary_endpoint_type: Optional[str] = None
@@ -808,12 +806,12 @@ class CatalystEventDetailResponse(BaseModel):
     trial_design: Optional[str] = None
     target_gene: Optional[str] = None
     n: Optional[int] = None
-    
+
     # Regulatory designations
     orphan: bool = False
     fast_track: bool = False
     breakthrough: bool = False
-    
+
     # Scoring
     event_leverage: Optional[float] = None
     endpoint_rigor: Optional[float] = None
@@ -822,32 +820,32 @@ class CatalystEventDetailResponse(BaseModel):
     unmet_need: Optional[float] = None
     complexity_penalty: Optional[float] = None
     quality_score: Optional[float] = None
-    
+
     # Probability of Success
     prob_of_success: Optional[float] = None
     pos_overridden: bool = False
-    
+
     # Expected impact
     expected_impact: Optional[str] = None
-    
+
     # Outcome
     actual_outcome: Optional[str] = None
     actual_move_pct: Optional[float] = None
-    
+
     # Status
     status: str
     last_reviewed_at: Optional[datetime] = None
-    
+
     # Metadata
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     # Evidence array with provenance
     evidence: List[SourceProvenanceResponse] = Field(default_factory=list)
-    
+
     # Analyst notes
     analyst_notes: List[AnalystNoteResponse] = Field(default_factory=list)
-    
+
     class Config:
         from_attributes = True
 
