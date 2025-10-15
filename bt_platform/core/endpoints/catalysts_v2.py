@@ -58,7 +58,12 @@ def parse_quarter(quarter_str: str) -> tuple[date, date]:
     if 'Q' in quarter_str:
         parts = quarter_str.replace('Q', '').replace('-', ' ').split()
         if len(parts) == 2:
-            q, year = int(parts[0]), int(parts[1])
+            # Handle both "Q1 2025" and "2025-Q1" formats
+            # Check which is year by magnitude (year > 4)
+            if int(parts[0]) > 4:
+                year, q = int(parts[0]), int(parts[1])
+            else:
+                q, year = int(parts[0]), int(parts[1])
         else:
             raise ValueError(f"Invalid quarter format: {quarter_str}")
     else:
@@ -222,7 +227,7 @@ async def get_catalysts(
     breakthrough: Optional[bool] = Query(None, description="Has breakthrough designation"),
     
     # Status
-    status: Optional[str] = Query("UPCOMING", description="Event status"),
+    event_status: Optional[str] = Query("UPCOMING", description="Event status"),
     
     # Pagination
     limit: int = Query(50, ge=1, le=200, description="Results per page"),
@@ -353,8 +358,8 @@ async def get_catalysts(
             query = query.filter(CatalystEvent.breakthrough == breakthrough)
         
         # Status filter
-        if status:
-            query = query.filter(CatalystEvent.status == status)
+        if event_status:
+            query = query.filter(CatalystEvent.status == event_status)
         
         # Count total results
         total = query.count()
@@ -484,7 +489,7 @@ async def get_catalysts(
                 "orphan": orphan,
                 "fast_track": fast_track,
                 "breakthrough": breakthrough,
-                "status": status
+                "status": event_status
             }
         )
         
