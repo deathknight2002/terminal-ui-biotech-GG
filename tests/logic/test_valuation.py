@@ -168,29 +168,32 @@ class TestValuationEngine:
     def test_compute_dcf_basic(self):
         """Test basic DCF valuation."""
         revenue_projections = {
-            2025: 100000000,
-            2026: 200000000,
-            2027: 300000000,
-            2028: 400000000,
-            2029: 500000000,
+            "total_revenue_by_year": {
+                2025: 100000000,
+                2026: 200000000,
+                2027: 300000000,
+                2028: 400000000,
+                2029: 500000000,
+            }
         }
 
-        wacc = 0.12
-        tgr = 0.025
-        ebitda_margin = 0.30
+        assumptions = {
+            "wacc": 0.12,
+            "tgr": 0.025,
+            "tax_rate": 0.25,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
+        }
 
         results = self.engine.compute_dcf(
             revenue_projections=revenue_projections,
-            wacc=wacc,
-            tgr=tgr,
-            ebitda_margin=ebitda_margin,
-            tax_rate=0.25,
+            assumptions=assumptions,
         )
 
         # Check structure
         assert "enterprise_value" in results
         assert "terminal_value" in results
-        assert "pv_cash_flows" in results
+        assert "discounted_fcf" in results
 
         # Check that EV is positive
         assert results["enterprise_value"] > 0
@@ -200,24 +203,37 @@ class TestValuationEngine:
 
     def test_compute_dcf_high_wacc(self):
         """Test DCF with high WACC reduces valuation."""
-        revenue_projections = {2025: 100000000, 2026: 110000000}
+        revenue_projections = {
+            "total_revenue_by_year": {
+                2025: 100000000,
+                2026: 110000000
+            }
+        }
 
         # Low WACC
+        assumptions_low = {
+            "wacc": 0.08,
+            "tgr": 0.02,
+            "tax_rate": 0.25,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
+        }
         results_low = self.engine.compute_dcf(
             revenue_projections=revenue_projections,
-            wacc=0.08,
-            tgr=0.02,
-            ebitda_margin=0.30,
-            tax_rate=0.25,
+            assumptions=assumptions_low,
         )
 
         # High WACC
+        assumptions_high = {
+            "wacc": 0.15,
+            "tgr": 0.02,
+            "tax_rate": 0.25,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
+        }
         results_high = self.engine.compute_dcf(
             revenue_projections=revenue_projections,
-            wacc=0.15,
-            tgr=0.02,
-            ebitda_margin=0.30,
-            tax_rate=0.25,
+            assumptions=assumptions_high,
         )
 
         # Higher WACC should result in lower valuation
