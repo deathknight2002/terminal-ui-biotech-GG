@@ -1,6 +1,6 @@
 {
   "name": "biotech-terminal-mobile",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "description": "Biotech Terminal Mobile - iOS-style pharmaceutical intelligence mobile app",
   "type": "module",
   "private": true,
@@ -10,18 +10,28 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "cap:init": "cap init",
+    "cap:add:ios": "cap add ios",
+    "cap:sync": "cap sync",
+    "cap:sync:ios": "cap sync ios",
+    "cap:open:ios": "cap open ios",
+    "cap:build": "npm run build && cap sync",
+    "cap:run:ios": "cap run ios"
   },
   "dependencies": {
     "@biotech-terminal/frontend-components": "file:../frontend-components",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
+    "@tanstack/react-query": "^5.12.2",
+    "axios": "^1.6.2",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^11.11.17",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^6.20.1",
-    "@tanstack/react-query": "^5.12.2",
-    "axios": "^1.6.2",
-    "zustand": "^4.4.7",
-    "date-fns": "^2.30.0",
-    "framer-motion": "^11.11.17"
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/react": "^19.1.16",

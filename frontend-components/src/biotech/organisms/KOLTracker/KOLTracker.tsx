@@ -30,7 +30,7 @@ interface KOLScore {
   neutral_count: number;
 }
 
-interface KOLTrackerProps {
+export interface KOLTrackerProps {
   apiBaseUrl?: string;
   className?: string;
   cornerBrackets?: boolean;

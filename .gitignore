@@ -77,3 +77,16 @@ ml/artifacts/
 *.json.gz
 data/raw/
 data/processed/
+
+# iOS / Capacitor Native Files
+# Keep the ios/ directory structure but ignore build artifacts
+mobile/ios/App/Pods/
+mobile/ios/App/build/
+mobile/ios/App/Podfile.lock
+mobile/ios/App/*.xcworkspace/xcuserdata/
+mobile/ios/App/*.xcodeproj/xcuserdata/
+mobile/ios/App/*.xcodeproj/project.xcworkspace/xcuserdata/
+mobile/ios/App/App.xcworkspace/xcuserdata/
+*.ipa
+*.dSYM
+DerivedData/

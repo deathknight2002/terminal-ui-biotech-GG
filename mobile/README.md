@@ -168,11 +168,62 @@ This mobile app follows the same contribution guidelines as the main terminal ap
 
 ## Native App Wrappers (Optional)
 
-### Option 1: Capacitor iOS Wrapper
+### Building for iOS Device
 
-For App Store distribution, wrap the mobile app with Capacitor:
+For personal use on iOS devices, we've set up Capacitor to wrap the mobile app as a native iOS application.
 
-#### Setup Capacitor
+**Quick Start:**
+
+```bash
+# 1. Build the mobile web app
+npm run build:mobile
+
+# 2. Open in Xcode
+cd mobile && npm run cap:open:ios
+
+# 3. Select your device and click Run (▶)
+```
+
+**Complete Guide**: See [docs/IOS_NATIVE_APP_GUIDE.md](../docs/IOS_NATIVE_APP_GUIDE.md) for detailed setup instructions including:
+- Prerequisites and device setup
+- Apple Developer account configuration
+- Building and installing on your device
+- Development workflow with live reload
+- Troubleshooting common issues
+
+### Option 1: Capacitor iOS Wrapper (Configured)
+
+Capacitor is now fully configured for iOS builds.
+
+#### Available Scripts
+
+```bash
+# Sync web assets to native project
+npm run cap:sync
+npm run cap:sync:ios
+
+# Open in Xcode
+npm run cap:open:ios
+
+# Build and run on connected device
+npm run cap:run:ios
+```
+
+#### iOS Platform Setup (Already Completed)
+
+The iOS platform has been initialized. Key files:
+- `mobile/capacitor.config.ts` - Capacitor configuration
+- `mobile/ios/` - Native iOS project (Xcode)
+
+To customize:
+1. Edit `appId` in `capacitor.config.ts` to your unique bundle ID
+2. Open in Xcode: `npm run cap:open:ios`
+3. Configure signing with your Apple ID
+4. Build and run on your device
+
+See [docs/IOS_NATIVE_APP_GUIDE.md](../docs/IOS_NATIVE_APP_GUIDE.md) for complete instructions.
+
+#### Previous Manual Setup Instructions
 
 ```bash
 cd mobile/
