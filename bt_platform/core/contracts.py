@@ -72,7 +72,8 @@ class CompanyContract(BaseModel):
     class Config:
         use_enum_values = True
     
-    @validator('ticker')
+    @field_validator('ticker')
+    @classmethod
     def ticker_uppercase(cls, v):
         return v.upper() if v else v
 
@@ -122,8 +123,10 @@ class TrialContract(BaseModel):
     class Config:
         use_enum_values = True
     
-    @validator('enrollment_actual')
-    def actual_lte_target(cls, v, values):
+    @field_validator('enrollment_actual')
+    @classmethod
+    def actual_lte_target(cls, v, info):
+        values = info.data
         if v and 'enrollment_target' in values and values['enrollment_target']:
             if v > values['enrollment_target'] * 1.2:  # Allow 20% overshoot
                 raise ValueError('Enrollment actual significantly exceeds target')
@@ -176,7 +179,8 @@ class CatalystEventContract(BaseModel):
         
         return values
     
-    @validator('sources')
+    @field_validator('sources')
+    @classmethod
     def validate_sources(cls, v):
         if v:
             for source in v:
@@ -244,7 +248,8 @@ class ScienceEventContract(BaseModel):
     
     provider_file_sha256: Optional[str] = Field(None, pattern=r'^[a-f0-9]{64}$')
     
-    @validator('related_entities')
+    @field_validator('related_entities')
+    @classmethod
     def validate_related_entities(cls, v):
         if v:
             for entity in v:
@@ -262,8 +267,10 @@ class EventRelationshipContract(BaseModel):
     confidence: Optional[float] = Field(None, ge=0, le=1)
     metadata: Optional[Dict[str, Any]] = None
     
-    @validator('target_event_id')
-    def validate_different_events(cls, v, values):
+    @field_validator('target_event_id')
+    @classmethod
+    def validate_different_events(cls, v, info):
+        values = info.data
         if 'source_event_id' in values and v == values['source_event_id']:
             raise ValueError('Source and target events must be different')
         return v
@@ -282,8 +289,9 @@ class ProviderRawContract(BaseModel):
     fetch_timestamp: datetime
     processed: bool = False
     
-    @validator('content_hash')
-    def validate_hash_matches_content(cls, v, values):
+    @field_validator('content_hash')
+    @classmethod
+    def validate_hash_matches_content(cls, v, info):
         # In production, validate hash matches raw_json
         # import hashlib, json
         # computed = hashlib.sha256(json.dumps(values['raw_json'], sort_keys=True).encode()).hexdigest()
@@ -316,7 +324,8 @@ class FeatureSnapshotContract(BaseModel):
     safety_score: Optional[float] = Field(None, ge=0, le=1)
     class_prior_success_rate: Optional[float] = Field(None, ge=0, le=1)
     
-    @validator('features_json')
+    @field_validator('features_json')
+    @classmethod
     def validate_features_complete(cls, v):
         required_keys = [
             'phase_encoded', 'endpoint_hardness', 'timing_clarity',
@@ -378,14 +387,18 @@ class PredictionContract(BaseModel):
         
         return values
     
-    @validator('p_ci_low')
-    def ci_low_lte_p(cls, v, values):
+    @field_validator('p_ci_low')
+    @classmethod
+    def ci_low_lte_p(cls, v, info):
+        values = info.data
         if v is not None and 'p' in values and v > values['p']:
             raise ValueError('p_ci_low must be <= p')
         return v
     
-    @validator('p_ci_high')
-    def ci_high_gte_p(cls, v, values):
+    @field_validator('p_ci_high')
+    @classmethod
+    def ci_high_gte_p(cls, v, info):
+        values = info.data
         if v is not None and 'p' in values and v < values['p']:
             raise ValueError('p_ci_high must be >= p')
         return v
