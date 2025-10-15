@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/companies/{ticker}/profile")
+@router.get("/{ticker}/profile")
 async def get_company_profile(
     ticker: str,
     db: Session = Depends(get_db)
@@ -105,7 +105,7 @@ async def get_company_profile(
     }
 
 
-@router.get("/companies/{ticker}/sources")
+@router.get("/{ticker}/sources")
 async def get_company_sources(
     ticker: str,
     source_type: Optional[str] = Query(None, description="Filter by source type"),
@@ -150,7 +150,7 @@ async def get_company_sources(
     }
 
 
-@router.get("/companies/{ticker}/articles")
+@router.get("/{ticker}/articles")
 async def get_company_articles(
     ticker: str,
     days: int = Query(90, description="Number of days to look back"),
@@ -201,7 +201,7 @@ async def get_company_articles(
     }
 
 
-@router.get("/companies/{ticker}/ownership")
+@router.get("/{ticker}/ownership")
 async def get_company_ownership(
     ticker: str,
     top_n: int = Query(20, description="Number of top holders to return"),
@@ -267,7 +267,7 @@ async def get_company_ownership(
     }
 
 
-@router.get("/companies/{ticker}/pipeline")
+@router.get("/{ticker}/pipeline")
 async def get_company_pipeline(
     ticker: str,
     db: Session = Depends(get_db)
@@ -322,7 +322,7 @@ async def get_company_pipeline(
     }
 
 
-@router.get("/companies/{ticker}/catalysts")
+@router.get("/{ticker}/catalysts")
 async def get_company_catalysts(
     ticker: str,
     upcoming_days: int = Query(90, description="Number of days to look ahead"),
@@ -378,7 +378,7 @@ async def get_company_catalysts(
     }
 
 
-@router.get("/companies/{ticker}/stock-chart")
+@router.get("/{ticker}/stock-chart")
 async def get_company_stock_chart(
     ticker: str,
     days: int = Query(90, description="Number of days of price history"),
@@ -427,7 +427,7 @@ async def get_company_stock_chart(
     }
 
 
-@router.get("/companies/xbi/constituents")
+@router.get("/xbi/constituents")
 async def get_xbi_constituents(
     active_only: bool = Query(True, description="Only return current constituents"),
     search: Optional[str] = Query(None, description="Search by company name or ticker"),

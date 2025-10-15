@@ -162,35 +162,40 @@ class TestValuationEngine:
 
         results = self.engine.apply_loe_erosion(revenue_projections, [])
 
-        # Should return unchanged
-        assert results == revenue_projections
+        # Should return with loe_adjusted flag
+        assert "loe_adjusted" in results
+        assert results["loe_adjusted"] == True
+        assert results["total_revenue_by_year"] == revenue_projections["total_revenue_by_year"]
 
     def test_compute_dcf_basic(self):
         """Test basic DCF valuation."""
         revenue_projections = {
-            2025: 100000000,
-            2026: 200000000,
-            2027: 300000000,
-            2028: 400000000,
-            2029: 500000000,
+            "total_revenue_by_year": {
+                2025: 100000000,
+                2026: 200000000,
+                2027: 300000000,
+                2028: 400000000,
+                2029: 500000000,
+            }
         }
 
-        wacc = 0.12
-        tgr = 0.025
-        ebitda_margin = 0.30
+        assumptions = {
+            "wacc": 0.12,
+            "tgr": 0.025,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
+            "tax_rate": 0.25,
+        }
 
         results = self.engine.compute_dcf(
             revenue_projections=revenue_projections,
-            wacc=wacc,
-            tgr=tgr,
-            ebitda_margin=ebitda_margin,
-            tax_rate=0.25,
+            assumptions=assumptions
         )
 
         # Check structure
         assert "enterprise_value" in results
         assert "terminal_value" in results
-        assert "pv_cash_flows" in results
+        assert "discounted_fcf" in results
 
         # Check that EV is positive
         assert results["enterprise_value"] > 0
@@ -200,24 +205,34 @@ class TestValuationEngine:
 
     def test_compute_dcf_high_wacc(self):
         """Test DCF with high WACC reduces valuation."""
-        revenue_projections = {2025: 100000000, 2026: 110000000}
+        revenue_projections = {
+            "total_revenue_by_year": {2025: 100000000, 2026: 110000000}
+        }
 
         # Low WACC
+        assumptions_low = {
+            "wacc": 0.08,
+            "tgr": 0.02,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
+            "tax_rate": 0.25,
+        }
         results_low = self.engine.compute_dcf(
             revenue_projections=revenue_projections,
-            wacc=0.08,
-            tgr=0.02,
-            ebitda_margin=0.30,
-            tax_rate=0.25,
+            assumptions=assumptions_low
         )
 
         # High WACC
+        assumptions_high = {
+            "wacc": 0.15,
+            "tgr": 0.02,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
+            "tax_rate": 0.25,
+        }
         results_high = self.engine.compute_dcf(
             revenue_projections=revenue_projections,
-            wacc=0.15,
-            tgr=0.02,
-            ebitda_margin=0.30,
-            tax_rate=0.25,
+            assumptions=assumptions_high
         )
 
         # Higher WACC should result in lower valuation
@@ -225,33 +240,54 @@ class TestValuationEngine:
 
     def test_compute_multiples_valuation(self):
         """Test multiples-based valuation."""
-        revenue_projections = {2025: 100000000, 2026: 150000000, 2027: 200000000}
+        revenue_projections = {
+            "total_revenue_by_year": {
+                2025: 100000000,
+                2026: 150000000,
+                2027: 200000000
+            }
+        }
 
-        sector_multiples = {"ev_to_revenue": 8.5, "ev_to_ebitda": 15.0}
+        assumptions = {
+            "ev_sales_multiples": {
+                "year_1": 8.5,
+                "year_2": 7.0,
+                "year_3": 6.0,
+                "peak": 5.0
+            }
+        }
 
-        results = self.engine.compute_multiples_valuation(
+        results = self.engine.compute_multiples(
             revenue_projections=revenue_projections,
-            ebitda_margin=0.30,
-            sector_multiples=sector_multiples,
+            assumptions=assumptions
         )
 
         # Check structure
-        assert "ev_to_revenue" in results
-        assert "ev_to_ebitda" in results
-        assert "implied_value" in results
+        assert "valuations_by_year" in results
+        assert "assumptions" in results
 
         # Check calculations
-        assert results["implied_value"] > 0
+        assert len(results["valuations_by_year"]) > 0
+        for year_data in results["valuations_by_year"].values():
+            assert year_data["enterprise_value"] > 0
 
     def test_compute_wacc_tgr_sensitivity(self):
         """Test WACC/TGR sensitivity analysis."""
         base_results = {
-            "dcf": {
-                "enterprise_value": 2000000000,
-                "revenue_projections": {2025: 100000000, 2026: 150000000},
+            "revenue_projections": {
+                "total_revenue_by_year": {2025: 100000000, 2026: 150000000}
             },
-            "ebitda_margin": 0.30,
-            "tax_rate": 0.25,
+            "dcf_valuation": {
+                "enterprise_value": 2000000000,
+                "assumptions": {
+                    "wacc": 0.12,
+                    "tgr": 0.025,
+                    "gross_margin": 0.85,
+                    "opex_rate": 0.35,
+                    "tax_rate": 0.25,
+                    "shares_outstanding": 100000000
+                }
+            }
         }
 
         wacc_range = [0.10, 0.12, 0.14]
@@ -262,15 +298,14 @@ class TestValuationEngine:
         )
 
         # Check structure
-        assert "wacc_values" in results
-        assert "tgr_values" in results
-        assert "sensitivity_matrix" in results
+        assert "wacc_range" in results
+        assert "tgr_range" in results
+        assert "grid" in results
 
         # Check dimensions
-        assert len(results["wacc_values"]) == 3
-        assert len(results["tgr_values"]) == 3
-        assert len(results["sensitivity_matrix"]) == 3
-        assert len(results["sensitivity_matrix"][0]) == 3
+        assert len(results["wacc_range"]) == 3
+        assert len(results["tgr_range"]) == 3
+        assert len(results["grid"]) == 3
 
     def test_run_valuation_complete(self):
         """Test complete valuation workflow."""
@@ -285,12 +320,14 @@ class TestValuationEngine:
             "asset_id": "TEST-001",
             "wacc": 0.12,
             "tgr": 0.025,
-            "ebitda_margin": 0.30,
+            "gross_margin": 0.85,
+            "opex_rate": 0.35,
             "tax_rate": 0.25,
             "pricing": {"US": 150000, "EU": 120000},
             "uptake_curve": {2025: 0.05, 2026: 0.15, 2027: 0.30},
             "pos_by_phase": 0.65,
-            "sector_multiples": {"ev_to_revenue": 8.5, "ev_to_ebitda": 15.0},
+            "shares_outstanding": 100000000,
+            "ev_sales_multiples": {"year_1": 8.5, "year_2": 7.0, "year_3": 6.0, "peak": 5.0}
         }
 
         results = self.engine.run_valuation(
@@ -304,18 +341,17 @@ class TestValuationEngine:
         assert "inputs_hash" in results
         assert "version" in results
         assert "revenue_projections" in results
-        assert "dcf" in results
-        assert "multiples" in results
-        assert "sensitivity" in results
+        assert "dcf_valuation" in results
+        assert "multiples_valuation" in results
 
         # Check hash is generated
         assert len(results["inputs_hash"]) == 64  # SHA256 hash
 
         # Check DCF results
-        assert results["dcf"]["enterprise_value"] > 0
+        assert results["dcf_valuation"]["enterprise_value"] > 0
 
         # Check multiples results
-        assert results["multiples"]["implied_value"] > 0
+        assert len(results["multiples_valuation"]["valuations_by_year"]) > 0
 
     def test_run_valuation_with_loe(self):
         """Test valuation with LoE events."""
@@ -366,8 +402,17 @@ class TestValuationEngine:
 
     def test_inputs_hash_consistency(self):
         """Test that same inputs produce same hash."""
-        epi_params = {"US_addressable": 50000}
-        financial_assumptions = {"wacc": 0.12, "pricing": {"US": 150000}}
+        epi_params = {
+            "US_addressable": 50000,
+            "US_eligible_rate": 0.7
+        }
+        financial_assumptions = {
+            "wacc": 0.12,
+            "pricing": {"US": 150000},
+            "uptake_curve": {2025: 0.1, 2026: 0.2},
+            "pos_by_phase": 0.65,
+            "shares_outstanding": 100000000
+        }
 
         results1 = self.engine.run_valuation(
             ticker="TEST",
@@ -388,10 +433,22 @@ class TestValuationEngine:
 
     def test_inputs_hash_uniqueness(self):
         """Test that different inputs produce different hashes."""
-        epi_params1 = {"US_addressable": 50000}
-        epi_params2 = {"US_addressable": 60000}
+        epi_params1 = {
+            "US_addressable": 50000,
+            "US_eligible_rate": 0.7
+        }
+        epi_params2 = {
+            "US_addressable": 60000,
+            "US_eligible_rate": 0.7
+        }
 
-        financial_assumptions = {"wacc": 0.12, "pricing": {"US": 150000}}
+        financial_assumptions = {
+            "wacc": 0.12,
+            "pricing": {"US": 150000},
+            "uptake_curve": {2025: 0.1, 2026: 0.2},
+            "pos_by_phase": 0.65,
+            "shares_outstanding": 100000000
+        }
 
         results1 = self.engine.run_valuation(
             ticker="TEST",
