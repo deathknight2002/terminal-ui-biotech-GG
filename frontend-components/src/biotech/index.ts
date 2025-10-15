@@ -49,3 +49,15 @@ export type {
 
 export { KOLTracker } from './organisms/KOLTracker';
 export type { default as KOLTrackerProps } from './organisms/KOLTracker';
+
+// ML/AI Components - Advanced Analytics
+export { ABTestingDashboard } from './organisms/ABTestingDashboard';
+export type { ABTestingDashboardProps, ABTestResult } from './organisms/ABTestingDashboard';
+
+export { ModelAnalyticsDashboard } from './organisms/ModelAnalyticsDashboard';
+export type {
+  ModelAnalyticsDashboardProps,
+  DriftAlert,
+  ModelMetrics,
+  PerformanceHistory
+} from './organisms/ModelAnalyticsDashboard';

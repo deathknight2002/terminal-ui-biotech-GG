@@ -1,0 +1,50 @@
+---
+# ConfigMap for application configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: biotech-terminal-config
+  namespace: biotech-terminal
+data:
+  # Database configuration
+  DATABASE_HOST: "postgres-service"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "biotech_terminal"
+  
+  # Redis configuration
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  
+  # API configuration
+  API_PORT: "8000"
+  CORS_ORIGINS: "*"
+  LOG_LEVEL: "INFO"
+  
+  # ML configuration
+  ML_MODEL_PATH: "/models"
+  ML_CACHE_SIZE: "10000"
+  USE_GPU: "false"
+  
+  # Feature flags
+  ENABLE_FINBERT: "true"
+  ENABLE_BIOBERT: "true"
+  ENABLE_ENSEMBLE: "true"
+---
+# Secret for sensitive configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: biotech-terminal-secrets
+  namespace: biotech-terminal
+type: Opaque
+stringData:
+  # Database credentials (override in production)
+  DATABASE_USER: "biotech_user"
+  DATABASE_PASSWORD: "changeme"
+  
+  # JWT secret
+  JWT_SECRET: "your-secret-key-change-in-production"
+  
+  # API keys (add your actual keys)
+  OPENBB_API_KEY: ""
+  FDA_API_KEY: ""
