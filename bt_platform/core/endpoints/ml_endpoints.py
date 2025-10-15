@@ -3,7 +3,7 @@ ML Endpoints for FastAPI
 =========================
 
 REST API endpoints for:
-- Sentiment analysis predictions
+- Sentiment analysis predictions (TF-IDF, FinBERT, BioBERT, Ensemble)
 - Backtesting results
 - Model training and evaluation
 """
@@ -85,6 +85,9 @@ class ModelInfo(BaseModel):
 
 _sentiment_model = None
 _backtest_engine = None
+_finbert_analyzer = None
+_biobert_analyzer = None
+_ensemble_analyzer = None
 
 
 def get_sentiment_model():
@@ -128,6 +131,66 @@ def get_backtest_engine():
             raise HTTPException(status_code=500, detail=f"Failed to initialize engine: {str(e)}")
     
     return _backtest_engine
+
+
+def get_finbert_analyzer():
+    """Get or create FinBERT analyzer instance."""
+    global _finbert_analyzer
+    
+    if _finbert_analyzer is None:
+        try:
+            from ml.sentiment import FinBERTAnalyzer
+            _finbert_analyzer = FinBERTAnalyzer(device="cpu")
+            logger.info("Initialized FinBERT analyzer")
+        except ImportError:
+            logger.warning("transformers library not available, FinBERT not supported")
+            raise HTTPException(
+                status_code=503,
+                detail="FinBERT requires transformers library. Install with: pip install transformers torch"
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize FinBERT: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to initialize FinBERT: {str(e)}")
+    
+    return _finbert_analyzer
+
+
+def get_biobert_analyzer():
+    """Get or create BioBERT analyzer instance."""
+    global _biobert_analyzer
+    
+    if _biobert_analyzer is None:
+        try:
+            from ml.sentiment import BioBERTAnalyzer
+            _biobert_analyzer = BioBERTAnalyzer(device="cpu")
+            logger.info("Initialized BioBERT analyzer")
+        except ImportError:
+            logger.warning("transformers library not available, BioBERT not supported")
+            raise HTTPException(
+                status_code=503,
+                detail="BioBERT requires transformers library. Install with: pip install transformers torch"
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize BioBERT: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to initialize BioBERT: {str(e)}")
+    
+    return _biobert_analyzer
+
+
+def get_ensemble_analyzer():
+    """Get or create ensemble analyzer instance."""
+    global _ensemble_analyzer
+    
+    if _ensemble_analyzer is None:
+        try:
+            from ml.sentiment import create_default_ensemble
+            _ensemble_analyzer = create_default_ensemble()
+            logger.info("Initialized ensemble analyzer")
+        except Exception as e:
+            logger.error(f"Failed to initialize ensemble: {e}")
+            raise HTTPException(status_code=500, detail=f"Failed to initialize ensemble: {str(e)}")
+    
+    return _ensemble_analyzer
 
 
 # ============================================================================
@@ -226,6 +289,256 @@ async def get_top_features(n: int = Query(20, ge=5, le=100)):
     except Exception as e:
         logger.error(f"Failed to get features: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get features: {str(e)}")
+
+
+# ============================================================================
+# Advanced Sentiment Analyzer Endpoints (FinBERT, BioBERT, Ensemble)
+# ============================================================================
+
+@ml_router.post("/sentiment/finbert", response_model=SentimentResponse)
+async def predict_sentiment_finbert(request: SentimentRequest):
+    """
+    Predict sentiment using FinBERT (Financial BERT) model.
+    
+    FinBERT is fine-tuned on financial text and provides state-of-the-art
+    sentiment analysis for financial/pharmaceutical news and reports.
+    
+    Returns sentiment scores for each text:
+    - Prediction: -1 (negative), 0 (neutral), 1 (positive)
+    - Confidence: Model confidence (max probability)
+    - Probabilities: Full probability distribution
+    
+    Example:
+    ```
+    POST /api/v1/ml/sentiment/finbert
+    {
+        "texts": [
+            "FDA approves breakthrough cancer therapy",
+            "Company reports quarterly earnings miss",
+            "Clinical trial shows promising results"
+        ]
+    }
+    ```
+    """
+    try:
+        analyzer = get_finbert_analyzer()
+        
+        # Get predictions
+        predictions = analyzer.predict(request.texts)
+        probs = analyzer.predict_proba(request.texts)
+        confidences = [max(p) for p in probs]
+        
+        results = []
+        for text, pred, prob, conf in zip(request.texts, predictions, probs, confidences):
+            # Map probabilities to dict
+            prob_dict = {-1: prob[0], 0: prob[1], 1: prob[2]}
+            
+            results.append(SentimentScore(
+                text=text[:100],  # Truncate for response
+                prediction=int(pred),
+                confidence=float(conf),
+                probabilities=prob_dict
+            ))
+        
+        return SentimentResponse(
+            results=results,
+            model_version="finbert-1.0.0",
+            timestamp=datetime.utcnow().isoformat()
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"FinBERT prediction failed: {e}")
+        raise HTTPException(status_code=500, detail=f"FinBERT prediction failed: {str(e)}")
+
+
+@ml_router.post("/sentiment/biobert", response_model=SentimentResponse)
+async def predict_sentiment_biobert(request: SentimentRequest):
+    """
+    Predict sentiment using BioBERT (Biomedical BERT) model.
+    
+    BioBERT is pre-trained on biomedical literature (PubMed, PMC) and
+    fine-tuned for sentiment analysis on pharmaceutical/biomedical text.
+    
+    Returns sentiment scores for each text:
+    - Prediction: -1 (negative), 0 (neutral), 1 (positive)
+    - Confidence: Model confidence (max probability)
+    - Probabilities: Full probability distribution
+    
+    Example:
+    ```
+    POST /api/v1/ml/sentiment/biobert
+    {
+        "texts": [
+            "Phase III trial meets primary endpoint",
+            "Safety concerns halt clinical development",
+            "Biomarker analysis shows strong correlation"
+        ]
+    }
+    ```
+    """
+    try:
+        analyzer = get_biobert_analyzer()
+        
+        # Get predictions
+        predictions = analyzer.predict(request.texts)
+        probs = analyzer.predict_proba(request.texts)
+        confidences = [max(p) for p in probs]
+        
+        results = []
+        for text, pred, prob, conf in zip(request.texts, predictions, probs, confidences):
+            # Map probabilities to dict
+            prob_dict = {-1: prob[0], 0: prob[1], 1: prob[2]}
+            
+            results.append(SentimentScore(
+                text=text[:100],  # Truncate for response
+                prediction=int(pred),
+                confidence=float(conf),
+                probabilities=prob_dict
+            ))
+        
+        return SentimentResponse(
+            results=results,
+            model_version="biobert-1.0.0",
+            timestamp=datetime.utcnow().isoformat()
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"BioBERT prediction failed: {e}")
+        raise HTTPException(status_code=500, detail=f"BioBERT prediction failed: {str(e)}")
+
+
+@ml_router.post("/sentiment/ensemble", response_model=SentimentResponse)
+async def predict_sentiment_ensemble(request: SentimentRequest):
+    """
+    Predict sentiment using ensemble of multiple models.
+    
+    Combines predictions from TF-IDF, FinBERT, and BioBERT models
+    using voting or averaging for improved accuracy and robustness.
+    
+    Returns sentiment scores for each text:
+    - Prediction: -1 (negative), 0 (neutral), 1 (positive)
+    - Confidence: Ensemble confidence (averaged)
+    - Probabilities: Averaged probability distribution
+    
+    Example:
+    ```
+    POST /api/v1/ml/sentiment/ensemble
+    {
+        "texts": [
+            "FDA grants priority review for new drug application",
+            "Competitor announces similar therapy approval",
+            "Patent expiration expected next quarter"
+        ]
+    }
+    ```
+    """
+    try:
+        analyzer = get_ensemble_analyzer()
+        
+        # Get predictions
+        predictions = analyzer.predict(request.texts)
+        probs = analyzer.predict_proba(request.texts)
+        confidences = [max(p) for p in probs]
+        
+        results = []
+        for text, pred, prob, conf in zip(request.texts, predictions, probs, confidences):
+            # Map probabilities to dict
+            prob_dict = {-1: prob[0], 0: prob[1], 1: prob[2]}
+            
+            results.append(SentimentScore(
+                text=text[:100],  # Truncate for response
+                prediction=int(pred),
+                confidence=float(conf),
+                probabilities=prob_dict
+            ))
+        
+        return SentimentResponse(
+            results=results,
+            model_version="ensemble-1.0.0",
+            timestamp=datetime.utcnow().isoformat()
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Ensemble prediction failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Ensemble prediction failed: {str(e)}")
+
+
+@ml_router.get("/sentiment/models")
+async def list_available_models():
+    """
+    List all available sentiment analysis models.
+    
+    Returns information about each model including:
+    - Model name and type
+    - Availability status
+    - Performance characteristics
+    - Recommended use cases
+    """
+    models = [
+        {
+            "name": "tfidf",
+            "type": "traditional_ml",
+            "endpoint": "/api/v1/ml/sentiment/predict",
+            "available": True,
+            "latency": "5ms",
+            "memory": "50MB",
+            "use_case": "High-throughput, real-time predictions",
+            "requires": ["scikit-learn"]
+        },
+        {
+            "name": "finbert",
+            "type": "transformer",
+            "endpoint": "/api/v1/ml/sentiment/finbert",
+            "available": _finbert_analyzer is not None or check_transformers_available(),
+            "latency": "50-100ms",
+            "memory": "500MB",
+            "use_case": "Financial text with high accuracy requirements",
+            "requires": ["transformers", "torch"]
+        },
+        {
+            "name": "biobert",
+            "type": "transformer",
+            "endpoint": "/api/v1/ml/sentiment/biobert",
+            "available": _biobert_analyzer is not None or check_transformers_available(),
+            "latency": "50-100ms",
+            "memory": "500MB",
+            "use_case": "Biomedical/pharmaceutical domain text",
+            "requires": ["transformers", "torch"]
+        },
+        {
+            "name": "ensemble",
+            "type": "ensemble",
+            "endpoint": "/api/v1/ml/sentiment/ensemble",
+            "available": True,
+            "latency": "varies",
+            "memory": "varies",
+            "use_case": "Maximum accuracy, offline analysis",
+            "requires": ["scikit-learn"]
+        }
+    ]
+    
+    return {
+        "models": models,
+        "total_models": len(models),
+        "available_models": len([m for m in models if m["available"]]),
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
+def check_transformers_available() -> bool:
+    """Check if transformers library is available."""
+    try:
+        import transformers
+        import torch
+        return True
+    except ImportError:
+        return False
 
 
 # ============================================================================

@@ -1,0 +1,9 @@
+---
+# Namespace for biotech terminal platform
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: biotech-terminal
+  labels:
+    app: biotech-terminal
+    environment: production

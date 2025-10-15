@@ -1,0 +1,62 @@
+---
+# Deployment for ML worker (sentiment analysis)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: biotech-terminal-ml-worker
+  namespace: biotech-terminal
+  labels:
+    app: biotech-terminal
+    component: ml-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: biotech-terminal
+      component: ml-worker
+  template:
+    metadata:
+      labels:
+        app: biotech-terminal
+        component: ml-worker
+    spec:
+      containers:
+      - name: ml-worker
+        image: biotech-terminal/ml-worker:latest
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: biotech-terminal-config
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+        volumeMounts:
+        - name: models
+          mountPath: /models
+        - name: cache
+          mountPath: /cache
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: ml-models-pvc
+      - name: cache
+        emptyDir:
+          sizeLimit: 2Gi
+---
+# PersistentVolumeClaim for ML models
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ml-models-pvc
+  namespace: biotech-terminal
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
