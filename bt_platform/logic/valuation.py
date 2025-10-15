@@ -52,6 +52,8 @@ class ValuationEngine:
             region_data = []
             
             for year, uptake in uptake_curve.items():
+                # Ensure year is an integer (may be string from JSON)
+                year = int(year)
                 # Calculate patients: addressable → eligible → treated
                 addressable = epi_params.get(f"{region}_addressable", 0)
                 eligible_rate = epi_params.get(f"{region}_eligible_rate", 0.7)
@@ -143,6 +145,8 @@ class ValuationEngine:
         # Calculate free cash flows
         fcf_by_year = {}
         for year, revenue in revenue_projections["total_revenue_by_year"].items():
+            # Ensure year is an integer (may be string from JSON)
+            year = int(year)
             if year > current_year + explicit_years:
                 break
                 
@@ -316,7 +320,9 @@ class ValuationEngine:
             "version": self.version,
             "revenue_projections": revenue_projections,
             "dcf_valuation": dcf_results,
+            "dcf": dcf_results,  # Alias for backward compatibility
             "multiples_valuation": multiples_results,
+            "multiples": multiples_results,  # Alias for backward compatibility
             "summary": {
                 "dcf_per_share": dcf_results["value_per_share"],
                 "multiples_avg_per_share": np.mean([

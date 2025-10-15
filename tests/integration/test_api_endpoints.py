@@ -28,7 +28,16 @@ def override_get_db():
 
 
 app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
+
+# Create TestClient with headers to avoid gzip issues
+class NoGzipTestClient(TestClient):
+    def get(self, *args, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = {}
+        kwargs['headers']['Accept-Encoding'] = 'identity'
+        return super().get(*args, **kwargs)
+
+client = NoGzipTestClient(app)
 
 
 @pytest.fixture(scope="module")

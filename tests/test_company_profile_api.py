@@ -81,7 +81,7 @@ def test_get_company_profile_success(sample_company):
     assert data["xbi_membership"]["is_constituent"] is True
 
 
-def test_get_company_profile_not_found():
+def test_get_company_profile_not_found(test_db):
     """Test company profile retrieval for non-existent company"""
     response = client.get("/api/v1/companies/NOTFOUND/profile")
     
@@ -289,7 +289,7 @@ def test_get_xbi_constituents_pagination(sample_company, test_db):
     test_db.commit()
     
     # First page
-    response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=0")
+    response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=0", headers={"Accept-Encoding": "identity"})
     assert response.status_code == 200
     data = response.json()
     
@@ -299,7 +299,7 @@ def test_get_xbi_constituents_pagination(sample_company, test_db):
     assert data["total"] >= 15
     
     # Second page
-    response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=5")
+    response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=5", headers={"Accept-Encoding": "identity"})
     assert response.status_code == 200
     data = response.json()
     
