@@ -8,6 +8,8 @@ import { MobileTrials } from './pages/MobileTrials';
 import { MobileFinancial } from './pages/MobileFinancial';
 import { MobileIntelligence } from './pages/MobileIntelligence';
 import { MobileNews } from './pages/MobileNews';
+import { MobileAIChat } from './pages/MobileAIChat';
+import { MobileCompanyDetail } from './pages/MobileCompanyDetail';
 
 // Import mobile layout
 import { MobileLayout } from './components/MobileLayout';
@@ -35,6 +37,8 @@ export function App() {
             <Route path="/financial" element={<MobileFinancial />} />
             <Route path="/intelligence" element={<MobileIntelligence />} />
             <Route path="/news" element={<MobileNews />} />
+            <Route path="/chat" element={<MobileAIChat />} />
+            <Route path="/company/:symbol" element={<MobileCompanyDetail />} />
           </Routes>
         </MobileLayout>
       </Router>

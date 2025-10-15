@@ -1,4 +1,6 @@
 import { FC, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { InteractiveStockChart } from '../components/InteractiveStockChart';
 import './MobileDashboard.css';
 
 // Sample data for dashboard metrics
@@ -15,8 +17,32 @@ const RECENT_CATALYSTS = [
   { title: 'Partnership Deal', company: 'GeneTech', priority: 'medium', time: '6h ago' },
 ];
 
+// Generate sample chart data for portfolio value
+const generatePortfolioData = () => {
+  const data = [];
+  const now = new Date();
+  let baseValue = 2400000000; // $2.4B
+
+  for (let i = 30; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+
+    const change = (Math.random() - 0.48) * 50000000; // $50M variance
+    baseValue = Math.max(baseValue + change, 2000000000);
+
+    data.push({
+      date: date.toISOString().split('T')[0],
+      value: parseFloat((baseValue / 1000000000).toFixed(3)), // Convert to billions
+    });
+  }
+
+  return data;
+};
+
 export const MobileDashboard: FC = () => {
+  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [portfolioData] = useState(() => generatePortfolioData());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,6 +51,10 @@ export const MobileDashboard: FC = () => {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handleCompanyClick = () => {
+    navigate('/company/VRTX');
+  };
 
   return (
     <div className="mobile-dashboard">
@@ -43,8 +73,22 @@ export const MobileDashboard: FC = () => {
       {/* Market Summary Card */}
       <div className="mobile-glass-panel">
         <div className="mobile-panel-header">
-          <h2 className="mobile-panel-title">Market Summary</h2>
+          <h2 className="mobile-panel-title">Portfolio Performance</h2>
           <span className="ios-badge ios-badge-success">Live</span>
+        </div>
+        <InteractiveStockChart
+          data={portfolioData}
+          title="Total Portfolio Value"
+          currentPrice={2.4}
+          change={0.125}
+          changePercent={5.2}
+        />
+      </div>
+
+      {/* Market Summary Metrics */}
+      <div className="mobile-glass-panel">
+        <div className="mobile-panel-header">
+          <h2 className="mobile-panel-title">Market Summary</h2>
         </div>
         <div className="mobile-grid-2">
           {SAMPLE_METRICS.map((metric, index) => (
@@ -91,13 +135,13 @@ export const MobileDashboard: FC = () => {
       <div className="mobile-glass-panel">
         <h2 className="mobile-panel-title">Quick Actions</h2>
         <div className="mobile-actions-grid">
-          <button className="mobile-action-button ios-touch-feedback">
-            <div className="mobile-action-icon">🔍</div>
-            <div className="mobile-action-label">Search Drugs</div>
+          <button className="mobile-action-button ios-touch-feedback" onClick={handleCompanyClick}>
+            <div className="mobile-action-icon">🏢</div>
+            <div className="mobile-action-label">Companies</div>
           </button>
-          <button className="mobile-action-button ios-touch-feedback">
-            <div className="mobile-action-icon">📈</div>
-            <div className="mobile-action-label">Analytics</div>
+          <button className="mobile-action-button ios-touch-feedback" onClick={() => navigate('/chat')}>
+            <div className="mobile-action-icon">🤖</div>
+            <div className="mobile-action-label">AI Assistant</div>
           </button>
           <button className="mobile-action-button ios-touch-feedback">
             <div className="mobile-action-icon">🔔</div>
