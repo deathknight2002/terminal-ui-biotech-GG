@@ -3,6 +3,7 @@ import { logger } from '../utils/logger.js';
 import { config } from '../config/environment.js';
 import { setupScrapingWebSocket } from '../scraping/websocket-integration.js';
 import { setupMonitoringWebSocket } from './monitoring-websocket.js';
+import { setupDriftAlertsWebSocket } from './drift-alerts-websocket.js';
 
 interface ClientData {
   userId?: string;
@@ -20,6 +21,9 @@ export function setupWebSocket(io: SocketServer): void {
 
   // Setup monitoring WebSocket handlers
   setupMonitoringWebSocket(io);
+
+  // Setup drift alerts WebSocket handlers
+  setupDriftAlertsWebSocket(io);
 
   io.on('connection', (socket) => {
     const clientId = socket.id;
@@ -158,6 +162,15 @@ export function broadcastSystemAlert(io: SocketServer, alert: any): void {
     timestamp: Date.now(),
   });
 }
+
+// Export drift alerts functions
+export { 
+  broadcastDriftAlert, 
+  broadcastModelMetrics, 
+  broadcastDriftAlertsBatch,
+  broadcastRetrainingComplete,
+  getDriftAlertStats
+} from './drift-alerts-websocket.js';
 
 // Get connection statistics
 export function getConnectionStats(): {
