@@ -30,9 +30,9 @@ const TAB_ITEMS: TabBarItem[] = [
     icon: '🔬',
   },
   {
-    path: '/financial',
-    label: 'Financial',
-    icon: '💰',
+    path: '/chat',
+    label: 'AI Chat',
+    icon: '🤖',
   },
   {
     path: '/intelligence',

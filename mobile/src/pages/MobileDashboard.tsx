@@ -1,4 +1,8 @@
 import { FC, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { InteractiveStockChart } from '../components/InteractiveStockChart';
+import { usePullToRefresh } from '../hooks/usePullToRefresh';
+import { useHapticFeedback } from '../hooks/useHapticFeedback';
 import './MobileDashboard.css';
 
 // Sample data for dashboard metrics
@@ -15,8 +19,45 @@ const RECENT_CATALYSTS = [
   { title: 'Partnership Deal', company: 'GeneTech', priority: 'medium', time: '6h ago' },
 ];
 
+// Generate sample chart data for portfolio value
+const generatePortfolioData = () => {
+  const data = [];
+  const now = new Date();
+  let baseValue = 2400000000; // $2.4B
+
+  for (let i = 30; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+
+    const change = (Math.random() - 0.48) * 50000000; // $50M variance
+    baseValue = Math.max(baseValue + change, 2000000000);
+
+    data.push({
+      date: date.toISOString().split('T')[0],
+      value: parseFloat((baseValue / 1000000000).toFixed(3)), // Convert to billions
+    });
+  }
+
+  return data;
+};
+
 export const MobileDashboard: FC = () => {
+  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [portfolioData, setPortfolioData] = useState(() => generatePortfolioData());
+  const { triggerHaptic } = useHapticFeedback();
+
+  // Pull to refresh functionality
+  const handleRefresh = async () => {
+    await triggerHaptic('medium');
+    // Simulate data refresh
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setPortfolioData(generatePortfolioData());
+    setCurrentTime(new Date());
+    await triggerHaptic('success');
+  };
+
+  const { isRefreshing, pullDistance } = usePullToRefresh(handleRefresh);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,8 +67,35 @@ export const MobileDashboard: FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const handleCompanyClick = async () => {
+    await triggerHaptic('light');
+    navigate('/company/VRTX');
+  };
+
+  const handleChatClick = async () => {
+    await triggerHaptic('light');
+    navigate('/chat');
+  };
+
   return (
     <div className="mobile-dashboard">
+      {/* Pull to Refresh Indicator */}
+      {pullDistance > 0 && (
+        <div
+          className="pull-to-refresh-indicator"
+          style={{
+            opacity: Math.min(pullDistance / 80, 1),
+            transform: `translateY(${Math.min(pullDistance, 80)}px)`,
+          }}
+        >
+          {isRefreshing ? (
+            <div className="refresh-spinner" />
+          ) : (
+            <div className="refresh-arrow">↓</div>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <div className="mobile-dashboard-header">
         <div className="mobile-page-title">Dashboard</div>
@@ -43,8 +111,22 @@ export const MobileDashboard: FC = () => {
       {/* Market Summary Card */}
       <div className="mobile-glass-panel">
         <div className="mobile-panel-header">
-          <h2 className="mobile-panel-title">Market Summary</h2>
+          <h2 className="mobile-panel-title">Portfolio Performance</h2>
           <span className="ios-badge ios-badge-success">Live</span>
+        </div>
+        <InteractiveStockChart
+          data={portfolioData}
+          title="Total Portfolio Value"
+          currentPrice={2.4}
+          change={0.125}
+          changePercent={5.2}
+        />
+      </div>
+
+      {/* Market Summary Metrics */}
+      <div className="mobile-glass-panel">
+        <div className="mobile-panel-header">
+          <h2 className="mobile-panel-title">Market Summary</h2>
         </div>
         <div className="mobile-grid-2">
           {SAMPLE_METRICS.map((metric, index) => (
@@ -91,13 +173,13 @@ export const MobileDashboard: FC = () => {
       <div className="mobile-glass-panel">
         <h2 className="mobile-panel-title">Quick Actions</h2>
         <div className="mobile-actions-grid">
-          <button className="mobile-action-button ios-touch-feedback">
-            <div className="mobile-action-icon">🔍</div>
-            <div className="mobile-action-label">Search Drugs</div>
+          <button className="mobile-action-button ios-touch-feedback" onClick={handleCompanyClick}>
+            <div className="mobile-action-icon">🏢</div>
+            <div className="mobile-action-label">Companies</div>
           </button>
-          <button className="mobile-action-button ios-touch-feedback">
-            <div className="mobile-action-icon">📈</div>
-            <div className="mobile-action-label">Analytics</div>
+          <button className="mobile-action-button ios-touch-feedback" onClick={handleChatClick}>
+            <div className="mobile-action-icon">🤖</div>
+            <div className="mobile-action-label">AI Assistant</div>
           </button>
           <button className="mobile-action-button ios-touch-feedback">
             <div className="mobile-action-icon">🔔</div>

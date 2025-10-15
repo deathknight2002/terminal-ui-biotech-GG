@@ -20,10 +20,17 @@
     "cap:run:ios": "cap run ios"
   },
   "dependencies": {
+    "@aparajita/capacitor-biometric-auth": "^9.0.0",
     "@biotech-terminal/frontend-components": "file:../frontend-components",
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",
+    "@capacitor/haptics": "^7.0.2",
     "@capacitor/ios": "^7.4.3",
+    "@capacitor/keyboard": "^7.0.3",
+    "@capacitor/local-notifications": "^7.0.3",
+    "@capacitor/push-notifications": "^7.0.3",
+    "@capacitor/share": "^7.0.2",
+    "@capacitor/status-bar": "^7.0.3",
     "@tanstack/react-query": "^5.12.2",
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
@@ -31,6 +38,8 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^6.20.1",
+    "recharts": "^3.2.1",
+    "victory-native": "^41.20.1",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
