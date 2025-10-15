@@ -37,6 +37,7 @@ export const MLMonitoringDashboard: React.FC<MLMonitoringDashboardProps> = ({
   modelNames = ['tfidf', 'finbert', 'biobert'],
   autoConnect = true,
   // refreshInterval is declared but not used yet - keeping for future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   refreshInterval: _refreshInterval = 5000,
   maxAlerts = 10,
 }) => {
