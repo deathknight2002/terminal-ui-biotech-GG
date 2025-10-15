@@ -89,7 +89,7 @@ export const API_ENDPOINTS = {
     OPPORTUNITIES: `${API_BASE_URL}/insights/opportunities`,
   },
   
-  // Advanced Intelligence - NEW
+  // Advanced Intelligence
   INTELLIGENCE: {
     DASHBOARD: `${API_BASE_URL}/intelligence/dashboard`,
     COMPREHENSIVE: (drugName: string) => `${API_BASE_URL}/intelligence/comprehensive/${encodeURIComponent(drugName)}`,
@@ -128,6 +128,42 @@ export const API_ENDPOINTS = {
   MARKET: {
     CHART: `${API_BASE_URL}/market/openbb/chart`,
     QUOTE: `${API_BASE_URL}/market/openbb/quote`,
+  },
+  
+  // FDA Intelligence
+  FDA: {
+    APPROVALS: `${API_BASE_URL}/fda/approvals`,
+    ADVERSE_EVENTS: `${API_BASE_URL}/fda/adverse-events`,
+    ADVERSE_COUNTS: `${API_BASE_URL}/fda/adverse-events/counts`,
+    RECALLS: `${API_BASE_URL}/fda/recalls`,
+    ENFORCEMENT: `${API_BASE_URL}/fda/enforcement`,
+    LABELS: `${API_BASE_URL}/fda/labels`,
+    DASHBOARD: `${API_BASE_URL}/fda/dashboard`,
+    SAFETY_SIGNALS: `${API_BASE_URL}/fda/safety-signals`,
+  },
+  
+  // Clinical Trials Intelligence
+  TRIALS: {
+    SEARCH: `${API_BASE_URL}/trials/search`,
+    RECRUITING: `${API_BASE_URL}/trials/recruiting`,
+    COMPLETED: `${API_BASE_URL}/trials/completed`,
+    DETAILS: (nctId: string) => `${API_BASE_URL}/trials/details/${nctId}`,
+    STATISTICS: `${API_BASE_URL}/trials/statistics`,
+    DASHBOARD: `${API_BASE_URL}/trials/dashboard`,
+    COMPETITIVE_LANDSCAPE: `${API_BASE_URL}/trials/competitive-landscape`,
+    ENROLLMENT_TRACKER: `${API_BASE_URL}/trials/enrollment-tracker`,
+  },
+  
+  // Research Intelligence (PubMed)
+  RESEARCH: {
+    SEARCH: `${API_BASE_URL}/research/search`,
+    PUBLICATION: (pmid: string) => `${API_BASE_URL}/research/publication/${pmid}`,
+    TRENDS: `${API_BASE_URL}/research/trends`,
+    DRUG: (drugName: string) => `${API_BASE_URL}/research/drug/${drugName}`,
+    DISEASE: (disease: string) => `${API_BASE_URL}/research/disease/${disease}`,
+    DASHBOARD: `${API_BASE_URL}/research/dashboard`,
+    HOT_TOPICS: `${API_BASE_URL}/research/hot-topics`,
+    COMPETITIVE_RESEARCH: `${API_BASE_URL}/research/competitive-research`,
   },
   
   // Admin

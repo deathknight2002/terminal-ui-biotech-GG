@@ -1,245 +1,437 @@
 """
-ClinicalTrials.gov Provider
+ClinicalTrials.gov Data Provider
 
-Integration with ClinicalTrials.gov API v2 for real-time clinical trial data.
-https://clinicaltrials.gov/data-api/api
+Provider for clinical trial data from ClinicalTrials.gov API.
+Access trial information, recruitment status, results, and study details.
 """
 
+import asyncio
 import httpx
-import logging
+from datetime import datetime
 from typing import Dict, List, Any, Optional
-from datetime import datetime, timedelta
-from .base import Provider
+from urllib.parse import urlencode
 
-logger = logging.getLogger(__name__)
+from .base import Provider
 
 
 class ClinicalTrialsProvider(Provider):
-    """Provider for ClinicalTrials.gov API v2 data"""
+    """Provider for ClinicalTrials.gov data"""
     
     BASE_URL = "https://clinicaltrials.gov/api/v2"
     
     def __init__(self):
-        super().__init__("ClinicalTrials")
-        self.session = None
-        
-    async def _get_session(self) -> httpx.AsyncClient:
-        """Get or create HTTP session"""
-        if self.session is None:
-            self.session = httpx.AsyncClient(timeout=30.0)
-        return self.session
+        super().__init__("clinicaltrials")
+        self._cache = {}
+        self._cache_ttl = 3600  # 1 hour cache
+        self._rate_limit_delay = 0.1  # 100ms between requests
+        self._last_request_time = 0.0
     
-    async def fetch_data(self, **kwargs) -> Dict[str, Any]:
-        """Fetch data from ClinicalTrials.gov API"""
-        endpoint = kwargs.get("endpoint", "studies")
-        params = kwargs.get("params", {})
+    async def _rate_limit(self):
+        """Implement rate limiting"""
+        now = asyncio.get_event_loop().time()
+        time_since_last = now - self._last_request_time
+        if time_since_last < self._rate_limit_delay:
+            await asyncio.sleep(self._rate_limit_delay - time_since_last)
+        self._last_request_time = asyncio.get_event_loop().time()
+    
+    async def _make_request(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Make HTTP request to ClinicalTrials.gov API"""
+        await self._rate_limit()
+        
+        url = f"{self.BASE_URL}{endpoint}"
         
         try:
-            session = await self._get_session()
-            url = f"{self.BASE_URL}/{endpoint}"
-            response = await session.get(url, params=params)
-            response.raise_for_status()
-            
-            return response.json()
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                return response.json()
+        except httpx.HTTPError as e:
+            self.logger.error(f"ClinicalTrials.gov API request failed: {e}")
+            return {"studies": []}
         except Exception as e:
-            self.logger.error(f"Error fetching ClinicalTrials data: {e}")
-            return {"error": str(e), "studies": []}
+            self.logger.error(f"Unexpected error in ClinicalTrials.gov request: {e}")
+            return {"studies": []}
     
-    async def search_trials(self, query: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Search clinical trials with filters"""
+    async def fetch_data(self, data_type: str = "studies", **kwargs) -> Dict[str, Any]:
+        """Fetch clinical trial data by type"""
+        
+        if data_type == "studies":
+            return await self.search_studies(**kwargs)
+        elif data_type == "study":
+            return await self.get_study_details(**kwargs)
+        elif data_type == "statistics":
+            return await self.get_statistics(**kwargs)
+        else:
+            raise ValueError(f"Unknown data type: {data_type}")
+    
+    async def search_studies(
+        self,
+        query: Optional[str] = None,
+        condition: Optional[str] = None,
+        intervention: Optional[str] = None,
+        sponsor: Optional[str] = None,
+        phase: Optional[str] = None,
+        status: Optional[str] = None,
+        country: Optional[str] = None,
+        limit: int = 100,
+        page: int = 1
+    ) -> Dict[str, Any]:
+        """
+        Search clinical trials
+        
+        Args:
+            query: General search query
+            condition: Condition/disease (e.g., "Cancer", "Diabetes")
+            intervention: Intervention/treatment (e.g., "Pembrolizumab")
+            sponsor: Sponsor organization
+            phase: Study phase (EARLY_PHASE1, PHASE1, PHASE2, PHASE3, PHASE4)
+            status: Recruitment status (RECRUITING, ACTIVE_NOT_RECRUITING, COMPLETED, etc.)
+            country: Country code (e.g., "US", "GB")
+            limit: Maximum number of results (max 1000)
+            page: Page number for pagination
+        """
         params = {
             "format": "json",
-            "pageSize": query.get("limit", 100),
+            "pageSize": min(limit, 1000),
+            "pageToken": str(page)
         }
         
-        # Add search filters
-        if query.get("condition"):
-            params["query.cond"] = query["condition"]
-        if query.get("intervention"):
-            params["query.intr"] = query["intervention"]
-        if query.get("sponsor"):
-            params["query.spons"] = query["sponsor"]
-        if query.get("status"):
-            params["filter.overallStatus"] = query["status"]
-        if query.get("phase"):
-            params["filter.phase"] = query["phase"]
+        # Build query string
+        query_parts = []
+        if query:
+            query_parts.append(query)
         
-        data = await self.fetch_data(endpoint="studies", params=params)
-        return data.get("studies", [])
-    
-    async def get_trial_by_nct(self, nct_id: str) -> Optional[Dict[str, Any]]:
-        """Get detailed trial information by NCT ID"""
-        try:
-            session = await self._get_session()
-            url = f"{self.BASE_URL}/studies/{nct_id}"
-            response = await session.get(url, params={"format": "json"})
-            response.raise_for_status()
-            
-            data = response.json()
-            return data.get("protocolSection", {})
-        except Exception as e:
-            self.logger.error(f"Error fetching trial {nct_id}: {e}")
-            return None
-    
-    async def get_trials_by_drug(self, drug_name: str, limit: int = 50) -> List[Dict[str, Any]]:
-        """Get trials for a specific drug/intervention"""
-        params = {
-            "query.intr": drug_name,
-            "format": "json",
-            "pageSize": limit
-        }
+        if condition:
+            query_parts.append(f"AREA[Condition]{condition}")
         
-        data = await self.fetch_data(endpoint="studies", params=params)
-        studies = data.get("studies", [])
+        if intervention:
+            query_parts.append(f"AREA[InterventionName]{intervention}")
         
-        # Extract relevant information
-        simplified_trials = []
-        for study in studies:
-            protocol = study.get("protocolSection", {})
-            identification = protocol.get("identificationModule", {})
+        if sponsor:
+            query_parts.append(f"AREA[LeadSponsorName]{sponsor}")
+        
+        if phase:
+            query_parts.append(f"AREA[Phase]{phase}")
+        
+        if status:
+            query_parts.append(f"AREA[OverallStatus]{status}")
+        
+        if country:
+            query_parts.append(f"AREA[LocationCountry]{country}")
+        
+        if query_parts:
+            params["query.term"] = " AND ".join(query_parts)
+        
+        result = await self._make_request("/studies", params)
+        
+        studies = []
+        for study_data in result.get("studies", []):
+            protocol = study_data.get("protocolSection", {})
+            id_module = protocol.get("identificationModule", {})
             status_module = protocol.get("statusModule", {})
             design_module = protocol.get("designModule", {})
+            eligibility_module = protocol.get("eligibilityModule", {})
             sponsor_module = protocol.get("sponsorCollaboratorsModule", {})
             
-            simplified_trials.append({
-                "nct_id": identification.get("nctId"),
-                "title": identification.get("briefTitle"),
-                "status": status_module.get("overallStatus"),
-                "phase": design_module.get("phases", []),
+            study = {
+                "nct_id": id_module.get("nctId"),
+                "title": id_module.get("briefTitle"),
+                "official_title": id_module.get("officialTitle"),
+                "brief_summary": protocol.get("descriptionModule", {}).get("briefSummary"),
+                "overall_status": status_module.get("overallStatus"),
                 "start_date": status_module.get("startDateStruct", {}).get("date"),
                 "completion_date": status_module.get("completionDateStruct", {}).get("date"),
+                "primary_completion_date": status_module.get("primaryCompletionDateStruct", {}).get("date"),
+                "last_update": status_module.get("lastUpdatePostDateStruct", {}).get("date"),
+                "study_type": design_module.get("studyType"),
+                "phases": design_module.get("phases", []),
                 "enrollment": design_module.get("enrollmentInfo", {}).get("count"),
-                "sponsor": sponsor_module.get("leadSponsor", {}).get("name"),
-                "conditions": protocol.get("conditionsModule", {}).get("conditions", [])
-            })
-        
-        return simplified_trials
-    
-    async def analyze_trial_success_rate(self, condition: str) -> Dict[str, Any]:
-        """Analyze trial success rates for a condition"""
-        # Get completed trials
-        completed_trials = await self.search_trials({
-            "condition": condition,
-            "status": "COMPLETED",
-            "limit": 100
-        })
-        
-        # Get active trials
-        active_trials = await self.search_trials({
-            "condition": condition,
-            "status": "RECRUITING,ACTIVE_NOT_RECRUITING",
-            "limit": 100
-        })
-        
-        # Analyze by phase
-        phase_distribution = {}
-        for trial in completed_trials + active_trials:
-            protocol = trial.get("protocolSection", {})
-            phases = protocol.get("designModule", {}).get("phases", ["UNKNOWN"])
-            for phase in phases:
-                phase_distribution[phase] = phase_distribution.get(phase, 0) + 1
+                "allocation": design_module.get("designInfo", {}).get("allocation"),
+                "intervention_model": design_module.get("designInfo", {}).get("interventionModel"),
+                "primary_purpose": design_module.get("designInfo", {}).get("primaryPurpose"),
+                "masking": design_module.get("designInfo", {}).get("maskingInfo", {}).get("masking"),
+                "lead_sponsor": sponsor_module.get("leadSponsor", {}).get("name"),
+                "collaborators": [c.get("name") for c in sponsor_module.get("collaborators", [])],
+                "conditions": protocol.get("conditionsModule", {}).get("conditions", []),
+                "interventions": [
+                    {
+                        "type": i.get("type"),
+                        "name": i.get("name"),
+                        "description": i.get("description")
+                    }
+                    for i in protocol.get("armsInterventionsModule", {}).get("interventions", [])
+                ],
+                "outcomes": [
+                    {
+                        "type": "primary",
+                        "measure": o.get("measure"),
+                        "description": o.get("description"),
+                        "time_frame": o.get("timeFrame")
+                    }
+                    for o in protocol.get("outcomesModule", {}).get("primaryOutcomes", [])
+                ],
+                "eligibility_criteria": eligibility_module.get("eligibilityCriteria"),
+                "sex": eligibility_module.get("sex"),
+                "minimum_age": eligibility_module.get("minimumAge"),
+                "maximum_age": eligibility_module.get("maximumAge"),
+                "healthy_volunteers": eligibility_module.get("healthyVolunteers"),
+            }
+            
+            studies.append(study)
         
         return {
-            "condition": condition,
-            "total_completed": len(completed_trials),
-            "total_active": len(active_trials),
-            "phase_distribution": phase_distribution,
-            "analysis_date": datetime.now().isoformat()
+            "data": studies,
+            "count": len(studies),
+            "total": result.get("totalCount", 0),
+            "page": page,
+            "source": "clinicaltrials.gov",
+            "timestamp": datetime.now().isoformat()
         }
     
-    async def predict_trial_timeline(self, nct_id: str) -> Dict[str, Any]:
-        """Predict trial timeline based on historical data"""
-        trial = await self.get_trial_by_nct(nct_id)
+    async def get_study_details(self, nct_id: str) -> Dict[str, Any]:
+        """
+        Get detailed information for a specific study
         
-        if not trial:
-            return {"error": "Trial not found"}
-        
-        status_module = trial.get("statusModule", {})
-        design_module = trial.get("designModule", {})
-        
-        start_date_str = status_module.get("startDateStruct", {}).get("date")
-        phases = design_module.get("phases", [])
-        enrollment = design_module.get("enrollmentInfo", {}).get("count", 0)
-        
-        # Simple timeline prediction (could be enhanced with ML)
-        phase_durations = {
-            "PHASE1": 12,  # months
-            "PHASE2": 24,
-            "PHASE3": 36,
-            "PHASE4": 24
+        Args:
+            nct_id: NCT identifier (e.g., "NCT04280705")
+        """
+        params = {
+            "format": "json",
+            "query.id": nct_id
         }
         
-        predicted_duration = max([phase_durations.get(phase, 24) for phase in phases]) if phases else 24
+        result = await self._make_request("/studies", params)
         
-        # Adjust for enrollment size
-        if enrollment > 500:
-            predicted_duration *= 1.5
-        elif enrollment > 1000:
-            predicted_duration *= 2.0
+        if not result.get("studies"):
+            return {
+                "error": f"Study {nct_id} not found",
+                "data": None,
+                "source": "clinicaltrials.gov"
+            }
         
-        predicted_completion = None
-        if start_date_str:
-            try:
-                start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-                predicted_completion = (start_date + timedelta(days=predicted_duration*30)).strftime("%Y-%m-%d")
-            except:
+        study_data = result["studies"][0]
+        protocol = study_data.get("protocolSection", {})
+        results_section = study_data.get("resultsSection", {})
+        
+        # Extract comprehensive details
+        id_module = protocol.get("identificationModule", {})
+        status_module = protocol.get("statusModule", {})
+        design_module = protocol.get("designModule", {})
+        arms_module = protocol.get("armsInterventionsModule", {})
+        outcomes_module = protocol.get("outcomesModule", {})
+        eligibility_module = protocol.get("eligibilityModule", {})
+        contacts_module = protocol.get("contactsLocationsModule", {})
+        references_module = protocol.get("referencesModule", {})
+        
+        study = {
+            "nct_id": id_module.get("nctId"),
+            "title": id_module.get("briefTitle"),
+            "official_title": id_module.get("officialTitle"),
+            "acronym": id_module.get("acronym"),
+            "organization": id_module.get("organization", {}).get("fullName"),
+            "brief_summary": protocol.get("descriptionModule", {}).get("briefSummary"),
+            "detailed_description": protocol.get("descriptionModule", {}).get("detailedDescription"),
+            
+            # Status information
+            "overall_status": status_module.get("overallStatus"),
+            "why_stopped": status_module.get("whyStopped"),
+            "start_date": status_module.get("startDateStruct", {}).get("date"),
+            "completion_date": status_module.get("completionDateStruct", {}).get("date"),
+            "primary_completion_date": status_module.get("primaryCompletionDateStruct", {}).get("date"),
+            "study_first_post": status_module.get("studyFirstPostDateStruct", {}).get("date"),
+            "results_first_post": status_module.get("resultsFirstPostDateStruct", {}).get("date"),
+            "last_update": status_module.get("lastUpdatePostDateStruct", {}).get("date"),
+            
+            # Design information
+            "study_type": design_module.get("studyType"),
+            "phases": design_module.get("phases", []),
+            "enrollment": design_module.get("enrollmentInfo", {}).get("count"),
+            "allocation": design_module.get("designInfo", {}).get("allocation"),
+            "intervention_model": design_module.get("designInfo", {}).get("interventionModel"),
+            "primary_purpose": design_module.get("designInfo", {}).get("primaryPurpose"),
+            "masking": design_module.get("designInfo", {}).get("maskingInfo", {}).get("masking"),
+            
+            # Study arms
+            "arms": [
+                {
+                    "label": arm.get("label"),
+                    "type": arm.get("type"),
+                    "description": arm.get("description"),
+                    "interventions": arm.get("interventionNames", [])
+                }
+                for arm in arms_module.get("armGroups", [])
+            ],
+            
+            # Interventions
+            "interventions": [
+                {
+                    "type": i.get("type"),
+                    "name": i.get("name"),
+                    "description": i.get("description"),
+                    "arm_group_labels": i.get("armGroupLabels", []),
+                    "other_names": i.get("otherNames", [])
+                }
+                for i in arms_module.get("interventions", [])
+            ],
+            
+            # Outcomes
+            "primary_outcomes": [
+                {
+                    "measure": o.get("measure"),
+                    "description": o.get("description"),
+                    "time_frame": o.get("timeFrame")
+                }
+                for o in outcomes_module.get("primaryOutcomes", [])
+            ],
+            "secondary_outcomes": [
+                {
+                    "measure": o.get("measure"),
+                    "description": o.get("description"),
+                    "time_frame": o.get("timeFrame")
+                }
+                for o in outcomes_module.get("secondaryOutcomes", [])
+            ],
+            
+            # Eligibility
+            "eligibility_criteria": eligibility_module.get("eligibilityCriteria"),
+            "sex": eligibility_module.get("sex"),
+            "minimum_age": eligibility_module.get("minimumAge"),
+            "maximum_age": eligibility_module.get("maximumAge"),
+            "healthy_volunteers": eligibility_module.get("healthyVolunteers"),
+            
+            # Locations
+            "locations": [
+                {
+                    "facility": loc.get("facility"),
+                    "city": loc.get("city"),
+                    "state": loc.get("state"),
+                    "country": loc.get("country"),
+                    "status": loc.get("status")
+                }
+                for loc in contacts_module.get("locations", [])
+            ],
+            
+            # References
+            "references": [
+                {
+                    "pmid": ref.get("pmid"),
+                    "citation": ref.get("citation"),
+                    "type": ref.get("type")
+                }
+                for ref in references_module.get("references", [])
+            ],
+            
+            # Results if available
+            "has_results": results_section is not None and len(results_section) > 0,
+        }
+        
+        return {
+            "data": study,
+            "source": "clinicaltrials.gov",
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    async def get_statistics(
+        self,
+        group_by: str = "phase",
+        condition: Optional[str] = None,
+        sponsor: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Get aggregated statistics about clinical trials
+        
+        Args:
+            group_by: Field to group by (phase, status, sponsor, country)
+            condition: Filter by condition
+            sponsor: Filter by sponsor
+        """
+        # Note: ClinicalTrials.gov API v2 doesn't have direct aggregation
+        # We'll need to fetch and aggregate client-side
+        
+        # Fetch studies with filters
+        studies_result = await self.search_studies(
+            condition=condition,
+            sponsor=sponsor,
+            limit=1000
+        )
+        
+        studies = studies_result.get("data", [])
+        
+        # Aggregate by requested field
+        aggregation = {}
+        
+        for study in studies:
+            if group_by == "phase":
+                phases = study.get("phases", [])
+                for phase in phases:
+                    aggregation[phase] = aggregation.get(phase, 0) + 1
+            elif group_by == "status":
+                status = study.get("overall_status", "Unknown")
+                aggregation[status] = aggregation.get(status, 0) + 1
+            elif group_by == "sponsor":
+                sponsor_name = study.get("lead_sponsor", "Unknown")
+                aggregation[sponsor_name] = aggregation.get(sponsor_name, 0) + 1
+            elif group_by == "country":
+                # Would need to aggregate from locations
                 pass
         
+        # Convert to list format
+        stats = [
+            {"category": key, "count": value}
+            for key, value in sorted(aggregation.items(), key=lambda x: x[1], reverse=True)
+        ]
+        
         return {
-            "nct_id": nct_id,
-            "current_status": status_module.get("overallStatus"),
-            "phases": phases,
-            "enrollment": enrollment,
-            "predicted_duration_months": round(predicted_duration),
-            "predicted_completion_date": predicted_completion,
-            "confidence": "low"  # This is a simplified prediction
+            "data": stats,
+            "group_by": group_by,
+            "total_studies": len(studies),
+            "source": "clinicaltrials.gov",
+            "timestamp": datetime.now().isoformat()
         }
     
-    async def get_competitive_trials(self, condition: str, sponsor: Optional[str] = None) -> Dict[str, Any]:
-        """Get competitive landscape for trials in a specific condition"""
-        all_trials = await self.search_trials({
-            "condition": condition,
-            "limit": 100
-        })
-        
-        # Group by sponsor
-        sponsor_counts = {}
-        sponsor_phases = {}
-        
-        for trial in all_trials:
-            protocol = trial.get("protocolSection", {})
-            trial_sponsor = protocol.get("sponsorCollaboratorsModule", {}).get("leadSponsor", {}).get("name", "Unknown")
-            phases = protocol.get("designModule", {}).get("phases", [])
-            
-            sponsor_counts[trial_sponsor] = sponsor_counts.get(trial_sponsor, 0) + 1
-            
-            if trial_sponsor not in sponsor_phases:
-                sponsor_phases[trial_sponsor] = []
-            sponsor_phases[trial_sponsor].extend(phases)
-        
-        # Sort by number of trials
-        top_sponsors = sorted(sponsor_counts.items(), key=lambda x: x[1], reverse=True)[:10]
-        
-        return {
-            "condition": condition,
-            "total_trials": len(all_trials),
-            "unique_sponsors": len(sponsor_counts),
-            "top_sponsors": [{"name": s[0], "trial_count": s[1]} for s in top_sponsors],
-            "focus_sponsor": sponsor,
-            "focus_sponsor_trials": sponsor_counts.get(sponsor, 0) if sponsor else None
-        }
+    async def get_recruiting_trials(
+        self,
+        condition: Optional[str] = None,
+        phase: Optional[str] = None,
+        country: str = "US",
+        limit: int = 100
+    ) -> Dict[str, Any]:
+        """Get currently recruiting trials"""
+        return await self.search_studies(
+            condition=condition,
+            phase=phase,
+            country=country,
+            status="RECRUITING",
+            limit=limit
+        )
+    
+    async def get_completed_trials_with_results(
+        self,
+        condition: Optional[str] = None,
+        limit: int = 100
+    ) -> Dict[str, Any]:
+        """Get completed trials that have posted results"""
+        return await self.search_studies(
+            condition=condition,
+            status="COMPLETED",
+            limit=limit
+        )
     
     def get_schema(self) -> Dict[str, Any]:
-        """Get the data schema for ClinicalTrials"""
+        """Get data schema for ClinicalTrials provider"""
         return {
-            "type": "object",
-            "required": ["studies"],
-            "properties": {
-                "studies": {"type": "array"}
+            "studies": {
+                "required": ["nct_id", "title", "overall_status"],
+                "optional": [
+                    "phases", "conditions", "interventions", "sponsor",
+                    "enrollment", "start_date", "completion_date"
+                ]
+            },
+            "study_details": {
+                "required": ["nct_id", "title", "brief_summary"],
+                "optional": [
+                    "detailed_description", "arms", "outcomes", 
+                    "eligibility_criteria", "locations", "references"
+                ]
             }
         }
-    
-    async def close(self):
-        """Close HTTP session"""
-        if self.session:
-            await self.session.aclose()
