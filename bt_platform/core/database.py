@@ -151,12 +151,25 @@ class Article(Base):
     ingested_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
+    # Point-in-time archive fields
+    fetched_at = Column(DateTime(timezone=True), server_default=func.now())
+    canonical_key = Column(String, index=True)  # normalized(title) for dedupe
+    fulltext = Column(Text)
+    ta_tags = Column(JSON)  # ["SMA","GLP-1","Oncology",...] therapeutic areas
+    importance = Column(String)  # Critical, High, Medium, Low
+    relevance_score = Column(Integer)
+    cross_source_count = Column(Integer, default=1)
+    
     # Relationships
     sentiments = relationship("Sentiment", back_populates="article", cascade="all, delete-orphan")
+    entities = relationship("ArticleEntity", back_populates="article", cascade="all, delete-orphan")
+    reactions = relationship("ArticleReaction", back_populates="article", cascade="all, delete-orphan")
     
     __table_args__ = (
         Index('idx_article_source_date', 'source', 'published_at'),
         Index('idx_article_hash', 'hash'),
+        Index('idx_article_canonical_key', 'canonical_key'),
+        Index('idx_article_importance', 'importance'),
     )
 
 
@@ -176,6 +189,118 @@ class Sentiment(Base):
     
     __table_args__ = (
         Index('idx_sentiment_article_domain', 'article_id', 'domain'),
+    )
+
+
+class Entity(Base):
+    """Entities: companies, drugs, diseases, targets, ETFs"""
+    __tablename__ = "entities"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    kind = Column(String, nullable=False, index=True)  # company, drug, disease, target, etf
+    name = Column(String, nullable=False, index=True)
+    ticker = Column(String, index=True)  # for companies/ETFs
+    exchange = Column(String)
+    synonyms = Column(JSON)  # List of synonyms
+    attributes = Column(JSON)  # optional: moa, mechanism, etc.
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    article_links = relationship("ArticleEntity", back_populates="entity", cascade="all, delete-orphan")
+    snapshots = relationship("CompanySnapshot", back_populates="entity", cascade="all, delete-orphan")
+    etf_memberships = relationship("ETFConstituent", back_populates="member_entity", foreign_keys="ETFConstituent.member_entity_id")
+    reactions = relationship("ArticleReaction", back_populates="entity", cascade="all, delete-orphan")
+    
+    __table_args__ = (
+        Index('idx_entity_kind_name', 'kind', 'name'),
+        Index('idx_entity_ticker', 'ticker'),
+    )
+
+
+class ArticleEntity(Base):
+    """Article ↔ Entity linking with role and confidence"""
+    __tablename__ = "article_entities"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False, index=True)
+    entity_id = Column(Integer, ForeignKey('entities.id'), nullable=False, index=True)
+    role = Column(String, nullable=False, index=True)  # primary, mentioned, competitor, etf
+    confidence = Column(Float)  # 0-1 confidence score
+    weight = Column(Float)  # exposure weight
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    article = relationship("Article", back_populates="entities")
+    entity = relationship("Entity", back_populates="article_links")
+    
+    __table_args__ = (
+        Index('idx_article_entity_role', 'article_id', 'entity_id', 'role'),
+    )
+
+
+class CompanySnapshot(Base):
+    """Point-in-time market cap snapshot"""
+    __tablename__ = "company_snapshots"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    entity_id = Column(Integer, ForeignKey('entities.id'), nullable=False, index=True)
+    asof_date = Column(DateTime, nullable=False, index=True)
+    market_cap = Column(Float)
+    cap_bucket = Column(String)  # Micro, Small, Mid, Large, Mega
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationship
+    entity = relationship("Entity", back_populates="snapshots")
+    
+    __table_args__ = (
+        Index('idx_company_snapshot_date', 'entity_id', 'asof_date'),
+    )
+
+
+class ETFConstituent(Base):
+    """Point-in-time ETF constituents snapshot"""
+    __tablename__ = "etf_constituents"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    etf_entity_id = Column(Integer, ForeignKey('entities.id'), nullable=False, index=True)
+    asof_date = Column(DateTime, nullable=False, index=True)
+    member_entity_id = Column(Integer, ForeignKey('entities.id'), nullable=False, index=True)
+    weight = Column(Float)  # 0-1 weight in ETF
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    etf_entity = relationship("Entity", foreign_keys=[etf_entity_id])
+    member_entity = relationship("Entity", foreign_keys=[member_entity_id], back_populates="etf_memberships")
+    
+    __table_args__ = (
+        Index('idx_etf_constituent', 'etf_entity_id', 'asof_date', 'member_entity_id'),
+    )
+
+
+class ArticleReaction(Base):
+    """Price reaction per article x ticker"""
+    __tablename__ = "article_reactions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    article_id = Column(Integer, ForeignKey('articles.id'), nullable=False, index=True)
+    entity_id = Column(Integer, ForeignKey('entities.id'), nullable=False, index=True)  # ticker
+    event_time = Column(DateTime(timezone=True), nullable=False)
+    window = Column(String, nullable=False)  # e.g., '[-1d,+1d]', '[0,+60m]'
+    raw_return = Column(Float)  # % return
+    benchmark_entity_id = Column(Integer, ForeignKey('entities.id'))  # XBI or custom basket
+    abnormal_return = Column(Float)  # vs benchmark
+    p_value = Column(Float)  # optional significance test
+    notes = Column(Text)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Relationships
+    article = relationship("Article", back_populates="reactions")
+    entity = relationship("Entity", back_populates="reactions")
+    benchmark_entity = relationship("Entity", foreign_keys=[benchmark_entity_id])
+    
+    __table_args__ = (
+        Index('idx_article_reaction', 'article_id', 'entity_id', 'window'),
     )
 
 
