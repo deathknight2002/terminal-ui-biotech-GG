@@ -4,6 +4,7 @@ import { config } from '../config/environment.js';
 import { setupScrapingWebSocket } from '../scraping/websocket-integration.js';
 import { setupMonitoringWebSocket } from './monitoring-websocket.js';
 import { setupDriftAlertsWebSocket } from './drift-alerts-websocket.js';
+import { setupAIChatWebSocket } from './ai-chat-websocket.js';
 
 interface ClientData {
   userId?: string;
@@ -24,6 +25,9 @@ export function setupWebSocket(io: SocketServer): void {
 
   // Setup drift alerts WebSocket handlers
   setupDriftAlertsWebSocket(io);
+
+  // Setup AI chat WebSocket handlers
+  setupAIChatWebSocket(io);
 
   io.on('connection', (socket) => {
     const clientId = socket.id;

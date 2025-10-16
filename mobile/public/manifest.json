@@ -1,0 +1,56 @@
+{
+  "name": "Biotech Terminal",
+  "short_name": "BioTerminal",
+  "description": "Pharmaceutical intelligence and biotech market data",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["finance", "medical", "business"],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View portfolio dashboard",
+      "url": "/?shortcut=dashboard",
+      "icons": [{ "src": "/icon-dashboard.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Pipeline",
+      "short_name": "Pipeline",
+      "description": "View drug pipeline",
+      "url": "/?shortcut=pipeline",
+      "icons": [{ "src": "/icon-pipeline.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "News",
+      "short_name": "News",
+      "description": "View biotech news",
+      "url": "/?shortcut=news",
+      "icons": [{ "src": "/icon-news.png", "sizes": "96x96" }]
+    }
+  ]
+}
