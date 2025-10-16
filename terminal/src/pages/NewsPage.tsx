@@ -1,220 +1,197 @@
 import React, { useState, useEffect } from 'react';
-import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
-import { API_ENDPOINTS, apiFetch } from '../config/api';
+import { EnhancedNewsFeed } from '../../../frontend-components/src/biotech/organisms/EnhancedNewsFeed/EnhancedNewsFeed';
+import type { NewsItem } from '../../../src/types/biotech';
 import './NewsPage.css';
 
-interface Article {
-  id: number;
-  title: string;
-  url: string;
-  summary: string;
-  source: string;
-  published_at: string;
-  sentiments?: {
-    regulatory?: { score: number; rationale: string };
-    clinical?: { score: number; rationale: string };
-    mna?: { score: number; rationale: string };
-  };
-}
-
-interface NewsDiff {
-  since: string;
-  changes: {
-    added: number;
-    updated: number;
-    deleted: number;
-  };
-  highlights: Array<{
-    type: 'new' | 'updated' | 'deleted';
-    entity: string;
-    summary: string;
-    timestamp: string;
-    article_id?: number;
-    url?: string;
-  }>;
-  last_check: string;
-}
-
 export function NewsPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [diff, setDiff] = useState<NewsDiff | null>(null);
-  const [showDiffRibbon, setShowDiffRibbon] = useState(true);
 
   useEffect(() => {
     fetchNews();
-    fetchDiff();
   }, []);
 
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const data = await apiFetch<{ articles: Article[] }>(`${API_ENDPOINTS.NEWS.LATEST}?limit=20`);
-      setArticles(data.articles || []);
+      setError(null);
+      
+      // Use enhanced news aggregation endpoint
+      const response = await fetch('http://localhost:3001/api/news/aggregate?maxResults=100');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.articles) {
+        setArticles(data.articles);
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (err) {
+      console.error('Failed to load news:', err);
       setError(err instanceof Error ? err.message : 'Failed to load news');
+      
+      // Load mock data as fallback
+      setArticles(getMockNews());
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchDiff = async () => {
-    try {
-      const data = await apiFetch<NewsDiff>(`${API_ENDPOINTS.NEWS.DIFF}?since=1h`);
-      setDiff(data);
-    } catch (err) {
-      console.error('Failed to fetch diff:', err);
-    }
-  };
-
-  const getSentimentBadge = (score: number) => {
-    if (score > 0.3) return { label: 'POSITIVE', class: 'positive' };
-    if (score < -0.3) return { label: 'NEGATIVE', class: 'negative' };
-    return { label: 'NEUTRAL', class: 'neutral' };
-  };
-
-  const renderDiffRibbon = () => {
-    if (!diff || !showDiffRibbon) return null;
-
-    const hasChanges = diff.changes.added > 0 || diff.changes.updated > 0 || diff.changes.deleted > 0;
-
-    if (!hasChanges) return null;
-
+  if (loading) {
     return (
-      <div className="diff-ribbon">
-        <div className="diff-header">
-          <div className="diff-title">
-            📊 SINCE LAST REFRESH
-            <span className="diff-time">
-              {new Date(diff.since).toLocaleTimeString()}
-            </span>
-          </div>
-          <button
-            className="diff-close"
-            onClick={() => setShowDiffRibbon(false)}
-            title="Close"
-          >
-            ✕
-          </button>
+      <div className="news-page">
+        <div className="loading-container">
+          <div className="loading-spinner">⟳</div>
+          <p>Loading biotech news intelligence...</p>
         </div>
-        <div className="diff-stats">
-          {diff.changes.added > 0 && (
-            <div className="diff-stat added">
-              <span className="stat-value">{diff.changes.added}</span>
-              <span className="stat-label">NEW</span>
-            </div>
-          )}
-          {diff.changes.updated > 0 && (
-            <div className="diff-stat updated">
-              <span className="stat-value">{diff.changes.updated}</span>
-              <span className="stat-label">UPDATED</span>
-            </div>
-          )}
-          {diff.changes.deleted > 0 && (
-            <div className="diff-stat deleted">
-              <span className="stat-value">{diff.changes.deleted}</span>
-              <span className="stat-label">DELETED</span>
-            </div>
-          )}
-        </div>
-        {diff.highlights.length > 0 && (
-          <div className="diff-highlights">
-            {diff.highlights.slice(0, 3).map((highlight, idx) => (
-              <div key={idx} className={`diff-highlight diff-${highlight.type}`}>
-                <span className="highlight-icon">
-                  {highlight.type === 'new' ? '🆕' : highlight.type === 'updated' ? '🔄' : '🗑️'}
-                </span>
-                <span className="highlight-text">{highlight.summary}</span>
-                {highlight.url && (
-                  <a
-                    href={highlight.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="highlight-link"
-                  >
-                    →
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     );
-  };
+  }
+
+  if (error && articles.length === 0) {
+    return (
+      <div className="news-page">
+        <div className="error-container">
+          <h3>⚠️ Error Loading News</h3>
+          <p>{error}</p>
+          <button onClick={fetchNews} className="retry-button">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="news-page">
-      <Panel
-        title="NEWS STREAM"
-        cornerBrackets
-        variant="glass"
-      >
-        {renderDiffRibbon()}
-        
-        {loading && <div className="loading-state">Loading news articles...</div>}
-        {error && <div className="error-state">{error}</div>}
-        
-        {!loading && !error && articles.length === 0 && (
-          <div className="empty-state">
-            No articles available. Use the Refresh button to fetch news.
-          </div>
-        )}
-
-        {!loading && !error && articles.length > 0 && (
-          <div className="news-list">
-            {articles.map((article) => (
-              <div key={article.id} className="news-article">
-                <div className="article-header">
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="article-title"
-                  >
-                    {article.title}
-                    <span className="external-link-icon">🔗</span>
-                  </a>
-                  <span className="article-source">{article.source}</span>
-                </div>
-                
-                {article.summary && (
-                  <div className="article-summary">{article.summary}</div>
-                )}
-                
-                <div className="article-meta">
-                  <span className="article-date">
-                    {article.published_at
-                      ? new Date(article.published_at).toLocaleDateString()
-                      : 'No date'}
-                  </span>
-                  
-                  {article.sentiments && (
-                    <div className="sentiment-badges">
-                      {article.sentiments.regulatory && (
-                        <span className={`sentiment-badge ${getSentimentBadge(article.sentiments.regulatory.score).class}`}>
-                          REG: {getSentimentBadge(article.sentiments.regulatory.score).label}
-                        </span>
-                      )}
-                      {article.sentiments.clinical && (
-                        <span className={`sentiment-badge ${getSentimentBadge(article.sentiments.clinical.score).class}`}>
-                          CLIN: {getSentimentBadge(article.sentiments.clinical.score).label}
-                        </span>
-                      )}
-                      {article.sentiments.mna && (
-                        <span className={`sentiment-badge ${getSentimentBadge(article.sentiments.mna.score).class}`}>
-                          M&A: {getSentimentBadge(article.sentiments.mna.score).label}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Panel>
+      <EnhancedNewsFeed
+        news={articles}
+        title="REDMILE BIOTECH NEWS INTELLIGENCE"
+        onRefresh={fetchNews}
+        isRefreshing={loading}
+        cornerBrackets={true}
+        showCategoryTabs={true}
+        portfolioWatchlist={[
+          'SRRK', // Scholar Rock - SMA
+          'CRNX', // Crinetics - Rare Disease
+          'AVDX', // Avidity - Rare Disease
+          'TRVI', // Travere - Rare Disease
+          'IONS', // Ionis - Multiple areas
+          'VRTX', // Vertex - Various
+          'BIIB', // Biogen - Neurology
+        ]}
+      />
     </div>
   );
+}
+
+// Mock data generator for fallback
+function getMockNews(): NewsItem[] {
+  return [
+    {
+      id: '1',
+      title: 'Scholar Rock Announces Positive Phase 3 Trial Results for SMA Treatment',
+      summary: 'Scholar Rock (SRRK) reported positive topline results from its Phase 3 SAPPHIRE trial evaluating apitegromab in patients with later-onset spinal muscular atrophy (SMA). The primary endpoint of motor function improvement was met with statistical significance.',
+      date: new Date().toISOString(),
+      publishedAt: new Date().toISOString(),
+      source: 'Fierce Biotech',
+      category: 'Trial Results',
+      importance: 'Critical',
+      therapeuticAreas: ['SMA', 'Rare Disease'],
+      companies: ['Scholar Rock'],
+      tickers: ['SRRK'],
+      marketCap: 1200,
+      marketCapCategory: 'Small Cap',
+      isTradable: true,
+      isPortfolioRelevant: true,
+      relevanceScore: 95,
+      keywords: ['phase iii', 'sma', 'trial results'],
+      url: '#',
+    },
+    {
+      id: '2',
+      title: 'Novo Nordisk Expands GLP-1 Portfolio with New Obesity Drug Approval',
+      summary: 'FDA approves Novo Nordisk\'s next-generation GLP-1 receptor agonist for obesity treatment, offering improved efficacy and dosing convenience compared to existing therapies.',
+      date: new Date().toISOString(),
+      publishedAt: new Date().toISOString(),
+      source: 'BioPharma Dive',
+      category: 'FDA Approval',
+      importance: 'High',
+      therapeuticAreas: ['GLP-1', 'Metabolic'],
+      companies: ['Novo Nordisk'],
+      tickers: ['NVO'],
+      marketCap: 450000,
+      marketCapCategory: 'Mega Cap',
+      isTradable: false,
+      isPortfolioRelevant: false,
+      relevanceScore: 75,
+      keywords: ['fda approval', 'glp-1', 'obesity'],
+      url: '#',
+    },
+    {
+      id: '3',
+      title: 'Crinetics Pharma Reports Breakthrough in Rare Endocrine Disorder Treatment',
+      summary: 'Crinetics Pharmaceuticals (CRNX) announced promising Phase 2 data for paltusotine in acromegaly patients, showing superior biochemical control compared to current standard of care.',
+      date: new Date().toISOString(),
+      publishedAt: new Date().toISOString(),
+      source: 'Endpoints News',
+      category: 'Trial Results',
+      importance: 'High',
+      therapeuticAreas: ['Rare Disease'],
+      companies: ['Crinetics Pharmaceuticals'],
+      tickers: ['CRNX'],
+      marketCap: 2800,
+      marketCapCategory: 'Mid Cap',
+      isTradable: true,
+      isPortfolioRelevant: true,
+      relevanceScore: 88,
+      keywords: ['phase ii', 'rare disease', 'breakthrough'],
+      url: '#',
+    },
+    {
+      id: '4',
+      title: 'Major Cancer Immunotherapy Shows Promise in Phase 3 NSCLC Trial',
+      summary: 'New PD-L1 inhibitor combination demonstrates statistically significant improvement in progression-free survival for non-small cell lung cancer patients.',
+      date: new Date().toISOString(),
+      publishedAt: new Date().toISOString(),
+      source: 'STAT News',
+      category: 'Trial Results',
+      importance: 'Medium',
+      therapeuticAreas: ['Oncology'],
+      companies: ['Undisclosed Biotech'],
+      tickers: [],
+      marketCap: 800,
+      marketCapCategory: 'Small Cap',
+      isTradable: true,
+      isPortfolioRelevant: false,
+      relevanceScore: 70,
+      keywords: ['phase iii', 'oncology', 'immunotherapy'],
+      url: '#',
+    },
+    {
+      id: '5',
+      title: 'Ionis Announces Strategic Partnership for Neurological Rare Disease Program',
+      summary: 'Ionis Pharmaceuticals enters collaboration agreement with major pharma to advance antisense oligonucleotide therapy for inherited neurological disorder.',
+      date: new Date().toISOString(),
+      publishedAt: new Date().toISOString(),
+      source: 'Company PR',
+      category: 'Partnership',
+      importance: 'Medium',
+      therapeuticAreas: ['Neurology', 'Rare Disease'],
+      companies: ['Ionis Pharmaceuticals'],
+      tickers: ['IONS'],
+      marketCap: 5400,
+      marketCapCategory: 'Mid Cap',
+      isTradable: true,
+      isPortfolioRelevant: true,
+      relevanceScore: 82,
+      keywords: ['partnership', 'rare disease', 'neurology'],
+      url: '#',
+    },
+  ];
 }

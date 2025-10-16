@@ -18,6 +18,7 @@ import { analyticsRouter } from './routes/analytics.js';
 import { scrapingRouter } from './routes/scraping.js';
 import { monitoringRouter } from './routes/monitoring.js';
 import { newBiotechNewsRouter } from './routes/new-biotech-news.js';
+import { enhancedNewsRouter } from './routes/enhanced-news.js';
 import { epidemiologyRouter } from './routes/epidemiology.js';
 import { notificationRouter } from './routes/notifications.js';
 import { widgetRouter } from './routes/widgets.js';
@@ -82,6 +83,7 @@ async function startServer() {
     app.use('/api/scraping', scrapingRouter);
     app.use('/api/monitoring', monitoringRouter);
     app.use('/api/scraping/news', newBiotechNewsRouter);
+    app.use('/api/news', enhancedNewsRouter); // Enhanced news aggregation
     app.use('/api/epidemiology', epidemiologyRouter);
     app.use('/api/notifications', notificationRouter);
     app.use('/api/widgets', widgetRouter);

@@ -113,6 +113,26 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  align-items: center;
+}
+
+.tags strong {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #888);
+  margin-right: 0.25rem;
+}
+
+.sentiment {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+.sentiment strong {
+  color: var(--text-secondary, #888);
 }
 
 .actions {

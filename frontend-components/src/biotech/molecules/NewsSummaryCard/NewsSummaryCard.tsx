@@ -43,16 +43,35 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
   const getCategoryVariant = (category?: string): 'default' | 'primary' | 'success' | 'error' | 'warning' | 'info' | 'idle' => {
     switch (category) {
       case 'Clinical':
+      case 'Trial Results':
         return 'info';
       case 'Regulatory':
+      case 'FDA Approval':
         return 'warning';
       case 'Commercial':
+      case 'Pipeline Update':
         return 'success';
       case 'Corporate':
       case 'M&A':
+      case 'Partnership':
         return 'info';
+      case 'Financing':
+        return 'primary';
       default:
         return 'default';
+    }
+  };
+
+  const getImportanceBadge = (importance?: string) => {
+    switch (importance) {
+      case 'Critical':
+        return { text: '🚨 CRITICAL', variant: 'error' as const };
+      case 'High':
+        return { text: '⚠️ HIGH', variant: 'warning' as const };
+      case 'Medium':
+        return { text: 'MEDIUM', variant: 'info' as const };
+      default:
+        return null;
     }
   };
 
@@ -73,9 +92,29 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
               {news.category}
             </Badge>
           )}
+          {news.importance && getImportanceBadge(news.importance) && (
+            <Badge variant={getImportanceBadge(news.importance)!.variant}>
+              {getImportanceBadge(news.importance)!.text}
+            </Badge>
+          )}
           {news.impact && (
             <Badge variant={getImpactVariant(news.impact)}>
               {news.impact} IMPACT
+            </Badge>
+          )}
+          {news.isTradable && (
+            <Badge variant="success">
+              📊 TRADABLE
+            </Badge>
+          )}
+          {news.isPortfolioRelevant && (
+            <Badge variant="primary">
+              ⭐ PORTFOLIO
+            </Badge>
+          )}
+          {news.marketCapCategory && ['Small Cap', 'Micro Cap', 'Mid Cap'].includes(news.marketCapCategory) && (
+            <Badge variant="info">
+              {news.marketCapCategory}
             </Badge>
           )}
         </div>
@@ -86,6 +125,32 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
           <div className={styles.summary}>
             {news.summary}
           </div>
+          
+          {/* Display therapeutic areas */}
+          {news.therapeuticAreas && news.therapeuticAreas.length > 0 && (
+            <div className={styles.tags}>
+              <strong>Therapeutic Areas:</strong>{' '}
+              {news.therapeuticAreas.map((area, index) => (
+                <Badge key={index} variant="info">
+                  {area}
+                </Badge>
+              ))}
+            </div>
+          )}
+          
+          {/* Display companies/tickers */}
+          {news.companies && news.companies.length > 0 && (
+            <div className={styles.tags}>
+              <strong>Companies:</strong>{' '}
+              {news.companies.map((company, index) => (
+                <Badge key={index} variant="default">
+                  {company}
+                  {news.tickers && news.tickers[index] && ` (${news.tickers[index]})`}
+                </Badge>
+              ))}
+            </div>
+          )}
+          
           {news.tags && news.tags.length > 0 && (
             <div className={styles.tags}>
               {news.tags.map((tag, index) => (
@@ -95,6 +160,20 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
               ))}
             </div>
           )}
+          
+          {/* Display sentiment if available */}
+          {news.sentiment && (
+            <div className={styles.sentiment}>
+              <strong>Sentiment:</strong>{' '}
+              <Badge variant={
+                news.sentiment.label === 'Positive' ? 'success' : 
+                news.sentiment.label === 'Negative' ? 'error' : 'default'
+              }>
+                {news.sentiment.label}
+              </Badge>
+            </div>
+          )}
+          
           {news.url && (
             <div className={styles.actions}>
               <Button
