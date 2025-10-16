@@ -10,9 +10,9 @@
 
 // Get API base URL from environment or use defaults
 export const API_CONFIG = {
-  // Python FastAPI backend (main biotech intelligence platform)
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  VERSION: '/api/v1',
+  // Node.js Express backend (real-time biotech data)
+  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  VERSION: '/api',
 };
 
 // Build full API base URL
