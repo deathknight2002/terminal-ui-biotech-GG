@@ -190,8 +190,12 @@ class PriceReactionService:
     
     def _parse_offset(self, offset_str: str) -> timedelta:
         """
-        Parse offset string like '-1d', '+60m', '+5d'
+        Parse offset string like '-1d', '+60m', '+5d', '0'
         """
+        # Handle zero offset
+        if offset_str.strip() in ['0', '+0', '-0']:
+            return timedelta(0)
+        
         # Remove leading +
         offset_str = offset_str.lstrip('+')
         

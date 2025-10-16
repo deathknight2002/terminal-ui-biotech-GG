@@ -12,7 +12,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from ..database import Article, Entity, ArticleEntity
-from ...scrapers.base_scraper import BaseScraper
 import logging
 
 logger = logging.getLogger(__name__)

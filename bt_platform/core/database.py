@@ -210,7 +210,7 @@ class Entity(Base):
     article_links = relationship("ArticleEntity", back_populates="entity", cascade="all, delete-orphan")
     snapshots = relationship("CompanySnapshot", back_populates="entity", cascade="all, delete-orphan")
     etf_memberships = relationship("ETFConstituent", back_populates="member_entity", foreign_keys="ETFConstituent.member_entity_id")
-    reactions = relationship("ArticleReaction", back_populates="entity", cascade="all, delete-orphan")
+    reactions = relationship("ArticleReaction", back_populates="entity", foreign_keys="ArticleReaction.entity_id", cascade="all, delete-orphan")
     
     __table_args__ = (
         Index('idx_entity_kind_name', 'kind', 'name'),
@@ -296,7 +296,7 @@ class ArticleReaction(Base):
     
     # Relationships
     article = relationship("Article", back_populates="reactions")
-    entity = relationship("Entity", back_populates="reactions")
+    entity = relationship("Entity", foreign_keys=[entity_id], back_populates="reactions")
     benchmark_entity = relationship("Entity", foreign_keys=[benchmark_entity_id])
     
     __table_args__ = (
