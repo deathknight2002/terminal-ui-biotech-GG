@@ -333,6 +333,18 @@ export interface BioAuroraMetric {
   supportText?: string;
 }
 
+export interface NewsItem {
+  id: string;
+  title: string;
+  summary: string;
+  date: string;
+  source?: string;
+  category?: 'Clinical' | 'Regulatory' | 'Commercial' | 'Corporate' | 'M&A';
+  impact?: ImpactLevel;
+  tags?: string[];
+  url?: string;
+}
+
 export interface BioAuroraDashboardProps {
   theme?: 'aurora-red' | Theme;
   headline?: {
@@ -351,8 +363,10 @@ export interface BioAuroraDashboardProps {
   pipeline?: PipelineStage[];
   documents?: LauraDoc[];
   analytics?: AnalyticsData;
+  news?: NewsItem[];
   onSelectCatalyst?: (catalyst: Catalyst) => void;
   onSelectPosition?: (position: PortfolioPosition) => void;
+  onRefreshNews?: () => void;
 }
 
 export interface BiotechFinancialDashboardProps {

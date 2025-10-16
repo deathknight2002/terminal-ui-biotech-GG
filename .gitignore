@@ -90,3 +90,4 @@ mobile/ios/App/App.xcworkspace/xcuserdata/
 *.ipa
 *.dSYM
 DerivedData/
+backend/.env

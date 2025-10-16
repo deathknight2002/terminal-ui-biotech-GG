@@ -155,6 +155,12 @@
   gap: 1.5rem;
 }
 
+.newsSection {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 @media (max-width: 1280px) {
   .hero {
     grid-template-columns: 1fr;
