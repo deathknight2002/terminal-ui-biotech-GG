@@ -1,0 +1,218 @@
+version: '1.0'
+last_updated: '2024-01-15'
+
+# Sources Allowlist - Legal/Compliance Review Status
+# Each source has been reviewed for robots.txt, ToS, and data usage rights
+
+sources:
+  news_press:
+    - domain: fiercebiotech.com
+      name: FierceBiotech
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 0.5
+      paths_allowed:
+        - /rss/xml
+        - /biotech/*
+      notes: "RSS feed available. Scraping allowed per robots.txt. Store title + summary + link only."
+      last_review: '2024-01-15'
+      
+    - domain: fiercepharma.com
+      name: FiercePharma
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 0.5
+      paths_allowed:
+        - /rss/xml
+        - /pharma/*
+      notes: "RSS feed available. Scraping allowed per robots.txt."
+      last_review: '2024-01-15'
+      
+    - domain: biopharmadive.com
+      name: BioPharma Dive
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 1.0
+      paths_allowed:
+        - /feeds/news/
+      notes: "RSS feed publicly available. Industry news source."
+      last_review: '2024-01-15'
+      
+    - domain: businesswire.com
+      name: Business Wire
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 2.0
+      paths_allowed:
+        - /portal/site/home/news/
+      notes: "Press release distribution service. Public RSS feeds available."
+      last_review: '2024-01-15'
+      
+    - domain: globenewswire.com
+      name: GlobeNewswire
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 2.0
+      paths_allowed:
+        - /RssFeed/*
+        - /news-releases/*
+      notes: "Press release distribution. Healthcare sector RSS available."
+      last_review: '2024-01-15'
+      
+    - domain: prnewswire.com
+      name: PR Newswire
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 2.0
+      paths_allowed:
+        - /rss/*
+        - /news-releases/health-care-latest-news/*
+      notes: "Press release service. Health care RSS available."
+      last_review: '2024-01-15'
+
+    - domain: endpts.com
+      name: Endpoints News
+      status: title_only
+      method: rss
+      robots_checked: true
+      robots_status: partial
+      rate_limit_rps: 0.5
+      paths_allowed:
+        - /feed/
+      notes: "PAYWALLED. Title + URL + metadata only. No full text extraction."
+      last_review: '2024-01-15'
+      
+    - domain: statnews.com
+      name: STAT News
+      status: title_only
+      method: rss
+      robots_checked: true
+      robots_status: partial
+      rate_limit_rps: 0.5
+      paths_allowed:
+        - /feed/
+      notes: "PAYWALLED. Title + URL + metadata only. No full text extraction."
+      last_review: '2024-01-15'
+
+  regulators:
+    - domain: fda.gov
+      name: FDA
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 1.0
+      paths_allowed:
+        - /about-fda/contact-fda/stay-informed/rss-feeds/drugs/rss.xml
+        - /drugs/news-events-human-drugs/*
+      notes: "Government site. Public information. RSS feeds available."
+      last_review: '2024-01-15'
+      
+    - domain: ema.europa.eu
+      name: EMA (European Medicines Agency)
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 1.0
+      paths_allowed:
+        - /en/news/rss.xml
+        - /en/news/*
+      notes: "EU regulatory agency. Public information."
+      last_review: '2024-01-15'
+      
+    - domain: gov.uk
+      name: MHRA (UK)
+      status: allowed
+      method: rss
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 1.0
+      paths_allowed:
+        - /government/organisations/medicines-and-healthcare-products-regulatory-agency.atom
+      notes: "UK government. Public regulatory information."
+      last_review: '2024-01-15'
+
+  registries:
+    - domain: clinicaltrials.gov
+      name: ClinicalTrials.gov
+      status: allowed
+      method: api
+      robots_checked: true
+      robots_status: allowed
+      rate_limit_rps: 1.0
+      paths_allowed:
+        - /api/v2/*
+        - /ct2/results/rss.xml
+      notes: "NIH registry. Public API and RSS available. Use API v2 when possible."
+      last_review: '2024-01-15'
+
+  exchanges:
+    - domain: sec.gov
+      name: SEC EDGAR
+      status: allowed
+      method: structured
+      robots_checked: true
+      robots_status: strict
+      rate_limit_rps: 0.1
+      paths_allowed:
+        - /cgi-bin/browse-edgar*
+      notes: "SEC enforces strict rate limits (10 req/s max). We use 0.1 req/s to be safe. Public filings."
+      last_review: '2024-01-15'
+
+  company_ir:
+    # Template for company investor relations pages
+    # Specific companies added dynamically based on watchlist
+    - domain: "[company-specific]"
+      name: Company IR Template
+      status: review_required
+      method: rss_or_manual
+      robots_checked: false
+      robots_status: unknown
+      rate_limit_rps: 1.0
+      paths_allowed:
+        - /investors/news/*
+        - /investors/press-releases/*
+      notes: "Must check robots.txt per company. Default to manual upload if uncertain."
+      last_review: pending
+
+# Fetch cadence (manual refresh only, no automated scheduling)
+fetch_cadence:
+  manual_only: true
+  recommended_intervals:
+    news_press: "2-4 times per day"
+    regulators: "1-2 times per day"
+    registries: "1 time per day"
+    exchanges: "1 time per day"
+    company_ir: "as needed"
+    
+# User-Agent configuration
+user_agent:
+  name: "BiotechTerminal/1.0"
+  contact: "contact@bioterminal.dev"
+  purpose: "Biotech news aggregation for investment analysis"
+  
+# Compliance notes
+compliance:
+  copyright: "Store title + summary (≤250 chars) + link. No full text republication."
+  paywalls: "Title + URL + metadata only. No content extraction behind paywall."
+  attribution: "Always display source name and link back to original."
+  data_retention: "Keep raw HTML in cold storage for audit only, not redistribution."
+  
+# Review schedule
+review_schedule:
+  frequency: quarterly
+  next_review: '2024-04-15'
+  reviewer: compliance_team

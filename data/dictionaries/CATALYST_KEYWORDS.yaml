@@ -1,0 +1,323 @@
+version: '1.0'
+last_updated: '2024-01-15'
+
+# Catalyst Keywords for News Classification and Importance Scoring
+# Ordered by impact/tradability
+
+catalysts:
+  # Tier 1: Highest Impact (Critical Events)
+  FDA_Approval:
+    name: "FDA Approval"
+    weight: 100
+    keywords:
+      - "FDA approval"
+      - "FDA approves"
+      - "approved by FDA"
+      - "granted approval"
+      - "regulatory approval"
+      - "marketing authorization"
+      - "BLA approval"
+      - "NDA approval"
+    tradability: critical
+    
+  AdCom:
+    name: "Advisory Committee"
+    weight: 95
+    keywords:
+      - "AdCom"
+      - "advisory committee"
+      - "FDA advisory panel"
+      - "committee meeting"
+      - "panel vote"
+      - "ODAC"
+      - "CDER advisory"
+    tradability: critical
+    
+  Pivotal:
+    name: "Pivotal Trial Data"
+    weight: 90
+    keywords:
+      - "pivotal trial"
+      - "pivotal study"
+      - "registration trial"
+      - "confirmatory trial"
+      - "phase 3 data"
+      - "phase III data"
+      - "met primary endpoint"
+      - "primary endpoint achieved"
+    tradability: critical
+    
+  # Tier 2: High Impact
+  Topline:
+    name: "Topline Results"
+    weight: 85
+    keywords:
+      - "topline"
+      - "top-line"
+      - "initial results"
+      - "preliminary results"
+      - "trial results"
+      - "study results"
+    tradability: high
+    
+  Phase_3:
+    name: "Phase 3"
+    weight: 80
+    keywords:
+      - "phase 3"
+      - "phase III"
+      - "phase three"
+      - "phase 3 trial"
+      - "phase III study"
+    tradability: high
+    
+  Breakthrough_Designation:
+    name: "Breakthrough Designation"
+    weight: 75
+    keywords:
+      - "breakthrough therapy"
+      - "breakthrough designation"
+      - "BTD"
+      - "breakthrough status"
+    tradability: high
+    
+  Fast_Track:
+    name: "Fast Track"
+    weight: 70
+    keywords:
+      - "fast track"
+      - "fast-track"
+      - "accelerated approval"
+      - "priority review"
+      - "rolling review"
+    tradability: high
+    
+  # Tier 3: Medium-High Impact
+  M_A:
+    name: "M&A / Acquisition"
+    weight: 95  # Can be critical depending on size
+    keywords:
+      - "acquisition"
+      - "acquires"
+      - "merger"
+      - "takeover"
+      - "buyout"
+      - "agrees to acquire"
+      - "to be acquired"
+    tradability: critical
+    
+  Licensing:
+    name: "Licensing Deal"
+    weight: 65
+    keywords:
+      - "licensing agreement"
+      - "license agreement"
+      - "in-license"
+      - "out-license"
+      - "collaboration"
+      - "partnership"
+      - "strategic collaboration"
+    tradability: medium_high
+    
+  Partnering:
+    name: "Partnering"
+    weight: 60
+    keywords:
+      - "partnership"
+      - "partner"
+      - "collaboration agreement"
+      - "strategic partnership"
+      - "co-development"
+      - "joint development"
+    tradability: medium_high
+    
+  # Tier 4: Medium Impact
+  Phase_2:
+    name: "Phase 2"
+    weight: 60
+    keywords:
+      - "phase 2"
+      - "phase II"
+      - "phase two"
+      - "phase 2 trial"
+      - "phase II study"
+      - "proof of concept"
+      - "POC"
+    tradability: medium
+    
+  Regulatory_Filing:
+    name: "Regulatory Filing"
+    weight: 55
+    keywords:
+      - "BLA submission"
+      - "NDA submission"
+      - "regulatory submission"
+      - "filing"
+      - "submitted to FDA"
+      - "MAA"
+      - "marketing authorization application"
+    tradability: medium
+    
+  Financing:
+    name: "Financing"
+    weight: 45
+    keywords:
+      - "financing"
+      - "funding"
+      - "capital raise"
+      - "IPO"
+      - "private placement"
+      - "PIPE"
+      - "public offering"
+      - "follow-on"
+      - "ATM"
+      - "at-the-market"
+      - "series A"
+      - "series B"
+      - "series C"
+    tradability: medium
+    
+  # Tier 5: Lower Impact but Still Relevant
+  Phase_1:
+    name: "Phase 1"
+    weight: 40
+    keywords:
+      - "phase 1"
+      - "phase I"
+      - "phase one"
+      - "first-in-human"
+      - "FIH"
+      - "dose escalation"
+    tradability: medium_low
+    
+  Manufacturing:
+    name: "Manufacturing"
+    weight: 35
+    keywords:
+      - "manufacturing"
+      - "CMC"
+      - "scale-up"
+      - "commercial manufacturing"
+      - "production"
+      - "facility"
+      - "GMP"
+    tradability: medium_low
+    
+  # Tier 6: Negative Catalysts
+  Safety:
+    name: "Safety Issue"
+    weight: 90  # High impact, negative
+    keywords:
+      - "safety"
+      - "adverse event"
+      - "SAE"
+      - "serious adverse event"
+      - "black box warning"
+      - "safety signal"
+      - "dose reduction"
+      - "toxicity"
+    tradability: critical
+    negative: true
+    
+  Clinical_Hold:
+    name: "Clinical Hold"
+    weight: 95  # Very high impact, negative
+    keywords:
+      - "clinical hold"
+      - "FDA hold"
+      - "study halt"
+      - "trial suspended"
+      - "enrollment suspended"
+      - "partial hold"
+      - "full hold"
+    tradability: critical
+    negative: true
+    
+  # Tier 7: Pipeline Events
+  IND:
+    name: "IND Filing"
+    weight: 30
+    keywords:
+      - "IND"
+      - "investigational new drug"
+      - "CTA"
+      - "clinical trial application"
+      - "IND clearance"
+      - "IND approval"
+    tradability: low
+    
+  Preclinical:
+    name: "Preclinical"
+    weight: 20
+    keywords:
+      - "preclinical"
+      - "pre-clinical"
+      - "animal study"
+      - "in vivo"
+      - "mouse model"
+      - "xenograft"
+    tradability: low
+    
+  # Corporate Events
+  Leadership:
+    name: "Leadership Change"
+    weight: 40
+    keywords:
+      - "CEO"
+      - "chief executive"
+      - "president"
+      - "CFO"
+      - "CMO"
+      - "chief medical officer"
+      - "appoints"
+      - "announces"
+      - "resigns"
+      - "steps down"
+    tradability: medium_low
+    
+  Presentation:
+    name: "Conference Presentation"
+    weight: 25
+    keywords:
+      - "presentation"
+      - "poster"
+      - "ASH"
+      - "ASCO"
+      - "AACR"
+      - "ESMO"
+      - "ADA"
+      - "AAN"
+      - "ACC"
+      - "abstracts"
+      - "late-breaking"
+    tradability: low
+
+# Importance scoring calculation
+# Base score starts with catalyst weight, then modifiers applied
+scoring_rules:
+  # Catalyst weight provides base score
+  # Then apply these modifiers:
+  modifiers:
+    portfolio_relevance: 15  # +15 if company in portfolio
+    cross_source_count_2plus: 10  # +10 if 2+ sources
+    smid_cap: 10  # +10 if SMID cap company
+    large_cap_discount: -15  # -15 if large cap (unless megadeal)
+    
+  # Map final score to importance bands
+  importance_bands:
+    critical: 85  # 85-100
+    high: 70      # 70-84
+    medium: 40    # 40-69
+    low: 0        # 0-39
+    
+# SMID vs Large Cap classification
+market_cap_buckets:
+  smid:
+    max_market_cap_usd: 10_000_000_000  # $10B
+    boost: 10
+  large:
+    min_market_cap_usd: 10_000_000_000
+    discount: -15
+  mega:
+    min_market_cap_usd: 100_000_000_000  # $100B
+    discount: -20

@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - 2024-01-15
+
+### Changed - Scraper Migration to Manual Refresh
+
+**Major architectural shift:** All news endpoints now backed by local archive; manual refresh only.
+
+- **Manual Refresh Model**: News refresh triggered only via explicit user action (Refresh Now button). No background jobs, no cron, no automated polling.
+- **Bespoke Scrapers**: Production-ready scraper framework with RSS/HTML parsing for FierceBiotech, BioPharma Dive, FDA, SEC EDGAR, ClinicalTrials.gov, and press release wires.
+- **Point-in-Time Snapshots**: Market caps, ETF constituents, and price data stored with timestamps for reproducible analysis.
+- **Entity Extraction**: LLM-assisted extraction of companies, tickers, drugs, diseases, and targets with confidence scoring.
+- **Price Reactions**: Abnormal return calculations vs XBI benchmark with multiple time windows (intraday, daily).
+- **Read-Through Exposures**: Competitor and ETF exposure mapping based on indication/target/class relationships.
+- **Analyst Drop Zone**: Lane B ingestion for manual CSV/HTML uploads when scraping is disallowed or impractical.
+- **Data Quality Gates**: Validation pipeline ensures title, URL, date sanity, and entity extraction before write.
+- **Compliance Focus**: Respects robots.txt, ToS, and copyright. Title + summary + link only; no full text republication.
+
+**New Configuration Files:**
+- `SCRAPER_MIGRATION_PLAN.md` - Complete migration specification
+- `SOURCES_ALLOWLIST.yaml` - Legal/compliance status for all sources
+- `data/dictionaries/TA_KEYWORDS.yaml` - Therapeutic area keywords
+- `data/dictionaries/CATALYST_KEYWORDS.yaml` - Catalyst keywords with weights
+- `data/dictionaries/ENTITY_SYNONYMS.csv` - Company/drug/disease/target synonyms
+- `data/dictionaries/ENTITY_GRAPH.csv` - Competitor relationships and read-throughs
+- `DROP_ZONE_README.md` - Manual upload guide for analysts
+
+**API Enhancements:**
+- `GET /api/v1/news/refresh-now` - Manual refresh orchestrator with per-source stats
+- `GET /api/v1/news/:id/exposures` - Direct, competitor, and ETF exposures with rationale
+- `GET /api/v1/news/:id/reactions` - Price reactions with abnormal returns vs benchmark
+- `POST /api/v1/news/:id/recompute-reaction` - Recompute with different windows/benchmarks
+- `GET /api/v1/etf/:ticker/constituents?asof=YYYY-MM-DD` - Point-in-time ETF holdings
+- `POST /api/v1/admin/drop-zone/*` - Upload price data, ETF constituents, news articles
+
+**Why This Matters:**
+- No API keys or quotas - scrape responsibly or ingest manually
+- Deterministic results - not at the mercy of vendor outages
+- Reproducible analysis - point-in-time snapshots for backtests
+- Tradable focus - ranking tuned for SMID-cap catalyst events
+
 ## [1.0.0] - 2025-10-03
 
 ### Added

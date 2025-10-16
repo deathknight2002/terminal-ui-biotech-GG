@@ -1,0 +1,286 @@
+version: '1.0'
+last_updated: '2024-01-15'
+
+# Therapeutic Area Keywords for News Classification
+# Used by entity extraction and importance scoring
+
+therapeutic_areas:
+  SMA:
+    name: "Spinal Muscular Atrophy"
+    keywords:
+      - "spinal muscular atrophy"
+      - "SMA"
+      - "SMN1"
+      - "SMN2"
+      - "motor neuron"
+      - "nusinersen"
+      - "onasemnogene"
+      - "risdiplam"
+    aliases:
+      - "spinal muscular atrophy type 1"
+      - "spinal muscular atrophy type 2"
+      - "spinal muscular atrophy type 3"
+    
+  GLP-1:
+    name: "GLP-1 Receptor Agonists"
+    keywords:
+      - "GLP-1"
+      - "glucagon-like peptide"
+      - "semaglutide"
+      - "tirzepatide"
+      - "liraglutide"
+      - "dulaglutide"
+      - "exenatide"
+      - "weight loss"
+      - "obesity"
+      - "diabetes"
+    aliases:
+      - "GLP1"
+      - "incretin"
+      
+  Oncology:
+    name: "Oncology"
+    keywords:
+      - "cancer"
+      - "oncology"
+      - "tumor"
+      - "carcinoma"
+      - "leukemia"
+      - "lymphoma"
+      - "melanoma"
+      - "sarcoma"
+      - "glioblastoma"
+      - "chemotherapy"
+      - "immunotherapy"
+      - "CAR-T"
+      - "checkpoint inhibitor"
+      - "PD-1"
+      - "PD-L1"
+      - "CTLA-4"
+      - "ADC"
+      - "antibody-drug conjugate"
+    aliases:
+      - "hematology-oncology"
+      - "solid tumor"
+      - "liquid tumor"
+      
+  Rare_Disease:
+    name: "Rare Disease"
+    keywords:
+      - "rare disease"
+      - "orphan drug"
+      - "ultra-rare"
+      - "genetic disorder"
+      - "lysosomal storage"
+      - "muscular dystrophy"
+      - "hemophilia"
+      - "cystic fibrosis"
+      - "sickle cell"
+      - "Duchenne"
+      - "DMD"
+      - "Huntington"
+      - "ALS"
+    aliases:
+      - "ultra rare disease"
+      - "orphan indication"
+      
+  Immunology:
+    name: "Immunology"
+    keywords:
+      - "immunology"
+      - "autoimmune"
+      - "rheumatoid arthritis"
+      - "RA"
+      - "lupus"
+      - "SLE"
+      - "psoriasis"
+      - "IBD"
+      - "inflammatory bowel disease"
+      - "Crohn's"
+      - "ulcerative colitis"
+      - "multiple sclerosis"
+      - "MS"
+      - "JAK inhibitor"
+      - "IL-17"
+      - "IL-23"
+      - "TNF"
+    aliases:
+      - "immune-mediated"
+      - "inflammation"
+      
+  Neurology:
+    name: "Neurology"
+    keywords:
+      - "neurology"
+      - "neurological"
+      - "Alzheimer"
+      - "Parkinson"
+      - "epilepsy"
+      - "seizure"
+      - "neuropathy"
+      - "migraine"
+      - "stroke"
+      - "dementia"
+      - "cognitive impairment"
+      - "tau"
+      - "amyloid"
+      - "alpha-synuclein"
+    aliases:
+      - "neuroscience"
+      - "CNS"
+      - "central nervous system"
+      
+  Cardiovascular:
+    name: "Cardiovascular"
+    keywords:
+      - "cardiovascular"
+      - "cardiology"
+      - "heart failure"
+      - "HFpEF"
+      - "HFrEF"
+      - "atrial fibrillation"
+      - "AFIB"
+      - "hypertension"
+      - "HTN"
+      - "cholesterol"
+      - "LDL"
+      - "PCSK9"
+      - "Lp(a)"
+      - "lipoprotein"
+      - "MACE"
+      - "myocardial infarction"
+      - "coronary artery disease"
+      - "CAD"
+    aliases:
+      - "CV"
+      - "cardiac"
+      
+  Metabolic:
+    name: "Metabolic"
+    keywords:
+      - "metabolic"
+      - "metabolism"
+      - "diabetes"
+      - "T1D"
+      - "T2D"
+      - "type 1 diabetes"
+      - "type 2 diabetes"
+      - "insulin"
+      - "glycemic control"
+      - "HbA1c"
+      - "NASH"
+      - "NAFLD"
+      - "fatty liver"
+      - "obesity"
+      - "BMI"
+    aliases:
+      - "endocrine"
+      - "metabolic disorder"
+      
+  Hematology:
+    name: "Hematology"
+    keywords:
+      - "hematology"
+      - "blood disorder"
+      - "anemia"
+      - "sickle cell"
+      - "thalassemia"
+      - "hemophilia"
+      - "thrombocytopenia"
+      - "ITP"
+      - "bleeding disorder"
+      - "clotting disorder"
+    aliases:
+      - "blood disease"
+      - "coagulation"
+      
+  Pulmonology:
+    name: "Pulmonology"
+    keywords:
+      - "pulmonology"
+      - "respiratory"
+      - "lung"
+      - "asthma"
+      - "COPD"
+      - "pulmonary fibrosis"
+      - "IPF"
+      - "cystic fibrosis"
+      - "CF"
+      - "bronchitis"
+      - "pneumonia"
+    aliases:
+      - "respiratory disease"
+      - "lung disease"
+      
+  Infectious_Disease:
+    name: "Infectious Disease"
+    keywords:
+      - "infectious disease"
+      - "infection"
+      - "antimicrobial"
+      - "antibiotic"
+      - "antiviral"
+      - "antifungal"
+      - "vaccine"
+      - "HIV"
+      - "hepatitis"
+      - "HCV"
+      - "HBV"
+      - "COVID"
+      - "influenza"
+      - "RSV"
+      - "tuberculosis"
+    aliases:
+      - "infectious diseases"
+      - "communicable disease"
+      
+  Ophthalmology:
+    name: "Ophthalmology"
+    keywords:
+      - "ophthalmology"
+      - "eye"
+      - "retina"
+      - "AMD"
+      - "age-related macular degeneration"
+      - "diabetic retinopathy"
+      - "DME"
+      - "diabetic macular edema"
+      - "glaucoma"
+      - "vision loss"
+      - "VEGF"
+    aliases:
+      - "retinal disease"
+      - "eye disease"
+      
+  Dermatology:
+    name: "Dermatology"
+    keywords:
+      - "dermatology"
+      - "skin"
+      - "psoriasis"
+      - "atopic dermatitis"
+      - "eczema"
+      - "vitiligo"
+      - "acne"
+      - "melanoma"
+      - "skin cancer"
+    aliases:
+      - "skin disease"
+
+# Scoring weights for importance calculation
+scoring_weights:
+  high_value_areas:
+    - Oncology
+    - Rare_Disease
+    - GLP-1
+    - Cardiovascular
+    - Neurology
+  medium_value_areas:
+    - Immunology
+    - Metabolic
+    - Infectious_Disease
+  standard_value_areas:
+    - Hematology
+    - Pulmonology
+    - Ophthalmology
+    - Dermatology
