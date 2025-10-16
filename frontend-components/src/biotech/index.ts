@@ -54,7 +54,9 @@ export { KOLTracker } from './organisms/KOLTracker';
 export type { KOLTrackerProps } from './organisms/KOLTracker/KOLTracker';
 
 export { NewsFeed } from './organisms/NewsFeed';
+export { EnhancedNewsFeed } from './organisms/EnhancedNewsFeed';
 export type { NewsFeedProps } from './organisms/NewsFeed';
+export type { EnhancedNewsFeedProps } from './organisms/EnhancedNewsFeed';
 
 // ML/AI Components - Advanced Analytics
 export { ABTestingDashboard } from './organisms/ABTestingDashboard';

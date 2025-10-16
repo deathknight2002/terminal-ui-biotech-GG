@@ -4,6 +4,65 @@
   padding: 2rem;
 }
 
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--font-mono, 'Courier New', monospace);
+}
+
+.loading-spinner {
+  font-size: 3rem;
+  color: var(--accent-primary, #00ff00);
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-container h3 {
+  color: var(--accent-error, #ff4444);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.error-container p {
+  color: var(--text-secondary, #888);
+  margin-bottom: 1.5rem;
+}
+
+.retry-button {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-primary, #00ff00);
+  color: var(--bg-terminal, #0a0a0c);
+  border: none;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.retry-button:hover {
+  background: var(--accent-hover, #00ff88);
+  box-shadow: 0 0 12px rgba(0, 255, 0, 0.3);
+}
+
 /* Diff Ribbon Styles */
 .diff-ribbon {
   background: rgba(0, 255, 0, 0.1);

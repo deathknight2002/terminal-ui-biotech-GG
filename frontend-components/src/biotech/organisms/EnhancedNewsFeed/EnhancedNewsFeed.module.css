@@ -1,0 +1,201 @@
+.enhancedNewsFeed {
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Header Actions */
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Controls: Search and Filters */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-secondary, rgba(0, 255, 0, 0.2));
+}
+
+.searchRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.searchInput {
+  flex: 1;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.85rem;
+}
+
+.filterRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Category Tabs */
+.categoryTabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-secondary, rgba(0, 255, 0, 0.2));
+}
+
+.categoryTabs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.categoryTabs::-webkit-scrollbar-track {
+  background: var(--bg-terminal, #0a0a0c);
+}
+
+.categoryTabs::-webkit-scrollbar-thumb {
+  background: var(--accent-primary, #00ff00);
+  border-radius: 2px;
+}
+
+.categoryTab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary, rgba(0, 255, 0, 0.05));
+  border: 1px solid var(--border-secondary, rgba(0, 255, 0, 0.2));
+  color: var(--text-secondary, #888);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.categoryTab:hover:not(.disabled) {
+  background: var(--bg-hover, rgba(0, 255, 0, 0.1));
+  border-color: var(--accent-primary, #00ff00);
+}
+
+.categoryTab.active {
+  background: var(--accent-primary, #00ff00);
+  color: var(--bg-terminal, #0a0a0c);
+  border-color: var(--accent-primary, #00ff00);
+  font-weight: bold;
+}
+
+.categoryTab.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tabIcon {
+  font-size: 1rem;
+}
+
+.tabLabel {
+  font-weight: 600;
+}
+
+/* Top News Ribbon */
+.topNewsRibbon {
+  padding: 0.75rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 0, 0, 0.05) 0%, 
+    rgba(255, 100, 0, 0.05) 100%
+  );
+  border: 1px solid rgba(255, 100, 0, 0.3);
+  border-radius: 4px;
+}
+
+.ribbonHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ribbonTitle {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--accent-warning, #ff6600);
+}
+
+.topNewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.topNewsItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bg-terminal, rgba(0, 0, 0, 0.3));
+  border-left: 3px solid var(--accent-warning, #ff6600);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.8rem;
+}
+
+.topNewsTitle {
+  flex: 1;
+  color: var(--text-primary, #fff);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Feed Container */
+.feedContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.feedContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.feedContainer::-webkit-scrollbar-track {
+  background: var(--bg-terminal, #0a0a0c);
+  border-left: 1px solid var(--border-secondary, rgba(0, 255, 0, 0.1));
+}
+
+.feedContainer::-webkit-scrollbar-thumb {
+  background: var(--accent-primary, #00ff00);
+  border-radius: 2px;
+}
+
+.feedContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover, #00ff88);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--text-muted, #666);
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.85rem;
+}
+
+.emptyState p {
+  margin-bottom: 1.5rem;
+}

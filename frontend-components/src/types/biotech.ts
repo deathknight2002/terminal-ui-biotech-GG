@@ -10,9 +10,15 @@ export type RiskLevel = "High" | "Medium" | "Low";
 export type ImpactLevel = "High" | "Medium" | "Low";
 export type CompanyType = "Big Pharma" | "SMid" | "Biotech" | "China Pharma" | "Academic" | "Unknown";
 export type PhaseType = "Preclinical" | "Phase I" | "Phase II" | "Phase III" | "Filed" | "Approved" | "Discontinued";
-export type TherapeuticArea = "Oncology" | "Immunology" | "Neurology" | "Rare Disease" | "Cardiovascular" | "Ophthalmology" | "Other";
+export type TherapeuticArea = "Oncology" | "Immunology" | "Neurology" | "Rare Disease" | "Cardiovascular" | "Ophthalmology" | "Metabolic" | "SMA" | "GLP-1" | "Other";
 export type MarketPosition = "Leader" | "Challenger" | "Follower" | "Niche";
 export type MarketConcentration = "High" | "Medium" | "Low";
+
+// News Feed Types
+export type NewsSource = "Fierce Biotech" | "Fierce Pharma" | "BioPharma Dive" | "Endpoints News" | "STAT News" | "BioSpace" | "GEN News" | "FDA News" | "Company PR" | "Bloomberg" | "Reuters" | "Yahoo Finance" | "WSJ" | "Other";
+export type NewsCategory = "Clinical" | "Regulatory" | "Commercial" | "Corporate" | "M&A" | "FDA Approval" | "Trial Results" | "Pipeline Update" | "Partnership" | "Financing";
+export type MarketCapCategory = "Mega Cap" | "Large Cap" | "Mid Cap" | "Small Cap" | "Micro Cap";
+export type NewsImportance = "Critical" | "High" | "Medium" | "Low";
 
 // Financial Modeling Types
 export interface Asset {
@@ -338,11 +344,30 @@ export interface NewsItem {
   title: string;
   summary: string;
   date: string;
-  source?: string;
-  category?: 'Clinical' | 'Regulatory' | 'Commercial' | 'Corporate' | 'M&A';
+  source?: NewsSource;
+  category?: NewsCategory;
   impact?: ImpactLevel;
   tags?: string[];
   url?: string;
+  
+  // Enhanced fields for robust news feed
+  therapeuticAreas?: TherapeuticArea[];
+  companies?: string[];
+  tickers?: string[];
+  marketCap?: number;
+  marketCapCategory?: MarketCapCategory;
+  importance?: NewsImportance;
+  relevanceScore?: number; // 0-100, for ranking
+  isTradable?: boolean; // Focus on SMID-cap catalyst events
+  isPortfolioRelevant?: boolean; // Related to watchlist companies
+  keywords?: string[]; // For catalyst detection (FDA approval, Phase III, etc.)
+  publishedAt?: string; // ISO timestamp
+  scrapedAt?: string; // When we fetched this
+  sourceCount?: number; // Cross-source validation (how many sources reported this)
+  sentiment?: {
+    score: number; // -1 to 1
+    label: 'Positive' | 'Neutral' | 'Negative';
+  };
 }
 
 export interface BioAuroraDashboardProps {
