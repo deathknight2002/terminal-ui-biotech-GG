@@ -19,6 +19,8 @@ import { scrapingRouter } from './routes/scraping.js';
 import { monitoringRouter } from './routes/monitoring.js';
 import { newBiotechNewsRouter } from './routes/new-biotech-news.js';
 import { epidemiologyRouter } from './routes/epidemiology.js';
+import { notificationRouter } from './routes/notifications.js';
+import { widgetRouter } from './routes/widgets.js';
 import { getNewsMonitor } from './services/news-monitor.js';
 
 async function startServer() {
@@ -79,6 +81,8 @@ async function startServer() {
     app.use('/api/monitoring', monitoringRouter);
     app.use('/api/scraping/news', newBiotechNewsRouter);
     app.use('/api/epidemiology', epidemiologyRouter);
+    app.use('/api/notifications', notificationRouter);
+    app.use('/api/widgets', widgetRouter);
 
     // Setup WebSocket handlers
     setupWebSocket(io);

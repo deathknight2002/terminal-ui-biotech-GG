@@ -1,5 +1,6 @@
 import { FC, useState, useRef, useEffect } from 'react';
 import { useHapticFeedback } from '../hooks/useHapticFeedback';
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import './AIChatInterface.css';
 
 export interface ChatMessage {
@@ -30,10 +31,37 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const { triggerHaptic } = useHapticFeedback();
 
+  // Speech recognition hook
+  const {
+    isListening,
+    interimTranscript,
+    start: startListening,
+    stop: stopListening,
+    reset: resetTranscript,
+    isSupported: isSpeechSupported,
+  } = useSpeechRecognition({
+    continuous: false,
+    interimResults: true,
+    onResult: (finalTranscript) => {
+      setInputValue(finalTranscript);
+      resetTranscript();
+    },
+    onError: (error) => {
+      console.error('[Voice Input] Error:', error);
+    },
+  });
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Update input with interim transcript while listening
+  useEffect(() => {
+    if (isListening && interimTranscript) {
+      setInputValue(interimTranscript);
+    }
+  }, [isListening, interimTranscript]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +75,18 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
 
   const handleVoiceInput = async () => {
     await triggerHaptic('medium');
-    // Placeholder for voice input - would use Web Speech API or Capacitor plugin
-    console.log('Voice input requested');
-    // TODO: Implement speech-to-text
+    
+    if (!isSpeechSupported) {
+      console.warn('[Voice Input] Speech recognition not supported');
+      return;
+    }
+
+    if (isListening) {
+      stopListening();
+    } else {
+      setInputValue('');
+      startListening();
+    }
   };
 
   const handleSuggestionClick = async (suggestion: string) => {
@@ -161,12 +198,13 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
           {enableVoiceInput && (
             <button
               type="button"
-              className="voice-input-btn"
+              className={`voice-input-btn ${isListening ? 'listening' : ''}`}
               onClick={handleVoiceInput}
               disabled={isLoading}
-              aria-label="Voice input"
+              aria-label={isListening ? 'Stop listening' : 'Voice input'}
+              title={!isSpeechSupported ? 'Voice input not supported' : ''}
             >
-              🎤
+              {isListening ? '⏹️' : '🎤'}
             </button>
           )}
           <button

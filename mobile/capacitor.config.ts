@@ -25,6 +25,15 @@ const config: CapacitorConfig = {
       launchShowDuration: 0,
       backgroundColor: '#0a0a0f',
       showSpinner: false
+    },
+    // Push Notifications configuration
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert']
+    },
+    // Local Notifications configuration
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#00ff88'
     }
   }
 };
