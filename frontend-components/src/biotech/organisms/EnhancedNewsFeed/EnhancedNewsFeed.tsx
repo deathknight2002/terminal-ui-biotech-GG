@@ -79,9 +79,19 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
       filtered = filtered.filter((item) => item.isTradable);
     }
 
-    // Filter by portfolio relevance
+    // Filter by portfolio relevance (using watchlist)
     if (showOnlyPortfolio) {
-      filtered = filtered.filter((item) => item.isPortfolioRelevant);
+      filtered = filtered.filter((item) => {
+        if (item.isPortfolioRelevant) return true;
+        
+        // Also check against watchlist manually
+        if (item.tickers) {
+          return item.tickers.some((ticker) => 
+            portfolioWatchlist.some((w) => w.toUpperCase() === ticker.toUpperCase())
+          );
+        }
+        return false;
+      });
     }
 
     // Sort by importance and relevance score
@@ -112,7 +122,7 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
     });
 
     return filtered;
-  }, [news, selectedCategory, searchQuery, showOnlyTradable, showOnlyPortfolio]);
+  }, [news, selectedCategory, searchQuery, showOnlyTradable, showOnlyPortfolio, portfolioWatchlist]);
 
   // Get news count by category
   const getCategoryCount = (categoryId: 'all' | TherapeuticArea) => {
@@ -205,7 +215,7 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
                 >
                   <span className={styles.tabIcon}>{cat.icon}</span>
                   <span className={styles.tabLabel}>{cat.label}</span>
-                  <Badge variant={isActive ? 'primary' : 'default'} size="sm">
+                  <Badge variant={isActive ? 'primary' : 'default'}>
                     {count}
                   </Badge>
                 </button>
@@ -223,12 +233,12 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
             <div className={styles.topNewsList}>
               {topNews.map((item) => (
                 <div key={item.id} className={styles.topNewsItem}>
-                  <Badge variant={item.importance === 'Critical' ? 'error' : 'warning'} size="sm">
+                  <Badge variant={item.importance === 'Critical' ? 'error' : 'warning'}>
                     {item.importance}
                   </Badge>
                   <span className={styles.topNewsTitle}>{item.title}</span>
                   {item.companies && item.companies.length > 0 && (
-                    <Badge variant="info" size="sm">
+                    <Badge variant="info">
                       {item.companies[0]}
                     </Badge>
                   )}
