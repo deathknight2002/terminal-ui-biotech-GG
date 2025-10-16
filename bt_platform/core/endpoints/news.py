@@ -11,7 +11,10 @@ from typing import List, Optional
 from datetime import datetime, timedelta
 import logging
 
-from ..database import get_db, Article, Sentiment, ArticleDisease, ArticleCompany, ArticleCatalyst
+from ..database import get_db, Article, Sentiment, ArticleDisease, ArticleCompany, ArticleCatalyst, Entity, ArticleEntity, ArticleReaction
+from ..services.news_refresh_service import NewsRefreshService
+from ..services.entity_extraction_service import EntityExtractionService
+from ..services.price_reaction_service import PriceReactionService
 
 logger = logging.getLogger(__name__)
 
@@ -275,4 +278,262 @@ async def get_news_diff(
         raise
     except Exception as e:
         logger.error(f"Error fetching news diff: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/refresh-now")
+async def refresh_news_now(
+    max_articles: int = Query(50, ge=1, le=200, description="Max articles to process"),
+    db: Session = Depends(get_db)
+):
+    """
+    Manual news refresh pipeline - NO BACKGROUND DAEMONS
+    
+    Fetches from configured sources, dedupes, tags entities, and saves snapshots.
+    Returns statistics about the refresh operation.
+    """
+    try:
+        logger.info(f"Starting manual news refresh (max_articles={max_articles})")
+        
+        refresh_service = NewsRefreshService(db)
+        
+        # For now, we don't have actual scrapers configured
+        # This would normally fetch from real sources
+        sources = []  # Would be actual scraper instances
+        
+        stats = refresh_service.refresh_from_sources(sources, max_articles)
+        
+        return {
+            "success": True,
+            "message": "News refresh completed",
+            "stats": stats
+        }
+        
+    except Exception as e:
+        logger.error(f"Error during news refresh: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{article_id}/exposures")
+async def get_article_exposures(
+    article_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get ticker exposures for an article (direct, competitor, ETF)
+    with weights and point-in-time ETF snapshots
+    """
+    try:
+        # Get article
+        article = db.query(Article).filter(Article.id == article_id).first()
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        
+        # Get all entity links
+        entity_links = db.query(ArticleEntity).filter(
+            ArticleEntity.article_id == article_id
+        ).all()
+        
+        exposures = {
+            "direct": [],
+            "competitor": [],
+            "etf": []
+        }
+        
+        entity_service = EntityExtractionService(db)
+        
+        for link in entity_links:
+            entity = db.query(Entity).filter(Entity.id == link.entity_id).first()
+            if not entity:
+                continue
+            
+            exposure_data = {
+                "entity_id": entity.id,
+                "name": entity.name,
+                "ticker": entity.ticker,
+                "kind": entity.kind,
+                "role": link.role,
+                "weight": link.weight,
+                "confidence": link.confidence
+            }
+            
+            if link.role == "primary":
+                exposures["direct"].append(exposure_data)
+                
+                # Get competitors for primary entities
+                if entity.kind == "company":
+                    competitors = entity_service.get_competitors(entity.id, limit=5)
+                    exposures["competitor"].extend([
+                        {
+                            **comp,
+                            "role": "competitor",
+                            "confidence": 0.8
+                        }
+                        for comp in competitors
+                    ])
+                    
+            elif link.role == "etf":
+                exposures["etf"].append(exposure_data)
+            elif link.role == "competitor":
+                exposures["competitor"].append(exposure_data)
+        
+        return {
+            "article_id": article_id,
+            "article_title": article.title,
+            "published_at": article.published_at.isoformat() if article.published_at else None,
+            "exposures": exposures,
+            "total_exposures": {
+                "direct": len(exposures["direct"]),
+                "competitor": len(exposures["competitor"]),
+                "etf": len(exposures["etf"])
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching exposures for article {article_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{article_id}/reactions")
+async def get_article_reactions(
+    article_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get price reactions for an article
+    Shows intraday and daily window reactions vs XBI
+    """
+    try:
+        # Get article
+        article = db.query(Article).filter(Article.id == article_id).first()
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        
+        reaction_service = PriceReactionService(db)
+        reactions = reaction_service.get_reactions(article_id)
+        
+        return {
+            "article_id": article_id,
+            "article_title": article.title,
+            "published_at": article.published_at.isoformat() if article.published_at else None,
+            "reactions": reactions,
+            "count": len(reactions)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching reactions for article {article_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{article_id}/recompute-reaction")
+async def recompute_article_reaction(
+    article_id: int,
+    entity_id: int = Query(..., description="Entity ID to compute reaction for"),
+    window: str = Query("[-1d,+1d]", description="Time window, e.g., '[-1d,+1d]', '[0,+60m]'"),
+    benchmark_ticker: Optional[str] = Query("XBI", description="Benchmark ticker"),
+    db: Session = Depends(get_db)
+):
+    """
+    Recompute price reaction for an article with different windows/benchmark
+    """
+    try:
+        reaction_service = PriceReactionService(db)
+        
+        result = reaction_service.recompute_reaction(
+            article_id,
+            entity_id,
+            window,
+            benchmark_ticker
+        )
+        
+        if not result:
+            raise HTTPException(status_code=404, detail="Could not compute reaction")
+        
+        return {
+            "success": True,
+            "reaction": result
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error recomputing reaction for article {article_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/etf/{ticker}/constituents")
+async def get_etf_constituents(
+    ticker: str,
+    asof: Optional[str] = Query(None, description="Point-in-time date (YYYY-MM-DD)"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get point-in-time ETF constituents
+    Returns XBI members as of the specified date
+    """
+    try:
+        from ..database import ETFConstituent
+        from sqlalchemy import and_
+        
+        # Get ETF entity
+        etf = db.query(Entity).filter(
+            Entity.ticker == ticker.upper(),
+            Entity.kind == "etf"
+        ).first()
+        
+        if not etf:
+            raise HTTPException(status_code=404, detail=f"ETF {ticker} not found")
+        
+        # Parse asof date
+        if asof:
+            try:
+                asof_date = datetime.fromisoformat(asof)
+            except ValueError:
+                raise HTTPException(status_code=400, detail=f"Invalid date format: {asof}")
+        else:
+            asof_date = datetime.utcnow()
+        
+        # Get constituents for the closest date on or before asof_date
+        constituents = db.query(ETFConstituent).filter(
+            and_(
+                ETFConstituent.etf_entity_id == etf.id,
+                ETFConstituent.asof_date <= asof_date
+            )
+        ).order_by(desc(ETFConstituent.asof_date)).limit(100).all()
+        
+        # Group by member to get latest snapshot per member
+        member_map = {}
+        for constituent in constituents:
+            if constituent.member_entity_id not in member_map:
+                member_map[constituent.member_entity_id] = constituent
+        
+        # Build result
+        result = []
+        for member_id, constituent in member_map.items():
+            member = db.query(Entity).filter(Entity.id == member_id).first()
+            if member:
+                result.append({
+                    "entity_id": member.id,
+                    "name": member.name,
+                    "ticker": member.ticker,
+                    "weight": constituent.weight,
+                    "asof_date": constituent.asof_date.isoformat() if constituent.asof_date else None
+                })
+        
+        return {
+            "etf_ticker": ticker,
+            "etf_name": etf.name,
+            "asof_date": asof_date.isoformat(),
+            "constituents": result,
+            "count": len(result)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching ETF constituents for {ticker}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
