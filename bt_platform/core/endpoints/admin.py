@@ -4,7 +4,7 @@ Admin API Endpoints
 Manual data ingestion and administrative operations.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional, List
@@ -13,6 +13,7 @@ import logging
 import hashlib
 import random
 import asyncio
+import io
 
 from ..database import (
     get_db,
@@ -638,4 +639,183 @@ async def get_ingestion_history(
         
     except Exception as e:
         logger.error(f"Error fetching ingestion history: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# DROP ZONE ENDPOINTS - Manual CSV/HTML Upload
+# ============================================================================
+
+from fastapi import UploadFile, File, Form
+from ..services.drop_zone_service import DropZoneService
+
+
+@router.post("/drop-zone/price-data")
+async def upload_price_data(
+    file: UploadFile = File(..., description="CSV file with price data"),
+    source: Optional[str] = Form(None, description="Data source name"),
+    uploaded_by: Optional[str] = Form(None, description="Analyst name"),
+    db: Session = Depends(get_db)
+):
+    """
+    Upload OHLCV price data from CSV
+    
+    Expected columns: ticker, date, open, high, low, close, volume?, source?
+    
+    Returns upload statistics and any rejected records.
+    """
+    try:
+        drop_zone = DropZoneService(db)
+        
+        # Read file content
+        content = await file.read()
+        file_obj = io.BytesIO(content)
+        
+        result = drop_zone.upload_price_data(
+            file_content=file_obj,
+            source=source,
+            uploaded_by=uploaded_by
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error uploading price data: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/drop-zone/etf-constituents")
+async def upload_etf_constituents(
+    file: UploadFile = File(..., description="CSV file with ETF constituents"),
+    etf_ticker: Optional[str] = Form(None, description="ETF ticker symbol"),
+    asof_date: Optional[str] = Form(None, description="Snapshot date (YYYY-MM-DD)"),
+    source: Optional[str] = Form(None, description="Data source name"),
+    db: Session = Depends(get_db)
+):
+    """
+    Upload ETF constituent holdings from CSV
+    
+    Expected columns: etf_ticker, member_ticker, member_name?, weight, asof_date, source?
+    
+    ETF ticker and asof_date can be provided either as form parameters or in the CSV.
+    Form parameters will be used as defaults if not present in CSV rows.
+    """
+    try:
+        drop_zone = DropZoneService(db)
+        
+        # Read file content
+        content = await file.read()
+        file_obj = io.BytesIO(content)
+        
+        result = drop_zone.upload_etf_constituents(
+            file_content=file_obj,
+            etf_ticker=etf_ticker,
+            asof_date=asof_date,
+            source=source
+        )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error uploading ETF constituents: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/drop-zone/news-articles")
+async def upload_news_articles(
+    file: UploadFile = File(..., description="CSV or HTML file with news articles"),
+    uploaded_by: Optional[str] = Form(None, description="Analyst name"),
+    notes: Optional[str] = Form(None, description="Upload notes"),
+    db: Session = Depends(get_db)
+):
+    """
+    Upload news articles from CSV
+    
+    Expected columns: title, url, source, published_at, summary?, tags?
+    
+    For paywalled sources, provide title + URL + summary only (no full text).
+    """
+    try:
+        drop_zone = DropZoneService(db)
+        
+        # Check file type
+        if not file.filename.endswith(('.csv', '.html', '.htm')):
+            raise HTTPException(
+                status_code=400,
+                detail="Unsupported file type. Expected CSV or HTML."
+            )
+        
+        # Read file content
+        content = await file.read()
+        file_obj = io.BytesIO(content)
+        
+        result = drop_zone.upload_news_articles(
+            file_content=file_obj,
+            uploaded_by=uploaded_by,
+            notes=notes
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error uploading news articles: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/drop-zone/uploads")
+async def list_uploads(
+    limit: int = 50,
+    offset: int = 0,
+    status: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    List recent uploads to the drop zone
+    
+    Query parameters:
+    - limit: Max results (default 50)
+    - offset: Pagination offset (default 0)
+    - status: Filter by status (success|partial|error)
+    """
+    try:
+        # Query ingestion logs filtered by drop zone uploads
+        query = db.query(DataIngestionLog).filter(
+            DataIngestionLog.pipeline_name.like('%drop_zone%')
+        )
+        
+        if status:
+            query = query.filter(DataIngestionLog.status == status)
+        
+        # Get total count
+        total = query.count()
+        
+        # Get paginated results
+        uploads = query.order_by(
+            DataIngestionLog.start_time.desc()
+        ).offset(offset).limit(limit).all()
+        
+        return {
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "uploads": [
+                {
+                    "upload_id": log.id,
+                    "pipeline": log.pipeline_name,
+                    "source": log.data_source,
+                    "started_at": log.start_time.isoformat() if log.start_time else None,
+                    "completed_at": log.end_time.isoformat() if log.end_time else None,
+                    "status": log.status,
+                    "records_processed": log.records_processed,
+                    "records_inserted": log.records_inserted,
+                    "error": log.error_message
+                }
+                for log in uploads
+            ]
+        }
+        
+    except Exception as e:
+        logger.error(f"Error listing uploads: {e}")
         raise HTTPException(status_code=500, detail=str(e))
