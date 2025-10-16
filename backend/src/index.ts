@@ -21,6 +21,8 @@ import { newBiotechNewsRouter } from './routes/new-biotech-news.js';
 import { epidemiologyRouter } from './routes/epidemiology.js';
 import { notificationRouter } from './routes/notifications.js';
 import { widgetRouter } from './routes/widgets.js';
+import { featureFlagsRouter } from './routes/feature-flags.js';
+import { rxdbRouter } from './routes/rxdb.js';
 import { getNewsMonitor } from './services/news-monitor.js';
 
 async function startServer() {
@@ -83,6 +85,8 @@ async function startServer() {
     app.use('/api/epidemiology', epidemiologyRouter);
     app.use('/api/notifications', notificationRouter);
     app.use('/api/widgets', widgetRouter);
+    app.use('/api/feature-flags', featureFlagsRouter);
+    app.use('/api/rxdb', rxdbRouter);
 
     // Setup WebSocket handlers
     setupWebSocket(io);
