@@ -107,7 +107,8 @@ export class RealDataService {
         exposures: this._transformExposures(rawData),
         pipeline: this._transformPipeline(rawData.clinical_trials || []),
         documents: [],
-        analytics: this._transformAnalytics(rawData)
+        analytics: this._transformAnalytics(rawData),
+        news: this._getNewsItems()
       };
 
       this.setCache(cacheKey, dashboardData);
@@ -248,6 +249,48 @@ export class RealDataService {
     return colors[phase] || "#6b7280";
   }
 
+  private _getNewsItems(): any[] {
+    // Return curated biotech news items
+    return [
+      {
+        id: 'news-001',
+        title: 'CARVYKTI (cilta-cel): New Boxed Warning Over Gut Toxicity',
+        summary: `On October 10, 2025, the FDA mandated a Boxed Warning for immune effector cell–associated enterocolitis (IEC-EC) for CARVYKTI, based on reports in clinical trials and postmarketing of severe or prolonged diarrhea, abdominal pain, weight loss—and in some cases bowel perforation, sepsis, and fatal outcomes.
+
+The updated label also revises warnings/precautions, adverse reaction descriptions, and the clinical studies section (to incorporate new survival data from the CARTITUDE-4 second interim analysis).
+
+Despite the new safety flag, the FDA asserts that CARVYKTI's benefit/risk profile still favors use in appropriate patients.`,
+        date: '2025-10-10',
+        source: 'FDA',
+        category: 'Regulatory',
+        impact: 'High',
+        tags: ['CAR-T', 'Multiple Myeloma', 'Safety', 'FDA Warning'],
+        url: 'https://www.fda.gov/drugs/drug-safety-and-availability'
+      },
+      {
+        id: 'news-002',
+        title: 'Novo Nordisk to Acquire Akero Therapeutics for Up to $5.2 Billion',
+        summary: `On October 9, 2025, Novo Nordisk struck a definitive agreement to acquire Akero Therapeutics in a deal worth up to USD 5.2 billion.
+
+Akero's lead asset is efruxifermin (EFX), a fibroblast growth factor 21 (FGF21) analogue in Phase 3 for treating metabolic dysfunction-associated steatohepatitis (MASH).
+
+Under the terms:
+• Shareholders will receive $54 cash per share at closing
+• A Contingent Value Right (CVR) worth $6 per share is payable if full U.S. regulatory approval is secured for EFX in compensated cirrhosis by June 30, 2031
+
+The deal has unanimous Akero board support and is expected to close by year-end 2025, pending regulatory and shareholder approvals.
+
+Novo is clearly doubling down in the metabolic / liver disease space, likely seeing EFX as a cornerstone to complement its existing obesity and diabetes portfolio.`,
+        date: '2025-10-09',
+        source: 'Press Release',
+        category: 'M&A',
+        impact: 'High',
+        tags: ['MASH', 'Metabolic Disease', 'Acquisition', 'Novo Nordisk', 'Akero'],
+        url: 'https://www.fiercebiotech.com/biotech/novo-nordisk-acquire-akero-therapeutics'
+      }
+    ];
+  }
+
   private _getDefaultDashboardData() {
     return {
       headline: {
@@ -269,7 +312,8 @@ export class RealDataService {
         performance: { totalReturn: 0, volatility: 0, sharpeRatio: 0, maxDrawdown: 0 },
         risk: { beta: 0, valueAtRisk: 0, expectedShortfall: 0 },
         correlations: []
-      }
+      },
+      news: this._getNewsItems()
     };
   }
 

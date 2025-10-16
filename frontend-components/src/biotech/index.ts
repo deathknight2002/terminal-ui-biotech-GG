@@ -17,6 +17,9 @@ export type { BayesianSnapshotProps } from './molecules/BayesianSnapshot';
 export { CredenceBadge, CredenceBadgeGroup } from './molecules/CredenceBadge';
 export type { CredenceBadgeProps, CredenceBadgeGroupProps, CredenceType } from './molecules/CredenceBadge';
 
+export { NewsSummaryCard } from './molecules/NewsSummaryCard';
+export type { NewsSummaryCardProps } from './molecules/NewsSummaryCard';
+
 // Organisms - Complex biotech dashboards
 export { BioAuroraDashboard } from './organisms/BioAuroraDashboard';
 
@@ -49,6 +52,9 @@ export type {
 
 export { KOLTracker } from './organisms/KOLTracker';
 export type { KOLTrackerProps } from './organisms/KOLTracker/KOLTracker';
+
+export { NewsFeed } from './organisms/NewsFeed';
+export type { NewsFeedProps } from './organisms/NewsFeed';
 
 // ML/AI Components - Advanced Analytics
 export { ABTestingDashboard } from './organisms/ABTestingDashboard';

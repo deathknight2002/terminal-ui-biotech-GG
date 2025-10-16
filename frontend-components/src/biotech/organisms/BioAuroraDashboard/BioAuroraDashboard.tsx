@@ -13,6 +13,7 @@ import { RadarChart } from '../../../terminal/visualizations/RadarChart';
 import { ProgressCircle } from '../../../terminal/visualizations/ProgressCircle';
 import { BioMetricGrid } from '../../molecules/BioMetricGrid';
 import { CatalystTicker } from '../../molecules/CatalystTicker';
+import { NewsFeed } from '../NewsFeed';
 import type {
   BioAuroraDashboardProps,
   BioAuroraMetric,
@@ -253,8 +254,10 @@ export const BioAuroraDashboard: React.FC<BioAuroraDashboardProps> = ({
   positions,
   exposures,
   pipeline,
+  news,
   onSelectCatalyst,
   onSelectPosition,
+  onRefreshNews,
 }) => {
   const dataset = useMemo<DashboardDataset>(() => ({
     headline: headline ?? DEFAULT_DATASET.headline,
@@ -530,6 +533,16 @@ export const BioAuroraDashboard: React.FC<BioAuroraDashboardProps> = ({
               </div>
             </div>
           </div>
+
+          {news && news.length > 0 && (
+            <div className={styles.newsSection}>
+              <NewsFeed 
+                news={news} 
+                onRefresh={onRefreshNews}
+                cornerBrackets
+              />
+            </div>
+          )}
 
           <div className={styles.alertRibbon}>
             <span>

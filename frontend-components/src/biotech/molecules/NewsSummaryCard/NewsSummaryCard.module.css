@@ -1,0 +1,152 @@
+.card {
+  background: var(--bg-panel, rgba(10, 10, 12, 0.8));
+  border: 1px solid var(--border-primary, rgba(0, 255, 0, 0.2));
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: var(--accent-primary, #00ff00);
+  box-shadow: 0 0 12px rgba(0, 255, 0, 0.15);
+}
+
+.header {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.expanded .header {
+  border-bottom-color: var(--border-secondary, rgba(0, 255, 0, 0.1));
+}
+
+.header:hover {
+  background: rgba(0, 255, 0, 0.02);
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary, #e0e0e0);
+  margin: 0;
+  text-transform: uppercase;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  color: var(--accent-primary, #00ff00);
+  font-size: 0.7rem;
+  padding: 0.25rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  min-width: 1rem;
+  text-align: center;
+}
+
+.expandButton:hover {
+  color: var(--accent-hover, #00ff88);
+}
+
+.metadata {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.75rem;
+  color: var(--text-secondary, #888);
+}
+
+.date {
+  color: var(--text-muted, #666);
+}
+
+.source {
+  color: var(--text-muted, #666);
+}
+
+.content {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.summary {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #ccc);
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-secondary, rgba(0, 255, 0, 0.1));
+}
+
+/* Bloomberg Terminal corner brackets styling */
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--accent-primary, #00ff00);
+}
+
+.card::before {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.card::after {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+/* Add position relative for pseudo elements */
+.card {
+  position: relative;
+}

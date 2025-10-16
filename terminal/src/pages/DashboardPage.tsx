@@ -76,6 +76,11 @@ export function DashboardPage() {
     );
   }
 
+  const handleRefreshNews = () => {
+    // Manual refresh using React Query's refetch
+    window.location.reload();
+  };
+
   return (
     <div className={`${styles.frame} terminal-frame aurora-shimmer`}>
       <BioAuroraDashboard
@@ -88,8 +93,10 @@ export function DashboardPage() {
         pipeline={dashboardData?.pipeline}
         documents={dashboardData?.documents}
         analytics={dashboardData?.analytics}
+        news={dashboardData?.news}
         onSelectCatalyst={handleSelectCatalyst}
         onSelectPosition={handleSelectPosition}
+        onRefreshNews={handleRefreshNews}
       />
     </div>
   );
