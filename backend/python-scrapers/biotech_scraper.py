@@ -71,57 +71,124 @@ class BiotechDataScraper:
         self.PRECLINICAL = "Preclinical"
         self.APPROVED = "Approved"
         
-    def scrape_clinical_trials(self, limit: int = 100) -> list[dict[str, Any]]:
-        """Scrape active clinical trials from ClinicalTrials.gov"""
-        logger.info("🧬 Scraping clinical trials data...")
+    def scrape_clinical_trials(self, limit: int = 500) -> list[dict[str, Any]]:
+        """
+        Scrape active clinical trials from ClinicalTrials.gov using multiple sources
+        Fetches hundreds of trials with pagination
+        """
+        logger.info(f"🧬 Scraping clinical trials data (target: {limit} trials)...")
         
-        trials: list[dict[str, Any]] = []
-        # Updated API endpoint for ClinicalTrials.gov
+        all_trials: list[dict[str, Any]] = []
         base_url = "https://clinicaltrials.gov/api/v2/studies"
         
-        params: dict[str, Any] = {
-            "query.cond": "cancer OR oncology OR immunotherapy",
-            "fields": "NCTId,BriefTitle,Phase,OverallStatus,LeadSponsorName,EnrollmentCount,PrimaryCompletionDate",
-            "countTotal": "true",
-            "pageSize": min(limit, 100)
-        }
+        # Multiple queries to get diverse trial data
+        queries = [
+            "cancer OR oncology OR immunotherapy OR CAR-T",
+            "gene therapy OR monoclonal antibody OR checkpoint inhibitor",
+            "rare disease OR orphan drug OR biologics",
+            "Phase 2 OR Phase 3 OR Phase 1",
+        ]
         
-        try:
-            response = self.session.get(base_url, params=params, timeout=30)
-            response.raise_for_status()
-            data = response.json()
+        # Calculate trials per query
+        trials_per_query = limit // len(queries)
+        page_size = 100  # Max allowed by API
+        
+        for query_idx, query in enumerate(queries):
+            logger.info(f"🔍 Query {query_idx + 1}/{len(queries)}: {query}")
             
-            if "studies" in data:
-                for study in data["studies"][:limit]:
-                    protocol = study.get("protocolSection", {})
-                    identification = protocol.get("identificationModule", {})
-                    status = protocol.get("statusModule", {})
-                    sponsor = protocol.get("sponsorCollaboratorsModule", {})
-                    design = protocol.get("designModule", {})
-                    
-                    trial = {
-                        "nct_id": identification.get("nctId", ""),
-                        "title": identification.get("briefTitle", ""),
-                        "phase": design.get("phases", ["Unknown"])[0] if design.get("phases") else "Unknown",
-                        "status": status.get("overallStatus", "Unknown"),
-                        "condition": "",  # Would need additional API call for conditions
-                        "intervention": "",  # Would need additional API call for interventions
-                        "sponsor": sponsor.get("leadSponsor", {}).get("name", "") if sponsor.get("leadSponsor") else "",
-                        "enrollment": protocol.get("enrollmentInfoModule", {}).get("count", 0),
-                        "completion_date": status.get("primaryCompletionDateStruct", {}).get("date", ""),
-                        "start_date": status.get("startDateStruct", {}).get("date", ""),
-                        "country": "USA",  # Default
-                        "scraped_at": datetime.now().isoformat()
-                    }
-                    trials.append(trial)
-                    
-            logger.info(f"✅ Scraped {len(trials)} clinical trials")
-            return trials
+            page_token = None
+            query_trials = 0
+            max_pages = (trials_per_query + page_size - 1) // page_size  # Ceiling division
             
-        except Exception as e:
-            logger.error(f"❌ Error scraping clinical trials: {e}")
-            # Return mock data if API fails
-            return self._get_mock_clinical_trials(limit)
+            for page in range(max_pages):
+                params: dict[str, Any] = {
+                    "query.cond": query,
+                    "fields": "NCTId,BriefTitle,Phase,OverallStatus,LeadSponsorName,EnrollmentCount,PrimaryCompletionDate,ConditionsModule,ArmsInterventionsModule,LocationsModule",
+                    "countTotal": "true",
+                    "pageSize": page_size
+                }
+                
+                if page_token:
+                    params["pageToken"] = page_token
+                
+                try:
+                    response = self.session.get(base_url, params=params, timeout=30)
+                    response.raise_for_status()
+                    data = response.json()
+                    
+                    if "studies" in data:
+                        for study in data["studies"]:
+                            if query_trials >= trials_per_query:
+                                break
+                                
+                            protocol = study.get("protocolSection", {})
+                            identification = protocol.get("identificationModule", {})
+                            status = protocol.get("statusModule", {})
+                            sponsor = protocol.get("sponsorCollaboratorsModule", {})
+                            design = protocol.get("designModule", {})
+                            conditions = protocol.get("conditionsModule", {})
+                            interventions = protocol.get("armsInterventionsModule", {})
+                            locations = protocol.get("contactsLocationsModule", {})
+                            
+                            # Extract conditions
+                            condition_list = conditions.get("conditions", [])
+                            condition_str = ", ".join(condition_list[:3]) if condition_list else ""
+                            
+                            # Extract interventions
+                            intervention_list = interventions.get("interventions", [])
+                            intervention_names = [i.get("name", "") for i in intervention_list]
+                            intervention_str = ", ".join(intervention_names[:3]) if intervention_names else ""
+                            
+                            # Extract location
+                            location_list = locations.get("locations", [])
+                            countries = set()
+                            for loc in location_list[:5]:
+                                country = loc.get("country", "")
+                                if country:
+                                    countries.add(country)
+                            country_str = ", ".join(list(countries)[:3]) if countries else "USA"
+                            
+                            trial = {
+                                "id": identification.get("nctId", ""),
+                                "nct_id": identification.get("nctId", ""),
+                                "title": identification.get("briefTitle", ""),
+                                "phase": design.get("phases", ["Unknown"])[0] if design.get("phases") else "Unknown",
+                                "status": status.get("overallStatus", "Unknown"),
+                                "conditions": condition_list,
+                                "condition": condition_str,
+                                "intervention": intervention_str,
+                                "sponsor": sponsor.get("leadSponsor", {}).get("name", "") if sponsor.get("leadSponsor") else "",
+                                "enrollment": design.get("enrollmentInfo", {}).get("count", 0),
+                                "completion_date": status.get("primaryCompletionDateStruct", {}).get("date", ""),
+                                "start_date": status.get("startDateStruct", {}).get("date", ""),
+                                "country": country_str,
+                                "source": "ClinicalTrials.gov",
+                                "scraped_at": datetime.now().isoformat()
+                            }
+                            
+                            # Avoid duplicates
+                            if not any(t.get("nct_id") == trial["nct_id"] for t in all_trials):
+                                all_trials.append(trial)
+                                query_trials += 1
+                        
+                        # Check for next page
+                        page_token = data.get("nextPageToken")
+                        if not page_token or query_trials >= trials_per_query:
+                            break
+                            
+                        logger.debug(f"   Page {page + 1}: {query_trials} trials from this query")
+                        
+                    else:
+                        break
+                        
+                except Exception as e:
+                    logger.error(f"❌ Error scraping page {page + 1} of query '{query}': {e}")
+                    break
+            
+            logger.info(f"✅ Collected {query_trials} trials from query {query_idx + 1}")
+        
+        logger.info(f"🎯 Total unique trials scraped: {len(all_trials)}")
+        return all_trials[:limit]
     
     def _get_mock_clinical_trials(self, limit: int = 10) -> list[dict[str, Any]]:
         """Return mock clinical trials data when API fails"""

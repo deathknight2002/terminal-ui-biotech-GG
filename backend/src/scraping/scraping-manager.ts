@@ -10,6 +10,7 @@ import { CircuitBreakerManager } from './circuit-breaker.js';
 import { PubMedScraper } from './pubmed-scraper.js';
 import { FDAScraper } from './fda-scraper.js';
 import { ClinicalTrialsScraper } from './clinical-trials-scraper.js';
+import { MultiSourceTrialsScraper } from './multi-source-trials-scraper.js';
 import { FierceBiotechScraper } from './fierce-biotech-scraper.js';
 import { ScienceDailyScraper } from './science-daily-scraper.js';
 import { BioSpaceScraper } from './biospace-scraper.js';
@@ -92,6 +93,7 @@ export class ScrapingManager extends EventEmitter {
   private pubmedScraper: PubMedScraper;
   private fdaScraper: FDAScraper;
   private clinicalTrialsScraper: ClinicalTrialsScraper;
+  private multiSourceTrialsScraper: MultiSourceTrialsScraper;
   private fierceBiotechScraper: FierceBiotechScraper;
   private scienceDailyScraper: ScienceDailyScraper;
   private bioSpaceScraper: BioSpaceScraper;
@@ -132,6 +134,7 @@ export class ScrapingManager extends EventEmitter {
     this.pubmedScraper = new PubMedScraper(config?.pubmedApiKey);
     this.fdaScraper = new FDAScraper(config?.fdaApiKey);
     this.clinicalTrialsScraper = new ClinicalTrialsScraper();
+    this.multiSourceTrialsScraper = new MultiSourceTrialsScraper({ targetCount: 500 });
     this.fierceBiotechScraper = new FierceBiotechScraper();
     this.scienceDailyScraper = new ScienceDailyScraper();
     this.bioSpaceScraper = new BioSpaceScraper();
@@ -278,6 +281,13 @@ export class ScrapingManager extends EventEmitter {
    */
   getBioSpaceJobsScraper(): BioSpaceJobsScraper {
     return this.bioSpaceJobsScraper;
+  }
+
+  /**
+   * Get Multi-Source Trials scraper
+   */
+  getMultiSourceTrialsScraper(): MultiSourceTrialsScraper {
+    return this.multiSourceTrialsScraper;
   }
 
   /**

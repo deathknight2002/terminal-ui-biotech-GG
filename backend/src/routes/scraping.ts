@@ -400,6 +400,36 @@ router.get('/clinical-trials/oncology/active', async (req, res) => {
 });
 
 /**
+ * GET /api/scraping/clinical-trials/multi-source
+ * Fetch trials from multiple international sources
+ */
+router.get('/clinical-trials/multi-source', async (req, res) => {
+  try {
+    const targetCount = parseInt(req.query.targetCount as string) || 500;
+    
+    const manager = getScrapingManager();
+    const scraper = manager.getMultiSourceTrialsScraper();
+
+    const trials = await scraper.fetchAllTrials({});
+    const stats = scraper.getStats(trials);
+
+    res.json({
+      status: 'ok',
+      data: trials,
+      count: trials.length,
+      stats: stats,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Multi-source trials fetch error:', error);
+    res.status(500).json({
+      error: 'Failed to fetch multi-source trials',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
  * POST /api/scraping/cache/clear
  * Clear all scraper caches
  */

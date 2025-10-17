@@ -72,6 +72,12 @@ export type {
   TrialSearchParams,
 } from './clinical-trials-scraper.js';
 
+export { MultiSourceTrialsScraper } from './multi-source-trials-scraper.js';
+export type {
+  MultiSourceTrialConfig,
+  TrialStats,
+} from './multi-source-trials-scraper.js';
+
 export { FierceBiotechScraper } from './fierce-biotech-scraper.js';
 export type {
   FierceBiotechArticle,
