@@ -46,6 +46,8 @@ datasketch = "^1.6.4"
 beautifulsoup4 = "^4.12.2"
 summa = "^1.2.0"
 scikit-learn = "^1.3.2"
+# Scheduling dependencies
+apscheduler = "^3.10.4"
 # ML dependencies for sentiment and backtesting
 joblib = "^1.3.2"
 pandas = "^2.0.0"
