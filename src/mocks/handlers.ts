@@ -3,6 +3,21 @@ import { http, HttpResponse } from 'msw';
 // OpenBB API base URL
 const OPENBB_API_BASE = 'https://api.openbb.co/v1';
 
+/**
+ * DEPRECATED: These mock handlers are being replaced with real data from:
+ * - Yahoo Finance (via Python scraper)
+ * - ClinicalTrials.gov API
+ * - FDA.gov public data
+ * - SEC EDGAR filings
+ * 
+ * To use real data:
+ * 1. Run: cd backend/python-scrapers && python biotech_scraper.py
+ * 2. This generates live_biotech_data.json with real market data
+ * 3. Backend APIs in backend/src/routes/ serve this live data
+ * 
+ * Mock data below is kept for development fallback only.
+ */
+
 // Mock data for different endpoints - Real Biotech Companies from DMD and Cardiology Primers
 const mockMarketData = {
   // DMD Companies (from Duchenne Muscular Dystrophy primer)
