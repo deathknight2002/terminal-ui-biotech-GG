@@ -327,6 +327,51 @@ class Therapeutic(Base):
     )
 
 
+class PipelineAsset(Base):
+    """Pipeline asset model for scraped company pipeline data"""
+    __tablename__ = "pipeline_assets"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Core fields
+    asset_name = Column(String, nullable=False, index=True)
+    company_name = Column(String, nullable=False, index=True)
+    company_id = Column(Integer, ForeignKey('companies.id'), index=True)
+    
+    # Pipeline details
+    phase = Column(String, index=True)  # Preclinical, Phase I, Phase II, Phase III, Filed, Approved
+    indication = Column(Text)  # Disease/condition being treated
+    therapeutic_area = Column(String, index=True)  # Oncology, Immunology, etc.
+    
+    # Asset metadata
+    mechanism_of_action = Column(String)  # MOA/target
+    modality = Column(String)  # Small molecule, antibody, gene therapy, etc.
+    development_status = Column(String, index=True)  # Active, Discontinued, On Hold
+    
+    # Source tracking
+    source_url = Column(String)  # URL of pipeline page
+    source_company = Column(String, index=True)  # Company whose website this came from
+    logo_url = Column(String)  # Company/asset logo URL
+    
+    # Data provenance
+    scraped_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    last_verified = Column(DateTime(timezone=True), onupdate=func.now())
+    data_hash = Column(String, index=True)  # Hash for deduplication
+    
+    # Additional metadata
+    metadata = Column(JSON)  # Flexible field for additional scraped data
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    __table_args__ = (
+        Index('idx_pipeline_asset_company_phase', 'company_id', 'phase'),
+        Index('idx_pipeline_asset_name_company', 'asset_name', 'company_name'),
+        Index('idx_pipeline_asset_source', 'source_company', 'scraped_at'),
+        Index('idx_pipeline_asset_hash', 'data_hash'),
+    )
+
+
 class CompetitionEdge(Base):
     """Competitive edge analysis between therapeutics or companies"""
     __tablename__ = "competition_edges"
