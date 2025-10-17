@@ -2,7 +2,34 @@
 
 A comprehensive, production-ready scraper framework for biotech and pharmaceutical intelligence.
 
-## Features
+## 🆕 Next-Gen Ingestion System (NEW!)
+
+**Fast, intelligent, personal-use news acquisition** with zero API dependencies:
+
+- ⚡ **Dual Refresh Modes** - Quick (≤10s) or Deep (≤60s)
+- 🎯 **Priority Queue** - IR pages > FDA > News with smart scheduling
+- 📡 **Renderless-First** - RSS/Sitemap → HTML (85%+ without browser)
+- 📄 **PDF Intelligence** - Extract trial IDs, phases, endpoints (70%+ success)
+- 💾 **CSV Drop-Zone** - Import prices from Yahoo/Google/Bloomberg
+- 🔧 **Self-Healing Parsers** - 4-tier fallback with health tracking
+- 🎨 **Personal Use** - No team features, manual control only
+
+**Quick Start**: See [NEXT_GEN_INGESTION.md](NEXT_GEN_INGESTION.md) | [Visual Summary](../../NEXT_GEN_IMPLEMENTATION_VISUAL.md)
+
+```bash
+# Quick refresh (≤10s)
+python -m bt_platform.cli.nextgen_ingest quick --since 7d
+
+# Deep refresh (≤60s)
+python -m bt_platform.cli.nextgen_ingest deep --since 24h -v
+
+# Import price CSV
+python -m bt_platform.cli.nextgen_ingest import prices.csv --ticker BLUE
+```
+
+---
+
+## Classic Features
 
 ✅ **Plugin Architecture** - Strict interface (discover → fetch → parse → normalize → link → upsert)  
 ✅ **High Performance** - HTTP/2, connection pooling, async I/O  
