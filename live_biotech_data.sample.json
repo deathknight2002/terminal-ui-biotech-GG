@@ -1,0 +1,340 @@
+{
+  "summary": {
+    "total_trials": 42,
+    "total_companies": 28,
+    "total_market_cap": 486500000000,
+    "avg_price_change": 1.34,
+    "fda_events": 4,
+    "upcoming_catalysts": 6,
+    "insider_filings": 3,
+    "data_quality": "LIVE - FREE SOURCES",
+    "data_sources": [
+      "Yahoo Finance (Market Data)",
+      "ClinicalTrials.gov (Clinical Trials)",
+      "FDA.gov (Regulatory Events)",
+      "SEC EDGAR (Insider Trading)"
+    ],
+    "last_updated": "2025-10-17T03:40:00.000Z",
+    "collection_time": 45.2,
+    "analyst_sentiment": {
+      "bullish": 15,
+      "total_coverage": 25,
+      "bullish_pct": 60.0
+    }
+  },
+  "market_data": {
+    "positions": [
+      {
+        "symbol": "SRPT",
+        "company": "Sarepta Therapeutics Inc.",
+        "price": 117.45,
+        "change": 2.85,
+        "volume": 1456789,
+        "volume_ratio": 1.23,
+        "market_cap": 11800000000,
+        "sector": "Biotechnology",
+        "industry": "Biotechnology",
+        "beta": 1.42,
+        "pe_ratio": -19.2,
+        "forward_pe": 0,
+        "price_to_book": 4.23,
+        "52_week_high": 135.67,
+        "52_week_low": 67.89,
+        "avg_volume": 1182340,
+        "shares_outstanding": 100456000,
+        "float_shares": 95234000,
+        "short_percent": 8.5,
+        "short_ratio": 3.2,
+        "analyst_target": 145.00,
+        "analyst_recommendation": 1.8,
+        "num_analysts": 18,
+        "institutional_ownership": 85.4,
+        "insider_ownership": 2.3,
+        "revenue_growth": 0.45,
+        "earnings_growth": 0,
+        "cash_per_share": 12.45,
+        "debt_to_equity": 23.4
+      },
+      {
+        "symbol": "GILD",
+        "company": "Gilead Sciences Inc.",
+        "price": 89.23,
+        "change": 0.67,
+        "volume": 6234567,
+        "volume_ratio": 0.98,
+        "market_cap": 112000000000,
+        "sector": "Biotechnology",
+        "industry": "Drug Manufacturers - Specialty & Generic",
+        "beta": 0.42,
+        "pe_ratio": 19.8,
+        "forward_pe": 11.5,
+        "price_to_book": 5.12,
+        "52_week_high": 95.34,
+        "52_week_low": 63.21,
+        "avg_volume": 6350000,
+        "shares_outstanding": 1254000000,
+        "float_shares": 1249000000,
+        "short_percent": 2.1,
+        "short_ratio": 1.8,
+        "analyst_target": 92.50,
+        "analyst_recommendation": 2.3,
+        "num_analysts": 25,
+        "institutional_ownership": 78.9,
+        "insider_ownership": 0.2,
+        "revenue_growth": 0.05,
+        "earnings_growth": 0.12,
+        "cash_per_share": 6.78,
+        "debt_to_equity": 142.5
+      },
+      {
+        "symbol": "MRNA",
+        "company": "Moderna Inc.",
+        "price": 67.89,
+        "change": -1.45,
+        "volume": 8945123,
+        "volume_ratio": 1.45,
+        "market_cap": 26500000000,
+        "sector": "Biotechnology",
+        "industry": "Biotechnology",
+        "beta": 1.72,
+        "pe_ratio": 8.9,
+        "forward_pe": 15.6,
+        "price_to_book": 2.34,
+        "52_week_high": 189.50,
+        "52_week_low": 62.12,
+        "avg_volume": 6172000,
+        "shares_outstanding": 390234000,
+        "float_shares": 380456000,
+        "short_percent": 15.2,
+        "short_ratio": 2.9,
+        "analyst_target": 85.00,
+        "analyst_recommendation": 2.1,
+        "num_analysts": 22,
+        "institutional_ownership": 65.3,
+        "insider_ownership": 7.8,
+        "revenue_growth": -0.42,
+        "earnings_growth": -0.65,
+        "cash_per_share": 24.56,
+        "debt_to_equity": 0
+      },
+      {
+        "symbol": "REGN",
+        "company": "Regeneron Pharmaceuticals Inc.",
+        "price": 978.45,
+        "change": 12.34,
+        "volume": 723456,
+        "volume_ratio": 0.87,
+        "market_cap": 106000000000,
+        "sector": "Biotechnology",
+        "industry": "Biotechnology",
+        "beta": 0.32,
+        "pe_ratio": 23.4,
+        "forward_pe": 18.9,
+        "price_to_book": 8.12,
+        "52_week_high": 1004.56,
+        "52_week_low": 712.34,
+        "avg_volume": 831000,
+        "shares_outstanding": 108345000,
+        "float_shares": 106234000,
+        "short_percent": 1.9,
+        "short_ratio": 1.2,
+        "analyst_target": 1050.00,
+        "analyst_recommendation": 1.9,
+        "num_analysts": 20,
+        "institutional_ownership": 82.1,
+        "insider_ownership": 11.2,
+        "revenue_growth": 0.18,
+        "earnings_growth": 0.25,
+        "cash_per_share": 42.67,
+        "debt_to_equity": 15.6
+      },
+      {
+        "symbol": "VRTX",
+        "company": "Vertex Pharmaceuticals Inc.",
+        "price": 456.78,
+        "change": 5.67,
+        "volume": 945678,
+        "volume_ratio": 1.12,
+        "market_cap": 118000000000,
+        "sector": "Biotechnology",
+        "industry": "Biotechnology",
+        "beta": 0.58,
+        "pe_ratio": 28.9,
+        "forward_pe": 22.1,
+        "price_to_book": 6.45,
+        "52_week_high": 480.23,
+        "52_week_low": 334.56,
+        "avg_volume": 844000,
+        "shares_outstanding": 258456000,
+        "float_shares": 255678000,
+        "short_percent": 2.3,
+        "short_ratio": 1.5,
+        "analyst_target": 490.00,
+        "analyst_recommendation": 1.7,
+        "num_analysts": 24,
+        "institutional_ownership": 91.2,
+        "insider_ownership": 0.8,
+        "revenue_growth": 0.31,
+        "earnings_growth": 0.42,
+        "cash_per_share": 18.92,
+        "debt_to_equity": 8.3
+      }
+    ],
+    "indices": {
+      "XBI": {
+        "price": 89.45,
+        "change": 1.23,
+        "volume": 4567890,
+        "market_cap": 6700000000,
+        "52_week_high": 102.34,
+        "52_week_low": 72.56,
+        "avg_volume": 4234567
+      },
+      "IBB": {
+        "price": 132.67,
+        "change": 0.98,
+        "volume": 2345678,
+        "market_cap": 10200000000,
+        "52_week_high": 145.89,
+        "52_week_low": 110.23,
+        "avg_volume": 2178901
+      }
+    },
+    "timestamp": "2025-10-17T03:40:00.000Z"
+  },
+  "clinical_trials": [
+    {
+      "nct_id": "NCT05096221",
+      "title": "SRP-9001 Gene Therapy for Duchenne Muscular Dystrophy",
+      "phase": "Phase III",
+      "status": "Active, not recruiting",
+      "condition": "Duchenne Muscular Dystrophy",
+      "intervention": "Gene Therapy",
+      "sponsor": "Sarepta Therapeutics",
+      "enrollment": 99,
+      "completion_date": "2025-06-15",
+      "start_date": "2022-08-01",
+      "country": "USA",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    },
+    {
+      "nct_id": "NCT05601440",
+      "title": "Aficamten in Hypertrophic Cardiomyopathy (SEQUOIA-HCM)",
+      "phase": "Phase III",
+      "status": "Active, not recruiting",
+      "condition": "Hypertrophic Cardiomyopathy",
+      "intervention": "Small Molecule",
+      "sponsor": "Cytokinetics Inc.",
+      "enrollment": 282,
+      "completion_date": "2025-03-30",
+      "start_date": "2022-05-12",
+      "country": "USA",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    }
+  ],
+  "fda_calendar": [
+    {
+      "event_type": "PDUFA Date",
+      "drug_name": "Aficamten",
+      "company": "Cytokinetics",
+      "date": "2025-02-28",
+      "indication": "Hypertrophic Cardiomyopathy",
+      "status": "Under Review",
+      "ticker": "CYTK",
+      "source": "BioPharma Calendar",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    },
+    {
+      "event_type": "PDUFA Date",
+      "drug_name": "SRP-9001",
+      "company": "Sarepta",
+      "date": "2025-06-21",
+      "indication": "Duchenne Muscular Dystrophy",
+      "status": "sNDA Under Review",
+      "ticker": "SRPT",
+      "source": "BioPharma Calendar",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    }
+  ],
+  "catalysts": [
+    {
+      "company": "Cytokinetics",
+      "symbol": "CYTK",
+      "event": "PDUFA Date",
+      "drug": "Aficamten",
+      "date": "2025-02-28",
+      "type": "Regulatory",
+      "phase": "Filed",
+      "indication": "Hypertrophic Cardiomyopathy",
+      "importance": "High",
+      "source": "BioPharma Calendar",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    },
+    {
+      "company": "Sarepta",
+      "symbol": "SRPT",
+      "event": "PDUFA Date",
+      "drug": "SRP-9001",
+      "date": "2025-06-21",
+      "type": "Regulatory",
+      "phase": "Filed",
+      "indication": "Duchenne Muscular Dystrophy",
+      "importance": "High",
+      "source": "BioPharma Calendar",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    }
+  ],
+  "insider_trading": [
+    {
+      "symbol": "SRPT",
+      "filing_type": "Form 4",
+      "filing_date": "2025-10-10",
+      "accession_number": "0001234567-25-001234",
+      "source": "SEC EDGAR",
+      "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001023024&type=4&dateb=&owner=include&count=10",
+      "scraped_at": "2025-10-17T03:40:00.000Z"
+    }
+  ],
+  "phase_distribution": {
+    "Phase III": 18,
+    "Phase II": 15,
+    "Phase I": 9
+  },
+  "biotech_indices": {
+    "XBI": {
+      "price": 89.45,
+      "change_pct": 1.23,
+      "volume": 4567890
+    },
+    "IBB": {
+      "price": 132.67,
+      "change_pct": 0.98,
+      "volume": 2345678
+    }
+  },
+  "top_gainers": [
+    {
+      "symbol": "REGN",
+      "company": "Regeneron Pharmaceuticals Inc.",
+      "price": 978.45,
+      "change": 12.34,
+      "market_cap": 106000000000
+    },
+    {
+      "symbol": "VRTX",
+      "company": "Vertex Pharmaceuticals Inc.",
+      "price": 456.78,
+      "change": 5.67,
+      "market_cap": 118000000000
+    }
+  ],
+  "top_losers": [
+    {
+      "symbol": "MRNA",
+      "company": "Moderna Inc.",
+      "price": 67.89,
+      "change": -1.45,
+      "market_cap": 26500000000
+    }
+  ]
+}
