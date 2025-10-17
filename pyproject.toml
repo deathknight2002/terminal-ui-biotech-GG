@@ -70,7 +70,7 @@ optional = true
 
 [tool.poetry.group.transformers.dependencies]
 transformers = "^4.30.0"
-torch = "^2.0.0"
+torch = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
