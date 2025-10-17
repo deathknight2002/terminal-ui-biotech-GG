@@ -111,8 +111,14 @@ export class MultiSourceTrialsScraper {
     // Calculate how many trials to fetch from each source
     const trialsPerSource = Math.ceil(this.config.targetCount / this.config.includeSources.length);
 
+    // Define valid source identifiers (not URLs, just enum-like constants for source selection)
+    // These are configuration keys, not URL substrings, so no URL validation is needed
+    const CLINICALTRIALS_GOV = 'clinicaltrials.gov';
+    const EU_CTR = 'eu-ctr';
+    const WHO_ICTRP = 'who-ictrp';
+
     // Fetch from ClinicalTrials.gov
-    if (this.config.includeSources.includes('clinicaltrials.gov')) {
+    if (this.config.includeSources.includes(CLINICALTRIALS_GOV)) {
       try {
         logger.info(`🧪 Fetching trials from ClinicalTrials.gov (target: ${trialsPerSource})`);
         const usTrials = await this.fetchFromClinicalTrialsGov(params, trialsPerSource);
@@ -120,12 +126,12 @@ export class MultiSourceTrialsScraper {
         logger.info(`✅ Fetched ${usTrials.length} trials from ClinicalTrials.gov`);
       } catch (error) {
         logger.error('❌ Error fetching from ClinicalTrials.gov:', error);
-        errors.push({ source: 'clinicaltrials.gov', error });
+        errors.push({ source: CLINICALTRIALS_GOV, error });
       }
     }
 
     // Fetch from EU CTR
-    if (this.config.includeSources.includes('eu-ctr')) {
+    if (this.config.includeSources.includes(EU_CTR)) {
       try {
         logger.info(`🧪 Fetching trials from EU Clinical Trials Register (target: ${trialsPerSource})`);
         const euTrials = await this.fetchFromEUCTR(params, trialsPerSource);
@@ -133,12 +139,12 @@ export class MultiSourceTrialsScraper {
         logger.info(`✅ Fetched ${euTrials.length} trials from EU CTR`);
       } catch (error) {
         logger.error('❌ Error fetching from EU CTR:', error);
-        errors.push({ source: 'eu-ctr', error });
+        errors.push({ source: EU_CTR, error });
       }
     }
 
     // Fetch from WHO ICTRP
-    if (this.config.includeSources.includes('who-ictrp')) {
+    if (this.config.includeSources.includes(WHO_ICTRP)) {
       try {
         logger.info(`🧪 Fetching trials from WHO ICTRP (target: ${trialsPerSource})`);
         const whoTrials = await this.fetchFromWHOICTRP(params, trialsPerSource);
@@ -146,7 +152,7 @@ export class MultiSourceTrialsScraper {
         logger.info(`✅ Fetched ${whoTrials.length} trials from WHO ICTRP`);
       } catch (error) {
         logger.error('❌ Error fetching from WHO ICTRP:', error);
-        errors.push({ source: 'who-ictrp', error });
+        errors.push({ source: WHO_ICTRP, error });
       }
     }
 
