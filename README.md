@@ -4,13 +4,47 @@
 
 A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platform for pharmaceutical data visualization, drug development pipeline tracking, and biotech market intelligence.
 
+**🆓 100% Free Data Sources** - No paid APIs, no rate limits, no account sign-ups required!
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node.js-18+-green.svg)](https://nodejs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
 [![React 18](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
 
+## 🎯 Key Features
+
+- 📊 **Real-time Market Data** - Yahoo Finance integration (40+ biotech stocks, 4 ETFs)
+- 🧬 **Clinical Trials Tracking** - Live data from ClinicalTrials.gov
+- 🏛️ **FDA Calendar** - PDUFA dates, drug approvals, regulatory events
+- 💼 **Insider Trading** - SEC Form 4 filings from EDGAR database
+- 📈 **Analyst Ratings** - Institutional ownership, price targets, recommendations
+- 🎨 **Bloomberg-style UI** - Professional terminal aesthetics
+- 📱 **Progressive Web App** - Install on iOS/Android like a native app
+- 🔒 **100% Free** - No paid APIs, all data from public sources
+
+## 📊 Proprietary Data Collection
+
+The platform uses **proprietary scrapers** to collect data from free, unlimited sources:
+
+| Data Source | What We Get | Cost | Rate Limit |
+|------------|-------------|------|------------|
+| **Yahoo Finance** | Prices, volumes, analyst ratings, ownership | Free | Unlimited* |
+| **ClinicalTrials.gov** | Active trials, phases, enrollment | Free | Unlimited |
+| **FDA.gov** | Drug approvals, PDUFA dates | Free | Unlimited |
+| **SEC EDGAR** | Form 4 insider trading filings | Free | 10 req/sec |
+
+*With respectful scraping practices (rate limiting, caching)
+
+📖 **[See Full Data Architecture Documentation](./DATA_COLLECTION_ARCHITECTURE.md)**
+
 ## 🚀 Quick Start
+
+### Prerequisites
+- **Node.js 18+** and **npm**
+- **Python 3.9+** and **pip**
+
+### 1. Install Dependencies
 
 **One-command setup for Windows:**
 ```powershell
@@ -22,7 +56,23 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 ./scripts/setup.sh
 ```
 
-**Start development:**
+### 2. Fetch Live Data
+
+**Collect real-time biotech data from free sources:**
+```bash
+./scripts/fetch-live-data.sh
+```
+
+This runs the Python scraper to collect:
+- Market data from Yahoo Finance (40+ stocks, 4 ETFs)
+- Clinical trials from ClinicalTrials.gov
+- FDA calendar events (PDUFA dates, approvals)
+- Insider trading from SEC EDGAR
+
+Output: `live_biotech_data.json` (used by backend APIs)
+
+### 3. Start Development
+
 ```bash
 # Windows
 .\scripts\setup.ps1 dev
@@ -36,6 +86,17 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 📖 **API Documentation**: http://localhost:8000/docs
 - 🖥️ **Web Terminal Application**: http://localhost:3000
 - 💻 **CLI Terminal (TUI)**: `python3 -m bt_platform.tui`
+
+### Manual Data Refresh
+
+To update data while the app is running:
+```bash
+# Terminal 1: Backend and frontend are running
+# Terminal 2: Refresh data
+cd backend/python-scrapers && python biotech_scraper.py
+
+# Backend will automatically serve new data on next request
+```
 
 ## 📱 iOS Progressive Web App (PWA)
 
@@ -751,6 +812,44 @@ src/
 ├── types/               # TypeScript types
 └── index.ts             # Main export
 ```
+
+## 📊 Data Sources & Architecture
+
+The platform is **100% self-sufficient** using only free, unlimited data sources:
+
+### Real-Time Market Data (Yahoo Finance)
+- **Stock Prices**: 40+ biotech stocks with live quotes
+- **ETFs**: XBI, IBB, ARKG, PBE biotech index tracking
+- **Analyst Data**: Ratings, price targets, recommendations
+- **Ownership**: Institutional holdings, insider ownership percentages
+- **Financials**: Market cap, P/E ratios, revenue growth, debt metrics
+- **Trading Metrics**: Volume, short interest, float shares
+
+### Clinical Trials (ClinicalTrials.gov)
+- **Active Trials**: Real-time data on ongoing clinical studies
+- **Trial Phases**: Preclinical through Phase IV tracking
+- **Enrollment**: Patient numbers, recruitment status
+- **Timelines**: Start dates, primary completion dates
+- **Sponsors**: Company and institution affiliations
+
+### FDA Regulatory Data (FDA.gov)
+- **Drug Approvals**: Recent FDA approvals and rejections
+- **PDUFA Dates**: Prescription Drug User Fee Act action dates
+- **Advisory Committees**: Upcoming committee meetings
+- **sNDA Filings**: Supplemental New Drug Applications
+
+### Insider Trading (SEC EDGAR)
+- **Form 4 Filings**: Real-time insider buy/sell transactions
+- **Filing Dates**: When insiders report trades
+- **Direct Access**: Links to official SEC filings
+
+### Data Refresh Model
+- **Manual Refresh**: User-initiated via refresh button
+- **Python Scrapers**: Run on-demand to fetch latest data
+- **30-Min Cache**: Server-side caching for performance
+- **No Background Polling**: Zero network traffic when idle
+
+**Learn More**: See [DATA_COLLECTION_ARCHITECTURE.md](./DATA_COLLECTION_ARCHITECTURE.md) for complete technical details.
 
 ## 🤝 Contributing
 
