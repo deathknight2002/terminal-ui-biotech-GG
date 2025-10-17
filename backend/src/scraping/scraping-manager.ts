@@ -497,6 +497,7 @@ export class ScrapingManager extends EventEmitter {
     this.pubmedScraper.clearCache();
     this.fdaScraper.clearCache();
     this.clinicalTrialsScraper.clearCache();
+    this.multiSourceTrialsScraper.clearCache();
     this.fierceBiotechScraper.clearCache();
     this.scienceDailyScraper.clearCache();
     this.bioSpaceScraper.clearCache();
