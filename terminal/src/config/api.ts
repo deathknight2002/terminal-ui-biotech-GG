@@ -13,10 +13,14 @@ export const API_CONFIG = {
   // Node.js Express backend (real-time biotech data)
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
   VERSION: '/api',
+  // Python FastAPI backend (evidence graph, core APIs)
+  PYTHON_BASE_URL: import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000',
+  PYTHON_VERSION: '/api/v1',
 };
 
-// Build full API base URL
+// Build full API base URLs
 export const API_BASE_URL = `${API_CONFIG.BASE_URL}${API_CONFIG.VERSION}`;
+export const PYTHON_API_BASE_URL = `${API_CONFIG.PYTHON_BASE_URL}${API_CONFIG.PYTHON_VERSION}`;
 
 /**
  * API Endpoints organized by module
@@ -168,13 +172,13 @@ export const API_ENDPOINTS = {
   
   // Evidence Graph - Graph-based evidence tracking
   EVIDENCE_GRAPH: {
-    HEALTH: `${API_BASE_URL}/evidence-graph/health`,
-    NODES: `${API_BASE_URL}/evidence-graph/nodes`,
-    NODE: (nodeId: string) => `${API_BASE_URL}/evidence-graph/nodes/${nodeId}`,
-    EDGES: `${API_BASE_URL}/evidence-graph/edges`,
-    THESIS_TIMELINE: (thesisId: string) => `${API_BASE_URL}/evidence-graph/thesis/${thesisId}/timeline`,
-    SCREEN: `${API_BASE_URL}/evidence-graph/screen`,
-    SEED: `${API_BASE_URL}/evidence-graph/seed`,
+    HEALTH: `${PYTHON_API_BASE_URL}/evidence-graph/health`,
+    NODES: `${PYTHON_API_BASE_URL}/evidence-graph/nodes`,
+    NODE: (nodeId: string) => `${PYTHON_API_BASE_URL}/evidence-graph/nodes/${nodeId}`,
+    EDGES: `${PYTHON_API_BASE_URL}/evidence-graph/edges`,
+    THESIS_TIMELINE: (thesisId: string) => `${PYTHON_API_BASE_URL}/evidence-graph/thesis/${thesisId}/timeline`,
+    SCREEN: `${PYTHON_API_BASE_URL}/evidence-graph/screen`,
+    SEED: `${PYTHON_API_BASE_URL}/evidence-graph/seed`,
   },
   
   // Admin
