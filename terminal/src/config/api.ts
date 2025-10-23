@@ -166,6 +166,17 @@ export const API_ENDPOINTS = {
     COMPETITIVE_RESEARCH: `${API_BASE_URL}/research/competitive-research`,
   },
   
+  // Evidence Graph - Graph-based evidence tracking
+  EVIDENCE_GRAPH: {
+    HEALTH: `${API_BASE_URL}/evidence-graph/health`,
+    NODES: `${API_BASE_URL}/evidence-graph/nodes`,
+    NODE: (nodeId: string) => `${API_BASE_URL}/evidence-graph/nodes/${nodeId}`,
+    EDGES: `${API_BASE_URL}/evidence-graph/edges`,
+    THESIS_TIMELINE: (thesisId: string) => `${API_BASE_URL}/evidence-graph/thesis/${thesisId}/timeline`,
+    SCREEN: `${API_BASE_URL}/evidence-graph/screen`,
+    SEED: `${API_BASE_URL}/evidence-graph/seed`,
+  },
+  
   // Admin
   ADMIN: {
     HEALTH: `${API_CONFIG.BASE_URL}/health`,
