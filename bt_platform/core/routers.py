@@ -5,7 +5,7 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol, intelligence, fda, trials, research, ml_endpoints, pipeline
+from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol, intelligence, fda, trials, research, ml_endpoints, pipeline, evidence_graph
 
 # Main API router
 api_router = APIRouter()
@@ -165,4 +165,11 @@ api_router.include_router(
     pipeline.router,
     prefix="/pipeline",
     tags=["pipeline"]
+)
+
+# Evidence Graph endpoints - Graph-based evidence tracking
+api_router.include_router(
+    evidence_graph.router,
+    prefix="/evidence-graph",
+    tags=["evidence-graph"]
 )

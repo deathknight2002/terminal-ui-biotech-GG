@@ -1,0 +1,14 @@
+.evidence-graph {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a202c;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.evidence-graph canvas {
+  background: #2d3748;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}

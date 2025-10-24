@@ -24,6 +24,7 @@ import { CompanyProfilePage } from './pages/CompanyProfilePage';
 import { IonisProfilePage } from './pages/IonisProfilePage';
 import { IonisPMModePage } from './pages/IonisPMModePage';
 import { XBICompaniesPage } from './pages/XBICompaniesPage';
+import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -94,10 +95,12 @@ export function App() {
             <Route path="/science/literature" element={<PlaceholderPage title="LITERATURE EXPLORER" />} />
             <Route path="/science/biomarkers" element={<PlaceholderPage title="BIOMARKER ATLAS" />} />
             <Route path="/science/evidence-journal" element={<EvidenceJournalPage />} />
+            <Route path="/science/evidence-graph" element={<EvidenceGraphPage />} />
             <Route path="/science/therapeutic-areas" element={<TherapeuticAreasPage />} />
 
             {/* Evidence Journal dedicated routes */}
             <Route path="/evidence" element={<EvidenceJournalPage />} />
+            <Route path="/evidence-graph" element={<EvidenceGraphPage />} />
             <Route path="/catalysts" element={<EvidenceJournalPage />} />
             <Route path="/moa" element={<EvidenceJournalPage />} />
             <Route path="/journal" element={<EvidenceJournalPage />} />

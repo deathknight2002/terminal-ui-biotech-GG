@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Graph API Demo</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0f1419;
+            color: #e2e8f0;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #ed8936;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .section {
+            background: #1a202c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            color: #ed8936;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        pre {
+            background: #2d3748;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .node-card {
+            background: #2d3748;
+            border-left: 4px solid #805ad5;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .edge-card {
+            background: #2d3748;
+            border-left: 4px solid #4299e1;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .label {
+            color: #a0aec0;
+            font-size: 11px;
+        }
+        .value {
+            color: #e2e8f0;
+            font-size: 13px;
+        }
+        .positive {
+            color: #48bb78;
+        }
+        .negative {
+            color: #f56565;
+        }
+        button {
+            background: #ed8936;
+            color: #1a202c;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #dd6b20;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .status.success {
+            background: rgba(72, 187, 120, 0.1);
+            border: 1px solid #48bb78;
+            color: #48bb78;
+        }
+        .status.error {
+            background: rgba(245, 101, 101, 0.1);
+            border: 1px solid #f56565;
+            color: #f56565;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Evidence Graph API Demo</h1>
+        
+        <div class="section">
+            <h2>API Status</h2>
+            <button onclick="checkHealth()">Check Health</button>
+            <div id="health-status"></div>
+        </div>
+
+        <div class="section">
+            <h2>Actions</h2>
+            <button onclick="loadNodes()">Load Nodes</button>
+            <button onclick="loadEdges()">Load Edges</button>
+            <button onclick="loadThesisTimeline()">Load Timeline (SRRK)</button>
+            <button onclick="reseedData()">Re-seed Data</button>
+        </div>
+
+        <div class="section">
+            <h2>Nodes</h2>
+            <div id="nodes-container">Click "Load Nodes" to fetch data</div>
+        </div>
+
+        <div class="section">
+            <h2>Edges</h2>
+            <div id="edges-container">Click "Load Edges" to fetch data</div>
+        </div>
+
+        <div class="section">
+            <h2>Timeline</h2>
+            <div id="timeline-container">Click "Load Timeline" to fetch data</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api/v1/evidence-graph';
+
+        async function checkHealth() {
+            const statusEl = document.getElementById('health-status');
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                const data = await response.json();
+                statusEl.innerHTML = `<div class="status success">✅ API is healthy: ${data.service}</div>`;
+            } catch (error) {
+                statusEl.innerHTML = `<div class="status error">❌ API is not responding: ${error.message}</div>`;
+            }
+        }
+
+        async function loadNodes() {
+            const container = document.getElementById('nodes-container');
+            container.innerHTML = '<p>Loading...</p>';
+            try {
+                const response = await fetch(`${API_BASE}/nodes`);
+                const nodes = await response.json();
+                
+                container.innerHTML = nodes.map(node => `
+                    <div class="node-card">
+                        <div><span class="label">ID:</span> <span class="value">${node.id}</span></div>
+                        <div><span class="label">TYPE:</span> <span class="value">${node.type}</span></div>
+                        ${node.company ? `<div><span class="label">COMPANY:</span> <span class="value">${node.company}</span></div>` : ''}
+                        ${node.asset ? `<div><span class="label">ASSET:</span> <span class="value">${node.asset}</span></div>` : ''}
+                        ${node.indication ? `<div><span class="label">INDICATION:</span> <span class="value">${node.indication}</span></div>` : ''}
+                        ${node.notes ? `<div><span class="label">NOTES:</span> <span class="value">${node.notes}</span></div>` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.innerHTML = `<div class="status error">Error loading nodes: ${error.message}</div>`;
+            }
+        }
+
+        async function loadEdges() {
+            const container = document.getElementById('edges-container');
+            container.innerHTML = '<p>Loading...</p>';
+            try {
+                const response = await fetch(`${API_BASE}/edges`);
+                const edges = await response.json();
+                
+                container.innerHTML = edges.map(edge => `
+                    <div class="edge-card">
+                        <div><span class="label">FROM:</span> <span class="value">${edge.from}</span></div>
+                        <div><span class="label">TO:</span> <span class="value">${edge.to}</span></div>
+                        <div><span class="label">RELATION:</span> <span class="value">${edge.relation}</span></div>
+                        ${edge.delta ? `
+                            <div>
+                                ${edge.delta.pos !== null ? `<span class="label">ΔPoS:</span> <span class="value ${edge.delta.pos >= 0 ? 'positive' : 'negative'}">${(edge.delta.pos * 100).toFixed(1)}%</span> ` : ''}
+                                ${edge.delta.sentiment !== null ? `<span class="label">ΔSentiment:</span> <span class="value ${edge.delta.sentiment >= 0 ? 'positive' : 'negative'}">${edge.delta.sentiment.toFixed(2)}</span>` : ''}
+                            </div>
+                        ` : ''}
+                        ${edge.reason ? `<div><span class="label">REASON:</span> <span class="value">${edge.reason}</span></div>` : ''}
+                        <div><span class="label">CONFIDENCE:</span> <span class="value">${(edge.confidence * 100).toFixed(0)}%</span></div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.innerHTML = `<div class="status error">Error loading edges: ${error.message}</div>`;
+            }
+        }
+
+        async function loadThesisTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '<p>Loading...</p>';
+            try {
+                const response = await fetch(`${API_BASE}/thesis/thesis:SRRK-core/timeline`);
+                const data = await response.json();
+                
+                let html = `
+                    <div class="node-card">
+                        <h3>Thesis: ${data.thesis.id}</h3>
+                        <div><span class="label">COMPANY:</span> <span class="value">${data.thesis.company}</span></div>
+                        <div><span class="label">ASSET:</span> <span class="value">${data.thesis.asset}</span></div>
+                        <div><span class="label">TOTAL UPDATES:</span> <span class="value">${data.summary.total_updates}</span></div>
+                    </div>
+                `;
+                
+                html += '<h3>Timeline:</h3>';
+                html += data.timeline.map(entry => `
+                    <div class="edge-card">
+                        <div><span class="label">TIMESTAMP:</span> <span class="value">${new Date(entry.timestamp).toLocaleString()}</span></div>
+                        <div><span class="label">SOURCE:</span> <span class="value">${entry.source_node?.id || 'Unknown'}</span></div>
+                        <div><span class="label">RELATION:</span> <span class="value">${entry.edge.relation}</span></div>
+                        ${entry.cumulative ? `
+                            <div><span class="label">CUMULATIVE PoS:</span> <span class="value">${(entry.cumulative.pos * 100).toFixed(1)}%</span></div>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `<div class="status error">Error loading timeline: ${error.message}</div>`;
+            }
+        }
+
+        async function reseedData() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '<p>Re-seeding...</p>';
+            try {
+                const response = await fetch(`${API_BASE}/seed`, { method: 'POST' });
+                const data = await response.json();
+                container.innerHTML = `
+                    <div class="status success">
+                        ✅ ${data.message}<br>
+                        Loaded ${data.nodes_loaded} nodes and ${data.edges_loaded} edges
+                    </div>
+                `;
+            } catch (error) {
+                container.innerHTML = `<div class="status error">Error re-seeding: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-check health on load
+        checkHealth();
+    </script>
+</body>
+</html>
