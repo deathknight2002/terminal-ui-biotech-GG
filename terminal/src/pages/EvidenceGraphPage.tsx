@@ -8,7 +8,7 @@
  * - Timeline scrubber for thesis analysis
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { EvidenceGraph } from '../components/EvidenceGraph';
 import { TimelineScrubber } from '../components/TimelineScrubber';
 import { evidenceGraphApi } from '../utils/evidence-graph-api';
@@ -23,16 +23,42 @@ export const EvidenceGraphPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<'graph' | 'timeline'>('graph');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  
+  // AbortController ref for canceling in-flight requests
+  const controllerRef = useRef<AbortController | null>(null);
 
-  // Load graph data
+  // Load graph data with abort support and debounce protection
   const loadData = async () => {
+    // Debounce guard - prevent double-clicks
+    if (loading) return;
+    
+    // Cancel any in-flight requests
+    controllerRef.current?.abort();
+    controllerRef.current = new AbortController();
+    
     try {
       setLoading(true);
       setError(null);
-      const data = await evidenceGraphApi.getGraphData();
-      setNodes(data.nodes);
-      setEdges(data.edges);
+      
+      // Fetch with abort signal
+      const [nodesData, edgesData] = await Promise.all([
+        fetch(`${import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000'}/api/v1/evidence-graph/nodes`, {
+          signal: controllerRef.current.signal
+        }).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000'}/api/v1/evidence-graph/edges`, {
+          signal: controllerRef.current.signal
+        }).then(r => r.json())
+      ]);
+      
+      setNodes(nodesData);
+      setEdges(edgesData);
+      setLastUpdated(new Date());
     } catch (err) {
+      // Ignore abort errors (user cancelled)
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
       setError(err instanceof Error ? err.message : 'Failed to load graph data');
       console.error('Error loading graph data:', err);
     } finally {
@@ -43,7 +69,28 @@ export const EvidenceGraphPage: React.FC = () => {
   // Initial load only - no auto-refresh/polling
   useEffect(() => {
     loadData();
+    
+    // Cleanup: abort any pending requests on unmount
+    return () => {
+      controllerRef.current?.abort();
+    };
   }, []);
+  
+  // Keyboard shortcut: Press 'R' to refresh
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'r' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        // Only if not typing in an input/textarea
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          loadData();
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [loading]); // Re-bind when loading state changes to respect debounce
 
   // Handle node selection
   const handleNodeClick = async (node: NodeBase) => {
@@ -101,27 +148,34 @@ export const EvidenceGraphPage: React.FC = () => {
         </p>
         
         <div className="view-controls">
-          <button
-            className="refresh-button"
-            onClick={loadData}
-            disabled={loading}
-            title="Manually refresh data from server"
-          >
-            {loading ? '⟳ LOADING...' : '⟳ REFRESH'}
-          </button>
-          <button
-            className={`view-button ${view === 'graph' ? 'active' : ''}`}
-            onClick={() => setView('graph')}
-          >
-            GRAPH VIEW
-          </button>
-          <button
-            className={`view-button ${view === 'timeline' ? 'active' : ''}`}
-            onClick={() => setView('timeline')}
-            disabled={!thesisTimeline}
-          >
-            TIMELINE VIEW
-          </button>
+          <div className="refresh-section">
+            <button
+              className="refresh-button"
+              onClick={loadData}
+              disabled={loading}
+              title="Manually refresh data from server (or press R)"
+            >
+              {loading ? '⟳ LOADING...' : '⟳ REFRESH'}
+            </button>
+            <span className="last-updated-stamp">
+              {lastUpdated ? `Last updated: ${lastUpdated.toLocaleTimeString()}` : '—'}
+            </span>
+          </div>
+          <div className="view-buttons">
+            <button
+              className={`view-button ${view === 'graph' ? 'active' : ''}`}
+              onClick={() => setView('graph')}
+            >
+              GRAPH VIEW
+            </button>
+            <button
+              className={`view-button ${view === 'timeline' ? 'active' : ''}`}
+              onClick={() => setView('timeline')}
+              disabled={!thesisTimeline}
+            >
+              TIMELINE VIEW
+            </button>
+          </div>
         </div>
       </div>
 

@@ -3,26 +3,31 @@ JSON File-backed Storage for Evidence Graph
 
 Provides simple file-based persistence for nodes and edges.
 Auto-seeds from seed_data.json on first run.
+Enhanced with atomic writes, backups, and file locking for production use.
 """
 
 import json
 import os
+import tempfile
+import shutil
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+import hashlib
 
 from .models import NodeBase, Edge
 
 
 class EvidenceGraphStorage:
-    """File-based storage for evidence graph data"""
+    """File-based storage for evidence graph data with production-grade features"""
     
-    def __init__(self, data_dir: Optional[str] = None):
+    def __init__(self, data_dir: Optional[str] = None, backup_count: int = 3):
         """
         Initialize storage with data directory.
         
         Args:
             data_dir: Directory to store data files. Defaults to bt_platform/core/evidence_graph/data/
+            backup_count: Number of backup versions to keep (default: 3)
         """
         if data_dir is None:
             # Default to evidence_graph/data/ directory
@@ -35,6 +40,7 @@ class EvidenceGraphStorage:
         
         self.evidence_file = self.data_dir / "evidence.json"
         self.seed_file = self.data_dir / "seed_data.json"
+        self.backup_count = backup_count
         
         # Initialize evidence.json from seed if it doesn't exist
         if not self.evidence_file.exists():
@@ -46,24 +52,129 @@ class EvidenceGraphStorage:
             print(f"📦 Initializing evidence graph from {self.seed_file}")
             with open(self.seed_file, 'r') as f:
                 seed_data = json.load(f)
-            with open(self.evidence_file, 'w') as f:
-                json.dump(seed_data, f, indent=2)
+            self._atomic_write_json(self.evidence_file, seed_data)
         else:
             # Create empty structure
             print(f"⚠️  No seed file found, creating empty evidence graph")
             empty_data = {"nodes": [], "edges": []}
-            with open(self.evidence_file, 'w') as f:
-                json.dump(empty_data, f, indent=2)
+            self._atomic_write_json(self.evidence_file, empty_data)
+    
+    def _atomic_write_json(self, path: Path, data: Dict[str, Any]):
+        """
+        Atomically write JSON data to file using temp file + rename.
+        This ensures data integrity even if the process crashes during write.
+        
+        Args:
+            path: Target file path
+            data: Data to write
+        """
+        # Serialize data with consistent formatting for stable ETags
+        json_str = json.dumps(data, ensure_ascii=False, sort_keys=True, indent=2)
+        
+        # Create backup before writing (if file exists)
+        if path.exists():
+            self._create_backup(path)
+        
+        # Write to temporary file in same directory (ensures same filesystem for atomic rename)
+        dir_path = path.parent
+        fd, tmp_path = tempfile.mkstemp(dir=dir_path, prefix=".tmp.", suffix=".json", text=True)
+        try:
+            with os.fdopen(fd, "w") as f:
+                f.write(json_str)
+                f.flush()
+                os.fsync(f.fileno())  # Ensure data is written to disk
+            
+            # Atomic rename (replaces target file)
+            os.replace(tmp_path, path)
+        except Exception:
+            # Clean up temp file on error
+            try:
+                os.remove(tmp_path)
+            except FileNotFoundError:
+                pass
+            raise
+    
+    def _create_backup(self, path: Path):
+        """
+        Create a timestamped backup of the file.
+        Rotates old backups to keep only backup_count versions.
+        
+        Args:
+            path: File to backup
+        """
+        if not path.exists():
+            return
+        
+        # Create backup filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_path = path.parent / f"{path.stem}.backup.{timestamp}{path.suffix}"
+        
+        # Copy file to backup
+        shutil.copy2(path, backup_path)
+        
+        # Rotate old backups
+        self._rotate_backups(path)
+    
+    def _rotate_backups(self, path: Path):
+        """
+        Keep only the most recent backup_count backups.
+        
+        Args:
+            path: Base file path
+        """
+        # Find all backup files
+        backup_pattern = f"{path.stem}.backup.*{path.suffix}"
+        backups = sorted(
+            path.parent.glob(backup_pattern),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True
+        )
+        
+        # Remove old backups
+        for backup in backups[self.backup_count:]:
+            try:
+                backup.unlink()
+            except FileNotFoundError:
+                pass
+    
+    def _compute_etag(self, data: bytes) -> str:
+        """
+        Compute ETag (SHA-256 hash) for data.
+        
+        Args:
+            data: Data bytes
+            
+        Returns:
+            ETag string (hex digest)
+        """
+        return hashlib.sha256(data).hexdigest()
     
     def _load_data(self) -> Dict[str, Any]:
         """Load data from evidence.json"""
         with open(self.evidence_file, 'r') as f:
             return json.load(f)
     
+    def _load_data_with_etag(self) -> tuple[Dict[str, Any], str]:
+        """
+        Load data from evidence.json along with its ETag.
+        
+        Returns:
+            Tuple of (data dict, etag string)
+        """
+        with open(self.evidence_file, 'rb') as f:
+            raw_data = f.read()
+        
+        # Compute ETag from raw bytes
+        etag = self._compute_etag(raw_data)
+        
+        # Parse JSON
+        data = json.loads(raw_data.decode('utf-8'))
+        
+        return data, etag
+    
     def _save_data(self, data: Dict[str, Any]):
-        """Save data to evidence.json"""
-        with open(self.evidence_file, 'w') as f:
-            json.dump(data, f, indent=2)
+        """Save data to evidence.json using atomic write"""
+        self._atomic_write_json(self.evidence_file, data)
     
     # Node operations
     
@@ -71,6 +182,17 @@ class EvidenceGraphStorage:
         """Get all nodes"""
         data = self._load_data()
         return [NodeBase(**node) for node in data.get("nodes", [])]
+    
+    def get_nodes_with_etag(self) -> tuple[List[NodeBase], str]:
+        """
+        Get all nodes along with ETag for caching.
+        
+        Returns:
+            Tuple of (nodes list, etag string)
+        """
+        data, etag = self._load_data_with_etag()
+        nodes = [NodeBase(**node) for node in data.get("nodes", [])]
+        return nodes, etag
     
     def get_node(self, node_id: str) -> Optional[NodeBase]:
         """Get a specific node by ID"""
@@ -105,6 +227,17 @@ class EvidenceGraphStorage:
         """Get all edges"""
         data = self._load_data()
         return [Edge(**edge) for edge in data.get("edges", [])]
+    
+    def get_edges_with_etag(self) -> tuple[List[Edge], str]:
+        """
+        Get all edges along with ETag for caching.
+        
+        Returns:
+            Tuple of (edges list, etag string)
+        """
+        data, etag = self._load_data_with_etag()
+        edges = [Edge(**edge) for edge in data.get("edges", [])]
+        return edges, etag
     
     def add_edge(self, edge: Edge) -> Edge:
         """Add a new edge"""

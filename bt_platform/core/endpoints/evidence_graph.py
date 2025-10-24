@@ -2,14 +2,15 @@
 Evidence Graph API Endpoints
 
 FastAPI endpoints for evidence graph operations:
-- Node management (get, create/update)
-- Edge management (get, create)
+- Node management (get, create/update) with ETag support
+- Edge management (get, create) with ETag support
+- HEAD method support for cache validation
 - Thesis timeline (with scrubber support)
 - Edge screening/filtering
 - Re-seeding data
 """
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from typing import List, Optional
 from datetime import datetime
 
@@ -29,10 +30,73 @@ async def health_check():
 
 
 @router.get("/nodes", response_model=List[NodeBase])
-async def get_nodes():
-    """Get all nodes in the evidence graph"""
+@router.head("/nodes")
+async def get_nodes(
+    request: Request,
+    type: Optional[str] = Query(None, description="Filter by node type (e.g., thesis, trial, catalyst)"),
+    company: Optional[str] = Query(None, description="Filter by company name"),
+    limit: Optional[int] = Query(None, description="Limit number of results", ge=1, le=1000),
+    offset: Optional[int] = Query(0, description="Offset for pagination", ge=0)
+):
+    """
+    Get all nodes in the evidence graph.
+    Supports ETag caching, HEAD requests, and filtering.
+    
+    Query Parameters:
+    - type: Filter by node type (thesis, trial, catalyst, kol, doc)
+    - company: Filter by company name (case-insensitive partial match)
+    - limit: Maximum number of nodes to return (1-1000)
+    - offset: Number of nodes to skip for pagination
+    """
     try:
-        return storage.get_nodes()
+        nodes, etag = storage.get_nodes_with_etag()
+        
+        # Apply filters
+        if type:
+            nodes = [n for n in nodes if n.type == type]
+        
+        if company:
+            company_lower = company.lower()
+            nodes = [n for n in nodes if n.company and company_lower in n.company.lower()]
+        
+        # Apply pagination
+        total_count = len(nodes)
+        if offset:
+            nodes = nodes[offset:]
+        if limit:
+            nodes = nodes[:limit]
+        
+        # Check If-None-Match header for cache validation
+        if_none_match = request.headers.get("if-none-match")
+        if if_none_match and if_none_match == etag:
+            # Cache hit - return 304 Not Modified
+            return Response(
+                status_code=304,
+                headers={"ETag": etag}
+            )
+        
+        # For HEAD requests, return headers only
+        if request.method == "HEAD":
+            return Response(
+                status_code=200,
+                headers={
+                    "ETag": etag,
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-store",
+                    "X-Total-Count": str(total_count)
+                }
+            )
+        
+        # Return nodes with ETag header
+        return Response(
+            content=f'[{",".join(node.model_dump_json() for node in nodes)}]',
+            media_type="application/json",
+            headers={
+                "ETag": etag,
+                "Cache-Control": "no-store",
+                "X-Total-Count": str(total_count)
+            }
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get nodes: {str(e)}")
 
@@ -56,10 +120,44 @@ async def upsert_node(node: NodeBase):
 
 
 @router.get("/edges", response_model=List[Edge])
-async def get_edges():
-    """Get all edges in the evidence graph"""
+@router.head("/edges")
+async def get_edges(request: Request):
+    """
+    Get all edges in the evidence graph.
+    Supports ETag caching and HEAD requests.
+    """
     try:
-        return storage.get_edges()
+        edges, etag = storage.get_edges_with_etag()
+        
+        # Check If-None-Match header for cache validation
+        if_none_match = request.headers.get("if-none-match")
+        if if_none_match and if_none_match == etag:
+            # Cache hit - return 304 Not Modified
+            return Response(
+                status_code=304,
+                headers={"ETag": etag}
+            )
+        
+        # For HEAD requests, return headers only
+        if request.method == "HEAD":
+            return Response(
+                status_code=200,
+                headers={
+                    "ETag": etag,
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-store"
+                }
+            )
+        
+        # Return edges with ETag header
+        return Response(
+            content=f'[{",".join(edge.model_dump_json() for edge in edges)}]',
+            media_type="application/json",
+            headers={
+                "ETag": etag,
+                "Cache-Control": "no-store"
+            }
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get edges: {str(e)}")
 
