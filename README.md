@@ -23,6 +23,16 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 📱 **Progressive Web App** - Install on iOS/Android like a native app
 - 🔒 **100% Free** - No paid APIs, all data from public sources
 
+## 🆕 New Platform Features
+
+- 🧪 **E2E Testing** - Playwright tests for Evidence Graph and platform features
+- 🎨 **Code Quality** - Pre-commit hooks with Black, Flake8, isort, Prettier
+- 📊 **Observability** - Structured logging, Prometheus metrics, Sentry integration
+- 🔐 **API Authentication** - Optional token-based auth for write operations
+- 💾 **SQLite Storage** - High-performance database for Evidence Graph (replaces JSON)
+
+📖 **[See Full Implementation Guide](./IMPLEMENTATION_GUIDE.md)** | **[Quick Reference](./NEW_FEATURES_QUICK_REFERENCE.md)**
+
 ## 📊 Proprietary Data Collection
 
 The platform uses **proprietary scrapers** to collect data from free, unlimited sources:
