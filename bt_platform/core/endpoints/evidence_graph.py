@@ -8,19 +8,29 @@ FastAPI endpoints for evidence graph operations:
 - Thesis timeline (with scrubber support)
 - Edge screening/filtering
 - Re-seeding data
+
+Supports both JSON and SQLite storage backends via configuration.
 """
 
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 from typing import List, Optional
 from datetime import datetime
+import os
 
 from ..evidence_graph.models import NodeBase, Edge
-from ..evidence_graph.storage import EvidenceGraphStorage
+from ..evidence_graph.storage import EvidenceGraphStorage as JSONStorage
+from ..evidence_graph.storage_sqlite import SQLiteEvidenceGraphStorage
+from ..config import settings
 
 router = APIRouter()
 
-# Initialize storage
-storage = EvidenceGraphStorage()
+# Initialize storage based on configuration
+if settings.EVIDENCE_GRAPH_STORAGE == "sqlite":
+    storage = SQLiteEvidenceGraphStorage(database_url=settings.EVIDENCE_GRAPH_DB_URL)
+    print(f"✓ Evidence Graph using SQLite storage")
+else:
+    storage = JSONStorage()
+    print(f"✓ Evidence Graph using JSON file storage")
 
 
 @router.get("/health")
