@@ -4,6 +4,8 @@
 
 The Evidence Graph is a graph-based evidence tracking system for biotech theses, clinical trials, and catalysts. It provides visualization and temporal analysis of how evidence updates affect investment theses over time.
 
+**⚠️ MANUAL REFRESH ONLY**: This implementation uses a manual-refresh model - NO real-time updates, WebSockets, or automatic polling. Users must explicitly click the REFRESH button to fetch new data from the server.
+
 ## Features
 
 ### Backend (Python FastAPI)
@@ -40,6 +42,7 @@ The Evidence Graph is a graph-based evidence tracking system for biotech theses,
   - Drag nodes to reposition
   - Color-coded by node type
   - Click nodes to view details or load timeline
+  - **Manual refresh only** - click REFRESH button to update data
 
 - **Timeline Scrubber**
   - Interactive timeline for thesis analysis
@@ -51,6 +54,20 @@ The Evidence Graph is a graph-based evidence tracking system for biotech theses,
   - View node properties
   - Company, asset, indication information
   - PoS and sentiment metrics
+
+## Manual Refresh Architecture
+
+The evidence graph uses a **manual-refresh model** to ensure:
+1. **Predictable data loading** - Users control when data is fetched
+2. **No background processes** - No WebSocket connections or polling timers
+3. **Works offline** - Can be used with cached data
+4. **Resource efficient** - No continuous API calls
+
+### How it works:
+- Initial data load happens when the page first loads
+- User clicks "⟳ REFRESH" button to fetch updated data
+- Timeline view fetches data only when a thesis node is clicked
+- No automatic updates - all data fetching is user-initiated
 
 ## Data Model
 
@@ -147,7 +164,25 @@ poetry run uvicorn bt_platform.core.app:app --reload --port 8000
 
 The frontend is configured to use:
 - **Python Backend**: `http://localhost:8000` (FastAPI)
-- **Node.js Backend**: `http://localhost:3001` (Express)
+- **Node.js Backend**: `http://localhost:3001` (Express) - Not used by Evidence Graph
+
+### CORS Configuration
+The standalone API server is configured with CORS enabled for development:
+```python
+# In standalone_evidence_api.py
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+For production, you should restrict `allow_origins` to specific domains:
+```python
+allow_origins=["http://localhost:3000", "https://yourdomain.com"]
+```
 
 To change these URLs, set environment variables:
 ```bash

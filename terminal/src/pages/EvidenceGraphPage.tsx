@@ -25,22 +25,23 @@ export const EvidenceGraphPage: React.FC = () => {
   const [view, setView] = useState<'graph' | 'timeline'>('graph');
 
   // Load graph data
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await evidenceGraphApi.getGraphData();
-        setNodes(data.nodes);
-        setEdges(data.edges);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load graph data');
-        console.error('Error loading graph data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await evidenceGraphApi.getGraphData();
+      setNodes(data.nodes);
+      setEdges(data.edges);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load graph data');
+      console.error('Error loading graph data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Initial load only - no auto-refresh/polling
+  useEffect(() => {
     loadData();
   }, []);
 
@@ -100,6 +101,14 @@ export const EvidenceGraphPage: React.FC = () => {
         </p>
         
         <div className="view-controls">
+          <button
+            className="refresh-button"
+            onClick={loadData}
+            disabled={loading}
+            title="Manually refresh data from server"
+          >
+            {loading ? '⟳ LOADING...' : '⟳ REFRESH'}
+          </button>
           <button
             className={`view-button ${view === 'graph' ? 'active' : ''}`}
             onClick={() => setView('graph')}
