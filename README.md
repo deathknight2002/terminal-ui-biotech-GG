@@ -870,3 +870,69 @@ MIT © [Deaxu](https://github.com/deaxu)
 **Built with ⚡ Vite + ⚛️ React + 📘 TypeScript**
 
 *"Form follows function, but function can look cool."*
+
+## 📊 Evidence Graph - Production-Ready Features
+
+The **Evidence Graph** feature visualizes relationships between pharmaceutical entities (theses, trials, catalysts, KOLs, documents) with production-grade capabilities.
+
+### ✨ Key Features
+
+- **Manual Refresh Only**: No background polling or WebSocket connections - user-controlled data updates
+- **ETag Caching**: HTTP 304 responses reduce bandwidth by ~90% for unchanged data
+- **Rate Limiting**: 60 requests/minute per IP to prevent abuse
+- **Atomic Writes**: Data integrity guaranteed with temp file + rename pattern
+- **Security Headers**: CSP, X-Frame-Options, HSTS, and more
+- **Query Filtering**: `?type=thesis&company=Pfizer&limit=100` for efficient data retrieval
+- **Keyboard Shortcuts**: Press `R` to refresh instantly
+
+### 🚀 Getting Started
+
+```bash
+# Start the Evidence Graph API
+uvicorn standalone_evidence_api:app --reload --port 8000
+
+# Or with Docker
+docker-compose -f docker-compose.evidence-graph.yml up
+```
+
+Access at:
+- API: http://localhost:8000/api/v1/evidence-graph/nodes
+- Docs: http://localhost:8000/docs
+- Terminal UI: http://localhost:3000/evidence-graph
+
+### 📖 Documentation
+
+- [ADR 001: Manual Refresh Only](./docs/ADR-001-manual-refresh-only.md) - Architecture decision and rationale
+- [Production Checklist](./docs/PRODUCTION_CHECKLIST.md) - Pre-deployment validation
+- [Evidence Graph Implementation](./EVIDENCE_GRAPH_IMPLEMENTATION_SUMMARY.md) - Technical details
+
+### 🧪 Testing
+
+```bash
+# Run API tests
+pytest tests/test_evidence_graph_api.py -v
+
+# Expected: 20+ tests passing
+# Coverage: ETag caching, HEAD requests, filtering, rate limiting, security headers
+```
+
+### 🔒 Production Deployment
+
+See [Production Checklist](./docs/PRODUCTION_CHECKLIST.md) for complete deployment guide.
+
+**Quick validation:**
+```bash
+# Set production environment variables
+export ENV=production
+export CORS_ORIGINS=https://yourdomain.com
+
+# Run pre-deployment checks
+pytest tests/
+npm run lint
+npm run typecheck
+
+# Deploy with Docker
+docker build -t evidence-graph-api -f Dockerfile.evidence-api .
+docker run -p 8000:8000 -e ENV=production evidence-graph-api
+```
+

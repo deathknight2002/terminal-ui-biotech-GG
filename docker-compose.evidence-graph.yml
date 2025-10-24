@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Evidence Graph API (Python/FastAPI)
+  evidence-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.evidence-api
+    container_name: evidence-graph-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=development
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Mount data directory for persistence
+      - ./bt_platform/core/evidence_graph/data:/app/bt_platform/core/evidence_graph/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Terminal Frontend (React/Vite) - Optional
+  terminal:
+    build:
+      context: ./terminal
+      dockerfile: Dockerfile
+    container_name: evidence-graph-terminal
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_PYTHON_API_URL=http://localhost:8000
+    depends_on:
+      - evidence-api
+    restart: unless-stopped
+
+volumes:
+  evidence-data:
+    driver: local
+
+networks:
+  default:
+    name: evidence-graph-network
