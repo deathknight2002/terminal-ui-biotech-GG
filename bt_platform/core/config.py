@@ -57,12 +57,27 @@ class Settings(BaseSettings):
     PARQUET_DIR: str = os.path.join("data", "lake", "parquet")
     DUCKDB_PATH: str = os.path.join("data", "lake", "biotech.duckdb")
     
+    # Evidence Graph Storage
+    EVIDENCE_GRAPH_STORAGE: str = "json"  # "json" or "sqlite"
+    EVIDENCE_GRAPH_DB_URL: str = "sqlite:///./data/evidence_graph.db"
+    
     # Security
     SECRET_KEY: str = "biotech-terminal-secret-key-change-in-production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # Logging
     LOG_LEVEL: str = "INFO"
+    LOG_FORMAT: str = "json"  # "json" or "text"
+    
+    # Observability
+    SENTRY_DSN: str = ""
+    SENTRY_ENVIRONMENT: str = "development"
+    SENTRY_TRACES_SAMPLE_RATE: float = 0.1
+    METRICS_ENABLED: bool = True
+    
+    # Authentication
+    API_TOKEN_ENABLED: bool = False
+    API_TOKEN: str = ""  # Set via environment variable for write operations
     
     class Config:
         env_file = ".env"

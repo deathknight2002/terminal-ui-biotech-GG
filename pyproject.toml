@@ -66,6 +66,10 @@ great-expectations = "^1.2.0"
 alembic = "^1.13.0"
 mlflow = "^2.16.0"
 boto3 = "^1.35.0"
+# Observability dependencies
+sentry-sdk = {extras = ["fastapi"], version = "^2.0.0"}
+prometheus-client = "^0.20.0"
+python-json-logger = "^2.0.7"
 
 [tool.poetry.group.transformers]
 optional = true
@@ -82,6 +86,9 @@ black = "^24.3.0"
 ruff = "^0.14.0"
 mypy = "^1.7.1"
 pre-commit = "^3.5.0"
+flake8 = "^7.0.0"
+isort = "^5.13.2"
+bandit = "^1.7.8"
 
 [tool.poetry.group.test.dependencies]
 pytest-mock = "^3.12.0"
@@ -134,6 +141,16 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_glob = ["*/migrations/*", "*/node_modules/*"]
 
 [tool.mypy]
 python_version = "3.9"

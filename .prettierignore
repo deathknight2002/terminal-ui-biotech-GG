@@ -1,0 +1,17 @@
+node_modules
+dist
+build
+.venv
+*.log
+coverage
+.next
+.cache
+.DS_Store
+*.pyc
+__pycache__
+*.db
+*.sqlite
+*.min.js
+package-lock.json
+poetry.lock
+.git
