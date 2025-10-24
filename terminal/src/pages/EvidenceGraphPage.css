@@ -52,6 +52,38 @@
   gap: 12px;
 }
 
+.refresh-button {
+  padding: 10px 20px;
+  background: #2c5282;
+  border: 2px solid #3182ce;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: #3182ce;
+  border-color: #63b3ed;
+  transform: scale(1.02);
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
 .view-button {
   padding: 10px 20px;
   background: #2d3748;
