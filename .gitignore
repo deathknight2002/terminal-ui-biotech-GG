@@ -97,3 +97,6 @@ mobile/ios/App/App.xcworkspace/xcuserdata/
 *.dSYM
 DerivedData/
 backend/.env
+
+# Evidence Graph backups
+*.backup.*.json
