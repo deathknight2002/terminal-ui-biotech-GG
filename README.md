@@ -31,7 +31,7 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 🔐 **API Authentication** - Optional token-based auth for write operations
 - 💾 **SQLite Storage** - High-performance database for Evidence Graph (replaces JSON)
 
-📖 **[See Full Implementation Guide](./IMPLEMENTATION_GUIDE.md)** | **[Quick Reference](./NEW_FEATURES_QUICK_REFERENCE.md)**
+📖 **[See Full Implementation Guide](./FEATURES_IMPLEMENTATION_GUIDE.md)** | **[Quick Reference](./FEATURES_QUICK_REFERENCE.md)**
 
 ## 📊 Proprietary Data Collection
 
