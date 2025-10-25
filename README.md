@@ -532,6 +532,13 @@ For complete testing procedures:
 - 🍎 [iOS PWA Guide](docs/IOS_PWA_GUIDE.md) - iOS installation and testing
 - 🔍 [Cross-Platform Testing](docs/CROSS_PLATFORM_TESTING_GUIDE.md) - Multi-platform verification
 
+**New Features Documentation:**
+- 🧪 [E2E Tests Guide](tests/e2e/README.md) - Playwright end-to-end testing
+- 🎨 [Pre-commit Hooks Guide](docs/PRECOMMIT_HOOKS.md) - Code quality automation
+- 📊 [Observability Guide](docs/OBSERVABILITY.md) - Logging, metrics, and monitoring
+- 🔐 [Authentication Guide](docs/AUTHENTICATION.md) - API token authentication
+- 💾 [SQLite Migration Guide](docs/SQLITE_MIGRATION.md) - Evidence Graph storage migration
+
 ## 📊 Features
 
 ### Atoms (18 components)
