@@ -151,21 +151,40 @@ else
 fi
 echo ""
 
-# Check for real-time features (should not exist)
-echo "🔒 Verifying no real-time features..."
-NO_WEBSOCKET=true
-if grep -r "WebSocket\|socket\.io\|ws:" terminal/src/components/EvidenceGraph* terminal/src/pages/EvidenceGraph* terminal/src/utils/evidence-graph* 2>/dev/null; then
-    echo -e "${RED}❌ Found WebSocket references - should be manual refresh only!${NC}"
-    NO_WEBSOCKET=false
+# --- ETag/304 validation (optional, skip if API doesn't send ETag) ---
+echo "🏷️  Testing ETag support for caching..."
+etag_hdr="$(curl -fsSI "$API_URL/api/v1/evidence-graph/nodes" | awk -F': ' 'tolower($1)=="etag"{print $2}' | tr -d '\r')"
+if [ -n "$etag_hdr" ]; then
+  status="$(curl -s -o /dev/null -w "%{http_code}" -H "If-None-Match: $etag_hdr" "$API_URL/api/v1/evidence-graph/nodes")"
+  if [ "$status" = "304" ]; then
+    echo -e "${GREEN}✅ ETag works (If-None-Match → 304)${NC}"
+    echo "   ETag header: $etag_hdr"
+  else
+    echo -e "${YELLOW}⚠️  ETag header present but conditional request did not return 304 (got $status)${NC}"
+  fi
 else
-    echo -e "${GREEN}✅ No WebSocket/real-time features found${NC}"
+  echo -e "${YELLOW}ℹ️  No ETag header on /nodes (skipping 304 check)${NC}"
 fi
+echo ""
 
-if grep -rE "setInterval|setTimeout\s*\(.*[0-9]{4,}|useInterval|[^/]polling" terminal/src/components/EvidenceGraph* terminal/src/pages/EvidenceGraph* terminal/src/utils/evidence-graph* 2>/dev/null | grep -v "node_modules" | grep -v "^\s*//" | grep -v "auto-refresh/polling"; then
-    echo -e "${RED}❌ Found auto-refresh/polling code - should be manual refresh only!${NC}"
-    NO_WEBSOCKET=false
+# --- Scoped 'forbidden realtime' grep (Evidence Graph files only) ---
+echo "🔒 Verifying no real-time features (manual-refresh-only policy)..."
+NO_WEBSOCKET=true
+bad_hits=$(grep -RInE \
+  -e "WebSocket" -e "socket\\.io" -e "EventSource" -e "new EventSource" \
+  -e "setInterval" -e "setTimeout" -e "useSWR" -e "refreshInterval" \
+  terminal/src/pages/EvidenceGraph* terminal/src/components/EvidenceGraph* terminal/src/utils/evidence-graph* 2>/dev/null || true)
+if [ -n "$bad_hits" ]; then
+  echo "$bad_hits"
+  echo -e "${RED}❌ Realtime primitives detected inside Evidence Graph.${NC}"
+  NO_WEBSOCKET=false
+  exit 1
 else
-    echo -e "${GREEN}✅ No auto-refresh/polling mechanisms found${NC}"
+  echo -e "${GREEN}✅ Manual-refresh-only verified inside Evidence Graph module${NC}"
+  echo "   - No WebSocket connections"
+  echo "   - No auto-polling (setInterval/setTimeout)"
+  echo "   - No real-time hooks (useSWR with refreshInterval)"
+  echo "   - User-initiated refresh only"
 fi
 echo ""
 
@@ -185,9 +204,8 @@ echo -e "   - Screen: OK"
 echo -e "   - Seed (POST): OK"
 if [ "$NO_WEBSOCKET" = true ]; then
     echo -e "${GREEN}✅ Manual-refresh architecture verified${NC}"
-    echo -e "   - No WebSocket connections"
-    echo -e "   - No auto-polling"
-    echo -e "   - User-initiated refresh only"
+    echo -e "   - Policy enforcement passed"
+    echo -e "   - Scoped to Evidence Graph files only"
 else
     echo -e "${RED}❌ Manual-refresh architecture check failed${NC}"
     exit 1

@@ -33,6 +33,49 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 
 📖 **[See Full Implementation Guide](./FEATURES_IMPLEMENTATION_GUIDE.md)** | **[Quick Reference](./FEATURES_QUICK_REFERENCE.md)**
 
+## 🧬 Evidence Graph
+
+**Manual-refresh-only visual analytics** for tracking pharmaceutical evidence as a time-aware graph with deltas (ΔPoS, ΔSentiment, ΔTAM).
+
+The Evidence Graph provides a D3-powered force-directed graph visualization for exploring relationships between theses, evidence, data points, and catalysts in pharmaceutical research. Built on a **manual-refresh-only architecture** to ensure predictable data loading and cache-friendly operation.
+
+### Key Capabilities
+- 📊 **Node Types**: Thesis, Evidence, Data, Catalyst
+- 🔗 **Edge Relations**: supports, refutes, updates, depends_on
+- 📈 **Time-Aware Deltas**: Track Probability of Success (ΔPoS), Sentiment (ΔSentiment), TAM changes (ΔTAM)
+- 🎯 **Timeline Scrubber**: Visualize how theses evolve over time
+- 🔍 **Edge Screening**: Filter by confidence, delta magnitude, date ranges
+- ⚡ **ETag Caching**: HTTP conditional requests for efficient data loading
+
+### Documentation
+
+- 📖 **[Docs Hub](./docs/evidence-graph/EVIDENCE_GRAPH_INDEX.md)** - Central navigation for all Evidence Graph documentation
+- 🚀 **[Quickstart Guide](./docs/evidence-graph/EVIDENCE_GRAPH_QUICKSTART.md)** - Get up and running in 5 minutes
+- 📝 **[Implementation Summary](./docs/evidence-graph/EVIDENCE_GRAPH_IMPLEMENTATION_SUMMARY.md)** - Technical overview and architecture
+- 🎥 **[Visual Demonstration](./docs/evidence-graph/VISUAL_DEMONSTRATION.md)** - Screenshots and usage examples
+- 📋 **[PR Summary](./docs/evidence-graph/PR_SUMMARY.md)** - Pull request summary and changes
+- 📚 **[README](./docs/evidence-graph/EVIDENCE_GRAPH_README.md)** - Detailed feature documentation
+- 🔧 **[Operations Runbook](./docs/evidence-graph/RUNBOOK.md)** - SLOs, health checks, troubleshooting
+
+### Architecture
+- **Backend**: FastAPI with SQLite storage
+- **Frontend**: React + D3.js force graph
+- **Refresh Model**: Manual-only (no WebSocket, no polling)
+- **API**: RESTful with ETag support for caching
+- **Testing**: Comprehensive smoke test suite ([`test_evidence_graph.sh`](./test_evidence_graph.sh))
+
+### Quick Access
+```bash
+# Start Evidence Graph API
+python3 standalone_evidence_api.py
+
+# Run smoke tests
+bash test_evidence_graph.sh
+
+# Access UI
+# Navigate to: http://localhost:3000/evidence-graph
+```
+
 ## 📊 Proprietary Data Collection
 
 The platform uses **proprietary scrapers** to collect data from free, unlimited sources:
