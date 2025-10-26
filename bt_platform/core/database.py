@@ -1182,6 +1182,136 @@ class KOLAlgorithmRun(Base):
     )
 
 
+# ============================================================================
+# IMPLIED VOLATILITY (IV) TRACKING MODELS
+# ============================================================================
+
+class OptionsIV(Base):
+    """Options implied volatility data by ticker and tenor"""
+    __tablename__ = "options_iv"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    date = Column(DateTime, nullable=False, index=True)
+    tenor_days = Column(Integer, nullable=False, index=True)  # 7, 14, 30, 60, 90
+
+    # IV metrics
+    iv_mid = Column(Float, nullable=False)  # Mid-point implied volatility (%)
+    iv_bid = Column(Float)  # Bid IV
+    iv_ask = Column(Float)  # Ask IV
+    
+    # Skew metrics (25-delta put-call skew)
+    skew_25d = Column(Float)  # 25-delta put IV - 25-delta call IV
+    skew_10d = Column(Float)  # 10-delta skew for deeper OTM
+    
+    # Open interest and volume
+    total_oi = Column(Integer)  # Total open interest across all strikes
+    total_volume = Column(Integer)  # Daily volume
+    call_oi = Column(Integer)  # Call open interest
+    put_oi = Column(Integer)  # Put open interest
+    put_call_ratio = Column(Float)  # Put OI / Call OI
+    
+    # Historical context (computed fields)
+    iv_pctile_1y = Column(Float)  # IV percentile over past year (0-100)
+    iv_pctile_6m = Column(Float)  # IV percentile over past 6 months
+    skew_25d_20d_median = Column(Float)  # 20-day median skew for comparison
+    
+    # Term structure flags
+    is_backwardation = Column(Boolean, default=False)  # 7D > 30D (inverted term structure)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_options_iv_ticker_date', 'ticker', 'date'),
+        Index('idx_options_iv_tenor', 'tenor_days'),
+        Index('idx_options_iv_ticker_tenor_date', 'ticker', 'tenor_days', 'date'),
+    )
+
+
+class PriceData(Base):
+    """Price and realized volatility data"""
+    __tablename__ = "price_data"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    date = Column(DateTime, nullable=False, index=True)
+    
+    # OHLCV data
+    open = Column(Float)
+    high = Column(Float)
+    low = Column(Float)
+    close = Column(Float, nullable=False)
+    volume = Column(Integer)
+    
+    # Returns
+    returns_1d = Column(Float)  # 1-day return
+    returns_5d = Column(Float)  # 5-day return
+    returns_20d = Column(Float)  # 20-day return
+    
+    # Realized volatility
+    realized_vol_20d = Column(Float)  # 20-day realized volatility (%)
+    realized_vol_60d = Column(Float)  # 60-day realized volatility
+    
+    # Volume metrics
+    volume_20d_avg = Column(Float)  # 20-day average volume
+    relative_volume = Column(Float)  # Volume / 20D avg volume
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_price_ticker_date', 'ticker', 'date'),
+    )
+
+
+class IVCatalystSignal(Base):
+    """Pre-computed IV catalyst signals"""
+    __tablename__ = "iv_catalyst_signals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    signal_date = Column(DateTime, nullable=False, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), index=True)
+    
+    # Event details
+    event_date = Column(DateTime, nullable=False, index=True)
+    event_type = Column(String)
+    days_to_event = Column(Integer)
+    
+    # IV metrics at signal generation
+    iv7 = Column(Float)
+    iv30 = Column(Float)
+    iv_rv_ratio = Column(Float)  # IV7 / Realized Vol 20D
+    term_backwardation = Column(Float)  # IV7 - IV30 (positive = backwardation)
+    skew25d = Column(Float)
+    skew_change = Column(Float)  # Current skew - 20D median
+    iv7_pctile = Column(Float)  # IV7 percentile (1Y lookback)
+    
+    # Price metrics
+    price = Column(Float)
+    ret5d = Column(Float)  # 5-day return
+    
+    # Signal flags (each 0 or 1)
+    backw_flag = Column(Integer, default=0)  # Term structure backwardation
+    ivrv_flag = Column(Integer, default=0)  # IV/RV ratio elevated
+    skew_flag = Column(Integer, default=0)  # Skew change significant
+    oi_flag = Column(Integer, default=0)  # OI spike detected
+    
+    # Combined signal score (sum of flags, 0-4)
+    signal_score = Column(Integer, index=True)
+    
+    # Signal quality
+    confidence = Column(Float)  # 0-1 confidence score
+    quality = Column(String, index=True)  # High, Medium, Low
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_iv_signal_ticker_date', 'ticker', 'signal_date'),
+        Index('idx_iv_signal_event_date', 'event_date'),
+        Index('idx_iv_signal_score', 'signal_score'),
+    )
+
+
 # Database initialization
 async def init_db():
     """Initialize database tables"""
