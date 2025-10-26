@@ -121,6 +121,106 @@ jobs:
       - name: Run tests
         run: npm run test:components && npm run test:terminal
 
+  # Pre-commit hooks and code quality
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+      
+      - name: Run pre-commit hooks
+        run: |
+          pre-commit run --all-files
+
+  # E2E Tests for Evidence Graph Manual Refresh
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [test-python, test-frontend]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      
+      - name: Install dependencies
+        run: |
+          npm install
+          poetry install
+      
+      - name: Install Playwright
+        run: |
+          npx playwright install --with-deps chromium
+      
+      - name: Start backend
+        run: |
+          poetry run uvicorn bt_platform.core.app:app --host 0.0.0.0 --port 8000 &
+          sleep 10
+        env:
+          API_TOKEN_ENABLED: false
+          METRICS_ENABLED: true
+          LOG_LEVEL: INFO
+      
+      - name: Start frontend
+        run: |
+          cd terminal && VITE_PYTHON_API_URL=http://localhost:8000 npm run dev &
+          sleep 15
+      
+      - name: Run E2E tests
+        run: |
+          npm run test:e2e
+      
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  # Production Readiness Verification
+  production-readiness:
+    runs-on: ubuntu-latest
+    needs: [test-python, test-frontend, code-quality, e2e-tests]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          pip install pre-commit
+      
+      - name: Run production readiness check
+        run: |
+          python scripts/verify_production_readiness.py
+
   # Dagster dry-run
   dagster-validate:
     runs-on: ubuntu-latest
