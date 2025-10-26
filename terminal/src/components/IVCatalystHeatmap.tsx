@@ -5,7 +5,7 @@
  * Color-coded cells by IV z-score, badges for event proximity.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './IVCatalystHeatmap.css';
 
 interface IVData {
@@ -43,20 +43,12 @@ export const IVCatalystHeatmap: React.FC<IVCatalystHeatmapProps> = ({ className 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
-  useEffect(() => {
-    fetchCalendarData();
-  }, [selectedTickers]);
-
-  const fetchCalendarData = async () => {
+  const fetchCalendarData = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (selectedTickers.length > 0) {
-        params.append('tickers', selectedTickers.join(','));
-      }
       
       const response = await fetch(`/api/v1/iv/calendar?${params}`);
       if (!response.ok) throw new Error('Failed to fetch IV calendar data');
@@ -69,7 +61,11 @@ export const IVCatalystHeatmap: React.FC<IVCatalystHeatmapProps> = ({ className 
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCalendarData();
+  }, [fetchCalendarData]);
 
   const getIVColorClass = (iv_pctile: number | null): string => {
     if (!iv_pctile) return 'iv-unknown';
@@ -83,11 +79,6 @@ export const IVCatalystHeatmap: React.FC<IVCatalystHeatmapProps> = ({ className 
   const getMarkerClass = (marker: string | null): string => {
     if (!marker) return '';
     return `marker-${marker.toLowerCase().replace('-', '')}`;
-  };
-
-  const formatPercent = (value: number | null | undefined): string => {
-    if (value === null || value === undefined) return 'N/A';
-    return `${(value * 100).toFixed(1)}%`;
   };
 
   const renderCalendarView = () => {

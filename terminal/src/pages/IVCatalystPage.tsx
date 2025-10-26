@@ -5,7 +5,7 @@
  * ahead of biotech catalysts using implied volatility signals.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import IVCatalystHeatmap from '../components/IVCatalystHeatmap';
 import './IVCatalystPage.css';
 
@@ -45,11 +45,7 @@ export const IVCatalystPage: React.FC = () => {
   const [maxDays, setMaxDays] = useState(60);
   const [selectedQuality, setSelectedQuality] = useState<string>('');
 
-  useEffect(() => {
-    fetchSignals();
-  }, [minScore, maxDays, selectedQuality]);
-
-  const fetchSignals = async () => {
+  const fetchSignals = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -72,7 +68,11 @@ export const IVCatalystPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [minScore, maxDays, selectedQuality]);
+
+  useEffect(() => {
+    fetchSignals();
+  }, [fetchSignals]);
 
   const getQualityClass = (quality: string): string => {
     switch (quality.toLowerCase()) {
