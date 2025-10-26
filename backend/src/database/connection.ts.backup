@@ -10,13 +10,13 @@ export async function connectDatabases(): Promise<void> {
     // For development, we'll use the mock database service
     logger.info('🚀 Starting Biotech Terminal Backend in Development Mode');
     logger.info('📊 Using sophisticated mock data service');
-    
+
     // Simulate connection delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // Mark as connected
     isConnected = true;
-    
+
     logger.info('✅ Mock database service initialized');
     logger.info('🧬 Biotech data ready: Aurora Fund, Clinical Trials, Financial Models');
     logger.info('📈 Available endpoints: /dashboard, /trials, /financial-models, /pipeline');

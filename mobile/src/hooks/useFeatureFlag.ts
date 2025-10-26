@@ -1,6 +1,6 @@
 /**
  * useFeatureFlag Hook
- * 
+ *
  * React hook for accessing feature flags in components.
  * Provides safe defaults when the proxy is unreachable.
  */
@@ -14,7 +14,7 @@ export interface UseFeatureFlagOptions {
    * Default value to use before flags are loaded
    */
   defaultValue?: boolean;
-  
+
   /**
    * Refresh interval in milliseconds (default: 60000 = 1 minute)
    */
@@ -23,15 +23,15 @@ export interface UseFeatureFlagOptions {
 
 /**
  * Hook to check if a feature flag is enabled
- * 
+ *
  * @param key - The feature flag key to check
  * @param options - Optional configuration
  * @returns boolean indicating if the feature is enabled
- * 
+ *
  * @example
  * ```tsx
  * const isSearchEnabled = useFeatureFlag('search.meilisearch');
- * 
+ *
  * if (isSearchEnabled) {
  *   return <MeilisearchComponent />;
  * }
@@ -56,7 +56,7 @@ export function useFeatureFlag(
     // Update value from service
     const updateFlag = () => {
       const { isInitialized } = featureFlagService.getInitializationState();
-      
+
       // Only update from service if it's initialized
       // Otherwise keep the default value
       if (isInitialized) {
@@ -81,14 +81,14 @@ export function useFeatureFlag(
 
 /**
  * Hook to get a feature flag variant
- * 
+ *
  * @param key - The feature flag key
  * @returns string | null - The variant name or null
- * 
+ *
  * @example
  * ```tsx
  * const searchVariant = useFeatureFlagVariant('search.meilisearch');
- * 
+ *
  * if (searchVariant === 'v2') {
  *   return <MeilisearchV2 />;
  * }
@@ -124,7 +124,7 @@ export function useFeatureFlagVariant(key: FeatureFlagKey): string | null {
 
 /**
  * Hook to get all feature flags (for debugging)
- * 
+ *
  * @returns Record<string, boolean> - All feature flags and their states
  */
 export function useAllFeatureFlags(): Record<string, boolean> {

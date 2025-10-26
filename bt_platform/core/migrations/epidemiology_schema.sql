@@ -8,56 +8,56 @@ CREATE TABLE IF NOT EXISTS epidemiology_diseases (
     id SERIAL PRIMARY KEY,
     disease_id VARCHAR(100) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
-    
+
     -- Disease Classification
     icd10_code VARCHAR(20),
     icd11_code VARCHAR(20),
     snomed_ct_code VARCHAR(50),
     category VARCHAR(100),
-    
+
     -- Basic Information
     description TEXT,
     alternate_names JSONB,
-    
+
     -- Epidemiological Metrics
     prevalence FLOAT,
     incidence FLOAT,
     mortality_rate FLOAT,
     case_fatality_rate FLOAT,
-    
+
     -- Population Metrics
     target_population BIGINT,
     average_age FLOAT,
     gender_ratio FLOAT,
-    
+
     -- GBD Metrics
     dalys FLOAT,
     ylls FLOAT,
     ylds FLOAT,
-    
+
     -- Geographic & Demographic
     geographic_distribution JSONB,
     age_distribution JSONB,
     demographic_data JSONB,
-    
+
     -- Risk Factors & Comorbidities
     risk_factors JSONB,
     comorbidities JSONB,
-    
+
     -- Outcomes & Prognosis
     survival_rate_1yr FLOAT,
     survival_rate_5yr FLOAT,
     survival_rate_10yr FLOAT,
     median_survival_months FLOAT,
     remission_rate FLOAT,
-    
+
     -- Data Provenance & Quality
     data_sources JSONB,
     last_sync TIMESTAMP WITH TIME ZONE,
     source_hash VARCHAR(64),
     reliability_score FLOAT,
     completeness_score FLOAT,
-    
+
     -- Metadata
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE,
@@ -76,26 +76,26 @@ CREATE INDEX idx_disease_last_sync ON epidemiology_diseases(last_sync);
 CREATE TABLE IF NOT EXISTS disease_data_sources (
     id SERIAL PRIMARY KEY,
     disease_id INTEGER NOT NULL REFERENCES epidemiology_diseases(id) ON DELETE CASCADE,
-    
+
     -- Source Information
     source_name VARCHAR(50) NOT NULL,
     source_type VARCHAR(50),
     source_url TEXT,
     source_citation TEXT,
-    
+
     -- Data Quality
     collection_date TIMESTAMP WITH TIME ZONE,
     last_updated TIMESTAMP WITH TIME ZONE,
     data_version VARCHAR(50),
     reliability_indicator VARCHAR(20),
     completeness_percentage FLOAT,
-    
+
     -- Specific Source Data
     seer_data JSONB,
     who_data JSONB,
     cdc_data JSONB,
     gbd_data JSONB,
-    
+
     -- Provenance
     source_hash VARCHAR(64),
     sync_timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -111,25 +111,25 @@ CREATE INDEX idx_source_sync ON disease_data_sources(sync_timestamp);
 CREATE TABLE IF NOT EXISTS disease_time_series (
     id SERIAL PRIMARY KEY,
     disease_id INTEGER NOT NULL REFERENCES epidemiology_diseases(id) ON DELETE CASCADE,
-    
+
     -- Temporal Dimension
     year INTEGER,
     quarter INTEGER,
     month INTEGER,
     date TIMESTAMP WITH TIME ZONE,
-    
+
     -- Metrics over time
     incidence FLOAT,
     prevalence FLOAT,
     mortality FLOAT,
     cases INTEGER,
     deaths INTEGER,
-    
+
     -- Geographic context
     geography_type VARCHAR(50),
     geography_code VARCHAR(20),
     geography_name VARCHAR(255),
-    
+
     -- Source
     data_source VARCHAR(50),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -145,23 +145,23 @@ CREATE INDEX idx_timeseries_date ON disease_time_series(date);
 CREATE TABLE IF NOT EXISTS disease_geospatial (
     id SERIAL PRIMARY KEY,
     disease_id INTEGER NOT NULL REFERENCES epidemiology_diseases(id) ON DELETE CASCADE,
-    
+
     -- Geographic Information
     country_code VARCHAR(3),
     country_name VARCHAR(255),
     region VARCHAR(100),
     state_province VARCHAR(255),
-    
+
     -- Metrics
     prevalence FLOAT,
     incidence FLOAT,
     mortality_rate FLOAT,
     population BIGINT,
     cases INTEGER,
-    
+
     -- Year for temporal context
     year INTEGER,
-    
+
     -- Source
     data_source VARCHAR(50),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -177,15 +177,15 @@ CREATE TABLE IF NOT EXISTS disease_ontology (
     id SERIAL PRIMARY KEY,
     disease_id INTEGER NOT NULL REFERENCES epidemiology_diseases(id) ON DELETE CASCADE,
     related_disease_id INTEGER REFERENCES epidemiology_diseases(id) ON DELETE SET NULL,
-    
+
     -- Relationship Type
     relationship_type VARCHAR(50),
     relationship_strength FLOAT,
-    
+
     -- Hierarchy
     parent_category VARCHAR(100),
     hierarchy_level INTEGER,
-    
+
     -- Additional metadata
     notes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -215,26 +215,26 @@ CREATE INDEX idx_icd_10_11 ON icd_mapping(icd10_code, icd11_code);
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS data_ingestion_logs (
     id SERIAL PRIMARY KEY,
-    
+
     -- Pipeline Info
     pipeline_name VARCHAR(100),
     data_source VARCHAR(50),
-    
+
     -- Execution
     start_time TIMESTAMP WITH TIME ZONE,
     end_time TIMESTAMP WITH TIME ZONE,
     status VARCHAR(20),
-    
+
     -- Results
     records_processed INTEGER,
     records_inserted INTEGER,
     records_updated INTEGER,
     records_failed INTEGER,
-    
+
     -- Error handling
     error_message TEXT,
     error_details JSONB,
-    
+
     -- Metadata
     execution_metadata JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -249,7 +249,7 @@ CREATE INDEX idx_ingestion_status ON data_ingestion_logs(status);
 
 -- Complete disease view with latest source data
 CREATE OR REPLACE VIEW v_diseases_complete AS
-SELECT 
+SELECT
     d.*,
     ds.source_name,
     ds.last_updated as source_last_updated,
@@ -261,7 +261,7 @@ WHERE d.is_active = TRUE;
 
 -- Time series summary by disease
 CREATE OR REPLACE VIEW v_disease_trends AS
-SELECT 
+SELECT
     disease_id,
     year,
     AVG(incidence) as avg_incidence,
@@ -275,7 +275,7 @@ ORDER BY disease_id, year;
 
 -- Geographic summary
 CREATE OR REPLACE VIEW v_disease_geography AS
-SELECT 
+SELECT
     disease_id,
     country_code,
     country_name,
@@ -290,7 +290,7 @@ ORDER BY disease_id, year DESC;
 
 -- Data quality metrics
 CREATE OR REPLACE VIEW v_data_quality AS
-SELECT 
+SELECT
     d.disease_id,
     d.name,
     d.category,

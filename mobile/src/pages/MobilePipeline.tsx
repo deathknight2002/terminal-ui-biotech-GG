@@ -29,8 +29,8 @@ const PHASE_COLORS = {
 export const MobilePipeline: FC = () => {
   const [filter, setFilter] = useState<string>('all');
 
-  const filteredData = filter === 'all' 
-    ? PIPELINE_DATA 
+  const filteredData = filter === 'all'
+    ? PIPELINE_DATA
     : PIPELINE_DATA.filter(drug => drug.phase === filter);
 
   return (
@@ -39,25 +39,25 @@ export const MobilePipeline: FC = () => {
 
       {/* Filter Pills */}
       <div className="mobile-filter-pills">
-        <button 
+        <button
           className={`mobile-pill ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
           All Programs
         </button>
-        <button 
+        <button
           className={`mobile-pill ${filter === 'Phase III' ? 'active' : ''}`}
           onClick={() => setFilter('Phase III')}
         >
           Phase III
         </button>
-        <button 
+        <button
           className={`mobile-pill ${filter === 'Phase II' ? 'active' : ''}`}
           onClick={() => setFilter('Phase II')}
         >
           Phase II
         </button>
-        <button 
+        <button
           className={`mobile-pill ${filter === 'Phase I' ? 'active' : ''}`}
           onClick={() => setFilter('Phase I')}
         >
@@ -104,7 +104,7 @@ export const MobilePipeline: FC = () => {
 
             <div className="mobile-drug-phase-bar">
               <div className="mobile-drug-phase-label">
-                <span 
+                <span
                   className="mobile-phase-dot"
                   style={{ backgroundColor: PHASE_COLORS[drug.phase as keyof typeof PHASE_COLORS] }}
                 />
@@ -115,9 +115,9 @@ export const MobilePipeline: FC = () => {
 
             <div className="mobile-drug-progress">
               <div className="mobile-drug-progress-bar">
-                <div 
+                <div
                   className="mobile-drug-progress-fill"
-                  style={{ 
+                  style={{
                     width: `${drug.completion}%`,
                     backgroundColor: PHASE_COLORS[drug.phase as keyof typeof PHASE_COLORS]
                   }}

@@ -117,7 +117,7 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
   }
-  
+
   .biotech-financial-dashboard {
     padding: 1.5rem;
     gap: 1.5rem;
@@ -129,30 +129,30 @@
     flex-direction: column;
     gap: 0;
   }
-  
+
   .tab-button {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--glass-secondary-border);
     border-radius: 0;
   }
-  
+
   .tab-button.active {
     border-bottom-color: var(--eclipse-aurora);
   }
-  
+
   .hero-metrics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .milestones-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .biotech-financial-dashboard {
     padding: 1rem;
     gap: 1rem;
   }
-  
+
   .chart-container {
     padding: 0.75rem;
   }
@@ -163,7 +163,7 @@
     font-size: 0.875rem;
     padding: 0.625rem 0.75rem;
   }
-  
+
   .recharts-cartesian-axis-tick-value {
     font-size: 0.75rem;
   }

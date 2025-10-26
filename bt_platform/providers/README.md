@@ -5,8 +5,8 @@ This directory contains provider classes for integrating external biotech data s
 ## Available Providers
 
 ### OpenFDAProvider
-**Source**: FDA's OpenFDA API  
-**File**: `openfda_provider.py`  
+**Source**: FDA's OpenFDA API
+**File**: `openfda_provider.py`
 **Data**: Drug approvals, adverse events, recalls, labels
 
 **Methods**:
@@ -17,8 +17,8 @@ This directory contains provider classes for integrating external biotech data s
 - `analyze_safety_signals(drug_name)` - Safety signal detection
 
 ### PubMedProvider
-**Source**: NCBI PubMed E-utilities  
-**File**: `pubmed_provider.py`  
+**Source**: NCBI PubMed E-utilities
+**File**: `pubmed_provider.py`
 **Data**: Biomedical literature, publications, citations
 
 **Methods**:
@@ -28,8 +28,8 @@ This directory contains provider classes for integrating external biotech data s
 - `analyze_research_sentiment(drug_name)` - AI sentiment analysis
 
 ### ClinicalTrialsProvider
-**Source**: ClinicalTrials.gov API v2  
-**File**: `clinicaltrials_provider.py`  
+**Source**: ClinicalTrials.gov API v2
+**File**: `clinicaltrials_provider.py`
 **Data**: Clinical trial information, status, results
 
 **Methods**:
@@ -41,8 +41,8 @@ This directory contains provider classes for integrating external biotech data s
 - `get_competitive_trials(condition, sponsor)` - Competitive landscape
 
 ### ProteinDataBankProvider
-**Source**: RCSB Protein Data Bank  
-**File**: `pdb_provider.py`  
+**Source**: RCSB Protein Data Bank
+**File**: `pdb_provider.py`
 **Data**: Molecular structures, protein data
 
 **Methods**:
@@ -86,7 +86,7 @@ class Provider(ABC):
     async def fetch_data(self, **kwargs) -> Dict[str, Any]:
         """Fetch data from the provider"""
         pass
-    
+
     @abstractmethod
     def get_schema(self) -> Dict[str, Any]:
         """Get the data schema for this provider"""
@@ -169,16 +169,16 @@ All providers use async/await for non-blocking I/O:
 async def get_comprehensive_data():
     fda = OpenFDAProvider()
     pubmed = PubMedProvider()
-    
+
     # Fetch in parallel
     results = await asyncio.gather(
         fda.get_drug_approvals(30),
         pubmed.search_articles("cancer", 100)
     )
-    
+
     await fda.close()
     await pubmed.close()
-    
+
     return results
 ```
 
@@ -220,13 +220,13 @@ def validate_drug_name(name: str) -> str:
 
 ### Common Issues
 
-**Issue**: Provider times out  
+**Issue**: Provider times out
 **Solution**: Increase httpx timeout or reduce data fetch size
 
-**Issue**: Rate limit exceeded  
+**Issue**: Rate limit exceeded
 **Solution**: Add API key or implement exponential backoff
 
-**Issue**: Empty results  
+**Issue**: Empty results
 **Solution**: Check query syntax and data availability
 
 ## Resources

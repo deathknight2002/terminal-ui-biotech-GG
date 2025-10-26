@@ -55,10 +55,10 @@ const selectivity = await chembl.calculateSelectivity('CHEMBL1234', 'Factor XI')
 ### Using Frontend Components
 
 ```tsx
-import { 
-  BayesianSnapshot, 
-  CredenceBadge, 
-  CredenceBadgeGroup 
+import {
+  BayesianSnapshot,
+  CredenceBadge,
+  CredenceBadgeGroup
 } from '@biotech-terminal/frontend-components/biotech';
 
 // Bayesian analysis
@@ -85,7 +85,7 @@ import {
 />
 
 // Source chip with hard fail
-<SourceChip 
+<SourceChip
   citation={{ url, domain, pulledAt }}
   hardFail={true}  // Production mode - blocks unsourced data
 />
@@ -269,7 +269,7 @@ For questions or issues:
 
 ---
 
-**Status**: ✅ Phase 2 Core Complete (72%)  
-**Branch**: copilot/wire-authoritative-data-feeds  
-**Date**: October 10, 2025  
+**Status**: ✅ Phase 2 Core Complete (72%)
+**Branch**: copilot/wire-authoritative-data-feeds
+**Date**: October 10, 2025
 **Created by**: GitHub Copilot

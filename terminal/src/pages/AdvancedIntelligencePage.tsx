@@ -1,6 +1,6 @@
 /**
  * Advanced Intelligence Page
- * 
+ *
  * Showcases the advanced biotech intelligence features powered by multiple APIs
  */
 

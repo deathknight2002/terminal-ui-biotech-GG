@@ -24,7 +24,7 @@ async def get_fda_approvals(
 ):
     """
     Get FDA drug approval data
-    
+
     **Examples:**
     - `/fda/approvals?limit=50` - Get recent approvals
     - `/fda/approvals?search=openfda.brand_name:Keytruda` - Search for Keytruda
@@ -53,7 +53,7 @@ async def get_adverse_events(
 ):
     """
     Get FDA adverse event reports (FAERS data)
-    
+
     **Examples:**
     - `/fda/adverse-events?drug_name=Keytruda&limit=50` - Keytruda adverse events
     - `/fda/adverse-events?serious=true&limit=100` - Serious adverse events
@@ -81,10 +81,10 @@ async def get_adverse_event_counts(
 ):
     """
     Get aggregated adverse event counts by drug
-    
+
     Returns the drugs with the most adverse event reports, useful for
     safety signal detection and trend analysis.
-    
+
     **Example:**
     - `/fda/adverse-events/counts?limit=20` - Top 20 drugs by adverse event count
     """
@@ -109,12 +109,12 @@ async def get_drug_recalls(
 ):
     """
     Get FDA drug recall data
-    
+
     **Classification:**
     - Class I: Dangerous or defective products that could cause serious health problems or death
     - Class II: Products that might cause temporary or medically reversible health problem
     - Class III: Products unlikely to cause adverse health reaction but violate FDA labeling or manufacturing regulations
-    
+
     **Examples:**
     - `/fda/recalls?classification=Class I&limit=50` - Class I recalls
     - `/fda/recalls?status=Ongoing` - Ongoing recalls
@@ -141,7 +141,7 @@ async def get_enforcement_reports(
 ):
     """
     Get FDA enforcement reports
-    
+
     Includes recalls, market withdrawals, and safety alerts.
     """
     try:
@@ -164,7 +164,7 @@ async def get_drug_labels(
 ):
     """
     Get FDA drug label data (package inserts, prescribing information)
-    
+
     **Examples:**
     - `/fda/labels?brand_name=Keytruda` - Get Keytruda label
     - `/fda/labels?generic_name=pembrolizumab` - Get by generic name
@@ -184,7 +184,7 @@ async def get_drug_labels(
 async def get_fda_dashboard():
     """
     Get comprehensive FDA intelligence dashboard data
-    
+
     Returns recent approvals, top adverse events, and active recalls in one call.
     Optimized for dashboard visualization.
     """
@@ -195,20 +195,20 @@ async def get_fda_dashboard():
             limit=20,
             date_from=ninety_days_ago
         )
-        
+
         # Get top drugs by adverse events (last 30 days)
         thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime("%Y%m%d")
         adverse_counts = await fda_provider.count_adverse_events_by_drug(
             limit=10,
             date_from=thirty_days_ago
         )
-        
+
         # Get active recalls
         recalls = await fda_provider.fetch_drug_recalls(
             limit=20,
             status="Ongoing"
         )
-        
+
         return {
             "recent_approvals": approvals.get("data", []),
             "approvals_count": approvals.get("count", 0),
@@ -229,31 +229,31 @@ async def detect_safety_signals(
 ):
     """
     Detect potential safety signals based on adverse event trends
-    
+
     Identifies drugs with unusually high adverse event reporting rates
     that may warrant further investigation.
     """
     try:
         date_from = (datetime.now() - timedelta(days=days)).strftime("%Y%m%d")
-        
+
         # Get adverse event counts
         counts_result = await fda_provider.count_adverse_events_by_drug(
             limit=limit,
             date_from=date_from
         )
-        
+
         drugs = counts_result.get("data", [])
-        
+
         # Calculate basic statistics
         if drugs:
             event_counts = [d["event_count"] for d in drugs]
             avg_count = sum(event_counts) / len(event_counts)
-            
+
             # Flag drugs with above-average reporting
             for drug in drugs:
                 drug["above_average"] = drug["event_count"] > avg_count
                 drug["signal_strength"] = "high" if drug["event_count"] > avg_count * 2 else "moderate"
-        
+
         return {
             "data": drugs,
             "period_days": days,

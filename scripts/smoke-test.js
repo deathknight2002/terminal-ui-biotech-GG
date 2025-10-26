@@ -449,7 +449,7 @@ class SmokeTestRunner {
           `Errors:\n${error.stderr || error.stdout}\n` +
           `Solution: Fix build errors in ${workspace.name} workspace.\n` +
           `Run 'cd ${workspace.dir} && npm run build' for details.\n` +
-          (workspace.name !== 'frontend-components' 
+          (workspace.name !== 'frontend-components'
             ? 'Note: Ensure frontend-components is built first (npm run build:components from root).'
             : '')
         );
@@ -464,9 +464,9 @@ class SmokeTestRunner {
     this.logSection('Phase 7: Mobile Dev Server Test');
 
     this.log('Testing mobile dev server startup...', 'cyan');
-    
+
     const mobileDir = join(ROOT_DIR, 'mobile');
-    
+
     return new Promise((resolve) => {
       const proc = spawn('npm', ['run', 'dev'], {
         cwd: mobileDir,
@@ -528,9 +528,9 @@ class SmokeTestRunner {
     this.logSection('Phase 8: Desktop Dev Server Test');
 
     this.log('Testing terminal dev server startup...', 'cyan');
-    
+
     const terminalDir = join(ROOT_DIR, 'terminal');
-    
+
     return new Promise((resolve) => {
       const proc = spawn('npm', ['run', 'dev'], {
         cwd: terminalDir,
@@ -639,7 +639,7 @@ class SmokeTestRunner {
 
     // Check for --quick flag
     const quickMode = process.argv.includes('--quick');
-    
+
     if (quickMode) {
       this.log('Running in QUICK mode (skipping builds and dev servers)', 'yellow');
     }
@@ -649,7 +649,7 @@ class SmokeTestRunner {
       await this.checkDependencies();
       await this.checkMobileSetup();
       await this.checkDesktopSetup();
-      
+
       if (!quickMode) {
         await this.checkTypeScript();
         await this.checkLinting();

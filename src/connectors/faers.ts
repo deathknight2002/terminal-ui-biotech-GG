@@ -1,9 +1,9 @@
 /**
  * openFDA FAERS Connector
- * 
+ *
  * Connects to FDA Adverse Event Reporting System (FAERS) via openFDA API
  * Normalizes data to FAERSContract@1.0
- * 
+ *
  * API Docs: https://open.fda.gov/apis/drug/event/
  */
 
@@ -85,7 +85,7 @@ export class FAERSConnector {
 
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`FAERS API error: ${response.status} ${response.statusText}`);
       }
@@ -166,13 +166,13 @@ export class FAERSConnector {
    */
   private buildUrl(query: string, limit = 100, skip = 0): string {
     const params = new URLSearchParams();
-    
+
     if (query) {
       params.set('search', query);
     }
-    
+
     params.set('limit', Math.min(limit, 1000).toString());
-    
+
     if (skip > 0) {
       params.set('skip', skip.toString());
     }

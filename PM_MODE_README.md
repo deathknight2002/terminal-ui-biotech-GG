@@ -225,10 +225,10 @@ import { CatalystTimeline } from '../components/pm-mode/CatalystTimeline';
 ### Converting Data
 
 ```typescript
-import { 
+import {
   convertToPMMetrics,
   convertToRnpvLadder,
-  convertToCatalystTimeline 
+  convertToCatalystTimeline
 } from '../utils/pmModeHelpers';
 
 const pmMetrics = convertToPMMetrics(profile, pipeline);
@@ -284,10 +284,10 @@ Questions? Check the documentation:
 
 ## 🏆 Status
 
-**Phase A: COMPLETE** ✅  
+**Phase A: COMPLETE** ✅
 **Ready for**: Production Deployment 🚀
 
 ---
 
-Built with React, TypeScript, and the Terminal UI component library.  
+Built with React, TypeScript, and the Terminal UI component library.
 December 2024

@@ -30,7 +30,7 @@ We don't just show data—we **synthesize insights** from:
 
 ```
 Input: "Keytruda"
-Output: 
+Output:
   ✓ Risk Score (0-100) with color-coded assessment
   ✓ Real-time safety profile from 1000+ adverse events
   ✓ Literature sentiment from 500+ publications

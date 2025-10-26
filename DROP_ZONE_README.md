@@ -17,7 +17,7 @@ The Drop Zone is a **Lane B ingestion method** that allows analysts to manually 
 
 ### 1. Price Data (OHLCV)
 
-**Format:** CSV  
+**Format:** CSV
 **Purpose:** Price reactions and abnormal return calculations
 
 **Required Columns:**
@@ -67,7 +67,7 @@ Content-Type: multipart/form-data
 
 ### 2. ETF Constituents
 
-**Format:** CSV  
+**Format:** CSV
 **Purpose:** Point-in-time ETF holdings for read-through exposures
 
 **Required Columns:**
@@ -116,7 +116,7 @@ Content-Type: multipart/form-data
 
 ### 3. News Articles (Manual Entry)
 
-**Format:** CSV or HTML  
+**Format:** CSV or HTML
 **Purpose:** Add articles from paywalled sources or when scraping is disallowed
 
 **CSV Format:**
@@ -396,5 +396,5 @@ For issues or questions:
 
 ---
 
-**Last Updated:** 2024-01-15  
+**Last Updated:** 2024-01-15
 **Version:** 1.0

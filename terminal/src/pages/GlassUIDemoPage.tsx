@@ -68,7 +68,7 @@ export const GlassUIDemoPage: React.FC = () => {
     const alertTypes = ['fda', 'trial', 'market', 'regulatory', 'clinical'] as const;
     const priorities = ['critical', 'high', 'medium', 'low'] as const;
     const tickers = ['ARYAZ', 'BCRX', 'XYZ', 'ABC', 'DEF'];
-    
+
     const randomType = alertTypes[Math.floor(Math.random() * alertTypes.length)];
     const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
     const randomTicker = tickers[Math.floor(Math.random() * tickers.length)];

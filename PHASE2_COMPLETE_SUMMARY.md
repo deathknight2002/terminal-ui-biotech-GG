@@ -34,7 +34,7 @@ Implemented **Phase 2: "Evidence, but live"** with authoritative data feeds and 
 - Checks Federal Register for confirmation
 - Auto-upgrades catalyst confidence: `estimated` → `likely` → `confirmed`
 
-### 2. SEC EDGAR Connector  
+### 2. SEC EDGAR Connector
 **File**: `src/connectors/sec-edgar.ts`
 - Parses 8-K filings for clinical endpoint mentions
 - Filters by 20+ clinical keywords
@@ -107,8 +107,8 @@ Implemented **Phase 2: "Evidence, but live"** with authoritative data feeds and 
 
 **Usage**:
 ```tsx
-<CredenceBadge 
-  type="db-lock" 
+<CredenceBadge
+  type="db-lock"
   sourceUrl="https://clinicaltrials.gov/..."
   date="2026-03-15"
 />
@@ -130,7 +130,7 @@ Implemented **Phase 2: "Evidence, but live"** with authoritative data feeds and 
 
 **Usage**:
 ```tsx
-<SourceChip 
+<SourceChip
   citation={{ url, domain, pulledAt }}
   hardFail={true}  // Production mode
 />
@@ -395,8 +395,8 @@ Instead of complex formulas, analysts see:
 - "WIN ≥70% | MEH 15-70% | KILL <15%"
 
 ### 2. Confidence Upgrade Automation
-Federal Register posting → Auto-upgrade to "confirmed"  
-DB-lock detected → Add credence badge  
+Federal Register posting → Auto-upgrade to "confirmed"
+DB-lock detected → Add credence badge
 SAP finalized → Update catalyst card
 
 ### 3. Hard Fail Data Quality
@@ -458,12 +458,12 @@ Phase 2 implementation successfully delivers:
 4. **Analyst Experience**: Plain-English explanations, decision-grade clarity
 5. **Developer Experience**: Type-safe APIs, comprehensive documentation
 
-**Status**: ✅ Core implementation complete (18/25 items)  
-**Next Phase**: Integration, testing, and production hardening  
+**Status**: ✅ Core implementation complete (18/25 items)
+**Next Phase**: Integration, testing, and production hardening
 **Timeline**: ~2 days of implementation (October 10, 2025)
 
 ---
 
-**Created by**: GitHub Copilot  
-**Date**: October 10, 2025  
+**Created by**: GitHub Copilot
+**Date**: October 10, 2025
 **Version**: Phase 2 Complete

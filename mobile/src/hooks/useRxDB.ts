@@ -1,6 +1,6 @@
 /**
  * useRxDB Hook
- * 
+ *
  * React hook for accessing RxDB collections with automatic reactivity.
  */
 
@@ -13,11 +13,11 @@ export type CollectionName = 'companies' | 'pipelines' | 'news' | 'portfolio' | 
 
 /**
  * Hook to query RxDB collection with automatic reactivity
- * 
+ *
  * @param collectionName - Name of the collection to query
  * @param query - Optional query selector
  * @returns Array of documents from the collection
- * 
+ *
  * @example
  * ```tsx
  * function CompanyList() {
@@ -72,7 +72,7 @@ export function useRxDB<T = any>(
 
 /**
  * Hook to insert a document into RxDB
- * 
+ *
  * @param collectionName - Name of the collection
  * @returns Insert function
  */
@@ -101,7 +101,7 @@ export function useRxDBInsert(collectionName: CollectionName) {
 
 /**
  * Hook to update a document in RxDB
- * 
+ *
  * @param collectionName - Name of the collection
  * @returns Update function
  */
@@ -118,7 +118,7 @@ export function useRxDBUpdate(collectionName: CollectionName) {
       const db = await rxdbService.getDatabase();
       const collection = db[collectionName];
       const doc = await collection.findOne(id).exec();
-      
+
       if (doc) {
         await doc.patch(updateData);
         logger.info(`[useRxDBUpdate] Document updated in ${collectionName}`);
@@ -134,7 +134,7 @@ export function useRxDBUpdate(collectionName: CollectionName) {
 
 /**
  * Hook to delete a document from RxDB
- * 
+ *
  * @param collectionName - Name of the collection
  * @returns Delete function
  */
@@ -151,7 +151,7 @@ export function useRxDBDelete(collectionName: CollectionName) {
       const db = await rxdbService.getDatabase();
       const collection = db[collectionName];
       const doc = await collection.findOne(id).exec();
-      
+
       if (doc) {
         await doc.remove();
         logger.info(`[useRxDBDelete] Document deleted from ${collectionName}`);

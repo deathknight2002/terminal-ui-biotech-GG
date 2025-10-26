@@ -288,6 +288,6 @@ grep -r "refetchInterval:" terminal/src/
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: October 10, 2025  
+**Document Version**: 1.0
+**Last Updated**: October 10, 2025
 **Status**: Ready for Testing

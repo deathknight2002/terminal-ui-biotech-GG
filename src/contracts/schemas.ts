@@ -1,6 +1,6 @@
 /**
  * Data Contracts - Zod schemas for runtime validation
- * 
+ *
  * Provides type-safe validation for all external IO with versioned schemas
  */
 

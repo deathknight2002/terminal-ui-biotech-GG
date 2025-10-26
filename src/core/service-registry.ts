@@ -1,6 +1,6 @@
 /**
  * Service Registry - Dependency injection and service discovery
- * 
+ *
  * Enables modules to register themselves and declare dependencies,
  * facilitating autonomous yet coordinated operation.
  */

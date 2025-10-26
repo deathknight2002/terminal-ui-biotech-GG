@@ -69,7 +69,7 @@ export function useMonitoring(options: UseMonitoringOptions = {}): UseMonitoring
   const [stats, setStats] = useState<MonitoringStats | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  
+
   const socketRef = useRef<Socket | null>(null);
 
   // Initialize WebSocket connection
@@ -90,7 +90,7 @@ export function useMonitoring(options: UseMonitoringOptions = {}): UseMonitoring
         console.log('📡 Connected to monitoring service');
         setIsConnected(true);
         setError(null);
-        
+
         // Subscribe to channels on connect
         socket.emit('monitoring:subscribe', { channels });
       });
@@ -119,7 +119,7 @@ export function useMonitoring(options: UseMonitoringOptions = {}): UseMonitoring
           severity: event.data.severity,
           type: event.data.type,
         };
-        
+
         setAlerts(prev => [alert, ...prev].slice(0, 100)); // Keep last 100
       });
 
@@ -133,7 +133,7 @@ export function useMonitoring(options: UseMonitoringOptions = {}): UseMonitoring
           severity: event.data.article.importance,
           type: 'news',
         };
-        
+
         setAlerts(prev => [alert, ...prev].slice(0, 100));
       });
 
@@ -147,7 +147,7 @@ export function useMonitoring(options: UseMonitoringOptions = {}): UseMonitoring
           severity: 'medium',
           type: 'change',
         };
-        
+
         setAlerts(prev => [alert, ...prev].slice(0, 100));
       });
 
@@ -226,7 +226,7 @@ export function useMonitoringRest(apiUrl: string = 'http://localhost:3001/api/mo
   const fetchAlerts = useCallback(async (limit: number = 50) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const [portfolioRes, newsRes] = await Promise.all([
         fetch(`${apiUrl}/portfolio/alerts?limit=${limit}`),
@@ -271,11 +271,11 @@ export function useMonitoringRest(apiUrl: string = 'http://localhost:3001/api/mo
   const fetchStats = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const res = await fetch(`${apiUrl}/stats`);
       const data = await res.json();
-      
+
       if (data.success) {
         setStats({
           changeDetection: data.stats,

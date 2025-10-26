@@ -1,10 +1,10 @@
 /**
  * Extended Disease Dataset
- * 
+ *
  * This file contains 30+ additional diseases to expand the epidemiology platform
  * beyond the initial 17 diseases. These diseases span multiple categories and
  * include emerging diseases, rare conditions, and global health priorities.
- * 
+ *
  * Data sources: WHO, CDC, GBD, IARC, NIH
  */
 
@@ -242,7 +242,7 @@ export function getExtendedDiseaseData(): DiseaseData[] {
         medianAge: 50
       }
     },
-    
+
     // Infectious Diseases (8 diseases)
     {
       id: 'who-hepatitis-b',
@@ -451,7 +451,7 @@ export function getExtendedDiseaseData(): DiseaseData[] {
         riskFactors: ['Unsafe water', 'Poor sanitation', 'Contaminated food']
       }
     },
-    
+
     // Chronic Diseases (7 diseases)
     {
       id: 'cdc-hypertension',
@@ -656,7 +656,7 @@ export function getExtendedDiseaseData(): DiseaseData[] {
         ]
       }
     },
-    
+
     // Rare Diseases (5 diseases)
     {
       id: 'rare-cystic-fibrosis',

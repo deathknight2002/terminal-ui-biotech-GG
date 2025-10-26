@@ -1,9 +1,9 @@
 /**
  * Drugs@FDA Connector
- * 
+ *
  * Connects to Drugs@FDA API for drug approvals, labels, and regulatory data
  * Normalizes data to DrugApprovalContract@1.0
- * 
+ *
  * API Docs: https://open.fda.gov/apis/drug/drugsfda/
  */
 
@@ -95,7 +95,7 @@ export class DrugsAtFDAConnector {
 
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Drugs@FDA API error: ${response.status} ${response.statusText}`);
       }
@@ -105,7 +105,7 @@ export class DrugsAtFDAConnector {
 
       // Flatten products into individual approval records
       const contracts: DrugApprovalContract[] = [];
-      
+
       for (const application of validated.results) {
         if (application.products && application.products.length > 0) {
           for (const product of application.products) {
@@ -181,13 +181,13 @@ export class DrugsAtFDAConnector {
    */
   private buildUrl(query: string, limit = 100, skip = 0): string {
     const params = new URLSearchParams();
-    
+
     if (query) {
       params.set('search', query);
     }
-    
+
     params.set('limit', Math.min(limit, 1000).toString());
-    
+
     if (skip > 0) {
       params.set('skip', skip.toString());
     }
@@ -214,13 +214,13 @@ export class DrugsAtFDAConnector {
     product?: z.infer<typeof DrugProductSchema>
   ): DrugApprovalContract {
     // Get brand name
-    const brandName = product?.brand_name 
-      || application.openfda?.brand_name?.[0] 
+    const brandName = product?.brand_name
+      || application.openfda?.brand_name?.[0]
       || 'Unknown';
 
     // Get generic name
-    const genericName = application.openfda?.generic_name?.[0] 
-      || product?.active_ingredients?.[0]?.name 
+    const genericName = application.openfda?.generic_name?.[0]
+      || product?.active_ingredients?.[0]?.name
       || 'Unknown';
 
     // Get active ingredient
@@ -232,7 +232,7 @@ export class DrugsAtFDAConnector {
       const approvedSubmissions = application.submissions
         .filter(s => s.submission_status_date)
         .sort((a, b) => (b.submission_status_date || '').localeCompare(a.submission_status_date || ''));
-      
+
       if (approvedSubmissions.length > 0) {
         const dateStr = approvedSubmissions[0].submission_status_date!;
         // Convert YYYYMMDD to ISO format

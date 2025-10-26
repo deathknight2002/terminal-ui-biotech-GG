@@ -200,7 +200,7 @@ echo "VITE_API_URL=https://api.your-backend.com" > mobile/.env
 
 ### "No code signing identities found"
 
-**Solution**: 
+**Solution**:
 1. Open Xcode Preferences → Accounts
 2. Add your Apple ID if not present
 3. Select your account and click "Download Manual Profiles"

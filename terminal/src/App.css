@@ -71,11 +71,11 @@
   .terminal-nav {
     flex-direction: column;
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .footer-content {
     flex-direction: column;
     gap: 0.25rem;

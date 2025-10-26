@@ -1,6 +1,6 @@
 /**
  * Catalyst Scoring Radar Example
- * 
+ *
  * Demonstrates the "Ionis-style" stealth catalyst scoring radar chart.
  */
 
@@ -103,8 +103,8 @@ export const CatalystScoringExample: React.FC = () => {
               >
                 <div className={styles.catalystName}>{cat.name}</div>
                 <div className={styles.catalystScore}>
-                  {(cat.score.eventLeverage + cat.score.timingClarity + 
-                    cat.score.surpriseFactor + cat.score.downsideContained + 
+                  {(cat.score.eventLeverage + cat.score.timingClarity +
+                    cat.score.surpriseFactor + cat.score.downsideContained +
                     cat.score.marketDepth)}/16
                 </div>
                 <div className={`${styles.catalystTier} ${styles[cat.score.tier?.toLowerCase().replace('-', '') || '']}`}>

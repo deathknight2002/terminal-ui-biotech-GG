@@ -24,14 +24,14 @@ describe('Ontology', () => {
 
     it('should create gene target object', () => {
       const target = GeneMapper.createTarget('EGFR');
-      
+
       expect(target.hgncSymbol).toBe('EGFR');
       expect(target.uniprotId).toBe('P00533');
     });
 
     it('should create gene target with custom UniProt ID', () => {
       const target = GeneMapper.createTarget('TEST', { uniprotId: 'P12345' });
-      
+
       expect(target.hgncSymbol).toBe('TEST');
       expect(target.uniprotId).toBe('P12345');
     });
@@ -54,7 +54,7 @@ describe('Ontology', () => {
 
     it('should create disease ontology object from name', () => {
       const disease = DiseaseMapper.createDisease('lung adenocarcinoma');
-      
+
       expect(disease.name).toBe('lung adenocarcinoma');
       expect(disease.mondoId).toBe('MONDO:0005061');
       expect(disease.oncoTreeCode).toBe('LUAD');
@@ -65,7 +65,7 @@ describe('Ontology', () => {
         mondoId: 'MONDO:9999999',
         doidId: 'DOID:9999999',
       });
-      
+
       expect(disease.name).toBe('Custom Disease');
       expect(disease.mondoId).toBe('MONDO:9999999');
       expect(disease.doidId).toBe('DOID:9999999');
@@ -75,7 +75,7 @@ describe('Ontology', () => {
   describe('UnitMapper', () => {
     it('should normalize common units to UCUM', () => {
       const normalized = UnitMapper.normalize(150, 'mg/m2');
-      
+
       expect(normalized.value).toBe(150);
       expect(normalized.unit).toBe('mg/m2');
       expect(normalized.standardUnit).toBe('mg_m2');
@@ -83,13 +83,13 @@ describe('Ontology', () => {
 
     it('should convert µg to ug in UCUM', () => {
       const normalized = UnitMapper.normalize(10, 'µg/mL');
-      
+
       expect(normalized.unit).toBe('ug/mL');
     });
 
     it('should parse dose string', () => {
       const dose = UnitMapper.parseDose('150 mg/m2');
-      
+
       expect(dose).not.toBeNull();
       expect(dose?.value).toBe(150);
       expect(dose?.unit).toBe('mg/m2');
@@ -97,7 +97,7 @@ describe('Ontology', () => {
 
     it('should parse dose with decimal', () => {
       const dose = UnitMapper.parseDose('2.5 mg/kg');
-      
+
       expect(dose).not.toBeNull();
       expect(dose?.value).toBe(2.5);
       expect(dose?.unit).toBe('mg/kg');

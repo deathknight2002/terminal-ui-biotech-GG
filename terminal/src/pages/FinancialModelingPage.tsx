@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
+import {
   BiotechFinancialDashboard,
 } from '../../../frontend-components/src/biotech';
-import type { 
+import type {
   Asset,
   FinancialProjection
 } from '../../../frontend-components/src/types/biotech';
@@ -105,7 +105,7 @@ const fetchFinancialData = async () => {
 };
 
 export function FinancialModelingPage() {
-  const { 
+  const {
     data: financialData = { asset: SAMPLE_ASSET, projection: SAMPLE_PROJECTION },
   } = useQuery({
     queryKey: ['financial-modeling'],

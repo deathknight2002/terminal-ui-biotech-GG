@@ -112,7 +112,7 @@ export async function runWHOETL(): Promise<ETLResult> {
   logger.info('Starting WHO ETL pipeline...');
   const startTime = Date.now();
   const prisma = getPrismaClient();
-  
+
   const counts = {
     diseases: 0,
     created: 0,
@@ -128,7 +128,7 @@ export async function runWHOETL(): Promise<ETLResult> {
       parseInt(process.env.ETL_BATCH_SIZE || '10'),
       async (batch) => {
         const results = [];
-        
+
         for (const disease of batch) {
           try {
             await processWHODisease(disease, prisma, counts);
@@ -139,7 +139,7 @@ export async function runWHOETL(): Promise<ETLResult> {
             errors.push(errorMsg);
           }
         }
-        
+
         return results;
       },
       (processed, total) => {
@@ -203,7 +203,7 @@ async function createWHOMetrics(
 ): Promise<void> {
   const sourceName = 'WHO GHO';
   const sourceUrl = 'https://www.who.int/data/gho';
-  
+
   // DALYs (Disability-Adjusted Life Years) - Global
   await upsertMetric(
     diseaseId,
@@ -349,7 +349,7 @@ async function upsertMetric(
   counts: { created: number; updated: number; skipped: number }
 ): Promise<void> {
   const validatedValue = value !== null ? validateMetricValue(value) : null;
-  
+
   const rawData = { diseaseId, metricType, value, ...options };
   const provenanceData = createProvenanceData(
     options.source,

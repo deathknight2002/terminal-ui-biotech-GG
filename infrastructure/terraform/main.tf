@@ -3,14 +3,14 @@
 
 terraform {
   required_version = ">= 1.5.0"
-  
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
-  
+
   backend "s3" {
     # Configure backend per environment
     # bucket         = "biotech-terminal-terraform-state"
@@ -23,7 +23,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
-  
+
   default_tags {
     tags = {
       Project     = "Biotech Terminal"
@@ -75,7 +75,7 @@ variable "github_repo" {
 # Modules
 module "networking" {
   source = "./modules/networking"
-  
+
   environment  = var.environment
   project_name = var.project_name
   aws_region   = var.aws_region
@@ -83,7 +83,7 @@ module "networking" {
 
 module "storage" {
   source = "./modules/storage"
-  
+
   environment  = var.environment
   project_name = var.project_name
   aws_region   = var.aws_region
@@ -91,7 +91,7 @@ module "storage" {
 
 module "database" {
   source = "./modules/database"
-  
+
   environment         = var.environment
   project_name        = var.project_name
   vpc_id              = module.networking.vpc_id
@@ -101,14 +101,14 @@ module "database" {
 
 module "secrets" {
   source = "./modules/secrets"
-  
+
   environment  = var.environment
   project_name = var.project_name
 }
 
 module "github_oidc" {
   source = "./modules/github_oidc"
-  
+
   environment  = var.environment
   project_name = var.project_name
   github_org   = var.github_org
@@ -117,7 +117,7 @@ module "github_oidc" {
 
 module "compute" {
   source = "./modules/compute"
-  
+
   environment          = var.environment
   project_name         = var.project_name
   vpc_id               = module.networking.vpc_id

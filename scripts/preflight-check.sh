@@ -71,7 +71,7 @@ log_section "Check 1: Node.js Installation"
 if command_exists node; then
     NODE_VERSION=$(node --version)
     log_success "Node.js is installed: $NODE_VERSION"
-    
+
     # Check if version is recent enough (v18+)
     MAJOR_VERSION=$(echo $NODE_VERSION | cut -d'.' -f1 | sed 's/v//')
     if [ "$MAJOR_VERSION" -lt 18 ]; then
@@ -106,7 +106,7 @@ log_section "Check 4: Python Installation (Optional)"
 if command_exists python3; then
     PYTHON_VERSION=$(python3 --version)
     log_success "Python is installed: $PYTHON_VERSION"
-    
+
     if command_exists poetry; then
         POETRY_VERSION=$(poetry --version)
         log_success "Poetry is installed: $POETRY_VERSION"
@@ -132,7 +132,7 @@ log_section "Check 6: Workspace Dependencies"
 WORKSPACES=("mobile" "terminal" "frontend-components" "backend")
 for workspace in "${WORKSPACES[@]}"; do
     log_info "Checking workspace: $workspace"
-    
+
     # Check package.json
     if [ -f "$ROOT_DIR/$workspace/package.json" ]; then
         log_success "  $workspace/package.json exists"
@@ -141,7 +141,7 @@ for workspace in "${WORKSPACES[@]}"; do
             "Workspace may be corrupted. Ensure the repository is properly cloned."
         continue
     fi
-    
+
     # Check node_modules
     if [ -d "$ROOT_DIR/$workspace/node_modules" ]; then
         log_success "  $workspace/node_modules exists"
@@ -219,7 +219,7 @@ log_section "Check 10: Port Availability"
 check_port() {
     local port=$1
     local service=$2
-    
+
     if command_exists lsof; then
         if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
             log_warning "Port $port is in use (needed for $service)"

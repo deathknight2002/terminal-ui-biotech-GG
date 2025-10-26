@@ -1,6 +1,6 @@
 /**
  * Declarative Configuration System
- * 
+ *
  * Enables modules to define and validate their configuration declaratively.
  * Supports environment variables, defaults, and runtime overrides.
  */

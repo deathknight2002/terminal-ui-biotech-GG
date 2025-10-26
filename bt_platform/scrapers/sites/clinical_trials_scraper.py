@@ -13,7 +13,7 @@ from bt_platform.scrapers.base.interface import ContentType, ScraperResult
 
 class ClinicalTrialsScraper(PressReleaseScraper):
     """ClinicalTrials.gov scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://clinicaltrials.gov')
@@ -21,7 +21,7 @@ class ClinicalTrialsScraper(PressReleaseScraper):
         config.setdefault('source_key', 'clinicaltrials')
         config.setdefault('max_rps', 1.0)
         super().__init__(config)
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """Normalize to clinical trial format"""
         result = await super().normalize(parsed_data)

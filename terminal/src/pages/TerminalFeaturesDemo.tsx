@@ -124,7 +124,7 @@ export const TerminalFeaturesDemo: React.FC = () => {
             <p>Panel synchronization</p>
             <p>Color-coded indicators</p>
           </div>
-          
+
           <div className="feature-card">
             <h3>✅ Command Palette</h3>
             <p>50+ function codes</p>

@@ -25,12 +25,12 @@ async def search_publications(
 ):
     """
     Search PubMed scientific publications
-    
+
     **Examples:**
     - `/research/search?query=CAR-T therapy&limit=50` - Search CAR-T publications
     - `/research/search?query=pembrolizumab AND cancer&sort=pub_date` - Recent pembrolizumab papers
     - `/research/search?query=CRISPR&date_from=2023/01/01` - CRISPR papers from 2023
-    
+
     **Query Syntax:**
     - Use AND, OR, NOT for boolean logic
     - Use quotes for exact phrases: "immune checkpoint inhibitor"
@@ -55,16 +55,16 @@ async def get_publication_details(
 ):
     """
     Get detailed information for a specific publication
-    
+
     **Example:**
     - `/research/publication/36543321` - Get details for PMID 36543321
     """
     try:
         result = await pubmed_provider.get_publication_details(pmid=pmid)
-        
+
         if result.get("error"):
             raise HTTPException(status_code=404, detail=result["error"])
-        
+
         return result
     except HTTPException:
         raise
@@ -79,10 +79,10 @@ async def analyze_publication_trends(
 ):
     """
     Analyze publication trends over time
-    
+
     Returns year-over-year publication counts to identify emerging
     research areas and declining interest.
-    
+
     **Examples:**
     - `/research/trends?query=mRNA vaccine&years=10` - mRNA vaccine publication trends
     - `/research/trends?query=Alzheimer disease&years=15` - Alzheimer's research velocity
@@ -104,9 +104,9 @@ async def search_by_drug(
 ):
     """
     Search publications about a specific drug
-    
+
     Searches title, abstract, and MeSH terms for drug mentions.
-    
+
     **Examples:**
     - `/research/drug/Keytruda` - Publications about Keytruda
     - `/research/drug/pembrolizumab` - Publications about pembrolizumab
@@ -128,9 +128,9 @@ async def search_by_disease(
 ):
     """
     Search publications about a specific disease
-    
+
     Searches title, abstract, and MeSH terms for disease mentions.
-    
+
     **Examples:**
     - `/research/disease/Multiple Myeloma` - Multiple myeloma publications
     - `/research/disease/Cystic Fibrosis` - Cystic fibrosis research
@@ -151,7 +151,7 @@ async def get_research_dashboard(
 ):
     """
     Get comprehensive research intelligence dashboard
-    
+
     Returns publication trends, hot topics, and research velocity metrics.
     """
     try:
@@ -163,10 +163,10 @@ async def get_research_dashboard(
             "gene therapy",
             "CRISPR"
         ]
-        
+
         if therapeutic_area:
             research_areas = [therapeutic_area]
-        
+
         # Get trends for each area (last 5 years)
         area_trends = []
         for area in research_areas[:5]:  # Limit to 5 to avoid too many requests
@@ -179,7 +179,7 @@ async def get_research_dashboard(
                 "trends": trends.get("data", []),
                 "total_publications": sum(t.get("count", 0) for t in trends.get("data", []))
             })
-        
+
         # Get recent publications in therapeutic area
         recent_publications = []
         if therapeutic_area:
@@ -189,7 +189,7 @@ async def get_research_dashboard(
                 sort="pub_date"
             )
             recent_publications = pubs.get("data", [])
-        
+
         return {
             "research_trends": area_trends,
             "recent_publications": recent_publications,
@@ -208,10 +208,10 @@ async def identify_hot_topics(
 ):
     """
     Identify hot research topics with accelerating publication velocity
-    
+
     Analyzes publication trends to find topics with increasing research activity,
     indicating emerging opportunities or threats.
-    
+
     **Example:**
     - `/research/hot-topics?therapeutic_area=Oncology&years=5`
     """
@@ -224,22 +224,22 @@ async def identify_hot_topics(
             f"{therapeutic_area} AND precision medicine",
             f"{therapeutic_area} AND combination therapy"
         ]
-        
+
         hot_topics = []
-        
+
         for query in base_queries:
             trends = await pubmed_provider.analyze_publication_trends(
                 query=query,
                 years=years
             )
-            
+
             trend_data = trends.get("data", [])
             if len(trend_data) >= 2:
                 # Calculate growth rate
                 recent_count = sum(t.get("count", 0) for t in trend_data[-2:])
                 older_count = sum(t.get("count", 0) for t in trend_data[:2]) + 1  # Avoid division by zero
                 growth_rate = ((recent_count - older_count) / older_count) * 100
-                
+
                 hot_topics.append({
                     "topic": query,
                     "growth_rate": round(growth_rate, 1),
@@ -248,10 +248,10 @@ async def identify_hot_topics(
                     "is_accelerating": growth_rate > 50,
                     "trends": trend_data
                 })
-        
+
         # Sort by growth rate
         hot_topics.sort(key=lambda x: x["growth_rate"], reverse=True)
-        
+
         return {
             "hot_topics": hot_topics,
             "therapeutic_area": therapeutic_area,
@@ -271,30 +271,30 @@ async def analyze_competitive_research(
 ):
     """
     Compare research publication activity across companies
-    
+
     Analyzes publication velocity to understand R&D focus and investment.
-    
+
     **Example:**
     - `/research/competitive-research?company=Pfizer&competitors=Moderna,BioNTech&years=5`
     """
     try:
         competitor_list = [c.strip() for c in competitors.split(",")]
         all_companies = [company] + competitor_list
-        
+
         company_research = []
-        
+
         for comp in all_companies[:6]:  # Limit to 6 companies to avoid rate limits
             trends = await pubmed_provider.analyze_publication_trends(
                 query=f'"{comp}"[Affiliation]',
                 years=years
             )
-            
+
             company_research.append({
                 "company": comp,
                 "trends": trends.get("data", []),
                 "total_publications": sum(t.get("count", 0) for t in trends.get("data", []))
             })
-        
+
         return {
             "company_research": company_research,
             "focus_company": company,

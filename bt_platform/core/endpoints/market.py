@@ -17,19 +17,19 @@ router = APIRouter()
 async def get_market_summary(db: Session = Depends(get_db)) -> dict:
     """
     Return market breadth and sentiment figures.
-    
+
     In production, this should fetch from:
     - Market data API (e.g., Alpha Vantage, Polygon.io)
     - Sentiment analysis from news aggregator
     - Volume data from exchange feeds
-    
+
     Current implementation returns database-derived metrics.
     """
     from sqlalchemy import func, case
-    
+
     # Calculate real metrics from database
     total_tickers = db.query(func.count(func.distinct(MarketData.ticker))).scalar() or 0
-    
+
     if total_tickers == 0:
         # Fallback if no data
         return {
@@ -40,7 +40,7 @@ async def get_market_summary(db: Session = Depends(get_db)) -> dict:
             "total_tickers": 0,
             "data_source": "No market data available"
         }
-    
+
     # Get latest price for each ticker to determine advancers/decliners
     # This is a simplified calculation; production would use real-time API
     latest_data = db.query(
@@ -51,16 +51,16 @@ async def get_market_summary(db: Session = Depends(get_db)) -> dict:
         MarketData.ticker,
         MarketData.timestamp.desc()
     ).limit(total_tickers * 2).all()
-    
+
     ticker_changes = {}
     for ticker, close, open_price in latest_data:
         if ticker not in ticker_changes:
             change = ((close - open_price) / open_price) if open_price > 0 else 0
             ticker_changes[ticker] = change
-    
+
     advancers = sum(1 for change in ticker_changes.values() if change > 0)
     decliners = sum(1 for change in ticker_changes.values() if change < 0)
-    
+
     # Sentiment score based on advancers/decliners ratio
     sentiment_score = advancers / total_tickers if total_tickers > 0 else 0.5
 
@@ -78,7 +78,7 @@ async def get_market_summary(db: Session = Depends(get_db)) -> dict:
 async def get_market_catalysts(db: Session = Depends(get_db)) -> dict:
     """
     Return catalyst ticker feed from database.
-    
+
     In production, integrate with:
     - ClinicalTrials.gov API for trial milestones
     - FDA calendar for PDUFA dates
@@ -87,23 +87,23 @@ async def get_market_catalysts(db: Session = Depends(get_db)) -> dict:
     """
     from datetime import datetime, timedelta
     from ..database import Catalyst
-    
+
     # Fetch upcoming catalysts from database
     upcoming = db.query(Catalyst).filter(
         Catalyst.event_date >= datetime.now(),
         Catalyst.event_date <= datetime.now() + timedelta(days=90)
     ).order_by(Catalyst.event_date.asc()).limit(10).all()
-    
+
     if not upcoming:
         return {"items": [], "data_source": "database (no upcoming catalysts)"}
-    
+
     items = []
     for catalyst in upcoming:
         # Determine impact from probability and description
         impact = "positive" if catalyst.probability and catalyst.probability > 0.7 else "watch"
         if "negative" in (catalyst.description or "").lower() or "risk" in (catalyst.description or "").lower():
             impact = "negative"
-        
+
         items.append({
             "symbol": catalyst.company.split()[0][:4].upper() if catalyst.company else "N/A",  # Simple ticker extraction
             "event": catalyst.title or catalyst.event_type,

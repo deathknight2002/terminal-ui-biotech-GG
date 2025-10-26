@@ -30,11 +30,11 @@ import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
 import { PriceTargetsPage } from './pages/financials/PriceTargetsPage';
 import { LoECliffPage } from './pages/financials/LoECliffPage';
-import { 
-  ConsensusVsHousePage, 
-  DCFMultiplesPage, 
-  ModelAuditPage, 
-  ReportsPage 
+import {
+  ConsensusVsHousePage,
+  DCFMultiplesPage,
+  ModelAuditPage,
+  ReportsPage
 } from './pages/financials/FinancialsPages';
 
 // Import layout components

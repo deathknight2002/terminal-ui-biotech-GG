@@ -66,7 +66,7 @@ poetry install && poetry run pytest
 ## File Locations
 
 - 📄 **Full Analysis**: `CONFLICT_RESOLUTION_SUMMARY.md`
-- 💬 **PR Comments**: `PR_COMMENT_TEMPLATES.md`  
+- 💬 **PR Comments**: `PR_COMMENT_TEMPLATES.md`
 - 🔧 **Push Script**: `push_conflict_branches.sh`
 - 📖 **Maintainer Guide**: `MAINTAINER_INSTRUCTIONS.md`
 - ⚡ **This File**: `CONFLICT_QUICK_REF.md`
@@ -96,7 +96,7 @@ poetry install && poetry run pytest
 
 ---
 
-**Last Updated**: October 14, 2025  
-**Resolution Strategy**: Strategy A  
-**PRs Analyzed**: 6 (72-77)  
+**Last Updated**: October 14, 2025
+**Resolution Strategy**: Strategy A
+**PRs Analyzed**: 6 (72-77)
 **Conflicts Found**: 1 PR (72) with 18 files

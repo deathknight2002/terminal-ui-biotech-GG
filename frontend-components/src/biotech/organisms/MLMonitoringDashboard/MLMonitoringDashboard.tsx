@@ -102,8 +102,8 @@ export const MLMonitoringDashboard: React.FC<MLMonitoringDashboardProps> = ({
     }
   };
 
-  const filteredAlerts: DriftAlert[] = selectedModel === 'all' 
-    ? alerts 
+  const filteredAlerts: DriftAlert[] = selectedModel === 'all'
+    ? alerts
     : alerts.filter(a => a.model_name === selectedModel);
 
   const selectedMetrics: ModelMetrics[] = selectedModel === 'all'
@@ -123,10 +123,10 @@ export const MLMonitoringDashboard: React.FC<MLMonitoringDashboardProps> = ({
             </span>
           </div>
         </div>
-        
+
         <div className="model-selector">
-          <select 
-            value={selectedModel} 
+          <select
+            value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
             className="model-select"
           >
@@ -144,29 +144,29 @@ export const MLMonitoringDashboard: React.FC<MLMonitoringDashboardProps> = ({
           selectedMetrics.map((metric) => (
             <div key={metric.model_name} className="metric-card">
               <h3 className="metric-card-title">{metric.model_name.toUpperCase()}</h3>
-              
+
               <div className="metric-stats">
                 <div className="metric-stat">
                   <span className="metric-label">ACCURACY</span>
                   <span className="metric-value">{(metric.accuracy * 100).toFixed(1)}%</span>
                 </div>
-                
+
                 <div className="metric-stat">
                   <span className="metric-label">PRECISION</span>
                   <span className="metric-value">{(metric.precision * 100).toFixed(1)}%</span>
                 </div>
-                
+
                 <div className="metric-stat">
                   <span className="metric-label">RECALL</span>
                   <span className="metric-value">{(metric.recall * 100).toFixed(1)}%</span>
                 </div>
-                
+
                 <div className="metric-stat">
                   <span className="metric-label">F1 SCORE</span>
                   <span className="metric-value">{(metric.f1_score * 100).toFixed(1)}%</span>
                 </div>
               </div>
-              
+
               <div className="metric-footer">
                 <span className="metric-predictions">
                   {metric.prediction_count.toLocaleString()} predictions
@@ -191,12 +191,12 @@ export const MLMonitoringDashboard: React.FC<MLMonitoringDashboardProps> = ({
           DRIFT ALERTS
           <span className="alert-count">{filteredAlerts.length}</span>
         </h3>
-        
+
         <div className="alerts-list">
           {filteredAlerts.length > 0 ? (
             filteredAlerts.map((alert, index) => (
-              <div 
-                key={`${alert.timestamp}-${index}`} 
+              <div
+                key={`${alert.timestamp}-${index}`}
                 className="alert-item"
                 style={{ borderLeftColor: getSeverityColor(alert.severity) }}
               >
@@ -212,13 +212,13 @@ export const MLMonitoringDashboard: React.FC<MLMonitoringDashboardProps> = ({
                     {new Date(alert.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
-                
+
                 <div className="alert-message">{alert.message}</div>
-                
+
                 <div className="alert-details">
                   <span className="alert-metric">{alert.metric_name}</span>
                   <span className="alert-values">
-                    Current: {alert.current_value.toFixed(3)} | 
+                    Current: {alert.current_value.toFixed(3)} |
                     Threshold: {alert.threshold.toFixed(3)}
                   </span>
                 </div>

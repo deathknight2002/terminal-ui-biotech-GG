@@ -300,7 +300,7 @@ import { useNavigate } from 'react-router-dom';
 
 function CompanyLink({ ticker }: { ticker: string }) {
   const navigate = useNavigate();
-  
+
   return (
     <button onClick={() => navigate(`/companies/${ticker}`)}>
       View {ticker} Profile

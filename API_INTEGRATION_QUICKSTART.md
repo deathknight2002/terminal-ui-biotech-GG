@@ -5,7 +5,7 @@
 This integration brings institutional-grade pharmaceutical intelligence to the terminal by connecting to three powerful public APIs:
 
 - **OpenFDA** - FDA approvals, adverse events, recalls
-- **ClinicalTrials.gov** - Clinical trial registry and results  
+- **ClinicalTrials.gov** - Clinical trial registry and results
 - **PubMed** - Scientific literature and research trends
 
 ## Features
@@ -209,10 +209,10 @@ class MyProvider(Provider):
     async def fetch_data(self, **kwargs):
         # Implement rate limiting
         await self._rate_limit()
-        
+
         # Make API request
         result = await self._make_request(...)
-        
+
         # Transform and return
         return transformed_data
 ```

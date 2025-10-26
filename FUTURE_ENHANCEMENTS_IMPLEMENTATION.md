@@ -14,7 +14,7 @@ This PR successfully implements **all 5 future enhancements** listed in the ADVA
 
 **New Endpoints:**
 1. `POST /api/v1/ml/sentiment/finbert` - Financial BERT sentiment analysis
-2. `POST /api/v1/ml/sentiment/biobert` - Biomedical BERT sentiment analysis  
+2. `POST /api/v1/ml/sentiment/biobert` - Biomedical BERT sentiment analysis
 3. `POST /api/v1/ml/sentiment/ensemble` - Ensemble model combining all analyzers
 4. `GET /api/v1/ml/sentiment/models` - List available models with metadata
 
@@ -161,7 +161,7 @@ interface ModelAnalyticsDashboardProps {
   - Input validation
   - Error handling
   - Model availability checks
-  
+
 - ✅ **ONNX Export**: 11 tests
   - Initialization
   - Export pipeline
@@ -257,7 +257,7 @@ kubectl apply -f infrastructure/kubernetes/
 
 ### 4. Using UI Components
 ```tsx
-import { ABTestingDashboard, ModelAnalyticsDashboard } 
+import { ABTestingDashboard, ModelAnalyticsDashboard }
   from '@biotech-terminal/frontend-components/biotech';
 
 <ModelAnalyticsDashboard modelNames={['finbert', 'biobert']} />

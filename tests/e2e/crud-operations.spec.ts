@@ -1,6 +1,6 @@
 /**
  * Evidence Graph API E2E Tests
- * 
+ *
  * Tests CRUD operations and SQLite storage functionality for evidence graph.
  */
 
@@ -8,14 +8,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Evidence Graph - CRUD Operations', () => {
   const API_BASE = 'http://localhost:8000/api/v1/evidence-graph';
-  
+
   // Unique test IDs to avoid conflicts
   const testNodeId = `test-node-${Date.now()}`;
   const testNode2Id = `test-node-2-${Date.now()}`;
 
   test('should retrieve all nodes', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/nodes`);
-    
+
     expect(response.ok()).toBeTruthy();
     const nodes = await response.json();
     expect(Array.isArray(nodes)).toBeTruthy();
@@ -38,10 +38,10 @@ test.describe('Evidence Graph - CRUD Operations', () => {
       data: newNode,
       failOnStatusCode: false
     });
-    
+
     // Should succeed (201) or fail with auth error (401)
     expect([200, 201, 401]).toContain(response.status());
-    
+
     if (response.ok()) {
       const createdNode = await response.json();
       expect(createdNode.id).toBe(testNodeId);
@@ -66,7 +66,7 @@ test.describe('Evidence Graph - CRUD Operations', () => {
     const response = await page.request.get(`${API_BASE}/nodes/${testNode2Id}`, {
       failOnStatusCode: false
     });
-    
+
     if (response.ok()) {
       const node = await response.json();
       expect(node.id).toBe(testNode2Id);
@@ -76,7 +76,7 @@ test.describe('Evidence Graph - CRUD Operations', () => {
 
   test('should update an existing node', async ({ page }) => {
     const updateNodeId = `test-update-${Date.now()}`;
-    
+
     // Create node
     await page.request.post(`${API_BASE}/nodes`, {
       data: {
@@ -98,10 +98,10 @@ test.describe('Evidence Graph - CRUD Operations', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // Should succeed (200) or fail with auth error (401)
     expect([200, 401, 404]).toContain(response.status());
-    
+
     if (response.ok()) {
       const updatedNode = await response.json();
       expect(updatedNode.company).toBe('Updated Company');
@@ -111,10 +111,10 @@ test.describe('Evidence Graph - CRUD Operations', () => {
 
   test('should filter nodes by type', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/nodes?type=thesis`);
-    
+
     expect(response.ok()).toBeTruthy();
     const nodes = await response.json();
-    
+
     // All returned nodes should be of type 'thesis'
     for (const node of nodes) {
       expect(node.type).toBe('thesis');
@@ -123,10 +123,10 @@ test.describe('Evidence Graph - CRUD Operations', () => {
 
   test('should filter nodes by company', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/nodes?company=Test`);
-    
+
     expect(response.ok()).toBeTruthy();
     const nodes = await response.json();
-    
+
     // All returned nodes should have 'Test' in company name
     for (const node of nodes) {
       expect(node.company?.toLowerCase()).toContain('test');
@@ -139,13 +139,13 @@ test.describe('Evidence Graph - CRUD Operations', () => {
     expect(response1.ok()).toBeTruthy();
     const page1 = await response1.json();
     expect(page1.length).toBeLessThanOrEqual(5);
-    
+
     // Get second page
     const response2 = await page.request.get(`${API_BASE}/nodes?limit=5&offset=5`);
     expect(response2.ok()).toBeTruthy();
     const page2 = await response2.json();
     expect(page2.length).toBeLessThanOrEqual(5);
-    
+
     // Pages should be different (if there are enough nodes)
     if (page1.length === 5 && page2.length > 0) {
       expect(page1[0].id).not.toBe(page2[0].id);
@@ -154,7 +154,7 @@ test.describe('Evidence Graph - CRUD Operations', () => {
 
   test('should delete a node', async ({ page }) => {
     const deleteNodeId = `test-delete-${Date.now()}`;
-    
+
     // Create node
     await page.request.post(`${API_BASE}/nodes`, {
       data: {
@@ -169,10 +169,10 @@ test.describe('Evidence Graph - CRUD Operations', () => {
     const response = await page.request.delete(`${API_BASE}/nodes/${deleteNodeId}`, {
       failOnStatusCode: false
     });
-    
+
     // Should succeed (200/204) or fail with auth error (401)
     expect([200, 204, 401, 404]).toContain(response.status());
-    
+
     if (response.status() === 200 || response.status() === 204) {
       // Verify deletion - node should not exist
       const getResponse = await page.request.get(`${API_BASE}/nodes/${deleteNodeId}`, {
@@ -186,7 +186,7 @@ test.describe('Evidence Graph - CRUD Operations', () => {
     const response = await page.request.get(`${API_BASE}/nodes/non-existent-node-id-99999`, {
       failOnStatusCode: false
     });
-    
+
     expect(response.status()).toBe(404);
   });
 });
@@ -196,7 +196,7 @@ test.describe('Evidence Graph - Edges', () => {
 
   test('should retrieve all edges', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/edges`);
-    
+
     expect(response.ok()).toBeTruthy();
     const edges = await response.json();
     expect(Array.isArray(edges)).toBeTruthy();
@@ -205,7 +205,7 @@ test.describe('Evidence Graph - Edges', () => {
   test('should create an edge between nodes', async ({ page }) => {
     const fromId = `edge-from-${Date.now()}`;
     const toId = `edge-to-${Date.now()}`;
-    
+
     // Create two nodes
     await page.request.post(`${API_BASE}/nodes`, {
       data: {
@@ -215,7 +215,7 @@ test.describe('Evidence Graph - Edges', () => {
       },
       failOnStatusCode: false
     });
-    
+
     await page.request.post(`${API_BASE}/nodes`, {
       data: {
         id: toId,
@@ -236,10 +236,10 @@ test.describe('Evidence Graph - Edges', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // Should succeed (201) or fail with auth error (401)
     expect([200, 201, 401]).toContain(response.status());
-    
+
     if (response.ok()) {
       const createdEdge = await response.json();
       expect(createdEdge.from_id).toBe(fromId);
@@ -250,10 +250,10 @@ test.describe('Evidence Graph - Edges', () => {
 
   test('should filter edges by relation type', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/edges?relation=supports`);
-    
+
     expect(response.ok()).toBeTruthy();
     const edges = await response.json();
-    
+
     // All returned edges should have 'supports' relation
     for (const edge of edges) {
       expect(edge.relation).toBe('supports');
@@ -262,12 +262,12 @@ test.describe('Evidence Graph - Edges', () => {
 
   test('should filter edges by from_id', async ({ page }) => {
     const testFromId = 'test-filter-from';
-    
+
     const response = await page.request.get(`${API_BASE}/edges?from_id=${testFromId}`);
-    
+
     expect(response.ok()).toBeTruthy();
     const edges = await response.json();
-    
+
     // All returned edges should have the specified from_id
     for (const edge of edges) {
       expect(edge.from_id).toBe(testFromId);
@@ -280,7 +280,7 @@ test.describe('Evidence Graph - Storage Backend', () => {
 
   test('should persist data across requests (testing storage)', async ({ page }) => {
     const persistNodeId = `persist-test-${Date.now()}`;
-    
+
     // Create node
     const createResponse = await page.request.post(`${API_BASE}/nodes`, {
       data: {
@@ -291,7 +291,7 @@ test.describe('Evidence Graph - Storage Backend', () => {
       },
       failOnStatusCode: false
     });
-    
+
     if (!createResponse.ok()) {
       // If creation failed (e.g., auth required), skip the rest
       return;
@@ -302,7 +302,7 @@ test.describe('Evidence Graph - Storage Backend', () => {
 
     // Retrieve node in a separate request
     const getResponse = await page.request.get(`${API_BASE}/nodes/${persistNodeId}`);
-    
+
     expect(getResponse.ok()).toBeTruthy();
     const retrievedNode = await getResponse.json();
     expect(retrievedNode.id).toBe(persistNodeId);
@@ -311,7 +311,7 @@ test.describe('Evidence Graph - Storage Backend', () => {
 
   test('should maintain data integrity with concurrent requests', async ({ page }) => {
     const concurrentNodeId = `concurrent-${Date.now()}`;
-    
+
     // Create initial node
     await page.request.post(`${API_BASE}/nodes`, {
       data: {
@@ -345,7 +345,7 @@ test.describe('Evidence Graph - Storage Backend', () => {
     const response = await page.request.get(`${API_BASE}/nodes/${concurrentNodeId}`, {
       failOnStatusCode: false
     });
-    
+
     if (response.ok()) {
       const node = await response.json();
       // Node should have one of the update values
@@ -356,11 +356,11 @@ test.describe('Evidence Graph - Storage Backend', () => {
   test('should support both SQLite and JSON storage modes', async ({ page }) => {
     // This test verifies that the API works regardless of storage backend
     const response = await page.request.get(`${API_BASE}/nodes`);
-    
+
     expect(response.ok()).toBeTruthy();
     const nodes = await response.json();
     expect(Array.isArray(nodes)).toBeTruthy();
-    
+
     // Response structure should be the same regardless of backend
     if (nodes.length > 0) {
       const node = nodes[0];
@@ -375,7 +375,7 @@ test.describe('Evidence Graph - ETag and Caching', () => {
 
   test('should return ETag header for nodes endpoint', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/nodes`);
-    
+
     expect(response.ok()).toBeTruthy();
     const headers = response.headers();
     expect(headers['etag']).toBeDefined();
@@ -385,7 +385,7 @@ test.describe('Evidence Graph - ETag and Caching', () => {
     // First request
     const response1 = await page.request.get(`${API_BASE}/nodes`);
     const etag = response1.headers()['etag'];
-    
+
     if (!etag) {
       // Skip test if ETag is not supported
       return;
@@ -398,10 +398,10 @@ test.describe('Evidence Graph - ETag and Caching', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // Should return 304 if data hasn't changed
     expect([200, 304]).toContain(response2.status());
-    
+
     if (response2.status() === 304) {
       // 304 response should have minimal body
       const body = await response2.text();
@@ -411,16 +411,16 @@ test.describe('Evidence Graph - ETag and Caching', () => {
 
   test('should support HEAD requests for cache validation', async ({ page }) => {
     const response = await page.request.head(`${API_BASE}/nodes`);
-    
+
     expect(response.ok()).toBeTruthy();
     const headers = response.headers();
-    
+
     // Should include ETag
     expect(headers['etag']).toBeDefined();
-    
+
     // Should include Cache-Control
     expect(headers['cache-control']).toBeDefined();
-    
+
     // Should include Content-Type
     expect(headers['content-type']).toBeDefined();
   });

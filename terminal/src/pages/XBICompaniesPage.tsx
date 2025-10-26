@@ -24,17 +24,17 @@ interface XBIResponse {
 
 export const XBICompaniesPage: React.FC = () => {
   const navigate = useNavigate();
-  
+
   const [companies, setCompanies] = useState<XBICompany[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Filter states
   const [searchTerm, setSearchTerm] = useState('');
   const [companyTypeFilter, setCompanyTypeFilter] = useState<string>('');
   const [minMarketCap, setMinMarketCap] = useState<string>('');
   const [maxMarketCap, setMaxMarketCap] = useState<string>('');
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
@@ -62,7 +62,7 @@ export const XBICompaniesPage: React.FC = () => {
 
       const url = `${API_ENDPOINTS.COMPANIES.XBI_LIST}/constituents?${params}`;
       const data = await apiFetch<XBIResponse>(url);
-      
+
       setCompanies(data.constituents);
       setTotalResults(data.total);
     } catch (err) {
@@ -225,9 +225,9 @@ export const XBICompaniesPage: React.FC = () => {
                     <div className="company-ticker">{company.ticker}</div>
                     <div className="company-type">{company.company_type}</div>
                   </div>
-                  
+
                   <div className="company-name">{company.name}</div>
-                  
+
                   <div className="company-details">
                     <div className="detail-row">
                       <span className="detail-label">Market Cap:</span>
@@ -235,14 +235,14 @@ export const XBICompaniesPage: React.FC = () => {
                         {company.market_cap ? formatMarketCap(company.market_cap) : 'N/A'}
                       </span>
                     </div>
-                    
+
                     {company.headquarters && (
                       <div className="detail-row">
                         <span className="detail-label">HQ:</span>
                         <span className="detail-value">{company.headquarters}</span>
                       </div>
                     )}
-                    
+
                     {company.therapeutic_areas.length > 0 && (
                       <div className="therapeutic-areas">
                         {company.therapeutic_areas.slice(0, 3).map((area, idx) => (
@@ -277,11 +277,11 @@ export const XBICompaniesPage: React.FC = () => {
               >
                 ← PREVIOUS
               </button>
-              
+
               <span className="pagination-info">
                 Page {currentPage} of {totalPages}
               </span>
-              
+
               <button
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}

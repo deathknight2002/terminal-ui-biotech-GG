@@ -31,14 +31,14 @@ python -m bt_platform.cli.nextgen_ingest import prices.csv --ticker BLUE
 
 ## Classic Features
 
-✅ **Plugin Architecture** - Strict interface (discover → fetch → parse → normalize → link → upsert)  
-✅ **High Performance** - HTTP/2, connection pooling, async I/O  
-✅ **Rate Limiting** - Token bucket with per-host limits and jitter  
-✅ **Deduplication** - SimHash fingerprinting, MinHash LSH clustering  
-✅ **Offline Testing** - Fixture system with golden snapshots  
-✅ **Manual Refresh** - No background jobs, full control  
-✅ **Observability** - Structured logs, metrics, stats API  
-✅ **Legal Compliance** - robots.txt, User-Agent, TOS review checklist  
+✅ **Plugin Architecture** - Strict interface (discover → fetch → parse → normalize → link → upsert)
+✅ **High Performance** - HTTP/2, connection pooling, async I/O
+✅ **Rate Limiting** - Token bucket with per-host limits and jitter
+✅ **Deduplication** - SimHash fingerprinting, MinHash LSH clustering
+✅ **Offline Testing** - Fixture system with golden snapshots
+✅ **Manual Refresh** - No background jobs, full control
+✅ **Observability** - Structured logs, metrics, stats API
+✅ **Legal Compliance** - robots.txt, User-Agent, TOS review checklist
 
 ## Quick Start
 
@@ -109,24 +109,24 @@ make scrape-url URL=https://...
 ## Available Sources
 
 ### News & Press
-- **fierce** / **fiercebiotech** / **fiercepharma** - FierceBiotech/FiercePharma  
-- **businesswire** - Business Wire press releases  
-- **globenewswire** - GlobeNewswire press releases  
-- **prnewswire** - PR Newswire press releases  
+- **fierce** / **fiercebiotech** / **fiercepharma** - FierceBiotech/FiercePharma
+- **businesswire** - Business Wire press releases
+- **globenewswire** - GlobeNewswire press releases
+- **prnewswire** - PR Newswire press releases
 
 ### Regulators
-- **fda** - FDA news and approvals  
-- **ema** - EMA (European Medicines Agency)  
-- **mhra** - MHRA (UK)  
+- **fda** - FDA news and approvals
+- **ema** - EMA (European Medicines Agency)
+- **mhra** - MHRA (UK)
 
 ### Registries
-- **clinicaltrials** - ClinicalTrials.gov  
+- **clinicaltrials** - ClinicalTrials.gov
 
 ### Exchanges
-- **edgar** - SEC EDGAR filings  
+- **edgar** - SEC EDGAR filings
 
 ### Company Sites
-- **company:<slug>** - Company-specific IR pages (coming soon)  
+- **company:<slug>** - Company-specific IR pages (coming soon)
 
 ## Architecture
 

@@ -1,8 +1,8 @@
 # ADR 001: Manual Refresh Only for Evidence Graph
 
-**Status:** Accepted  
-**Date:** 2025-01-24  
-**Deciders:** Engineering Team  
+**Status:** Accepted
+**Date:** 2025-01-24
+**Deciders:** Engineering Team
 **Tags:** architecture, ux, performance
 
 ## Context and Problem Statement
@@ -105,21 +105,21 @@ useEffect(() => {
 ```typescript
 test('manual refresh only - no background polling', async ({ page }) => {
   await page.goto('/evidence-graph');
-  
+
   // Verify REFRESH button exists
   await expect(page.getByRole('button', { name: 'REFRESH' })).toBeVisible();
-  
+
   // Capture network requests
   const requests = [];
   page.on('request', req => requests.push(req.url()));
-  
+
   // Wait 10 seconds
   await page.waitForTimeout(10000);
-  
+
   // Assert: No background API calls (except initial load)
   const apiCalls = requests.filter(url => url.includes('/api/'));
   expect(apiCalls.length).toBeLessThanOrEqual(2);  // nodes + edges on load
-  
+
   // Assert: No WebSocket connections
   const wsCalls = requests.filter(url => url.startsWith('ws://') || url.startsWith('wss://'));
   expect(wsCalls.length).toBe(0);
@@ -132,7 +132,7 @@ def test_no_polling_endpoints():
     """Verify no polling-specific endpoints exist."""
     response = client.get("/api/v1/evidence-graph/subscribe")
     assert response.status_code == 404  # Should not exist
-    
+
     response = client.get("/api/v1/evidence-graph/stream")
     assert response.status_code == 404  # Should not exist
 ```

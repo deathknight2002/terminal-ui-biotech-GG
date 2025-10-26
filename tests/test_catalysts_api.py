@@ -131,61 +131,61 @@ def test_trial(db_session, test_program):
 
 class TestQuarterBucketing:
     """Test quarter bucketing functionality."""
-    
+
     def test_parse_quarter_q1_2025(self):
         """Test parsing Q1 2025."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         start, end = parse_quarter("Q1 2025")
         assert start == date(2025, 1, 1)
         assert end == date(2025, 3, 31)
-    
+
     def test_parse_quarter_q2_2025(self):
         """Test parsing Q2 2025."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         start, end = parse_quarter("Q2 2025")
         assert start == date(2025, 4, 1)
         assert end == date(2025, 6, 30)
-    
+
     def test_parse_quarter_q3_2025(self):
         """Test parsing Q3 2025."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         start, end = parse_quarter("Q3 2025")
         assert start == date(2025, 7, 1)
         assert end == date(2025, 9, 30)
-    
+
     def test_parse_quarter_q4_2025(self):
         """Test parsing Q4 2025."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         start, end = parse_quarter("Q4 2025")
         assert start == date(2025, 10, 1)
         assert end == date(2025, 12, 31)
-    
+
     def test_parse_quarter_alternate_format(self):
         """Test parsing alternate format 2025-Q1."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         start, end = parse_quarter("2025-Q1")
         assert start == date(2025, 1, 1)
         assert end == date(2025, 3, 31)
-    
+
     def test_parse_quarter_invalid_format(self):
         """Test parsing invalid quarter format."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         with pytest.raises(ValueError):
             parse_quarter("Invalid")
-    
+
     def test_parse_quarter_invalid_quarter_number(self):
         """Test parsing invalid quarter number."""
         from bt_platform.core.endpoints.catalysts_v2 import parse_quarter
-        
+
         with pytest.raises(ValueError):
             parse_quarter("Q5 2025")
-    
+
     def test_filter_by_quarter(self, db_session, test_company, test_program):
         """Test filtering catalysts by quarter."""
         # Create catalysts in different quarters
@@ -200,7 +200,7 @@ class TestQuarterBucketing:
             date_confidence="DATE_WINDOW",
             status="UPCOMING"
         )
-        
+
         q2_catalyst = CatalystEvent(
             company_id=test_company.id,
             program_id=test_program.id,
@@ -212,17 +212,17 @@ class TestQuarterBucketing:
             date_confidence="EXACT_DATE",
             status="UPCOMING"
         )
-        
+
         db_session.add_all([q1_catalyst, q2_catalyst])
         db_session.commit()
-        
+
         # Filter by Q1 2025
         response = client.get("/api/v1/catalysts/?quarter=Q1%202025")
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert data["data"][0]["title"] == "Q1 2025 Data Readout"
-        
+
         # Filter by Q2 2025
         response = client.get("/api/v1/catalysts/?quarter=Q2%202025")
         assert response.status_code == 200
@@ -233,7 +233,7 @@ class TestQuarterBucketing:
 
 class TestConfidenceHandling:
     """Test date confidence filtering and handling."""
-    
+
     def test_filter_by_exact_date_confidence(self, db_session, test_company, test_program):
         """Test filtering by EXACT_DATE confidence."""
         exact_catalyst = CatalystEvent(
@@ -245,7 +245,7 @@ class TestConfidenceHandling:
             date_confidence="EXACT_DATE",
             status="UPCOMING"
         )
-        
+
         vague_catalyst = CatalystEvent(
             company_id=test_company.id,
             program_id=test_program.id,
@@ -256,17 +256,17 @@ class TestConfidenceHandling:
             date_confidence="VAGUE",
             status="UPCOMING"
         )
-        
+
         db_session.add_all([exact_catalyst, vague_catalyst])
         db_session.commit()
-        
+
         # Filter by EXACT_DATE
         response = client.get("/api/v1/catalysts/?confidence=EXACT_DATE")
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert data["data"][0]["date_confidence"] == "EXACT_DATE"
-    
+
     def test_filter_by_quarter_confidence(self, db_session, test_company, test_program):
         """Test filtering by QUARTER confidence."""
         quarter_catalyst = CatalystEvent(
@@ -279,10 +279,10 @@ class TestConfidenceHandling:
             date_confidence="QUARTER",
             status="UPCOMING"
         )
-        
+
         db_session.add(quarter_catalyst)
         db_session.commit()
-        
+
         response = client.get("/api/v1/catalysts/?confidence=QUARTER")
         assert response.status_code == 200
         data = response.json()
@@ -292,7 +292,7 @@ class TestConfidenceHandling:
 
 class TestMultiFacetFilters:
     """Test multi-facet filtering capabilities."""
-    
+
     def test_filter_by_company_and_event_type(self, db_session, test_company, test_program):
         """Test filtering by company and event type."""
         catalyst = CatalystEvent(
@@ -303,10 +303,10 @@ class TestMultiFacetFilters:
             expected_date=date(2025, 3, 15),
             status="UPCOMING"
         )
-        
+
         db_session.add(catalyst)
         db_session.commit()
-        
+
         response = client.get(
             f"/api/v1/catalysts/?company={test_company.name}&event_type=TOPLINE_READOUT"
         )
@@ -314,7 +314,7 @@ class TestMultiFacetFilters:
         data = response.json()
         assert data["total"] == 1
         assert data["data"][0]["event_type"] == "TOPLINE_READOUT"
-    
+
     def test_filter_by_phase_and_pos_range(self, db_session, test_company, test_program, test_trial):
         """Test filtering by phase and probability of success range."""
         catalyst = CatalystEvent(
@@ -328,10 +328,10 @@ class TestMultiFacetFilters:
             expected_date=date(2025, 6, 30),
             status="UPCOMING"
         )
-        
+
         db_session.add(catalyst)
         db_session.commit()
-        
+
         # Filter by phase and PoS range
         response = client.get(
             "/api/v1/catalysts/?phase=Phase%20III&pos_min=0.5&pos_max=0.8"
@@ -341,7 +341,7 @@ class TestMultiFacetFilters:
         assert data["total"] == 1
         assert data["data"][0]["trial_phase"] == "Phase III"
         assert 0.5 <= data["data"][0]["prob_of_success"] <= 0.8
-    
+
     def test_filter_by_regulatory_designations(self, db_session, test_company, test_program):
         """Test filtering by orphan and breakthrough designations."""
         orphan_catalyst = CatalystEvent(
@@ -354,7 +354,7 @@ class TestMultiFacetFilters:
             expected_date=date(2025, 8, 15),
             status="UPCOMING"
         )
-        
+
         breakthrough_catalyst = CatalystEvent(
             company_id=test_company.id,
             program_id=test_program.id,
@@ -365,24 +365,24 @@ class TestMultiFacetFilters:
             expected_date=date(2025, 9, 15),
             status="UPCOMING"
         )
-        
+
         db_session.add_all([orphan_catalyst, breakthrough_catalyst])
         db_session.commit()
-        
+
         # Filter by orphan
         response = client.get("/api/v1/catalysts/?orphan=true")
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert data["data"][0]["orphan"] is True
-        
+
         # Filter by breakthrough
         response = client.get("/api/v1/catalysts/?breakthrough=true")
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert data["data"][0]["breakthrough"] is True
-    
+
     def test_filter_by_target_gene_and_indication(self, db_session, test_company, test_program):
         """Test filtering by target gene and indication."""
         catalyst = CatalystEvent(
@@ -395,24 +395,24 @@ class TestMultiFacetFilters:
             expected_date=date(2025, 4, 15),
             status="UPCOMING"
         )
-        
+
         db_session.add(catalyst)
         db_session.commit()
-        
+
         # Filter by target gene
         response = client.get("/api/v1/catalysts/?target_gene=EGFR")
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert data["data"][0]["target_gene"] == "EGFR"
-        
+
         # Filter by indication
         response = client.get("/api/v1/catalysts/?indication=lung%20cancer")
         assert response.status_code == 200
         data = response.json()
         assert data["total"] == 1
         assert "lung cancer" in data["data"][0]["indication"].lower()
-    
+
     def test_combined_multi_facet_filter(self, db_session, test_company, test_program, test_trial):
         """Test complex multi-facet filter combination."""
         catalyst = CatalystEvent(
@@ -433,10 +433,10 @@ class TestMultiFacetFilters:
             date_confidence="DATE_WINDOW",
             status="UPCOMING"
         )
-        
+
         db_session.add(catalyst)
         db_session.commit()
-        
+
         # Complex filter
         response = client.get(
             "/api/v1/catalysts/?"
@@ -459,7 +459,7 @@ class TestMultiFacetFilters:
 
 class TestProvenanceAttachment:
     """Test provenance attachment and tracking."""
-    
+
     def test_create_catalyst_with_provenance(self, db_session, test_company):
         """Test creating catalyst with source provenance."""
         payload = {
@@ -483,22 +483,22 @@ class TestProvenanceAttachment:
                 }
             ]
         }
-        
+
         response = client.post("/api/v1/catalysts/", json=payload)
         assert response.status_code == 201
         data = response.json()
-        
+
         # Check catalyst was created
         assert data["title"] == "PDUFA Date Announcement"
         assert data["event_type"] == "PDUFA_DATE"
-        
+
         # Check provenance was attached
         assert len(data["evidence"]) == 1
         evidence = data["evidence"][0]
         assert evidence["source_type"] == "SEC_EDGAR"
         assert evidence["parser_version"] == "edgar_8k_v1.0.0"
         assert "FDA has set a PDUFA target action date" in evidence["verbatim_excerpt"]
-    
+
     def test_create_catalyst_without_provenance_fails(self, db_session, test_company):
         """Test that creating catalyst without provenance fails."""
         payload = {
@@ -509,10 +509,10 @@ class TestProvenanceAttachment:
             "status": "UPCOMING",
             "source_provenance": []  # Empty provenance
         }
-        
+
         response = client.post("/api/v1/catalysts/", json=payload)
         assert response.status_code == 422  # Validation error
-    
+
     def test_get_catalyst_with_provenance(self, db_session, test_company, test_program):
         """Test retrieving catalyst with all provenance."""
         # Create catalyst
@@ -527,7 +527,7 @@ class TestProvenanceAttachment:
         db_session.add(catalyst)
         db_session.commit()
         db_session.refresh(catalyst)
-        
+
         # Add source provenance
         prov = SourceProvenance(
             source_url="https://clinicaltrials.gov/study/NCT12345678",
@@ -540,7 +540,7 @@ class TestProvenanceAttachment:
         )
         db_session.add(prov)
         db_session.commit()
-        
+
         # Link provenance to catalyst
         link = EntitySourceLink(
             entity_type="CATALYST_EVENT",
@@ -550,19 +550,19 @@ class TestProvenanceAttachment:
         )
         db_session.add(link)
         db_session.commit()
-        
+
         # Retrieve catalyst
         response = client.get(f"/api/v1/catalysts/{catalyst.id}")
         assert response.status_code == 200
         data = response.json()
-        
+
         # Check provenance
         assert len(data["evidence"]) == 1
         evidence = data["evidence"][0]
         assert evidence["source_type"] == "CT.GOV"
         assert evidence["source_url"] == "https://clinicaltrials.gov/study/NCT12345678"
         assert "June 2025" in evidence["verbatim_excerpt"]
-    
+
     def test_update_catalyst_add_provenance(self, db_session, test_company, test_program):
         """Test updating catalyst to add new provenance."""
         # Create catalyst
@@ -578,7 +578,7 @@ class TestProvenanceAttachment:
         db_session.add(catalyst)
         db_session.commit()
         db_session.refresh(catalyst)
-        
+
         # Update with new provenance
         update_payload = {
             "date_confidence": "DATE_WINDOW",
@@ -595,16 +595,16 @@ class TestProvenanceAttachment:
                 }
             ]
         }
-        
+
         response = client.patch(f"/api/v1/catalysts/{catalyst.id}", json=update_payload)
         assert response.status_code == 200
         data = response.json()
-        
+
         # Check updates
         assert data["date_confidence"] == "DATE_WINDOW"
         assert len(data["evidence"]) == 1
         assert data["evidence"][0]["source_type"] == "PRESS_RELEASE"
-    
+
     def test_multiple_provenance_sources(self, db_session, test_company):
         """Test catalyst with multiple provenance sources."""
         payload = {
@@ -641,11 +641,11 @@ class TestProvenanceAttachment:
                 }
             ]
         }
-        
+
         response = client.post("/api/v1/catalysts/", json=payload)
         assert response.status_code == 201
         data = response.json()
-        
+
         # Check all three provenance sources
         assert len(data["evidence"]) == 3
         source_types = {e["source_type"] for e in data["evidence"]}
@@ -654,11 +654,11 @@ class TestProvenanceAttachment:
 
 class TestQualityScoreComputation:
     """Test quality score computation."""
-    
+
     def test_quality_score_computation(self):
         """Test transparent quality score formula."""
         from bt_platform.core.endpoints.catalysts_v2 import compute_quality_score
-        
+
         # Create mock catalyst
         class MockCatalyst:
             def __init__(self):
@@ -669,18 +669,18 @@ class TestQualityScoreComputation:
                 self.orphan = True
                 self.market_depth = 0.8
                 self.complexity_penalty = 0.1
-        
+
         catalyst = MockCatalyst()
         score = compute_quality_score(catalyst)
-        
+
         # Expected: 30 + 18 + ~13 + 10 + 8 + 8 - 0.5 ≈ 86.5
         assert 80 <= score <= 95
         assert 0 <= score <= 100
-    
+
     def test_quality_score_with_minimal_data(self):
         """Test quality score with minimal data."""
         from bt_platform.core.endpoints.catalysts_v2 import compute_quality_score
-        
+
         class MockCatalyst:
             def __init__(self):
                 self.phase_weight = None
@@ -690,17 +690,17 @@ class TestQualityScoreComputation:
                 self.orphan = False
                 self.market_depth = None
                 self.complexity_penalty = None
-        
+
         catalyst = MockCatalyst()
         score = compute_quality_score(catalyst)
-        
+
         # Should be 0 with no data
         assert score == 0
 
 
 class TestPaginationAndOrdering:
     """Test pagination and result ordering."""
-    
+
     def test_pagination(self, db_session, test_company, test_program):
         """Test pagination of results."""
         # Create multiple catalysts
@@ -715,7 +715,7 @@ class TestPaginationAndOrdering:
             )
             db_session.add(catalyst)
         db_session.commit()
-        
+
         # Get first page
         response = client.get("/api/v1/catalysts/?limit=10&offset=0")
         assert response.status_code == 200
@@ -723,7 +723,7 @@ class TestPaginationAndOrdering:
         assert len(data["data"]) == 10
         assert data["total"] == 15
         assert data["page"] == 1
-        
+
         # Get second page
         response = client.get("/api/v1/catalysts/?limit=10&offset=10")
         assert response.status_code == 200
@@ -731,7 +731,7 @@ class TestPaginationAndOrdering:
         assert len(data["data"]) == 5
         assert data["total"] == 15
         assert data["page"] == 2
-    
+
     def test_ordering_by_date(self, db_session, test_company, test_program):
         """Test results are ordered by date."""
         # Create catalysts with different dates
@@ -743,7 +743,7 @@ class TestPaginationAndOrdering:
             expected_date=date(2025, 1, 15),
             status="UPCOMING"
         )
-        
+
         late = CatalystEvent(
             company_id=test_company.id,
             program_id=test_program.id,
@@ -752,15 +752,15 @@ class TestPaginationAndOrdering:
             expected_date=date(2025, 12, 15),
             status="UPCOMING"
         )
-        
+
         db_session.add_all([late, early])  # Add in reverse order
         db_session.commit()
-        
+
         # Query should return in date order
         response = client.get("/api/v1/catalysts/")
         assert response.status_code == 200
         data = response.json()
-        
+
         assert data["data"][0]["title"] == "Early Catalyst"
         assert data["data"][1]["title"] == "Late Catalyst"
 

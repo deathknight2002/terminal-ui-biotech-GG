@@ -39,18 +39,18 @@ export class CircuitBreaker extends EventEmitter {
   private lastSuccessTime?: number;
   private stateChanges: number = 0;
   private nextAttemptTime?: number;
-  
+
   private readonly failureThreshold: number;
   private readonly successThreshold: number;
   private readonly timeout: number;
   private readonly resetTimeout: number;
   private readonly monitoringPeriod: number;
-  
+
   private readonly name: string;
 
   constructor(name: string, config: CircuitBreakerConfig = {}) {
     super();
-    
+
     this.name = name;
     this.failureThreshold = config.failureThreshold || 5;
     this.successThreshold = config.successThreshold || 2;
@@ -133,10 +133,10 @@ export class CircuitBreaker extends EventEmitter {
       }
     }
 
-    this.emit('failure', { 
-      name: this.name, 
-      state: this.state, 
-      failureCount: this.failureCount 
+    this.emit('failure', {
+      name: this.name,
+      state: this.state,
+      failureCount: this.failureCount
     });
   }
 
@@ -247,7 +247,7 @@ export class CircuitBreakerManager {
       const breaker = new CircuitBreaker(name, { ...this.defaultConfig, ...config });
       this.breakers.set(name, breaker);
     }
-    
+
     return this.breakers.get(name)!;
   }
 
@@ -264,11 +264,11 @@ export class CircuitBreakerManager {
    */
   getAllStats(): Map<string, CircuitBreakerStats> {
     const stats = new Map<string, CircuitBreakerStats>();
-    
+
     for (const [name, breaker] of this.breakers.entries()) {
       stats.set(name, breaker.getStats());
     }
-    
+
     return stats;
   }
 

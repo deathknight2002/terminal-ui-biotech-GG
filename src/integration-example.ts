@@ -1,6 +1,6 @@
 /**
  * Integration Example - P0/P1 Infrastructure Demo
- * 
+ *
  * Shows how to use all new components together:
  * - DI Container for service management
  * - CloudEventBus for event-driven architecture
@@ -78,20 +78,20 @@ export async function initializePlatform() {
   container.registerSingleton(ServiceTokens.Health, () => Health);
 
   // Register connectors
-  container.registerSingleton(ServiceTokens.CTGovV2Connector, () => 
+  container.registerSingleton(ServiceTokens.CTGovV2Connector, () =>
     new CTGovV2Connector()
   );
 
-  container.registerSingleton(ServiceTokens.FAERSConnector, () => 
+  container.registerSingleton(ServiceTokens.FAERSConnector, () =>
     new FAERSConnector(config.apiKey)
   );
 
-  container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () => 
+  container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () =>
     new DrugsAtFDAConnector(config.apiKey)
   );
 
   // Register catalyst engine with dependencies
-  container.registerSingleton(ServiceTokens.CatalystEngine, (c) => 
+  container.registerSingleton(ServiceTokens.CatalystEngine, (c) =>
     new CatalystEngine({
       ctgovConnector: c.resolve(ServiceTokens.CTGovV2Connector),
       faersConnector: c.resolve(ServiceTokens.FAERSConnector),
@@ -111,7 +111,7 @@ export async function initializePlatform() {
 
   // Step 5: Subscribe to events
   console.log('📡 Step 5: Setting up event subscriptions...');
-  
+
   // Subscribe to FAERS events
   cloudEventBus.subscribeCloudEvent('biotech.faers.v1', async (event) => {
     const span = Telemetry.startSpan('process-faers-event', {
@@ -165,7 +165,7 @@ export async function initializePlatform() {
  */
 export async function processFAERSData(drugName: string) {
   console.log(`\n🔍 Fetching FAERS data for: ${drugName}`);
-  
+
   const span = Telemetry.startSpan('fetch-faers-data', { drugName });
   const startTime = Date.now();
 
@@ -178,7 +178,7 @@ export async function processFAERSData(drugName: string) {
     Metrics.recordEvent('faers_fetch_success', { drugName, count: events.length });
 
     console.log(`✅ Found ${events.length} adverse events`);
-    
+
     // Publish as CloudEvents (example - in real app this would be from the connector)
     // const cloudEventBus = ... // get from context
     // for (const event of events) {
@@ -210,7 +210,7 @@ export async function processDrugApprovals(drugName: string) {
     const approvals = await connector.getByBrandName(drugName, 5);
 
     console.log(`✅ Found ${approvals.length} approvals`);
-    
+
     for (const approval of approvals) {
       console.log(`  - ${approval.data.brandName} (${approval.data.approvalDate}): ${approval.data.approvalType}`);
     }
@@ -250,7 +250,7 @@ export async function buildCatalystTimeline(drugName: string) {
     // Get timeline
     const now = new Date();
     const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-    
+
     const timeline = engine.getTimeline(
       oneYearAgo.toISOString().split('T')[0],
       now.toISOString().split('T')[0]

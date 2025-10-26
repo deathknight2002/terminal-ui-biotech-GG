@@ -10,7 +10,7 @@ from ml.sentiment.finbert_analyzer import FinBERTAnalyzer, create_finbert_analyz
 def test_finbert_analyzer_initialization():
     """Test FinBERT analyzer initialization."""
     analyzer = FinBERTAnalyzer()
-    
+
     assert analyzer.model_name == "ProsusAI/finbert"
     assert analyzer.device == "cpu"
     assert analyzer.max_length == 512
@@ -24,7 +24,7 @@ def test_finbert_analyzer_custom_params():
         device="cuda",
         max_length=256
     )
-    
+
     assert analyzer.model_name == "custom/finbert"
     assert analyzer.device == "cuda"
     assert analyzer.max_length == 256
@@ -46,13 +46,13 @@ def test_finbert_factory_function():
 def test_finbert_predict_without_transformers(monkeypatch):
     """Test prediction fails gracefully without transformers."""
     analyzer = FinBERTAnalyzer()
-    
+
     # Mock _lazy_load to raise ImportError
     def mock_lazy_load():
         raise ImportError("transformers not installed")
-    
+
     monkeypatch.setattr(analyzer, "_lazy_load", mock_lazy_load)
-    
+
     with pytest.raises(ImportError):
         analyzer.predict(["Test text"])
 
@@ -61,7 +61,7 @@ def test_finbert_repr():
     """Test string representation."""
     analyzer = FinBERTAnalyzer()
     repr_str = repr(analyzer)
-    
+
     assert "FinBERTAnalyzer" in repr_str
     assert "ProsusAI/finbert" in repr_str
     assert "cpu" in repr_str

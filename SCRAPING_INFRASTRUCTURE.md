@@ -169,8 +169,8 @@ import { io } from 'socket.io-client';
 const socket = io('http://localhost:3001');
 
 // Subscribe to scraping updates
-socket.emit('scraping:subscribe', { 
-  channels: ['updates', 'health', 'metrics'] 
+socket.emit('scraping:subscribe', {
+  channels: ['updates', 'health', 'metrics']
 });
 
 // Listen for scraping events

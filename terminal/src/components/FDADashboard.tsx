@@ -1,6 +1,6 @@
 /**
  * FDA Intelligence Dashboard Component
- * 
+ *
  * Displays FDA approvals, adverse events, and recalls in a unified dashboard.
  * Integrates with OpenFDA API endpoints.
  */
@@ -91,7 +91,7 @@ export const FDADashboard: React.FC = () => {
             </thead>
             <tbody>
               {data.recent_approvals.slice(0, 10).map((approval, idx) => (
-                <tr 
+                <tr
                   key={idx}
                   className="border-b border-terminal-border/50 hover:bg-terminal-bg-hover"
                 >
@@ -123,7 +123,7 @@ export const FDADashboard: React.FC = () => {
         <Panel title="TOP ADVERSE EVENT REPORTS" cornerBrackets>
           <div className="p-4 space-y-2">
             {data.top_adverse_events.slice(0, 10).map((event, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="flex justify-between items-center p-2 bg-terminal-bg-hover rounded"
               >
@@ -142,7 +142,7 @@ export const FDADashboard: React.FC = () => {
         <Panel title={`ACTIVE RECALLS (${data.recalls_count})`} cornerBrackets>
           <div className="p-4 space-y-3">
             {data.active_recalls.slice(0, 5).map((recall, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="p-3 bg-terminal-bg-hover rounded border-l-2 border-red-500"
               >
@@ -151,7 +151,7 @@ export const FDADashboard: React.FC = () => {
                     {recall.recall_number}
                   </span>
                   <span className={`text-xs px-2 py-1 rounded font-mono ${
-                    recall.classification === 'Class I' 
+                    recall.classification === 'Class I'
                       ? 'bg-red-500/20 text-red-500'
                       : recall.classification === 'Class II'
                       ? 'bg-yellow-500/20 text-yellow-500'

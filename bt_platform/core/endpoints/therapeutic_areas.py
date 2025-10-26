@@ -124,9 +124,9 @@ def get_area(area: str):
 def compare_radar(areas: List[str] = Query(..., alias="areas")):
     """
     Get therapeutic area comparison data formatted for radar/spider chart.
-    
+
     Example: /areas/compare/radar?areas=DMD&areas=Cardiology
-    
+
     Returns radar chart data with Aurora color mapping.
     """
     missing = [a for a in areas if a not in DB]
@@ -135,7 +135,7 @@ def compare_radar(areas: List[str] = Query(..., alias="areas")):
             status_code=400,
             detail=f"Unknown areas: {', '.join(missing)}"
         )
-    
+
     return {
         "attributes": ATTRS,
         "series": [
@@ -158,18 +158,18 @@ async def get_area_companies(
 ) -> dict:
     """
     Get all companies operating in a therapeutic area with their market metrics.
-    
+
     Note: This endpoint is kept for backward compatibility.
     New implementations should use data/companies.yaml for company data.
     """
     area_id_upper = area_id.upper()
-    
+
     if area_id_upper not in DB:
         raise HTTPException(
             status_code=404,
             detail=f"Therapeutic area '{area_id}' not found"
         )
-    
+
     # Return empty list as this is now handled by YAML files
     return {
         "therapeutic_area": area_id_upper,

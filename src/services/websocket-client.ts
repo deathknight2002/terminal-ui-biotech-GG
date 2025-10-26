@@ -42,7 +42,7 @@ export interface SystemAlert {
   timestamp: number;
 }
 
-export type DataStreamType = 
+export type DataStreamType =
   | 'market_data'
   | 'biotech_update'
   | 'catalyst_alert'
@@ -80,7 +80,7 @@ class WebSocketClient {
       }
 
       this.authToken = authToken || null;
-      
+
       this.socket = io(this.config.url, {
         autoConnect: this.config.autoConnect,
         reconnection: this.config.reconnection,
@@ -182,11 +182,11 @@ class WebSocketClient {
 
   subscribe(type: DataStreamType, handler: (data: any) => void): () => void {
     const subscriptionId = `${type}_${Date.now()}_${Math.random()}`;
-    
+
     if (!this.subscriptions.has(type)) {
       this.subscriptions.set(type, []);
     }
-    
+
     this.subscriptions.get(type)!.push({ type, handler });
 
     // Subscribe to data stream on server
@@ -212,7 +212,7 @@ class WebSocketClient {
   // Subscribe to specific market symbols
   subscribeToMarketData(symbols: string[], handler: (data: MarketDataUpdate) => void): () => void {
     const streams = symbols.map(symbol => `market:${symbol}`);
-    
+
     if (this.socket && this.isConnected) {
       this.socket.emit('subscribe', { streams });
     }
@@ -223,7 +223,7 @@ class WebSocketClient {
   // Subscribe to specific biotech assets
   subscribeToBiotechAssets(assetIds: string[], handler: (data: BiotechUpdate) => void): () => void {
     const streams = assetIds.map(assetId => `biotech:${assetId}`);
-    
+
     if (this.socket && this.isConnected) {
       this.socket.emit('subscribe', { streams });
     }
@@ -234,7 +234,7 @@ class WebSocketClient {
   // Subscribe to catalyst alerts
   subscribeToCatalysts(catalystIds: string[], handler: (data: CatalystAlert) => void): () => void {
     const streams = catalystIds.map(catalystId => `catalysts:${catalystId}`);
-    
+
     if (this.socket && this.isConnected) {
       this.socket.emit('subscribe', { streams });
     }
@@ -245,7 +245,7 @@ class WebSocketClient {
   // Subscribe to financial model updates
   subscribeToFinancialModels(modelIds: string[], handler: (data: FinancialModelUpdate) => void): () => void {
     const streams = modelIds.map(modelId => `models:${modelId}`);
-    
+
     if (this.socket && this.isConnected) {
       this.socket.emit('subscribe', { streams });
     }

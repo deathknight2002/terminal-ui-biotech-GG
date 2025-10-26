@@ -1,13 +1,13 @@
 /**
  * Service Worker - Static Assets Only (Manual Refresh Model)
- * 
+ *
  * This service worker ONLY caches static build assets (app shell).
  * It does NOT:
  * - Intercept API routes
  * - Use Periodic Background Sync
  * - Use Background Fetch
  * - Prefetch dynamic data
- * 
+ *
  * Safari/iOS 26 compatible - no experimental features.
  */
 
@@ -65,7 +65,7 @@ self.addEventListener('fetch', (event) => {
           console.log('[SW] Serving from cache:', request.url);
           return cached;
         }
-        
+
         // Not in cache, fetch from network
         return fetch(request)
           .then((response) => {

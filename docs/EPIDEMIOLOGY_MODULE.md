@@ -13,7 +13,7 @@ Five comprehensive disease models with realistic epidemiologic data:
 - **Duchenne Muscular Dystrophy (DMD)** - Rare genetic disease
 - **Non-Small Cell Lung Cancer (nSCLC)** - Oncology
 - **Type 2 Diabetes (T2D)** - Chronic metabolic disease
-- **COVID-19** - Infectious respiratory disease  
+- **COVID-19** - Infectious respiratory disease
 - **Sickle Cell Disease (SCD)** - Rare blood disorder
 
 Each model includes:
@@ -143,12 +143,12 @@ import { EpidemiologyPage } from './pages/EpidemiologyPage';
 
 ```typescript
 // Disease area classification
-export type DiseaseAreaType = 
-  | "DMD" 
-  | "nSCLC" 
-  | "T2D" 
-  | "COVID19" 
-  | "SCD" 
+export type DiseaseAreaType =
+  | "DMD"
+  | "nSCLC"
+  | "T2D"
+  | "COVID19"
+  | "SCD"
   | "Rare Disease"
   | "Chronic Disease"
   | "Infectious Disease"
@@ -383,14 +383,14 @@ Complete example integrating epidemiology into a biotech application:
 ```tsx
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
+import {
   SurvivalCurveChart,
-  CohortStratificationChart 
+  CohortStratificationChart
 } from '@biotech-terminal/frontend-components/epidemiology';
-import { 
+import {
   DMD_MODEL,
   DMD_SURVIVAL_CURVES,
-  DMD_COHORTS 
+  DMD_COHORTS
 } from '../src/data/epidemiologyModels';
 
 function DMDAnalysisPage() {
@@ -398,19 +398,19 @@ function DMDAnalysisPage() {
     <div className="terminal-frame">
       <h1>{DMD_MODEL.name}</h1>
       <p>{DMD_MODEL.description}</p>
-      
+
       <div className="metrics-grid">
-        <MetricCard 
-          label="Prevalence" 
+        <MetricCard
+          label="Prevalence"
           value={`${DMD_MODEL.prevalence}/100k`}
         />
-        <MetricCard 
-          label="Target Population" 
+        <MetricCard
+          label="Target Population"
           value={DMD_MODEL.targetPopulation.toLocaleString()}
         />
       </div>
 
-      <SurvivalCurveChart 
+      <SurvivalCurveChart
         curves={DMD_SURVIVAL_CURVES}
         title="DMD Survival by Treatment"
         showConfidenceIntervals={true}

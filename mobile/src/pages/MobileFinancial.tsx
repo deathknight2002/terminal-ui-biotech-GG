@@ -59,7 +59,7 @@ export const MobileFinancial: FC = () => {
           <div className="mobile-chart-bars">
             {[60, 75, 88, 95, 100].map((height, i) => (
               <div key={i} className="mobile-chart-bar-container">
-                <div 
+                <div
                   className="mobile-chart-bar"
                   style={{ height: `${height}%` }}
                 />

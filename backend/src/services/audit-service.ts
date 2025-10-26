@@ -44,7 +44,7 @@ export interface ProvenanceInfo {
  */
 export async function getMetricProvenance(metricId: string): Promise<ProvenanceInfo | null> {
   const prisma = getPrismaClient();
-  
+
   try {
     const metric = await prisma.metric.findUnique({
       where: { id: metricId },
@@ -105,18 +105,18 @@ export async function getDiseaseMetricsWithProvenance(
   }
 ): Promise<ProvenanceInfo[]> {
   const prisma = getPrismaClient();
-  
+
   try {
     const where: any = { diseaseId };
-    
+
     if (options?.metricType) {
       where.metricType = options.metricType;
     }
-    
+
     if (options?.source) {
       where.source = options.source;
     }
-    
+
     if (options?.year) {
       where.year = options.year;
     }
@@ -180,7 +180,7 @@ export async function getDiseaseSources(diseaseId: string): Promise<{
   reliabilityScore: number | null;
 }[]> {
   const prisma = getPrismaClient();
-  
+
   try {
     const metrics = await prisma.metric.findMany({
       where: { diseaseId },
@@ -197,10 +197,10 @@ export async function getDiseaseSources(diseaseId: string): Promise<{
 
     for (const metric of metrics) {
       if (!metric.provenance) continue;
-      
+
       const source = metric.source;
       const existing = sourceMap.get(source);
-      
+
       if (existing) {
         existing.count++;
         if (metric.provenance.ingestedAt > existing.latestUpdate) {
@@ -213,8 +213,8 @@ export async function getDiseaseSources(diseaseId: string): Promise<{
         sourceMap.set(source, {
           count: 1,
           latestUpdate: metric.provenance.ingestedAt,
-          reliabilityScores: metric.provenance.reliabilityScore !== null 
-            ? [metric.provenance.reliabilityScore] 
+          reliabilityScores: metric.provenance.reliabilityScore !== null
+            ? [metric.provenance.reliabilityScore]
             : [],
         });
       }
@@ -249,7 +249,7 @@ export async function getRecentUpdates(
   reliabilityScore: number | null;
 }[]> {
   const prisma = getPrismaClient();
-  
+
   try {
     const where: any = {};
     if (source) {
@@ -293,7 +293,7 @@ export async function verifyDataIntegrity(metricId: string): Promise<{
   message: string;
 }> {
   const prisma = getPrismaClient();
-  
+
   try {
     const metric = await prisma.metric.findUnique({
       where: { id: metricId },

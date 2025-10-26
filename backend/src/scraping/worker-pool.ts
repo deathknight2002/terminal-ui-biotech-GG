@@ -38,7 +38,7 @@ export class WorkerPool extends EventEmitter {
 
   constructor(config: WorkerPoolConfig = {}) {
     super();
-    
+
     this.hardwareConcurrency = os.cpus().length;
     this.maxWorkers = config.maxWorkers || Math.max(2, this.hardwareConcurrency - 1);
     this.taskTimeout = config.taskTimeout || 30000;
@@ -83,7 +83,7 @@ export class WorkerPool extends EventEmitter {
 
       this.taskQueue.push(fullTask);
       this.emit('task:queued', { taskId: fullTask.id, queueLength: this.taskQueue.length });
-      
+
       this.processQueue();
     });
   }
@@ -128,11 +128,11 @@ export class WorkerPool extends EventEmitter {
       if (task.retries < task.maxRetries) {
         task.retries++;
         logger.warn(`⚠️ Task ${task.id} failed, retrying (${task.retries}/${task.maxRetries})`);
-        
+
         // Add back to queue with exponential backoff
         const delay = Math.min(1000 * Math.pow(2, task.retries), 10000);
         await this.delay(delay);
-        
+
         this.taskQueue.push(task);
         this.emit('task:retry', { taskId: task.id, retries: task.retries });
       } else {
@@ -188,15 +188,15 @@ export class WorkerPool extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     logger.info('🛑 Shutting down worker pool...');
-    
+
     // Wait for active tasks to complete
     while (this.activeWorkers > 0) {
       await this.delay(100);
     }
-    
+
     // Clear remaining queue
     this.taskQueue = [];
-    
+
     logger.info('✅ Worker pool shut down complete');
   }
 }

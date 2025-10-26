@@ -18,7 +18,7 @@ sources:
         - /biotech/*
       notes: "RSS feed available. Scraping allowed per robots.txt. Store title + summary + link only."
       last_review: '2024-01-15'
-      
+
     - domain: fiercepharma.com
       name: FiercePharma
       status: allowed
@@ -31,7 +31,7 @@ sources:
         - /pharma/*
       notes: "RSS feed available. Scraping allowed per robots.txt."
       last_review: '2024-01-15'
-      
+
     - domain: biopharmadive.com
       name: BioPharma Dive
       status: allowed
@@ -43,7 +43,7 @@ sources:
         - /feeds/news/
       notes: "RSS feed publicly available. Industry news source."
       last_review: '2024-01-15'
-      
+
     - domain: businesswire.com
       name: Business Wire
       status: allowed
@@ -55,7 +55,7 @@ sources:
         - /portal/site/home/news/
       notes: "Press release distribution service. Public RSS feeds available."
       last_review: '2024-01-15'
-      
+
     - domain: globenewswire.com
       name: GlobeNewswire
       status: allowed
@@ -68,7 +68,7 @@ sources:
         - /news-releases/*
       notes: "Press release distribution. Healthcare sector RSS available."
       last_review: '2024-01-15'
-      
+
     - domain: prnewswire.com
       name: PR Newswire
       status: allowed
@@ -93,7 +93,7 @@ sources:
         - /feed/
       notes: "PAYWALLED. Title + URL + metadata only. No full text extraction."
       last_review: '2024-01-15'
-      
+
     - domain: statnews.com
       name: STAT News
       status: title_only
@@ -119,7 +119,7 @@ sources:
         - /drugs/news-events-human-drugs/*
       notes: "Government site. Public information. RSS feeds available."
       last_review: '2024-01-15'
-      
+
     - domain: ema.europa.eu
       name: EMA (European Medicines Agency)
       status: allowed
@@ -132,7 +132,7 @@ sources:
         - /en/news/*
       notes: "EU regulatory agency. Public information."
       last_review: '2024-01-15'
-      
+
     - domain: gov.uk
       name: MHRA (UK)
       status: allowed
@@ -197,20 +197,20 @@ fetch_cadence:
     registries: "1 time per day"
     exchanges: "1 time per day"
     company_ir: "as needed"
-    
+
 # User-Agent configuration
 user_agent:
   name: "BiotechTerminal/1.0"
   contact: "contact@bioterminal.dev"
   purpose: "Biotech news aggregation for investment analysis"
-  
+
 # Compliance notes
 compliance:
   copyright: "Store title + summary (≤250 chars) + link. No full text republication."
   paywalls: "Title + URL + metadata only. No content extraction behind paywall."
   attribution: "Always display source name and link back to original."
   data_retention: "Keep raw HTML in cold storage for audit only, not redistribution."
-  
+
 # Review schedule
 review_schedule:
   frequency: quarterly

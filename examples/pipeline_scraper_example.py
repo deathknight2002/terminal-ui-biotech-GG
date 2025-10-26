@@ -22,24 +22,24 @@ def example_cli_usage():
     print("Example 1: CLI Usage")
     print("=" * 60)
     print()
-    
+
     commands = [
-        ("Scrape all companies", 
+        ("Scrape all companies",
          "python -m bt_platform.cli.scrape_pipeline --all"),
-        
+
         ("Scrape specific companies",
          "python -m bt_platform.cli.scrape_pipeline --company Biogen --company Amgen"),
-        
+
         ("View statistics",
          "python -m bt_platform.cli.scrape_pipeline --stats"),
-        
+
         ("List available companies",
          "python -m bt_platform.cli.scrape_pipeline --list"),
-        
+
         ("Verbose output",
          "python -m bt_platform.cli.scrape_pipeline --all --verbose"),
     ]
-    
+
     for description, command in commands:
         print(f"# {description}")
         print(f"$ {command}")
@@ -58,7 +58,7 @@ async def example_python_api():
     print("Example 2: Python API Usage")
     print("=" * 60)
     print()
-    
+
     # This is示例代码 - requires actual database connection
     code_example = '''
 from bt_platform.scrapers.pipeline_manager import get_pipeline_manager
@@ -71,25 +71,25 @@ db = SessionLocal()
 try:
     # Scrape all companies
     result = await manager.scrape_all_companies(db=db, limit=100)
-    
+
     print(f"Companies scraped: {result['companies_scraped']}")
     print(f"Assets found: {result['total_assets_found']}")
     print(f"Assets inserted: {result['total_assets_inserted']}")
     print(f"Assets updated: {result['total_assets_updated']}")
-    
+
     # Get statistics
     stats = manager.get_pipeline_stats(db)
     print(f"Total assets in database: {stats['total_assets']}")
-    
+
     # Get available companies
     companies = manager.get_available_companies()
     print(f"Available scrapers: {', '.join(companies)}")
-    
+
 finally:
     await manager.close_all()
     db.close()
 '''
-    
+
     print("Python Code:")
     print(code_example)
 
@@ -106,7 +106,7 @@ def example_rest_api():
     print("Example 3: REST API Usage")
     print("=" * 60)
     print()
-    
+
     examples = [
         ("Trigger pipeline scraping",
          "POST /api/v1/pipeline/scrape",
@@ -116,32 +116,32 @@ def example_rest_api():
   "limit": 100
 }
 '''),
-        
+
         ("Get all pipeline assets",
          "GET /api/v1/pipeline/assets?limit=100",
          None),
-        
+
         ("Filter by company",
          "GET /api/v1/pipeline/assets?company=Biogen&phase=Phase%20II",
          None),
-        
+
         ("Get specific asset",
          "GET /api/v1/pipeline/assets/123",
          None),
-        
+
         ("Get statistics",
          "GET /api/v1/pipeline/stats",
          None),
-        
+
         ("Get company pipeline",
          "GET /api/v1/pipeline/company/Biogen",
          None),
-        
+
         ("Health check",
          "GET /api/v1/pipeline/health",
          None),
     ]
-    
+
     for title, endpoint, body in examples:
         print(f"# {title}")
         print(f"{endpoint}")
@@ -162,7 +162,7 @@ async def example_scheduled_scraping():
     print("Example 4: Automated Scheduling")
     print("=" * 60)
     print()
-    
+
     code_example = '''
 from bt_platform.scrapers.pipeline_scheduler import get_pipeline_scheduler
 
@@ -193,7 +193,7 @@ await scheduler.run_now()
 # Stop scheduler
 scheduler.stop()
 '''
-    
+
     print("Scheduling Code:")
     print(code_example)
 
@@ -210,7 +210,7 @@ def example_new_company_scraper():
     print("Example 5: Adding a New Company Scraper")
     print("=" * 60)
     print()
-    
+
     code_example = '''
 from bt_platform.scrapers.sites.pipeline_scraper import PipelineScraperBase
 from typing import List, Dict, Any
@@ -218,21 +218,21 @@ from bs4 import BeautifulSoup
 
 class PfizerPipelineScraper(PipelineScraperBase):
     """Scraper for Pfizer's pipeline page."""
-    
+
     def __init__(self):
         super().__init__(
             company_name="Pfizer",
             pipeline_url="https://www.pfizer.com/science/drug-product-pipeline"
         )
-    
+
     async def parse(self, html: str, url: str) -> List[Dict[str, Any]]:
         """Parse Pfizer pipeline page."""
         soup = BeautifulSoup(html, 'html.parser')
         assets = []
-        
+
         # Find pipeline data (adjust selectors based on actual site)
         pipeline_rows = soup.find_all('div', class_='pipeline-asset')
-        
+
         for row in pipeline_rows:
             asset = {
                 'asset_name': row.find('h3').get_text(strip=True),
@@ -244,10 +244,10 @@ class PfizerPipelineScraper(PipelineScraperBase):
                 'logo_url': '',
                 'metadata': {}
             }
-            
+
             if asset['asset_name']:
                 assets.append(asset)
-        
+
         return assets
 
 # Register in factory function (pipeline_scraper.py)
@@ -258,7 +258,7 @@ def get_pipeline_scraper(company_name: str):
         'pfizer': PfizerPipelineScraper,  # Add here
         # ... other scrapers
     }
-    
+
     scraper_class = scrapers.get(company_name.lower())
     if scraper_class:
         return scraper_class()
@@ -272,7 +272,7 @@ AVAILABLE_SCRAPERS = [
     # ... other companies
 ]
 '''
-    
+
     print("New Scraper Template:")
     print(code_example)
 
@@ -289,7 +289,7 @@ def example_data_queries():
     print("Example 6: Querying Pipeline Data")
     print("=" * 60)
     print()
-    
+
     code_example = '''
 from bt_platform.core.database import SessionLocal, PipelineAsset
 
@@ -331,7 +331,7 @@ duplicates = db.query(
 
 db.close()
 '''
-    
+
     print("Query Examples:")
     print(code_example)
 
@@ -348,7 +348,7 @@ def example_frontend_integration():
     print("Example 7: Frontend Integration")
     print("=" * 60)
     print()
-    
+
     code_example = '''
 // React component for displaying pipeline data
 
@@ -359,7 +359,7 @@ function PipelineDashboard() {
   const [pipelines, setPipelines] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     // Fetch pipeline data
     async function fetchData() {
@@ -368,7 +368,7 @@ function PipelineDashboard() {
           axios.get('/api/v1/pipeline/assets?limit=100'),
           axios.get('/api/v1/pipeline/stats')
         ]);
-        
+
         setPipelines(pipelinesRes.data);
         setStats(statsRes.data);
       } catch (error) {
@@ -377,44 +377,44 @@ function PipelineDashboard() {
         setLoading(false);
       }
     }
-    
+
     fetchData();
   }, []);
-  
+
   const handleScrape = async (company) => {
     try {
       const response = await axios.post('/api/v1/pipeline/scrape', {
         companies: [company],
         limit: 100
       });
-      
+
       alert(`Scraped ${response.data.total_assets_found} assets for ${company}`);
-      
+
       // Refresh data
       window.location.reload();
     } catch (error) {
       alert('Scraping failed: ' + error.message);
     }
   };
-  
+
   if (loading) return <div>Loading...</div>;
-  
+
   return (
     <div className="pipeline-dashboard">
       <h1>Drug Pipeline Dashboard</h1>
-      
+
       <div className="stats">
         <div className="stat-card">
           <h3>Total Assets</h3>
           <p>{stats?.total_assets || 0}</p>
         </div>
-        
+
         <div className="stat-card">
           <h3>Companies</h3>
           <p>{stats?.available_companies?.length || 0}</p>
         </div>
       </div>
-      
+
       <div className="pipeline-table">
         <table>
           <thead>
@@ -445,7 +445,7 @@ function PipelineDashboard() {
 
 export default PipelineDashboard;
 '''
-    
+
     print("React Component Example:")
     print(code_example)
 
@@ -459,7 +459,7 @@ def main():
     print("\n" + "=" * 60)
     print("PIPELINE SCRAPER - USAGE EXAMPLES")
     print("=" * 60 + "\n")
-    
+
     example_cli_usage()
     asyncio.run(example_python_api())
     example_rest_api()
@@ -467,7 +467,7 @@ def main():
     example_new_company_scraper()
     example_data_queries()
     example_frontend_integration()
-    
+
     print("\n" + "=" * 60)
     print("For more information, see PIPELINE_SCRAPER_README.md")
     print("=" * 60 + "\n")

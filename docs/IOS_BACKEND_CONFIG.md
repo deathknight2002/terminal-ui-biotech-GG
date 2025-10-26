@@ -380,7 +380,7 @@ useEffect(() => {
       setBackendStatus('offline');
     }
   };
-  
+
   checkHealth();
   const interval = setInterval(checkHealth, 60000); // Check every minute
   return () => clearInterval(interval);
@@ -425,7 +425,7 @@ const login = async (username: string, password: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password }),
   });
-  
+
   const { token } = await response.json();
   await Storage.set({ key: 'authToken', value: token });
 };

@@ -16,7 +16,7 @@ router.get('/dashboard', async (req, res) => {
     // Set Cache-Control headers for manual refresh model (30 min TTL)
     res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes
     res.setHeader('Last-Modified', new Date(dashboardData.headline?.lastUpdated || Date.now()).toUTCString());
-    
+
     res.json(dashboardData);
   } catch (error) {
     console.error('❌ Error in dashboard endpoint:', error);
@@ -38,7 +38,7 @@ router.get('/trials', async (req, res) => {
     // Set Cache-Control headers for manual refresh model (30 min TTL)
     res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes
     res.setHeader('Last-Modified', new Date(trialsData.lastUpdated || Date.now()).toUTCString());
-    
+
     res.json(trialsData);
   } catch (error) {
     logger.error('❌ Error fetching live trials data:', error);
@@ -59,7 +59,7 @@ router.get('/financial-models', async (req, res) => {
     // Set Cache-Control headers for manual refresh model (30 min TTL)
     res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes
     res.setHeader('Last-Modified', new Date().toUTCString());
-    
+
     res.json(financialData);
   } catch (error) {
     logger.error('❌ Error fetching live financial data:', error);

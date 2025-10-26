@@ -25,23 +25,23 @@ function MonitoringDashboard() {
   return (
     <div>
       <h2>Live Monitoring Dashboard</h2>
-      
+
       {/* Stats Display */}
       {stats && (
         <div className="stats-grid">
-          <StatCard 
+          <StatCard
             title="Active Monitors"
             value={stats.changeDetection?.activeMonitors || 0}
           />
-          <StatCard 
+          <StatCard
             title="Total Changes"
             value={stats.changeDetection?.totalChanges || 0}
           />
-          <StatCard 
+          <StatCard
             title="Portfolio Alerts"
             value={stats.portfolio?.totalAlerts || 0}
           />
-          <StatCard 
+          <StatCard
             title="News Alerts"
             value={stats.news?.totalAlerts || 0}
           />
@@ -77,7 +77,7 @@ function MonitoringDashboardRest() {
   return (
     <div>
       <button onClick={refetch}>Refresh</button>
-      
+
       <div className="alerts-list">
         {alerts.map(alert => (
           <AlertItem key={alert.id} alert={alert} />
@@ -119,17 +119,17 @@ function AlertCard({ alert }: AlertCardProps) {
         <span className="alert-severity">{alert.severity.toUpperCase()}</span>
         {alert.symbol && <span className="alert-symbol">{alert.symbol}</span>}
       </div>
-      
+
       <h3 className="alert-title">{alert.title}</h3>
       <p className="alert-description">{alert.description}</p>
-      
+
       <div className="alert-footer">
         <span className="alert-time">
           {new Date(alert.timestamp).toLocaleString()}
         </span>
-        <a 
-          href={alert.url} 
-          target="_blank" 
+        <a
+          href={alert.url}
+          target="_blank"
           rel="noopener noreferrer"
           className="alert-link"
         >
@@ -228,7 +228,7 @@ function CompanyMonitoring({ symbol }: { symbol: string }) {
       <div className="alert-count">
         {companyAlerts.length} alert{companyAlerts.length !== 1 ? 's' : ''}
       </div>
-      
+
       {companyAlerts.map(alert => (
         <AlertCard key={alert.id} alert={alert} />
       ))}
@@ -320,14 +320,14 @@ function AlertHistory() {
       </div>
 
       <div className="pagination">
-        <button 
+        <button
           disabled={page === 1}
           onClick={() => setPage(p => p - 1)}
         >
           Previous
         </button>
         <span>Page {page} of {totalPages}</span>
-        <button 
+        <button
           disabled={page === totalPages}
           onClick={() => setPage(p => p + 1)}
         >
@@ -346,7 +346,7 @@ function AlertHistory() {
 ```typescript
 async function setupMonitoring() {
   const baseUrl = 'http://localhost:3001/api/monitoring';
-  
+
   // Load default portfolio
   await fetch(`${baseUrl}/portfolio/load-default`, {
     method: 'POST',
@@ -391,7 +391,7 @@ async function addCustomMonitor(url: string, name: string) {
 ```typescript
 async function getRecentAlerts() {
   const baseUrl = 'http://localhost:3001/api/monitoring';
-  
+
   const [portfolioRes, newsRes] = await Promise.all([
     fetch(`${baseUrl}/portfolio/alerts?limit=20`),
     fetch(`${baseUrl}/news/alerts?limit=20`),
@@ -411,7 +411,7 @@ async function getRecentAlerts() {
 
 ```typescript
 // Import types from the hook
-import type { 
+import type {
   MonitoringAlert,
   MonitoringStats,
   UseMonitoringOptions,

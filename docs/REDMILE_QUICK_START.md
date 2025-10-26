@@ -60,7 +60,7 @@ Data Sources → Scrapers → Intelligence Engine → API → UI
     ↓            ↓              ↓              ↓      ↓
   13F,FDA,    Rate-limited   Scoring,      FastAPI  React
   CTGov,      connectors    Enrichment,    REST    Calendar
-  SEC,8-K                   Dedup, Filter  
+  SEC,8-K                   Dedup, Filter
 ```
 
 **Key Technologies:**
@@ -409,8 +409,8 @@ redis-cli FLUSHALL
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: 2024-10-13  
-**Status**: Ready for Implementation  
+**Version**: 1.0
+**Last Updated**: 2024-10-13
+**Status**: Ready for Implementation
 
 *Built for Jeremy Green himself to look at* 🚀

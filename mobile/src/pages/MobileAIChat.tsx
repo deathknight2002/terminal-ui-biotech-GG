@@ -65,7 +65,7 @@ These dates are subject to FDA review timeline changes.`;
   }
 
   // Default response
-  return `I understand you're asking about "${userMessage}". 
+  return `I understand you're asking about "${userMessage}".
 
 As your AI biotech assistant, I can help you with:
 - Company profiles and financial analysis
@@ -108,7 +108,7 @@ export const MobileAIChat: FC = () => {
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error getting AI response:', error);
-      
+
       // Add error message
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),

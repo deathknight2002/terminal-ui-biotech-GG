@@ -205,19 +205,19 @@
     padding: 1rem;
     gap: 0.75rem;
   }
-  
+
   .metric-value {
     font-size: 1.875rem;
   }
-  
+
   .metric-card--lg .metric-value {
     font-size: 2.25rem;
   }
-  
+
   .metric-header {
     gap: 0.5rem;
   }
-  
+
   .metric-icon {
     width: 1.5rem;
     height: 1.5rem;
@@ -230,7 +230,7 @@
   .metric-glow {
     transition: none;
   }
-  
+
   .metric-card:hover {
     transform: none;
   }

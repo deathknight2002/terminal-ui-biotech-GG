@@ -55,19 +55,19 @@ All scrapers implement `ScraperInterface` with these methods:
 ```python
 async def discover(method, since, limit, **kwargs) -> List[str]:
     """Discover URLs to scrape (RSS, sitemap, archive)"""
-    
+
 async def fetch(urls, batch_size) -> List[Dict]:
     """Fetch content with rate limiting"""
-    
+
 async def parse(raw_content) -> Dict:
     """Parse HTML/JSON into structured data"""
-    
+
 async def normalize(parsed_data) -> ScraperResult:
     """Normalize to standard models (Article, Catalyst, etc.)"""
-    
+
 async def link(result) -> ScraperResult:
     """Link to companies, diseases, catalysts"""
-    
+
 async def upsert(result, dry_run) -> bool:
     """Insert/update in database"""
 ```
@@ -232,7 +232,7 @@ from platform.scrapers.sites.press_release_scraper import PressReleaseScraper
 
 class MySourceScraper(PressReleaseScraper):
     """My Source scraper"""
-    
+
     def __init__(self, config=None):
         config = config or {}
         config.setdefault('base_url', 'https://mysource.com')

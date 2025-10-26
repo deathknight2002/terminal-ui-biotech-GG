@@ -101,7 +101,7 @@ log_check "Looking for Node.js installation..."
 if command_exists node; then
     NODE_VERSION=$(node --version)
     MAJOR_VERSION=$(echo $NODE_VERSION | cut -d'.' -f1 | sed 's/v//')
-    
+
     if [ "$MAJOR_VERSION" -ge 18 ]; then
         log_success "Node.js $NODE_VERSION is installed (minimum: v18.0.0)"
         log_info "Node.js location: $(which node)"
@@ -184,7 +184,7 @@ if [ -d "$ROOT_DIR/node_modules" ]; then
     log_success "Root dependencies are already installed"
 else
     log_action "Installing root dependencies (this may take a few minutes)..."
-    
+
     cd "$ROOT_DIR"
     if npm install; then
         log_success "Root dependencies installed successfully"
@@ -265,7 +265,7 @@ if [ -d "$MOBILE_DIR/node_modules" ]; then
     log_success "Mobile dependencies are already installed"
 else
     log_action "Installing mobile dependencies (this may take a few minutes)..."
-    
+
     cd "$MOBILE_DIR"
     if npm install; then
         log_success "Mobile dependencies installed successfully"
@@ -281,7 +281,7 @@ else
 2. Clear mobile workspace cache:
    cd $MOBILE_DIR
    rm -rf node_modules package-lock.json
-   
+
 3. Try installing mobile dependencies again:
    npm install
 
@@ -307,7 +307,7 @@ if [ -d "$COMPONENTS_DIST" ] && [ -f "$COMPONENTS_DIST/index.js" ]; then
     log_success "Frontend components are already built"
 else
     log_action "Building frontend components (required for mobile app)..."
-    
+
     cd "$ROOT_DIR/frontend-components"
     if npm run build; then
         log_success "Frontend components built successfully"
@@ -331,7 +331,7 @@ else
 4. If build succeeds but mobile still fails:
    • Clean mobile dependencies: cd $MOBILE_DIR && rm -rf node_modules
    • Reinstall: npm install
-   
+
 The mobile app depends on the component library, so this step is critical."
     fi
 fi
@@ -372,7 +372,7 @@ log_check "Checking TypeScript configuration..."
 
 if [ -f "$MOBILE_DIR/tsconfig.json" ]; then
     log_success "TypeScript configuration exists"
-    
+
     # Try to run type check
     cd "$MOBILE_DIR"
     log_action "Running TypeScript validation..."
@@ -411,18 +411,18 @@ server_started=false
 while [ $waited -lt $max_wait ]; do
     sleep 1
     ((waited++))
-    
+
     if grep -q "Local:" /tmp/mobile-dev-output.log 2>/dev/null || \
        grep -q "localhost:3002" /tmp/mobile-dev-output.log 2>/dev/null; then
         server_started=true
         break
     fi
-    
+
     # Check if process is still running
     if ! kill -0 $DEV_PID 2>/dev/null; then
         break
     fi
-    
+
     echo -ne "\r${BLUE}Waiting for server to start... ${waited}s / ${max_wait}s${NC}"
 done
 
@@ -445,18 +445,18 @@ else
 1. Check if port 3002 is already in use:
    • Find process: lsof -i :3002 (macOS/Linux) or netstat -ano | findstr :3002 (Windows)
    • Kill it if necessary
-   
+
 2. Check the error output above for specific issues
 
 3. Common problems:
    • Missing dependencies: npm install
    • Frontend components not built: cd $ROOT_DIR && npm run build:components
    • Port conflict: Change port in mobile/vite.config.ts
-   
+
 4. Try starting manually to see detailed errors:
    cd $MOBILE_DIR
    npm run dev
-   
+
 5. Check for syntax errors in mobile source files:
    npm run typecheck
 
@@ -513,12 +513,12 @@ if [ $errors -eq 0 ]; then
     echo -e "  • Mobile README: ${CYAN}mobile/README.md${NC}"
     echo -e "  • iOS PWA Guide: ${CYAN}docs/IOS_PWA_GUIDE.md${NC}"
     echo ""
-    
+
     if [ $warnings -gt 0 ]; then
         echo -e "${YELLOW}Note: There were $warnings warning(s). The app should work, but review them if you encounter issues.${NC}"
         echo ""
     fi
-    
+
     exit 0
 else
     echo -e "${RED}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -546,6 +546,6 @@ else
     echo -e "  • Check mobile docs: ${CYAN}mobile/README.md${NC}"
     echo -e "  • Review setup guide: ${CYAN}docs/CROSS_PLATFORM_TESTING_GUIDE.md${NC}"
     echo ""
-    
+
     exit 1
 fi

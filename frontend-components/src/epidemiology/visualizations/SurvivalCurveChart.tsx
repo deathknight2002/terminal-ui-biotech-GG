@@ -37,7 +37,7 @@ export const SurvivalCurveChart: React.FC<SurvivalCurveChartProps> = ({
       width: 3,
       shape: 'hv' as const, // Step function for survival curves
     },
-    hovertemplate: 
+    hovertemplate:
       `<b>${curve.label}</b><br>` +
       'Time: %{x} months<br>' +
       'Survival: %{y:.1%}<br>' +

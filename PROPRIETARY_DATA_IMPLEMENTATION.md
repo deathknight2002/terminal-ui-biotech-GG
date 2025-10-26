@@ -44,7 +44,7 @@ curl http://localhost:3001/api/biotech/screener
 
 ## Success Metrics
 
-**Before**: 100% mock data, external API dependencies  
+**Before**: 100% mock data, external API dependencies
 **After**: 100% real data from free sources, zero dependencies
 
 **The platform is ready for production use as a biotech research terminal.**

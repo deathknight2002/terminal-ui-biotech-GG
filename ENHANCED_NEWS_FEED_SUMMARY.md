@@ -56,7 +56,7 @@ The system detects:
   - Critical/High importance
   - Catalyst categories (FDA, trials, M&A)
   - Small Cap, Mid Cap, or Micro Cap companies
-  
+
 **Market Cap Categories:**
 - Mega Cap: $200B+
 - Large Cap: $10B - $200B
@@ -188,7 +188,7 @@ interface NewsItem {
   title: string;
   summary: string;
   date: string;
-  
+
   // Enhanced fields
   source?: NewsSource;
   category?: NewsCategory;
@@ -349,6 +349,6 @@ const searchResponse = await fetch('/api/news/search', {
 
 ---
 
-**Implementation Date**: October 16, 2025  
-**Status**: Phase 1 Complete - Core features implemented and tested  
+**Implementation Date**: October 16, 2025
+**Status**: Phase 1 Complete - Core features implemented and tested
 **Next Phase**: Archive database, advanced search, and alert system

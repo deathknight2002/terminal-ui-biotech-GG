@@ -5,8 +5,8 @@ Comprehensive biotech and pharmaceutical news aggregation from multiple premium 
 ## 🚀 Available Scrapers
 
 ### 1. Fierce Biotech
-**Source**: https://www.fiercebiotech.com  
-**Rate Limit**: 1 request per 2 seconds (0.5 req/s)  
+**Source**: https://www.fiercebiotech.com
+**Rate Limit**: 1 request per 2 seconds (0.5 req/s)
 **Cache TTL**: 30 minutes
 
 Premium biotech industry news covering drug development, clinical trials, and company announcements.
@@ -38,8 +38,8 @@ GET /api/scraping/news/fierce-biotech/category/drug-discovery?maxResults=20
 ---
 
 ### 2. Science Daily
-**Source**: https://www.sciencedaily.com  
-**Rate Limit**: 1 request per 2 seconds (0.5 req/s)  
+**Source**: https://www.sciencedaily.com
+**Rate Limit**: 1 request per 2 seconds (0.5 req/s)
 **Cache TTL**: 30 minutes
 
 Scientific breakthroughs, research discoveries, and health news.
@@ -76,8 +76,8 @@ POST /api/scraping/news/science-daily/search
 ---
 
 ### 3. BioSpace
-**Source**: https://www.biospace.com  
-**Rate Limit**: 1 request per 2 seconds (0.5 req/s)  
+**Source**: https://www.biospace.com
+**Rate Limit**: 1 request per 2 seconds (0.5 req/s)
 **Cache TTL**: 30 minutes
 
 Biotech and pharmaceutical industry news with company tracking.
@@ -109,8 +109,8 @@ POST /api/scraping/news/biospace/search
 ---
 
 ### 4. Endpoints News
-**Source**: https://endpts.com  
-**Rate Limit**: 1 request per 2 seconds (0.5 req/s)  
+**Source**: https://endpts.com
+**Rate Limit**: 1 request per 2 seconds (0.5 req/s)
 **Cache TTL**: 30 minutes
 
 Premium biotech journalism covering dealmaking, R&D, and regulation.
@@ -227,7 +227,7 @@ interface Article {
   category: string;              // Article category
   tags: string[];                // Topic tags
   imageUrl?: string;             // Featured image URL
-  
+
   // Source-specific fields
   company?: string;              // BioSpace only
   isPremium?: boolean;           // Endpoints News only

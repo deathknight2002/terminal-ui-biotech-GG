@@ -31,7 +31,7 @@ export const useBiometricAuth = () => {
     async (reason: string = 'Authenticate to access the app'): Promise<BiometricAuthResult> => {
       try {
         const available = await checkAvailability();
-        
+
         if (!available) {
           return {
             success: false,

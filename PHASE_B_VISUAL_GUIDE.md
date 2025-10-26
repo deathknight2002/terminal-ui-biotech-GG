@@ -256,7 +256,7 @@ This document provides a visual walkthrough of all Phase B features implemented 
 - **Text Primary** (White): Main content text
 - **Text Secondary** (Gray): Labels, metadata
 - **Text Tertiary** (Dim Gray): Timestamps, "as of" dates
-- **Phase Colors**: 
+- **Phase Colors**:
   - Preclinical: Gray
   - Phase I: Amber
   - Phase II: Purple

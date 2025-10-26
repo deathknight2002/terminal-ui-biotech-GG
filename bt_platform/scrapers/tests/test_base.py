@@ -48,7 +48,7 @@ def test_scraper_result_creation():
         hash='testhash123',
         fingerprint='testfingerprint',
     )
-    
+
     assert result.content_type == ContentType.ARTICLE
     assert result.data['title'] == 'Test Article'
     assert result.url == 'https://example.com/article'
@@ -63,7 +63,7 @@ def test_scraper_result_timestamps():
         data={'title': 'Test'},
         url='https://example.com',
     )
-    
+
     assert result.scraped_at is not None
     assert isinstance(result.scraped_at, datetime)
     assert result.scraped_at <= datetime.utcnow()
@@ -78,6 +78,6 @@ def test_scraper_result_with_published_date():
         url='https://example.com',
         published_at=pub_date,
     )
-    
+
     assert result.published_at == pub_date
     assert result.published_at < result.scraped_at

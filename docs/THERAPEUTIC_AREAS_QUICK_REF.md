@@ -6,13 +6,13 @@ Compares 5 therapeutic areas across 7 science attributes using an interactive sp
 
 ## 📍 How to Access
 
-**URL**: `/science/therapeutic-areas`  
+**URL**: `/science/therapeutic-areas`
 **Menu**: SCIENCE → Therapeutic Areas
 
 ## 🗂️ Therapeutic Areas
 
 1. **DMD** (Duchenne Muscular Dystrophy) - Cyan (#00d4ff)
-2. **Cardiology** (Cardiovascular Disease) - Amber (#fbbf24)  
+2. **Cardiology** (Cardiovascular Disease) - Amber (#fbbf24)
 3. **IBD** (Inflammatory Bowel Disease) - Green (#10b981)
 4. **Oncology** - Purple (#a855f7)
 5. **Rare Disease** - Blue (#3b82f6)
@@ -210,13 +210,13 @@ Full documentation: `docs/THERAPEUTIC_AREAS.md`
 
 ## 🐛 Troubleshooting
 
-**Chart not loading?**  
+**Chart not loading?**
 → Ensure backend is running: `poetry run uvicorn platform.core.app:app --reload --port 8000`
 
-**CORS error?**  
+**CORS error?**
 → Check CORS middleware in `platform/core/app.py`
 
-**Rate limited?**  
+**Rate limited?**
 → Wait 1 hour or use cached data (automatic fallback)
 
 ## 🎯 Key Insights
@@ -238,6 +238,6 @@ Full documentation: `docs/THERAPEUTIC_AREAS.md`
 
 ---
 
-**Built with**: React 19, TypeScript, Canvas API, Aurora Glass Design  
-**License**: MIT  
+**Built with**: React 19, TypeScript, Canvas API, Aurora Glass Design
+**License**: MIT
 **Version**: 1.0.0

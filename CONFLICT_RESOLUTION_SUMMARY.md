@@ -38,7 +38,7 @@ This document summarizes the conflict resolution work performed for PRs #72-#77 
 - **Resolution**: No action needed, can merge directly
 
 ### ⚠️ PR #72: Extensibility Framework (ML, Scrapers, Backtesting)
-- **Branch**: `copilot/add-additional-scrapers`  
+- **Branch**: `copilot/add-additional-scrapers`
 - **Status**: **HAS CONFLICTS** - 18 conflicted files
 - **Issue**: Unrelated histories (branch diverged significantly from main)
 - **Resolution Applied**: Created `conflict-resolve/pr-72` branch with conflicts resolved
@@ -53,7 +53,7 @@ Following Strategy A, conflicts were resolved as follows:
 - **pyproject.toml** ← Used version from **main** branch
   - Rationale: Dependency/version file should use main's versions to avoid breaking existing dependencies
 
-#### 2. Code/Feature Files (Preferred PR Branch) 
+#### 2. Code/Feature Files (Preferred PR Branch)
 All code files used PR branch version:
 
 **Backend Files:**

@@ -395,7 +395,7 @@ poetry run python -c "from bt_platform.core.database import init_db; import asyn
 
 **Why:** Cluster near-identical articles across sources
 
-**Example:** 
+**Example:**
 - `source1.com::fda approves drug for sma`
 - `source2.com::fda approves drug for sma` → Different keys (different sources)
 

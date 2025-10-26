@@ -91,7 +91,7 @@ CREATE INDEX idx_science_event_evidence_event ON science_event_evidence(science_
 CREATE INDEX idx_science_event_evidence_evidence ON science_event_evidence(evidence_id);
 
 -- Update evidence table (add new columns)
-ALTER TABLE evidence 
+ALTER TABLE evidence
     ADD COLUMN event_date TIMESTAMP WITH TIME ZONE,
     ADD COLUMN entity_type VARCHAR(50),
     ADD COLUMN entity_id VARCHAR(255),
@@ -143,7 +143,7 @@ def migrate_historical_events(old_data_source):
     Migrate historical events from old system to Science Event Store.
     """
     client = httpx.Client(base_url="http://localhost:8000/api/v1")
-    
+
     for old_event in old_data_source:
         # Map old event format to new schema
         new_event = {
@@ -164,7 +164,7 @@ def migrate_historical_events(old_data_source):
             "impact_score": old_event.get("impact", 0.5),
             "tags": extract_tags(old_event)
         }
-        
+
         # Create event
         response = client.post("/science/science-events", json=new_event)
         if response.status_code == 201:
@@ -193,24 +193,24 @@ class DualWriteAdapter:
     """
     Write to both old and new systems during transition period.
     """
-    
+
     def __init__(self, old_system, new_store):
         self.old = old_system
         self.new = new_store
-    
+
     def create_event(self, event_data):
         """Write to both systems"""
         # Write to old system
         old_id = self.old.create_report(event_data)
-        
+
         # Write to new system
         try:
             new_event = self.transform_to_new_format(event_data)
             new_id = self.new.create_event(new_event)
-            
+
             # Store mapping for reference
             self.store_id_mapping(old_id, new_id)
-            
+
             return new_id
         except Exception as e:
             # Log error but don't fail - old system still works
@@ -227,18 +227,18 @@ class LazyMigrationProxy:
     """
     Migrate data when first accessed in new system.
     """
-    
+
     def get_event(self, event_id):
         # Check if already migrated
         event = self.new_store.get_event(event_id)
         if event:
             return event
-        
+
         # Fetch from old system
         old_event = self.old_store.get_report(event_id)
         if not old_event:
             return None
-        
+
         # Migrate now
         new_event = self.transform_and_create(old_event)
         return new_event
@@ -283,7 +283,7 @@ async def get_todays_evidence_legacy():
     # Redirect to new API
     yesterday = datetime.utcnow() - timedelta(days=1)
     events = await query_science_events(from_date=yesterday)
-    
+
     # Transform to old format for compatibility
     return transform_to_legacy_format(events)
 ```
@@ -307,7 +307,7 @@ function TodaysEvidence() {
   const { data } = useQuery('todays-evidence', () =>
     fetch('/api/v1/evidence/today').then(r => r.json())
   );
-  
+
   return <ReportView data={data} />;
 }
 ```
@@ -317,12 +317,12 @@ function TodaysEvidence() {
 // New approach - query persistent store
 function TodaysEvidence() {
   const yesterday = new Date(Date.now() - 24*60*60*1000).toISOString();
-  
+
   const { data } = useQuery('science-events-today', () =>
     fetch(`/api/v1/science/science-events?from_date=${yesterday}`)
       .then(r => r.json())
   );
-  
+
   return <EventTimeline events={data.events} />;
 }
 ```
@@ -334,7 +334,7 @@ function DrugTimeline({ drugId }: { drugId: string }) {
     fetch(`/api/v1/science/science-events/timeline/DRUG/${drugId}`)
       .then(r => r.json())
   );
-  
+
   return (
     <div className="timeline">
       {data?.timeline.map(event => (
@@ -361,7 +361,7 @@ Update Evidence Journal to use persistent store:
 // Today's Evidence Tab
 function TodaysEvidenceTab() {
   const { data } = useQuery('todays-events', fetchTodaysEvents);
-  
+
   return (
     <div>
       <Section title="Clinical Readouts">
@@ -369,7 +369,7 @@ function TodaysEvidenceTab() {
           <EventCard event={event} key={event.id} />
         ))}
       </Section>
-      
+
       <Section title="Regulatory Changes">
         {data?.regulatory_changes.map(event => (
           <EventCard event={event} key={event.id} />
@@ -382,12 +382,12 @@ function TodaysEvidenceTab() {
 // Catalyst Board Tab
 function CatalystBoard() {
   const next90Days = new Date(Date.now() + 90*24*60*60*1000).toISOString();
-  
+
   const { data } = useQuery('catalysts', () =>
     fetch(`/api/v1/science/science-events?event_category=CLINICAL&to_date=${next90Days}`)
       .then(r => r.json())
   );
-  
+
   return <CatalystTimeline events={data?.events} />;
 }
 ```
@@ -407,7 +407,7 @@ def process_clinical_trial_update(trial_data):
     """New approach - create science event"""
     # Update database
     update_trial_in_database(trial_data)
-    
+
     # Create event in store
     event = {
         "event_type": "TRIAL_UPDATE",
@@ -423,7 +423,7 @@ def process_clinical_trial_update(trial_data):
         "confidence_score": 1.0,  # Direct from source
         "tags": ["trial-update", trial_data["phase"].lower()]
     }
-    
+
     create_science_event(event)
 ```
 
@@ -452,7 +452,7 @@ def test_timeline_query():
     # Create test events
     create_event(entity_id="DRUG-001", event_date="2024-01-01")
     create_event(entity_id="DRUG-001", event_date="2024-02-01")
-    
+
     # Query timeline
     timeline = get_timeline("DRUG", "DRUG-001")
     assert len(timeline) == 2
@@ -465,11 +465,11 @@ def test_full_workflow():
     """Test complete workflow from ingestion to UI"""
     # 1. Ingest data
     ingest_trial_data(trial_nct_id="NCT12345678")
-    
+
     # 2. Verify event created
     events = query_events(entity_id="NCT12345678")
     assert len(events) > 0
-    
+
     # 3. Query via UI API
     timeline = get_ui_timeline("TRIAL", "NCT12345678")
     assert timeline["total_events"] > 0
@@ -530,10 +530,10 @@ cache = redis.Redis()
 def get_timeline_with_cache(entity_type, entity_id):
     cache_key = f"timeline:{entity_type}:{entity_id}"
     cached = cache.get(cache_key)
-    
+
     if cached:
         return json.loads(cached)
-    
+
     timeline = fetch_timeline(entity_type, entity_id)
     cache.setex(cache_key, 300, json.dumps(timeline))  # 5 min TTL
     return timeline

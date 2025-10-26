@@ -19,15 +19,15 @@ The Pipeline Scraper is designed to build a master database of drug development 
 
 ### Core Capabilities
 
-✅ **Modular Architecture** - Easy to add new company scrapers  
-✅ **Automated Deduplication** - Hash-based duplicate detection  
-✅ **Phase Normalization** - Standardized phase terminology  
-✅ **Rate Limiting** - Respectful crawling (0.5 req/s default)  
-✅ **Database Integration** - SQLAlchemy ORM with PostgreSQL/SQLite  
-✅ **REST API** - FastAPI endpoints for data access  
-✅ **CLI Interface** - Rich terminal interface for manual scraping  
-✅ **Scheduled Updates** - Automated daily/weekly refresh  
-✅ **Extensible** - Template-based approach for new scrapers  
+✅ **Modular Architecture** - Easy to add new company scrapers
+✅ **Automated Deduplication** - Hash-based duplicate detection
+✅ **Phase Normalization** - Standardized phase terminology
+✅ **Rate Limiting** - Respectful crawling (0.5 req/s default)
+✅ **Database Integration** - SQLAlchemy ORM with PostgreSQL/SQLite
+✅ **REST API** - FastAPI endpoints for data access
+✅ **CLI Interface** - Rich terminal interface for manual scraping
+✅ **Scheduled Updates** - Automated daily/weekly refresh
+✅ **Extensible** - Template-based approach for new scrapers
 
 ### Built-in Company Scrapers
 
@@ -245,28 +245,28 @@ CREATE TABLE pipeline_assets (
     asset_name VARCHAR NOT NULL,
     company_name VARCHAR NOT NULL,
     company_id INTEGER REFERENCES companies(id),
-    
+
     -- Pipeline details
     phase VARCHAR,
     indication TEXT,
     therapeutic_area VARCHAR,
-    
+
     -- Asset metadata
     mechanism_of_action VARCHAR,
     modality VARCHAR,
     development_status VARCHAR,
-    
+
     -- Source tracking
     source_url VARCHAR,
     source_company VARCHAR,
     logo_url VARCHAR,
-    
+
     -- Data provenance
     scraped_at TIMESTAMP DEFAULT NOW(),
     last_verified TIMESTAMP,
     data_hash VARCHAR,
     metadata JSON,
-    
+
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP
 );
@@ -320,23 +320,23 @@ from bt_platform.scrapers.sites.pipeline_scraper import PipelineScraperBase
 
 class NewCompanyPipelineScraper(PipelineScraperBase):
     """Scraper for NewCompany's pipeline page."""
-    
+
     def __init__(self):
         super().__init__(
             company_name="NewCompany",
             pipeline_url="https://www.newcompany.com/pipeline"
         )
-    
+
     async def parse(self, html: str, url: str) -> List[Dict[str, Any]]:
         """Parse NewCompany pipeline page."""
         from bs4 import BeautifulSoup
-        
+
         soup = BeautifulSoup(html, 'html.parser')
         assets = []
-        
+
         # Add company-specific parsing logic
         pipeline_rows = soup.find_all('tr', class_='pipeline-row')
-        
+
         for row in pipeline_rows:
             asset = {
                 'asset_name': row.find('td', class_='asset-name').get_text(strip=True),
@@ -348,10 +348,10 @@ class NewCompanyPipelineScraper(PipelineScraperBase):
                 'logo_url': '',
                 'metadata': {}
             }
-            
+
             if asset['asset_name']:
                 assets.append(asset)
-        
+
         return assets
 ```
 

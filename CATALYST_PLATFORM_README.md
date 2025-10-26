@@ -393,6 +393,6 @@ MIT License - see [LICENSE](LICENSE)
 
 ---
 
-**Maintained by**: Data Platform Team  
-**Contact**: data-platform@biotech-terminal.com  
+**Maintained by**: Data Platform Team
+**Contact**: data-platform@biotech-terminal.com
 **Documentation**: https://docs.biotech-terminal.com

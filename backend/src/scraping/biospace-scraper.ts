@@ -1,7 +1,7 @@
 /**
  * BioSpace Scraper
  * Scrapes biotech and pharmaceutical industry news, job postings, and company updates
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://www.biospace.com
  */
@@ -39,7 +39,7 @@ export class BioSpaceScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<BioSpaceArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -84,7 +84,7 @@ export class BioSpaceScraper {
    */
   async getLatestNews(maxResults: number = 20): Promise<BioSpaceArticle[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached BioSpace articles');
@@ -94,9 +94,9 @@ export class BioSpaceScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} articles from BioSpace...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get('/news', {
             headers: {
@@ -106,10 +106,10 @@ export class BioSpaceScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Successfully fetched ${articles.length} BioSpace articles`);
         return articles;
       },
@@ -139,7 +139,7 @@ export class BioSpaceScraper {
   async searchArticles(params: BioSpaceSearchParams): Promise<BioSpaceArticle[]> {
     const { query = '', maxResults = 20, category = 'all' } = params;
     const cacheKey = `search:${query}:${category}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -149,9 +149,9 @@ export class BioSpaceScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching BioSpace for: "${query}"`);
-        
+
         const searchUrl = `/search?q=${encodeURIComponent(query)}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(searchUrl, {
@@ -162,10 +162,10 @@ export class BioSpaceScraper {
         });
 
         const articles = this.parseSearchResults(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles for query: "${query}"`);
         return articles;
       },
@@ -194,7 +194,7 @@ export class BioSpaceScraper {
    */
   async getCompanyNews(companyName: string, maxResults: number = 20): Promise<BioSpaceArticle[]> {
     const cacheKey = `company:${companyName}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached company news');
@@ -204,9 +204,9 @@ export class BioSpaceScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching news for company: ${companyName}`);
-        
+
         const url = `/company/${encodeURIComponent(companyName.toLowerCase().replace(/\s+/g, '-'))}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(url, {
@@ -217,10 +217,10 @@ export class BioSpaceScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles for company: ${companyName}`);
         return articles;
       },
@@ -257,13 +257,13 @@ export class BioSpaceScraper {
       try {
         const $article = $(element);
         const $title = $article.find('h2, h3, .article-title, .headline').first();
-        const $link = $title.find('a').first().length > 0 
-          ? $title.find('a').first() 
+        const $link = $title.find('a').first().length > 0
+          ? $title.find('a').first()
           : $article.find('a').first();
-        
+
         const title = $title.text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -274,7 +274,7 @@ export class BioSpaceScraper {
           title,
           url: fullUrl,
           author: $article.find('.author, .byline, [rel="author"]').first().text().trim() || 'BioSpace Staff',
-          publishedDate: $article.find('.date, .publish-date, time').first().attr('datetime') 
+          publishedDate: $article.find('.date, .publish-date, time').first().attr('datetime')
             || $article.find('.date, .publish-date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $article.find('.summary, .excerpt, .description, p').first().text().trim() || '',
@@ -306,13 +306,13 @@ export class BioSpaceScraper {
       try {
         const $result = $(element);
         const $title = $result.find('h2, h3, .title').first();
-        const $link = $title.find('a').first().length > 0 
-          ? $title.find('a').first() 
+        const $link = $title.find('a').first().length > 0
+          ? $title.find('a').first()
           : $result.find('a').first();
-        
+
         const title = $title.text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -323,7 +323,7 @@ export class BioSpaceScraper {
           title,
           url: fullUrl,
           author: $result.find('.author, .byline').first().text().trim() || 'BioSpace Staff',
-          publishedDate: $result.find('.date, time').first().attr('datetime') 
+          publishedDate: $result.find('.date, time').first().attr('datetime')
             || $result.find('.date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $result.find('.summary, .snippet').first().text().trim() || '',
@@ -347,7 +347,7 @@ export class BioSpaceScraper {
   private extractIdFromUrl(url: string): string {
     const matches = url.match(/\/article\/([^\/]+)/);
     if (matches) return matches[1];
-    
+
     const lastPart = url.split('/').pop();
     return lastPart || url;
   }

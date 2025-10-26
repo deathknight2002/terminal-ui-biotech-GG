@@ -67,10 +67,10 @@ export function LoECliffPage() {
             <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
               Stacked revenue-at-risk by year ($ millions)
             </div>
-            <div style={{ 
-              display: 'flex', 
-              height: '200px', 
-              alignItems: 'flex-end', 
+            <div style={{
+              display: 'flex',
+              height: '200px',
+              alignItems: 'flex-end',
               gap: '0.5rem',
               borderBottom: '1px solid var(--border-primary)',
               paddingBottom: '0.5rem'
@@ -79,12 +79,12 @@ export function LoECliffPage() {
                 const eventsInYear = loeEvents.filter(e => e.expiry_year === year);
                 const totalRevenue = eventsInYear.reduce((sum, e) => sum + e.peak_revenue, 0);
                 const height = totalRevenue > 0 ? (totalRevenue / 3000) * 100 : 0;
-                
+
                 return (
                   <div key={year} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div 
-                      style={{ 
-                        width: '100%', 
+                    <div
+                      style={{
+                        width: '100%',
                         height: `${height}%`,
                         backgroundColor: totalRevenue > 0 ? 'var(--accent-warning)' : 'transparent',
                         opacity: 0.8,
@@ -104,7 +104,7 @@ export function LoECliffPage() {
           <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
             Gantt Timeline - Asset Detail
           </div>
-          
+
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-primary)' }}>

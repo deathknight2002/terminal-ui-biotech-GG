@@ -13,8 +13,8 @@ from datetime import datetime, timedelta
 import logging
 
 from ..database import (
-    get_db, 
-    Company, 
+    get_db,
+    Company,
     Drug,
     ClinicalTrial,
     Catalyst,
@@ -36,7 +36,7 @@ async def get_company_profile(
 ):
     """
     Get comprehensive company profile for a given ticker.
-    
+
     Returns:
     - Company basic info (name, type, headquarters, etc.)
     - Financial metrics (market cap, enterprise value, cash position)
@@ -46,10 +46,10 @@ async def get_company_profile(
     """
     # Get company
     company = db.query(Company).filter(Company.ticker == ticker.upper()).first()
-    
+
     if not company:
         raise HTTPException(status_code=404, detail=f"Company with ticker {ticker} not found")
-    
+
     # Get latest market data
     latest_market_data = (
         db.query(MarketData)
@@ -57,10 +57,10 @@ async def get_company_profile(
         .order_by(desc(MarketData.timestamp))
         .first()
     )
-    
+
     # Count pipeline programs
     pipeline_count = db.query(func.count(Drug.id)).filter(Drug.company == company.name).scalar() or 0
-    
+
     # Count active catalysts
     active_catalysts_count = (
         db.query(func.count(Catalyst.id))
@@ -70,7 +70,7 @@ async def get_company_profile(
         )
         .scalar() or 0
     )
-    
+
     return {
         "ticker": company.ticker,
         "name": company.name,
@@ -114,23 +114,23 @@ async def get_company_sources(
 ):
     """
     Get company sources (investor presentations, press releases, filings).
-    
+
     Source types: PRESENTATION, PRESS_RELEASE, IR_MATERIAL, FILING
     """
     # Get company
     company = db.query(Company).filter(Company.ticker == ticker.upper()).first()
-    
+
     if not company:
         raise HTTPException(status_code=404, detail=f"Company with ticker {ticker} not found")
-    
+
     # Build query
     query = db.query(CompanySource).filter(CompanySource.company_id == company.id)
-    
+
     if source_type:
         query = query.filter(CompanySource.source_type == source_type.upper())
-    
+
     sources = query.order_by(desc(CompanySource.published_date)).limit(limit).all()
-    
+
     return {
         "ticker": ticker,
         "sources": [
@@ -162,13 +162,13 @@ async def get_company_articles(
     """
     # Get company
     company = db.query(Company).filter(Company.ticker == ticker.upper()).first()
-    
+
     if not company:
         raise HTTPException(status_code=404, detail=f"Company with ticker {ticker} not found")
-    
+
     # Calculate date threshold
     since_date = datetime.utcnow() - timedelta(days=days)
-    
+
     # Get articles
     articles = (
         db.query(CompanyArticle)
@@ -180,7 +180,7 @@ async def get_company_articles(
         .limit(limit)
         .all()
     )
-    
+
     return {
         "ticker": ticker,
         "articles": [
@@ -212,17 +212,17 @@ async def get_company_ownership(
     """
     # Get company
     company = db.query(Company).filter(Company.ticker == ticker.upper()).first()
-    
+
     if not company:
         raise HTTPException(status_code=404, detail=f"Company with ticker {ticker} not found")
-    
+
     # Get latest reporting date
     latest_date = (
         db.query(func.max(CompanyOwnership.reporting_date))
         .filter(CompanyOwnership.company_id == company.id)
         .scalar()
     )
-    
+
     if not latest_date:
         return {
             "ticker": ticker,
@@ -231,7 +231,7 @@ async def get_company_ownership(
             "reporting_date": None,
             "total_institutional_ownership": 0.0,
         }
-    
+
     # Get ownership records for latest date
     ownership_records = (
         db.query(CompanyOwnership)
@@ -243,10 +243,10 @@ async def get_company_ownership(
         .limit(top_n)
         .all()
     )
-    
+
     # Calculate total institutional ownership
     total_percent = sum(record.percent_owned or 0 for record in ownership_records)
-    
+
     return {
         "ticker": ticker,
         "ownership": [
@@ -277,22 +277,22 @@ async def get_company_pipeline(
     """
     # Get company
     company = db.query(Company).filter(Company.ticker == ticker.upper()).first()
-    
+
     if not company:
         raise HTTPException(status_code=404, detail=f"Company with ticker {ticker} not found")
-    
+
     # Get all drugs for this company
     drugs = db.query(Drug).filter(Drug.company == company.name).all()
-    
+
     # Group by therapeutic area
     pipeline_by_ta: Dict[str, List[Dict[str, Any]]] = {}
-    
+
     for drug in drugs:
         ta = drug.therapeutic_area or "Unknown"
-        
+
         if ta not in pipeline_by_ta:
             pipeline_by_ta[ta] = []
-        
+
         pipeline_by_ta[ta].append({
             "id": drug.id,
             "name": drug.name,
@@ -303,7 +303,7 @@ async def get_company_pipeline(
             "target": drug.target,
             "status": drug.status,
         })
-    
+
     # Convert to list format with counts
     pipeline_data = [
         {
@@ -313,7 +313,7 @@ async def get_company_pipeline(
         }
         for ta, programs in pipeline_by_ta.items()
     ]
-    
+
     return {
         "ticker": ticker,
         "company": company.name,
@@ -333,14 +333,14 @@ async def get_company_catalysts(
     """
     # Get company
     company = db.query(Company).filter(Company.ticker == ticker.upper()).first()
-    
+
     if not company:
         raise HTTPException(status_code=404, detail=f"Company with ticker {ticker} not found")
-    
+
     # Calculate date range
     start_date = datetime.utcnow()
     end_date = start_date + timedelta(days=upcoming_days)
-    
+
     # Get catalysts
     catalysts = (
         db.query(Catalyst)
@@ -352,7 +352,7 @@ async def get_company_catalysts(
         .order_by(Catalyst.date)
         .all()
     )
-    
+
     return {
         "ticker": ticker,
         "company": company.name,
@@ -389,7 +389,7 @@ async def get_company_stock_chart(
     """
     # Calculate date threshold
     since_date = datetime.utcnow() - timedelta(days=days)
-    
+
     # Get price data
     price_data = (
         db.query(MarketData)
@@ -400,7 +400,7 @@ async def get_company_stock_chart(
         .order_by(MarketData.timestamp)
         .all()
     )
-    
+
     if not price_data:
         return {
             "ticker": ticker,
@@ -408,7 +408,7 @@ async def get_company_stock_chart(
             "count": 0,
             "days": days,
         }
-    
+
     return {
         "ticker": ticker,
         "prices": [
@@ -442,7 +442,7 @@ async def get_xbi_constituents(
     Get list of XBI (SPDR S&P Biotech ETF) constituents with search and filter options.
     """
     query = db.query(Company)
-    
+
     if active_only:
         query = query.filter(
             Company.is_xbi_constituent == True,
@@ -453,7 +453,7 @@ async def get_xbi_constituents(
         )
     else:
         query = query.filter(Company.is_xbi_constituent == True)
-    
+
     # Apply search filter
     if search:
         search_term = f"%{search}%"
@@ -463,23 +463,23 @@ async def get_xbi_constituents(
                 Company.ticker.ilike(search_term)
             )
         )
-    
+
     # Apply company type filter
     if company_type:
         query = query.filter(Company.company_type == company_type)
-    
+
     # Apply market cap filters
     if min_market_cap is not None:
         query = query.filter(Company.market_cap >= min_market_cap)
     if max_market_cap is not None:
         query = query.filter(Company.market_cap <= max_market_cap)
-    
+
     # Get total count before pagination
     total_count = query.count()
-    
+
     # Apply ordering and pagination
     companies = query.order_by(Company.market_cap.desc()).limit(limit).offset(offset).all()
-    
+
     return {
         "constituents": [
             {

@@ -28,7 +28,7 @@ export function MetricCard({
   onClick
 }: MetricCardProps) {
   const isClickable = Boolean(onClick);
-  
+
   const formatValue = (val: string | number) => {
     if (typeof val === 'number') {
       if (val >= 1_000_000) {
@@ -47,7 +47,7 @@ export function MetricCard({
 
   const getTrendIcon = () => {
     if (!trend) return null;
-    
+
     switch (trend) {
       case 'up':
         return <span className="trend-icon">↗</span>;

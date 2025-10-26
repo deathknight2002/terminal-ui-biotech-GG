@@ -13,7 +13,7 @@ Total: 18 files
 
 #### Code Files (Preferred PR Branch) - 17 files
 - `bt_platform/core/database.py` - Python backend code
-- `bt_platform/core/routers.py` - Python backend code  
+- `bt_platform/core/routers.py` - Python backend code
 - `frontend-components/src/biotech/index.ts` - TypeScript exports
 - `terminal/src/pages/CatalystCalendarPage.tsx` - React page
 - `terminal/src/pages/ClinicalTrialsPage.tsx` - React page

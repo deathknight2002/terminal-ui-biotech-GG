@@ -239,7 +239,7 @@ All components follow the Bloomberg Terminal-inspired design system:
 
 - **Corner Brackets**: Visual accent on panel borders
 - **Monospace Font**: Terminal-style typography
-- **Color System**: 
+- **Color System**:
   - Accent primary (cyan/amber/green based on theme)
   - Success green for bullish signals
   - Error red for bearish signals

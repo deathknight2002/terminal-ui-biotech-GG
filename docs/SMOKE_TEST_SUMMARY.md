@@ -190,7 +190,7 @@ The application is ready for use on both mobile and desktop platforms.
   - Navigation functionality
   - Responsive design
   - Visual elements (Aurora, themes)
-  
+
 - **Mobile:** 23 tests
   - All mobile pages
   - Mobile layouts (iPhone SE, 14, iPad)
@@ -313,7 +313,7 @@ open docs/INTERACTIVE_SMOKE_TEST.html
 # .github/workflows/test.yml
 - name: Run smoke tests
   run: npm run smoke-test:quick
-  
+
 - name: Full smoke test (weekly)
   if: github.event.schedule
   run: npm run smoke-test

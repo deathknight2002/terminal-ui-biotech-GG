@@ -47,7 +47,7 @@ export class PubMedScraper {
 
   constructor(apiKey?: string) {
     this.apiKey = apiKey;
-    
+
     this.client = axios.create({
       baseURL: this.baseUrl,
       timeout: 30000,
@@ -80,7 +80,7 @@ export class PubMedScraper {
    */
   async search(params: PubMedSearchParams): Promise<PubMedArticle[]> {
     const cacheKey = JSON.stringify(params);
-    
+
     // Check cache first
     const cached = this.cache.get(cacheKey);
     if (cached) {
@@ -109,7 +109,7 @@ export class PubMedScraper {
       this.rateLimiter.recordSuccess();
 
       logger.info(`📚 PubMed search completed: ${articles.length} articles for "${params.query}"`);
-      
+
       return articles;
     } catch (error) {
       this.rateLimiter.recordError();
@@ -153,7 +153,7 @@ export class PubMedScraper {
     // Batch fetch in chunks of 200 (PubMed limit)
     const chunkSize = 200;
     const chunks = [];
-    
+
     for (let i = 0; i < pmids.length; i += chunkSize) {
       chunks.push(pmids.slice(i, i + chunkSize));
     }
@@ -193,11 +193,11 @@ export class PubMedScraper {
   private parseArticlesXML(xml: string): PubMedArticle[] {
     // Simplified parsing - in production, use a proper XML parser like xml2js
     const articles: PubMedArticle[] = [];
-    
+
     // This is a placeholder implementation
     // In production, parse actual XML structure
     logger.debug('📚 Parsing PubMed XML response');
-    
+
     return articles;
   }
 
@@ -206,7 +206,7 @@ export class PubMedScraper {
    */
   async getArticle(pmid: string): Promise<PubMedArticle | null> {
     const cacheKey = `pmid:${pmid}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached && cached.length > 0) {
       return cached[0];
@@ -216,12 +216,12 @@ export class PubMedScraper {
 
     try {
       const articles = await this.fetchArticleDetails([pmid]);
-      
+
       if (articles.length > 0) {
         this.cache.set(cacheKey, [articles[0]]);
         return articles[0];
       }
-      
+
       return null;
     } catch (error) {
       logger.error(`📚 Failed to fetch PMID ${pmid}:`, error);
@@ -234,7 +234,7 @@ export class PubMedScraper {
    */
   async searchByDrug(drugName: string, maxResults: number = 50): Promise<PubMedArticle[]> {
     const query = `"${drugName}"[Title/Abstract] AND (clinical trial[Publication Type] OR drug therapy[MeSH Terms])`;
-    
+
     return this.search({
       query,
       maxResults,
@@ -247,7 +247,7 @@ export class PubMedScraper {
    */
   async searchByDisease(disease: string, maxResults: number = 50): Promise<PubMedArticle[]> {
     const query = `"${disease}"[MeSH Terms] AND therapy[Subheading]`;
-    
+
     return this.search({
       query,
       maxResults,
@@ -261,9 +261,9 @@ export class PubMedScraper {
   async getTrendingResearch(maxResults: number = 100): Promise<PubMedArticle[]> {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
+
     const query = '(biotechnology[MeSH Terms] OR pharmaceutical[MeSH Terms]) AND "clinical trial"[Publication Type]';
-    
+
     return this.search({
       query,
       maxResults,

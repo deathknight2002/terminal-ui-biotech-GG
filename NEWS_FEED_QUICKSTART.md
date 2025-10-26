@@ -81,13 +81,13 @@ const results = await fetch('/api/news/search', {
    - 💊 GLP-1 - Metabolic/obesity therapies
    - 🎗️ Oncology - Cancer treatments
    - 🔬 Rare Disease - Orphan drugs
-   
+
 2. **Filter Buttons**
    - 📊 **TRADABLE ONLY** - Shows only SMID-cap catalyst events (high volatility potential)
    - ⭐ **PORTFOLIO ONLY** - Shows only watchlist-relevant news
-   
+
 3. **Search** - Find articles by company, ticker, keyword
-   
+
 4. **Smart Ranking** - Most important news appears first
    - 🚨 Critical - FDA approvals, major trial results
    - ⚠️ High - Positive clinical data, partnerships
@@ -257,6 +257,6 @@ See main [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: October 16, 2025  
+**Version**: 1.0.0
+**Last Updated**: October 16, 2025
 **Status**: Production Ready ✅

@@ -38,8 +38,8 @@
 
 ### 1. Alert: High API Error Rate
 
-**Severity**: P1 (Critical)  
-**Threshold**: Error rate > 5% for 5 minutes  
+**Severity**: P1 (Critical)
+**Threshold**: Error rate > 5% for 5 minutes
 **Impact**: Users experiencing failures
 
 #### Triage
@@ -57,7 +57,7 @@ aws logs tail /aws/ecs/catalyst-api-prod --since 5m --follow
    ```bash
    # Check active connections
    psql $DATABASE_URL -c "SELECT count(*) FROM pg_stat_activity WHERE state = 'active';"
-   
+
    # If > 90% of max_connections, scale up or restart API
    aws ecs update-service --cluster catalyst-prod --service api --desired-count 2
    ```
@@ -66,7 +66,7 @@ aws logs tail /aws/ecs/catalyst-api-prod --since 5m --follow
    ```bash
    # Check Dagster logs for rate limit errors
    grep "RateLimitExceeded" /var/log/dagster/*.log
-   
+
    # Temporarily disable aggressive polling
    dagster asset materialize --select "raw_*" --tags "priority=low"
    ```
@@ -75,7 +75,7 @@ aws logs tail /aws/ecs/catalyst-api-prod --since 5m --follow
    ```bash
    # Check Redis health
    redis-cli -h $REDIS_ENDPOINT ping
-   
+
    # If down, failover to database (cache-aside pattern handles this)
    # Monitor database load carefully
    ```
@@ -90,8 +90,8 @@ aws logs tail /aws/ecs/catalyst-api-prod --since 5m --follow
 
 ### 2. Alert: Dagster Job Failure
 
-**Severity**: P2 (High)  
-**Threshold**: Job fails 2 consecutive times  
+**Severity**: P2 (High)
+**Threshold**: Job fails 2 consecutive times
 **Impact**: Data freshness degraded
 
 #### Triage
@@ -112,7 +112,7 @@ dagster asset list --status
    # Check provider status pages
    curl -I https://clinicaltrials.gov
    curl -I https://api.fda.gov/healthcheck
-   
+
    # If provider is down, skip and retry later
    dagster job execute --preset retry_failed
    ```
@@ -121,7 +121,7 @@ dagster asset list --status
    ```bash
    # Find validation errors in logs
    grep "ValidationError" /var/log/dagster/ingestion.log
-   
+
    # Check data contract schema
    # Often caused by upstream schema changes
    # Fix: Update Pydantic contract in platform/core/contracts.py
@@ -131,7 +131,7 @@ dagster asset list --status
    ```bash
    # Check S3 bucket permissions
    aws s3 ls s3://biotech-terminal-lakehouse-prod/raw/
-   
+
    # Check IAM role policies
    aws iam get-role-policy --role-name dagster-execution-role --policy-name S3Access
    ```
@@ -146,8 +146,8 @@ dagster asset list --status
 
 ### 3. Alert: High Database CPU
 
-**Severity**: P2 (High)  
-**Threshold**: CPU > 80% for 10 minutes  
+**Severity**: P2 (High)
+**Threshold**: CPU > 80% for 10 minutes
 **Impact**: Slow queries, potential timeouts
 
 #### Triage
@@ -156,8 +156,8 @@ dagster asset list --status
 psql $DATABASE_URL
 
 # Check active queries
-SELECT pid, now() - query_start AS duration, query 
-FROM pg_stat_activity 
+SELECT pid, now() - query_start AS duration, query
+FROM pg_stat_activity
 WHERE state = 'active' AND now() - query_start > interval '30 seconds'
 ORDER BY duration DESC;
 
@@ -177,17 +177,17 @@ LIMIT 10;
    FROM pg_stat_statements
    ORDER BY mean_time DESC
    LIMIT 10;
-   
+
    -- Add index if needed (e.g., on catalyst_events.expected_date)
-   CREATE INDEX CONCURRENTLY idx_catalyst_expected_date 
-   ON catalyst_events(expected_date) 
+   CREATE INDEX CONCURRENTLY idx_catalyst_expected_date
+   ON catalyst_events(expected_date)
    WHERE status = 'UPCOMING';
    ```
 
 2. **Long-running analytics query**
    ```sql
    -- Terminate if necessary
-   SELECT pg_terminate_backend(pid) FROM pg_stat_activity 
+   SELECT pg_terminate_backend(pid) FROM pg_stat_activity
    WHERE query LIKE '%analytics%' AND now() - query_start > interval '5 minutes';
    ```
 
@@ -197,7 +197,7 @@ LIMIT 10;
    SELECT schemaname, tablename, last_vacuum, last_autovacuum
    FROM pg_stat_user_tables
    WHERE last_autovacuum IS NULL OR last_autovacuum < now() - interval '7 days';
-   
+
    -- Manual vacuum (use CONCURRENTLY to avoid locks)
    VACUUM ANALYZE VERBOSE catalyst_events;
    ```
@@ -212,8 +212,8 @@ LIMIT 10;
 
 ### 4. Alert: Feature Drift Detected
 
-**Severity**: P3 (Medium)  
-**Threshold**: PSI > 0.25 for key features  
+**Severity**: P3 (Medium)
+**Threshold**: PSI > 0.25 for key features
 **Impact**: Model predictions may be inaccurate
 
 #### Triage
@@ -242,7 +242,7 @@ cat /tmp/drift_report_$(date +%Y%m%d).json
 1. **Investigate root cause**
    ```python
    from ml.monitoring import DriftDetector
-   
+
    detector = DriftDetector()
    report = detector.analyze(start_date="2024-01-01", end_date="2024-12-31")
    report.visualize()  # Generates HTML report
@@ -252,7 +252,7 @@ cat /tmp/drift_report_$(date +%Y%m%d).json
    ```bash
    # Trigger retraining pipeline
    dagster job execute --config retrain_config.yaml backfill_predictions
-   
+
    # Monitor training metrics
    mlflow ui --backend-store-uri $MLFLOW_TRACKING_URI
    ```
@@ -267,8 +267,8 @@ cat /tmp/drift_report_$(date +%Y%m%d).json
 
 ### 5. Alert: Prediction Latency High
 
-**Severity**: P3 (Medium)  
-**Threshold**: p99 > 1s for `/api/v1/biotech/catalysts/ranked`  
+**Severity**: P3 (Medium)
+**Threshold**: p99 > 1s for `/api/v1/biotech/catalysts/ranked`
 **Impact**: Slow user experience
 
 #### Triage
@@ -285,7 +285,7 @@ psql $DATABASE_URL -c "SELECT * FROM pg_stat_statements WHERE mean_time > 500 OR
    ```bash
    # Check Redis hit rate
    redis-cli -h $REDIS_ENDPOINT info stats | grep hit_rate
-   
+
    # If low (<90%), warm cache
    curl -X POST https://api.biotech-terminal.com/admin/cache/warm
    ```
@@ -303,7 +303,7 @@ psql $DATABASE_URL -c "SELECT * FROM pg_stat_statements WHERE mean_time > 500 OR
    ```bash
    # Check model size
    ls -lh ml/models/production/*.pkl
-   
+
    # If >100MB, consider quantization or pruning
    ```
 
@@ -533,6 +533,6 @@ psql $DATABASE_URL -c "COPY (SELECT * FROM predictions WHERE predicted_at > now(
 
 ---
 
-**Last Updated**: 2024-01-15  
-**Maintained By**: Data Platform Team  
+**Last Updated**: 2024-01-15
+**Maintained By**: Data Platform Team
 **Feedback**: #data-platform Slack channel

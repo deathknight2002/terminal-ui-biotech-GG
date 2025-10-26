@@ -1,7 +1,7 @@
 /**
  * PharmaNewsWire Scraper
  * Scrapes pharmaceutical industry news, market updates, and company announcements
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://www.pharmanewswire.com (simulated - using RSS/API pattern)
  */
@@ -42,7 +42,7 @@ export class PharmaNewsWireScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<PharmaNewsWireArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -87,7 +87,7 @@ export class PharmaNewsWireScraper {
    */
   async getLatestNews(maxResults: number = 20): Promise<PharmaNewsWireArticle[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached PharmaNewsWire articles');
@@ -97,9 +97,9 @@ export class PharmaNewsWireScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} articles from PharmaNewsWire...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/news/latest', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -108,10 +108,10 @@ export class PharmaNewsWireScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} articles from PharmaNewsWire`);
         return articles;
       },
@@ -129,7 +129,7 @@ export class PharmaNewsWireScraper {
     maxResults: number = 20
   ): Promise<PharmaNewsWireArticle[]> {
     const cacheKey = `category:${category}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug(`📦 Returning cached ${category} articles`);
@@ -139,9 +139,9 @@ export class PharmaNewsWireScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching ${category} news from PharmaNewsWire...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get(`/news/category/${category}`, {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -150,10 +150,10 @@ export class PharmaNewsWireScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} ${category} articles`);
         return articles;
       },
@@ -168,7 +168,7 @@ export class PharmaNewsWireScraper {
    */
   async searchArticles(params: PharmaNewsWireSearchParams): Promise<PharmaNewsWireArticle[]> {
     const cacheKey = `search:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -178,9 +178,9 @@ export class PharmaNewsWireScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching PharmaNewsWire: "${params.query || 'all'}"`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/search', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -195,10 +195,10 @@ export class PharmaNewsWireScraper {
         });
 
         const articles = this.parseSearchResults(response.data, params.maxResults || 20);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Found ${articles.length} articles matching search`);
         return articles;
       },
@@ -213,13 +213,13 @@ export class PharmaNewsWireScraper {
    */
   private parseArticles(html: string, maxResults: number): PharmaNewsWireArticle[] {
     const articles: PharmaNewsWireArticle[] = [];
-    
+
     try {
       const $ = cheerio.load(html);
-      
+
       $('.article-item, .news-item').each((index, element) => {
         if (articles.length >= maxResults) return false;
-        
+
         const $element = $(element);
         const title = $element.find('.article-title, h2, h3').first().text().trim();
         const url = $element.find('a').first().attr('href') || '';
@@ -229,7 +229,7 @@ export class PharmaNewsWireScraper {
         const category = $element.find('.category, .tag').first().text().trim() || 'General';
         const imageUrl = $element.find('img').first().attr('src');
         const company = $element.find('.company-tag').first().text().trim();
-        
+
         if (title && url) {
           articles.push({
             id: this.extractIdFromUrl(url),
@@ -251,7 +251,7 @@ export class PharmaNewsWireScraper {
       this.rateLimiter.recordError();
       throw error;
     }
-    
+
     return articles;
   }
 
@@ -276,14 +276,14 @@ export class PharmaNewsWireScraper {
    */
   private extractTags($element: any): string[] {
     const tags: string[] = [];
-    
+
     $element.find('.tag, .label, .badge').each((_: number, tag: any) => {
       const tagText = $(tag).text().trim();
       if (tagText) {
         tags.push(tagText);
       }
     });
-    
+
     return tags;
   }
 

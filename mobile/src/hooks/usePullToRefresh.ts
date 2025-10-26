@@ -33,7 +33,7 @@ export const usePullToRefresh = (
     const handleTouchStart = (e: TouchEvent) => {
       const target = e.target as HTMLElement;
       const scrollableParent = findScrollableParent(target);
-      
+
       if (scrollableParent) {
         scrollTop = scrollableParent.scrollTop;
       }
@@ -51,7 +51,7 @@ export const usePullToRefresh = (
 
       if (distance > 0) {
         setPullDistance(Math.min(distance, threshold * 1.5));
-        
+
         // Prevent default scroll when pulling down from top
         if (distance > 10) {
           e.preventDefault();

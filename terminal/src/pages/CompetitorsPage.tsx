@@ -136,7 +136,7 @@ export function CompetitorsPage() {
             const radius = (value / 100) * maxRadius;
             const x = centerX + radius * Math.cos(angle);
             const y = centerY + radius * Math.sin(angle);
-            
+
             return (
               <circle
                 key={key}

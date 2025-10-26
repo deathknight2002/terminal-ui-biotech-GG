@@ -1,7 +1,7 @@
 /**
  * Science Daily Scraper
  * Scrapes scientific news, research discoveries, and breakthrough studies
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://www.sciencedaily.com
  */
@@ -40,7 +40,7 @@ export class ScienceDailyScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<ScienceDailyArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -100,7 +100,7 @@ export class ScienceDailyScraper {
    */
   async getNewsByCategory(category: string, maxResults: number = 20): Promise<ScienceDailyArticle[]> {
     const cacheKey = `category:${category}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached Science Daily articles');
@@ -110,9 +110,9 @@ export class ScienceDailyScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching ${category} articles from Science Daily...`);
-        
+
         const url = `/news/${category}/`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(url, {
@@ -123,10 +123,10 @@ export class ScienceDailyScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults, category);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Successfully fetched ${articles.length} Science Daily articles`);
         return articles;
       },
@@ -156,7 +156,7 @@ export class ScienceDailyScraper {
   async searchArticles(params: ScienceDailySearchParams): Promise<ScienceDailyArticle[]> {
     const { query = '', maxResults = 20 } = params;
     const cacheKey = `search:${query}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -166,9 +166,9 @@ export class ScienceDailyScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching Science Daily for: "${query}"`);
-        
+
         const searchUrl = `/search/?keyword=${encodeURIComponent(query)}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(searchUrl, {
@@ -179,10 +179,10 @@ export class ScienceDailyScraper {
         });
 
         const articles = this.parseSearchResults(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles for query: "${query}"`);
         return articles;
       },
@@ -211,7 +211,7 @@ export class ScienceDailyScraper {
    */
   async getTopStories(maxResults: number = 10): Promise<ScienceDailyArticle[]> {
     const cacheKey = `top:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached top stories');
@@ -221,9 +221,9 @@ export class ScienceDailyScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info('🔍 Fetching top stories from Science Daily...');
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get('/', {
             headers: {
@@ -233,10 +233,10 @@ export class ScienceDailyScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults, 'Top Stories');
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Successfully fetched ${articles.length} top stories`);
         return articles;
       },
@@ -276,7 +276,7 @@ export class ScienceDailyScraper {
         const $link = $article.find('a').first();
         const title = $link.text().trim() || $article.find('h3, h2').first().text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -287,7 +287,7 @@ export class ScienceDailyScraper {
           title,
           url: fullUrl,
           source: $article.find('.source, .citation').first().text().trim() || 'Science Daily',
-          publishedDate: $article.find('.date, time').first().attr('datetime') 
+          publishedDate: $article.find('.date, time').first().attr('datetime')
             || $article.find('.date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $article.find('.summary, .description, p').first().text().trim() || '',
@@ -320,7 +320,7 @@ export class ScienceDailyScraper {
         const $link = $result.find('a, h2 a, h3 a').first();
         const title = $link.text().trim() || $result.find('h2, h3').first().text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -331,7 +331,7 @@ export class ScienceDailyScraper {
           title,
           url: fullUrl,
           source: $result.find('.source').first().text().trim() || 'Science Daily',
-          publishedDate: $result.find('.date, time').first().attr('datetime') 
+          publishedDate: $result.find('.date, time').first().attr('datetime')
             || $result.find('.date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $result.find('.summary, .snippet').first().text().trim() || '',

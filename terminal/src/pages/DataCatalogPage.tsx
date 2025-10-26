@@ -181,7 +181,7 @@ export function DataCatalogPage() {
 
   const filteredSources = sources.filter((source) => {
     const matchesCategory = selectedCategory === 'all' || source.category === selectedCategory;
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       source.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       source.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -200,11 +200,11 @@ export function DataCatalogPage() {
     const now = Date.now();
     const then = new Date(timestamp).getTime();
     const diff = now - then;
-    
+
     const minutes = Math.floor(diff / (1000 * 60));
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
+
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
     return `${days}d ago`;
@@ -286,7 +286,7 @@ export function DataCatalogPage() {
                     </div>
                     {source.coverage.date_range && (
                       <div className="date-range">
-                        {new Date(source.coverage.date_range.start).getFullYear()} - 
+                        {new Date(source.coverage.date_range.start).getFullYear()} -
                         {new Date(source.coverage.date_range.end).getFullYear()}
                       </div>
                     )}

@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright Configuration for E2E Tests
- * 
+ *
  * Tests the Evidence Graph and other platform features with a focus on:
  * - Manual refresh behavior (no background polling)
  * - ETag caching

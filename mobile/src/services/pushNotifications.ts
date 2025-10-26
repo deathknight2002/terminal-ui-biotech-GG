@@ -40,7 +40,7 @@ class PushNotificationService {
     try {
       // Request permission
       const permission = await PushNotifications.requestPermissions();
-      
+
       if (permission.receive === 'granted') {
         // Register with APNs
         await PushNotifications.register();
@@ -68,7 +68,7 @@ class PushNotificationService {
     PushNotifications.addListener('registration', (token: Token) => {
       console.log('[Push] Registration success, token:', token.value);
       this.registrationToken = token.value;
-      
+
       // Send token to backend for storage
       this.sendTokenToBackend(token.value).catch((error) => {
         console.error('[Push] Failed to send token to backend:', error);

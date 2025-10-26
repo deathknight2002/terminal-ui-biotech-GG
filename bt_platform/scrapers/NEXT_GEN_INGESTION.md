@@ -103,7 +103,7 @@ Enhanced metadata extraction for:
   - Conditional requests with caching
   - Limited to 20 sources
   - Cache efficiency tracking
-  
+
 - **Deep Mode (≤60s)**:
   - All sources including archives
   - Full discovery (RSS, sitemap, HTML)
@@ -175,7 +175,7 @@ queue.add(
 while not queue.is_empty():
     item = await queue.get_next()
     # Process item...
-    
+
     # Retry on failure
     if failed:
         queue.retry(item, error="Connection timeout")
@@ -285,7 +285,7 @@ result = await parser.parse(html, source_key='fierce')
 if result:
     print(f"Parsed via: {result['parse_method']}")
     print(f"Title: {result['title']}")
-    
+
 # Check health
 dashboard = parser.get_health_dashboard()
 for source, health in dashboard.items():

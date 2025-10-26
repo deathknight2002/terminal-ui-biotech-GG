@@ -1,6 +1,6 @@
 /**
  * Event Bus - Central nervous system for the terminal ecosystem
- * 
+ *
  * Provides pub/sub communication between autonomous modules without direct coupling.
  * Supports event filtering, priority queuing, and diagnostic introspection.
  */

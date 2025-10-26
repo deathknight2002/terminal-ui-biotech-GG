@@ -204,7 +204,7 @@ export class NewsMonitoringService extends EventEmitter {
       for (const article of articles) {
         if (!this.seenArticles.has(article.id)) {
           this.seenArticles.set(article.id, true);
-          
+
           const newsArticle = this.convertFierceBiotechArticle(article);
           const matched = this.matchesKeywords(newsArticle);
 
@@ -218,7 +218,7 @@ export class NewsMonitoringService extends EventEmitter {
             };
 
             this.alerts.push(alert);
-            
+
             // Keep only last 500 alerts
             if (this.alerts.length > 500) {
               this.alerts.shift();
@@ -276,7 +276,7 @@ export class NewsMonitoringService extends EventEmitter {
       for (const article of articles) {
         if (!this.seenArticles.has(article.id)) {
           this.seenArticles.set(article.id, true);
-          
+
           const newsArticle: NewsArticle = {
             id: article.id,
             source: 'biospace',
@@ -303,7 +303,7 @@ export class NewsMonitoringService extends EventEmitter {
             };
 
             this.alerts.push(alert);
-            
+
             if (this.alerts.length > 500) {
               this.alerts.shift();
             }
@@ -360,7 +360,7 @@ export class NewsMonitoringService extends EventEmitter {
       for (const article of articles) {
         if (!this.seenArticles.has(article.id)) {
           this.seenArticles.set(article.id, true);
-          
+
           const newsArticle: NewsArticle = {
             id: article.id,
             source: 'science-daily',
@@ -387,7 +387,7 @@ export class NewsMonitoringService extends EventEmitter {
             };
 
             this.alerts.push(alert);
-            
+
             if (this.alerts.length > 500) {
               this.alerts.shift();
             }
@@ -444,7 +444,7 @@ export class NewsMonitoringService extends EventEmitter {
       for (const article of articles) {
         if (!this.seenArticles.has(article.id)) {
           this.seenArticles.set(article.id, true);
-          
+
           const newsArticle: NewsArticle = {
             id: article.id,
             source: 'endpoints',
@@ -471,7 +471,7 @@ export class NewsMonitoringService extends EventEmitter {
             };
 
             this.alerts.push(alert);
-            
+
             if (this.alerts.length > 500) {
               this.alerts.shift();
             }
@@ -522,7 +522,7 @@ export class NewsMonitoringService extends EventEmitter {
                                    'endpointsNews'].keywords;
 
     const text = `${article.title} ${article.summary}`.toLowerCase();
-    
+
     return keywords.some(keyword => text.includes(keyword.toLowerCase()));
   }
 
@@ -536,7 +536,7 @@ export class NewsMonitoringService extends EventEmitter {
                                    'endpointsNews'].keywords;
 
     const text = `${article.title} ${article.summary}`.toLowerCase();
-    
+
     return keywords.filter(keyword => text.includes(keyword.toLowerCase()));
   }
 
@@ -545,7 +545,7 @@ export class NewsMonitoringService extends EventEmitter {
    */
   private determineImportance(title: string, summary: string): 'high' | 'medium' | 'low' {
     const text = `${title} ${summary}`.toLowerCase();
-    
+
     // High importance keywords
     const highImportance = [
       'fda approval',
@@ -661,7 +661,7 @@ export class NewsMonitoringService extends EventEmitter {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    const lastAlert = this.alerts.length > 0 
+    const lastAlert = this.alerts.length > 0
       ? this.alerts[this.alerts.length - 1].timestamp
       : undefined;
 

@@ -87,9 +87,9 @@ export function ReportsPage() {
       <Panel title="EXPORT OPTIONS" cornerBrackets>
         <div style={{ padding: '2rem' }}>
           <div style={{ display: 'grid', gap: '1rem' }}>
-            <button style={{ 
-              padding: '1rem', 
-              background: 'var(--bg-panel)', 
+            <button style={{
+              padding: '1rem',
+              background: 'var(--bg-panel)',
               border: '1px solid var(--border-primary)',
               color: 'var(--text-primary)',
               cursor: 'pointer',
@@ -97,9 +97,9 @@ export function ReportsPage() {
             }}>
               📊 Export Excel Model (.xlsx)
             </button>
-            <button style={{ 
-              padding: '1rem', 
-              background: 'var(--bg-panel)', 
+            <button style={{
+              padding: '1rem',
+              background: 'var(--bg-panel)',
               border: '1px solid var(--border-primary)',
               color: 'var(--text-primary)',
               cursor: 'pointer',
@@ -107,9 +107,9 @@ export function ReportsPage() {
             }}>
               📑 Export PowerPoint Deck (.pptx)
             </button>
-            <button style={{ 
-              padding: '1rem', 
-              background: 'var(--bg-panel)', 
+            <button style={{
+              padding: '1rem',
+              background: 'var(--bg-panel)',
               border: '1px solid var(--border-primary)',
               color: 'var(--text-primary)',
               cursor: 'pointer',

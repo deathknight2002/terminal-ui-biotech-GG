@@ -19,7 +19,7 @@ enum DataSource {
   INTERNAL = 'INTERNAL'
 }
 
-type DiseaseCategory = 
+type DiseaseCategory =
   | 'Cancer'
   | 'Infectious Disease'
   | 'Chronic Disease'

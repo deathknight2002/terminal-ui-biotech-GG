@@ -1,6 +1,6 @@
 /**
  * Telemetry - Distributed tracing and observability
- * 
+ *
  * Provides OpenTelemetry-compatible tracing infrastructure
  * for end-to-end request tracking and performance monitoring
  */

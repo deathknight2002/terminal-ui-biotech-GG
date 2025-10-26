@@ -1,8 +1,8 @@
 /**
  * Centralized API Configuration
- * 
+ *
  * This file provides a single source of truth for API endpoints.
- * 
+ *
  * Backend Architecture:
  * - Python FastAPI backend runs on port 8000 (bt_platform)
  * - Contains all biotech intelligence APIs
@@ -33,14 +33,14 @@ export const API_ENDPOINTS = {
     TRIALS: `${API_BASE_URL}/biotech/trials`,
     FINANCIAL_MODELS: `${API_BASE_URL}/biotech/financial-models`,
   },
-  
+
   // Catalysts
   CATALYSTS: {
     CALENDAR: `${API_BASE_URL}/catalysts/calendar`,
     LIST: `${API_BASE_URL}/catalysts`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/catalysts/${id}`,
   },
-  
+
   // Companies
   COMPANIES: {
     PROFILE: (ticker: string) => `${API_BASE_URL}/companies/${ticker}/profile`,
@@ -52,21 +52,21 @@ export const API_ENDPOINTS = {
     FINANCIALS: (ticker: string) => `${API_BASE_URL}/companies/${ticker}/financials`,
     XBI_LIST: `${API_BASE_URL}/companies/xbi`,
   },
-  
+
   // Competition & Market Intelligence
   COMPETITION: {
     COMPARE: `${API_BASE_URL}/competition/compare`,
     SPIDERWEB: `${API_BASE_URL}/competition/spiderweb`,
     LANDSCAPE: `${API_BASE_URL}/competition/landscape`,
   },
-  
+
   // Therapeutic Areas
   THERAPEUTIC_AREAS: {
     LIST: `${API_BASE_URL}/therapeutic-areas/areas`,
     DETAIL: (id: string) => `${API_BASE_URL}/therapeutic-areas/areas/${id}`,
     COMPARE_RADAR: `${API_BASE_URL}/therapeutic-areas/areas/compare/radar`,
   },
-  
+
   // Evidence Journal & Science Events
   EVIDENCE: {
     JOURNAL: `${API_BASE_URL}/evidence/evidence-journal`,
@@ -75,24 +75,24 @@ export const API_ENDPOINTS = {
     MOA: `${API_BASE_URL}/evidence/moa`,
     SCORECARD: (companyId: string) => `${API_BASE_URL}/evidence/scorecard/${companyId}`,
   },
-  
+
   SCIENCE: {
     EVENTS: `${API_BASE_URL}/science/science-events`,
     EVENT_DETAIL: (id: string | number) => `${API_BASE_URL}/science/science-events/${id}`,
   },
-  
+
   // News & Insights
   NEWS: {
     LATEST: `${API_BASE_URL}/news/latest`,
     DIFF: `${API_BASE_URL}/news/diff`,
     SEARCH: `${API_BASE_URL}/news/search`,
   },
-  
+
   INSIGHTS: {
     SUMMARY: `${API_BASE_URL}/insights/summary`,
     OPPORTUNITIES: `${API_BASE_URL}/insights/opportunities`,
   },
-  
+
   // Advanced Intelligence
   INTELLIGENCE: {
     DASHBOARD: `${API_BASE_URL}/intelligence/dashboard`,
@@ -105,7 +105,7 @@ export const API_ENDPOINTS = {
     COMPETITIVE_LANDSCAPE: `${API_BASE_URL}/intelligence/trials/competitive-landscape`,
     MOLECULAR_TARGETS: (drugName: string) => `${API_BASE_URL}/intelligence/molecular/targets/${encodeURIComponent(drugName)}`,
   },
-  
+
   // Financial Modeling
   FINANCIALS: {
     OVERVIEW: `${API_BASE_URL}/financials/overview`,
@@ -115,25 +115,25 @@ export const API_ENDPOINTS = {
     LOE: `${API_BASE_URL}/loe/timeline`,
     REPORTS: `${API_BASE_URL}/reports`,
   },
-  
+
   // Analytics
   ANALYTICS: {
     METRICS: `${API_BASE_URL}/analytics/metrics`,
     TRENDS: `${API_BASE_URL}/analytics/trends`,
   },
-  
+
   // Search
   SEARCH: {
     QUERY: `${API_BASE_URL}/search/query`,
     ENTITIES: `${API_BASE_URL}/search/entities`,
   },
-  
+
   // Market Data
   MARKET: {
     CHART: `${API_BASE_URL}/market/openbb/chart`,
     QUOTE: `${API_BASE_URL}/market/openbb/quote`,
   },
-  
+
   // FDA Intelligence
   FDA: {
     APPROVALS: `${API_BASE_URL}/fda/approvals`,
@@ -145,7 +145,7 @@ export const API_ENDPOINTS = {
     DASHBOARD: `${API_BASE_URL}/fda/dashboard`,
     SAFETY_SIGNALS: `${API_BASE_URL}/fda/safety-signals`,
   },
-  
+
   // Clinical Trials Intelligence
   TRIALS: {
     SEARCH: `${API_BASE_URL}/trials/search`,
@@ -157,7 +157,7 @@ export const API_ENDPOINTS = {
     COMPETITIVE_LANDSCAPE: `${API_BASE_URL}/trials/competitive-landscape`,
     ENROLLMENT_TRACKER: `${API_BASE_URL}/trials/enrollment-tracker`,
   },
-  
+
   // Research Intelligence (PubMed)
   RESEARCH: {
     SEARCH: `${API_BASE_URL}/research/search`,
@@ -169,7 +169,7 @@ export const API_ENDPOINTS = {
     HOT_TOPICS: `${API_BASE_URL}/research/hot-topics`,
     COMPETITIVE_RESEARCH: `${API_BASE_URL}/research/competitive-research`,
   },
-  
+
   // Evidence Graph - Graph-based evidence tracking
   EVIDENCE_GRAPH: {
     HEALTH: `${PYTHON_API_BASE_URL}/evidence-graph/health`,
@@ -180,7 +180,7 @@ export const API_ENDPOINTS = {
     SCREEN: `${PYTHON_API_BASE_URL}/evidence-graph/screen`,
     SEED: `${PYTHON_API_BASE_URL}/evidence-graph/seed`,
   },
-  
+
   // Admin
   ADMIN: {
     HEALTH: `${API_CONFIG.BASE_URL}/health`,
@@ -191,7 +191,7 @@ export const API_ENDPOINTS = {
  * Fetch wrapper with error handling
  */
 export async function apiFetch<T>(
-  url: string, 
+  url: string,
   options?: RequestInit
 ): Promise<T> {
   try {

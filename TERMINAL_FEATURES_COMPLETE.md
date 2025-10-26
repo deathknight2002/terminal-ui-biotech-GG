@@ -48,12 +48,12 @@ This implementation delivers **Bloomberg/FactSet/LSEG-inspired terminal primitiv
   - Visual highlights (top 3 changes)
   - Collapsible with close button
   - Time-based filtering (1h, 1d, 1w)
-  
+
 - ✅ Verified hyperlinks
   - External link icon (🔗)
   - `link_valid` field tracking
   - Opens in new tab with `rel="noopener noreferrer"`
-  
+
 - ✅ Three-domain sentiment badges
   - **REG**: Regulatory sentiment (-1 to 1)
   - **CLIN**: Clinical sentiment (-1 to 1)
@@ -129,17 +129,17 @@ This implementation delivers **Bloomberg/FactSet/LSEG-inspired terminal primitiv
   - `innovation`
   - `regulatory_track`
   - `partnerships`
-  
+
 - ✅ Interactive tooltips
   - Hover on data points
   - Shows metric justifications
   - Modal overlay with reasoning
-  
+
 - ✅ Detailed comparison table
   - Side-by-side metrics
   - Color-coded bars (green/yellow/red)
   - Percentage values
-  
+
 - ✅ Multi-company comparison
   - Up to 6 companies simultaneously
   - CVD-safe color palette

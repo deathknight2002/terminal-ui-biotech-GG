@@ -127,7 +127,7 @@ Score = f(genetic_prior, selectivity, PoC_markers, class_precedents)
    - **Genetic** (highest weight): Open Targets score, PubMed links
    - **Translational** (medium weight): Biomarker alignment
    - **Clinical** (endpoint-dependent): OS > PFS > ORR (disease-specific)
-   
+
    Down-weight factors:
    - N < 50 (underpowered)
    - Post-hoc only analyses
@@ -164,7 +164,7 @@ Genetic (OT score/PubMed) > Translational (biomarker) > Clinical (endpoint hiera
   2. Auto-attach citation + permalink
   3. User writes one-sentence "So what?" explanation
   4. Saved with refresh timestamp
-  
+
 - **Lock State**: When `refreshMode = "manual"`, journal is locked during refresh
 - **Pending Updates Badge**: Show count of new evidence items (Scheduled/Live modes)
 - **Source Provenance**: Every snippet shows source icon, timestamp, deep link
@@ -390,7 +390,7 @@ const { data: catalysts } = useQuery(['evidence', 'catalysts'], fetchCatalysts);
 ### DMD (Gene Therapy Race)
 
 **Company Scorecard**: Compare Elevidys vs next-gen
-- Evidence stack: 
+- Evidence stack:
   - Genetic: Dystrophin gene validated (100%)
   - Translational: Expression levels, distribution
   - Clinical: Functional capacity (North Star Ambulatory Assessment)

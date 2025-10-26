@@ -42,7 +42,7 @@ async def lifespan(app: FastAPI):
         "environment": settings.SENTRY_ENVIRONMENT,
         "debug": settings.DEBUG
     })
-    
+
     # Initialize Sentry if configured
     init_sentry(
         dsn=settings.SENTRY_DSN,
@@ -50,13 +50,13 @@ async def lifespan(app: FastAPI):
         traces_sample_rate=settings.SENTRY_TRACES_SAMPLE_RATE,
         enable=bool(settings.SENTRY_DSN)
     )
-    
+
     # Initialize database
     await init_db()
     logger.info("📊 Database initialized", extra={"event_type": "database_init"})
-    
+
     yield
-    
+
     # Shutdown
     logger.info("🔄 Shutting down Biotech Terminal Platform", extra={"event_type": "shutdown"})
 
@@ -136,7 +136,7 @@ async def global_exception_handler(request, exc):
         },
         exc_info=True
     )
-    
+
     # Capture in Sentry if configured
     try:
         from .utils.sentry import capture_exception
@@ -147,7 +147,7 @@ async def global_exception_handler(request, exc):
         })
     except:
         pass  # Don't fail if Sentry capture fails
-    
+
     return JSONResponse(
         status_code=500,
         content={"detail": "Internal server error"}

@@ -50,7 +50,7 @@ git merge main --allow-unrelated-histories --no-commit
 # Resolve conflicts per CONFLICT_RESOLUTION_SUMMARY.md:
 git checkout --theirs pyproject.toml  # Use main version
 git checkout --ours bt_platform/core/database.py  # Use PR version
-git checkout --ours bt_platform/core/routers.py  # Use PR version  
+git checkout --ours bt_platform/core/routers.py  # Use PR version
 git checkout --ours frontend-components/src/biotech/index.ts  # Use PR version
 git checkout --ours terminal/src/pages/*.tsx  # Use PR versions
 git checkout --ours terminal/src/pages/financials/*.tsx  # Use PR versions
@@ -67,7 +67,7 @@ for pr_num in 73 74 75 76 77; do
     76) branch="copilot/integrate-biotech-apis-2" ;;
     77) branch="copilot/create-nih-integration-plan" ;;
   esac
-  
+
   git checkout -b "conflict-resolve/pr-$pr_num" "$branch"
   git merge main -m "Merge main into conflict-resolve/pr-$pr_num"
 done
@@ -149,6 +149,6 @@ If you encounter issues:
 
 ---
 
-**Prepared by**: Copilot Coding Agent  
-**Date**: October 14, 2025  
+**Prepared by**: Copilot Coding Agent
+**Date**: October 14, 2025
 **PR**: #79 (copilot/conflict-resolvepr-branches)

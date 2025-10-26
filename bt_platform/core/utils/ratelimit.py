@@ -36,13 +36,13 @@ def rate_limited(
 ) -> Callable:
     """
     Decorator for rate-limited HTTP requests with caching.
-    
+
     Args:
         domain: Domain name for rate limiting (e.g., "query1.finance.yahoo.com")
         rps: Requests per second allowed (default: 2.0)
         burst: Maximum burst size (default: 5)
         ttl: Cache time-to-live in seconds (default: 600)
-    
+
     Example:
         @rate_limited(domain="query1.finance.yahoo.com", rps=2.0, burst=5, ttl=600)
         def fetch_stock_quote(url, **kwargs):
@@ -54,25 +54,25 @@ def rate_limited(
             # Generate cache key from URL and params
             key_src = url + repr(sorted(kwargs.get("params", {}).items()))
             key = hashlib.sha256(key_src.encode()).hexdigest()
-            
+
             # Check cache first
             if key in _CACHE:
                 entry = _CACHE[key]
                 if entry["exp"] > time.time():
                     return entry["data"]
-            
+
             # Get or create bucket for this domain
             bucket = _BUCKETS[domain]
-            
+
             # Wait for available token
             _tick(bucket, burst, rps)
             while bucket["tokens"] < 1:
                 time.sleep(0.2)
                 _tick(bucket, burst, rps)
-            
+
             # Consume token
             bucket["tokens"] -= 1
-            
+
             # Make request with retry on failure
             try:
                 data = fn(url, **kwargs)
@@ -82,7 +82,7 @@ def rate_limited(
                 # Retry once after delay
                 time.sleep(1.0)
                 return fn(url, **kwargs)
-        
+
         return wrapper
     return decorator
 
@@ -90,7 +90,7 @@ def rate_limited(
 def clear_cache(domain: Optional[str] = None) -> None:
     """
     Clear cache entries.
-    
+
     Args:
         domain: If provided, only clear entries for this domain.
                 If None, clear all cache entries.
@@ -110,7 +110,7 @@ def clear_cache(domain: Optional[str] = None) -> None:
 def reset_rate_limiter(domain: Optional[str] = None) -> None:
     """
     Reset rate limiter state.
-    
+
     Args:
         domain: If provided, only reset rate limiter for this domain.
                 If None, reset all rate limiters.
@@ -125,13 +125,13 @@ def reset_rate_limiter(domain: Optional[str] = None) -> None:
 def get_cache_stats() -> Dict[str, Any]:
     """
     Get cache statistics.
-    
+
     Returns:
         Dictionary with cache size and valid entries count
     """
     now = time.time()
     valid_entries = sum(1 for entry in _CACHE.values() if entry["exp"] > now)
-    
+
     return {
         "total_entries": len(_CACHE),
         "valid_entries": valid_entries,
@@ -142,11 +142,11 @@ def get_cache_stats() -> Dict[str, Any]:
 def get_rate_limiter_stats(domain: Optional[str] = None) -> Dict[str, Any]:
     """
     Get rate limiter statistics.
-    
+
     Args:
         domain: If provided, get stats for specific domain.
                 If None, get stats for all domains.
-    
+
     Returns:
         Dictionary with rate limiter stats
     """

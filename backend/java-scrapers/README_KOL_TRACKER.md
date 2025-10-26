@@ -221,8 +221,8 @@ for i, score in enumerate(scores[:10], 1):
 ```python
 # Find high-conviction long candidates
 long_candidates = [
-    score for score in scores 
-    if score['weighted_sentiment'] > 0.5 
+    score for score in scores
+    if score['weighted_sentiment'] > 0.5
     and score['confidence_score'] > 0.7
     and score['signal_count'] >= 5
 ]
@@ -307,7 +307,7 @@ CREATE TABLE kol_scores (
 public class NewSourceScraper extends BaseKOLScraper {
     @Override
     public String getName() { return "New Source"; }
-    
+
     @Override
     protected List<KOLSignal> doScrape(Map<String, Object> config) {
         // Implement scraping logic

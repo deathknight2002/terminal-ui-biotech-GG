@@ -37,17 +37,17 @@ export function useAppLibrary() {
   const launchApp = useCallback(
     (app: AppModule) => {
       navigate(app.path);
-      
+
       // Update recently used
       const prefs = JSON.parse(localStorage.getItem('appPreferences') || '{}');
       const recent = [app.id, ...(prefs.recent || []).filter((id: string) => id !== app.id)].slice(0, 10);
       const lastUsed = { ...(prefs.lastUsed || {}), [app.id]: new Date().toISOString() };
-      
+
       localStorage.setItem(
         'appPreferences',
         JSON.stringify({ ...prefs, recent, lastUsed })
       );
-      
+
       setApps((prevApps) =>
         prevApps.map((a) =>
           a.id === app.id
@@ -55,7 +55,7 @@ export function useAppLibrary() {
             : a
         )
       );
-      
+
       close();
     },
     [navigate, close]
@@ -66,7 +66,7 @@ export function useAppLibrary() {
       const updated = prevApps.map((app) =>
         app.id === appId ? { ...app, favorited: !app.favorited } : app
       );
-      
+
       // Save to localStorage
       const prefs = JSON.parse(localStorage.getItem('appPreferences') || '{}');
       const favorites = updated.filter((app) => app.favorited).map((app) => app.id);
@@ -74,7 +74,7 @@ export function useAppLibrary() {
         'appPreferences',
         JSON.stringify({ ...prefs, favorites })
       );
-      
+
       return updated;
     });
   }, []);

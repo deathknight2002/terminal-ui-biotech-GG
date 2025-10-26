@@ -9,7 +9,7 @@ import type {
 
 /**
  * Disease-Specific Epidemiologic Models
- * 
+ *
  * This file contains comprehensive epidemiologic data for:
  * 1. Duchenne Muscular Dystrophy (DMD) - Rare Disease
  * 2. Non-Small Cell Lung Cancer (nSCLC) - Oncology

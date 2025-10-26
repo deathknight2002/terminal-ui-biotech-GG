@@ -22,7 +22,7 @@
   max-height: 90vh;
   background: var(--bg-terminal, #000000);
   border: 2px solid var(--accent-primary, #00ff00);
-  box-shadow: 
+  box-shadow:
     0 0 40px rgba(var(--accent-primary-rgb, 0, 255, 0), 0.3),
     0 20px 80px rgba(0, 0, 0, 0.6);
   display: flex;
@@ -276,7 +276,7 @@
 .app-item:hover {
   border-color: var(--accent-primary, #00ff00);
   background: rgba(var(--accent-primary-rgb, 0, 255, 0), 0.05);
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(var(--accent-primary-rgb, 0, 255, 0), 0.2),
     inset 0 0 40px rgba(var(--accent-primary-rgb, 0, 255, 0), 0.05);
   transform: translateY(-2px);

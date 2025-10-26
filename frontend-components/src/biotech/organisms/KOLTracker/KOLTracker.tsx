@@ -62,7 +62,7 @@ export const KOLTracker: React.FC<KOLTrackerProps> = ({
   const fetchData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch top-ranked entities
       const scoresResponse = await fetch(
         `${apiBaseUrl}/api/v1/kol/scores?entity_type=company&lookback_days=30&limit=50`
@@ -231,7 +231,7 @@ export const KOLTracker: React.FC<KOLTrackerProps> = ({
                 {new Date(signal.signal_date).toLocaleDateString()}
               </span>
             </div>
-            
+
             <div className="signal-body">
               <p className="signal-text">{signal.signal_text}</p>
             </div>

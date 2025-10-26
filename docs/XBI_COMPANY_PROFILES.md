@@ -40,7 +40,7 @@ The company profile provider implements intelligent caching:
 - **Location**: `/tmp/company_profile_cache/` (configurable)
 - **TTL**: 24 hours (configurable)
 - **Cache Bypass**: Use `force_refresh=True` to fetch fresh data
-- **Benefits**: 
+- **Benefits**:
   - Avoids API rate limits
   - Improves response time
   - Reduces bandwidth usage
@@ -271,28 +271,28 @@ python -m bt_platform.core.ingest_xbi_companies --ticker VRTX
 ## Troubleshooting
 
 ### Issue: "No data found for ticker"
-**Cause**: Invalid ticker or Yahoo Finance doesn't have data  
-**Solution**: 
+**Cause**: Invalid ticker or Yahoo Finance doesn't have data
+**Solution**:
 - Verify ticker symbol is correct
 - Check if company is publicly traded
 - Try alternate tickers (e.g., ADR vs primary listing)
 
 ### Issue: "Could not resolve host"
-**Cause**: Network connectivity issues or firewall blocking  
+**Cause**: Network connectivity issues or firewall blocking
 **Solution**:
 - Check internet connection
 - Verify firewall allows HTTPS to finance.yahoo.com
 - Consider proxy configuration if behind corporate firewall
 
 ### Issue: "Cache is stale"
-**Cause**: Cached data older than TTL  
+**Cause**: Cached data older than TTL
 **Solution**:
 - Run with `force_refresh=True`
 - Clear cache: `rm -rf /tmp/company_profile_cache/*`
 - Adjust cache TTL in configuration
 
 ### Issue: "Rate limit exceeded"
-**Cause**: Too many requests to Yahoo Finance  
+**Cause**: Too many requests to Yahoo Finance
 **Solution**:
 - Enable caching to reduce API calls
 - Add delays between requests (e.g., time.sleep(0.5))

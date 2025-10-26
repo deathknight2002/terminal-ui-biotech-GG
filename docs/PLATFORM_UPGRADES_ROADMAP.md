@@ -3,7 +3,7 @@
 ## Completed PRs
 
 ### ✅ PR 1 - Feature Flags / Remote Config (Unleash)
-**Status**: Complete  
+**Status**: Complete
 **Files Added**:
 - `mobile/src/services/featureFlagService.ts` - Core flag service with safe defaults
 - `mobile/src/hooks/useFeatureFlag.ts` - React hooks for components
@@ -21,7 +21,7 @@
 ---
 
 ### ✅ PR 2 - Local-first Storage Migration (RxDB)
-**Status**: Complete  
+**Status**: Complete
 **Files Added**:
 - `mobile/src/services/rxdb/schemas.ts` - Type-safe schemas for 5 collections
 - `mobile/src/services/rxdb/database.ts` - RxDB initialization with encryption
@@ -43,7 +43,7 @@
 
 ### PR 3 - Global Search (Meilisearch)
 
-**Estimated Effort**: 3-4 hours  
+**Estimated Effort**: 3-4 hours
 **Feature Flag**: `search.meilisearch`
 
 #### Backend Setup
@@ -127,7 +127,7 @@ export class SearchService {
 
 ### PR 4 - Observability (Sentry + PostHog + OpenTelemetry)
 
-**Estimated Effort**: 4-5 hours  
+**Estimated Effort**: 4-5 hours
 **Feature Flags**: `observability.sentry`, `observability.posthog`, `observability.opentelemetry`
 
 #### Dependencies
@@ -234,7 +234,7 @@ export function initializeOpenTelemetry() {
 
 ### PR 5 - Service Worker Hardened via Workbox
 
-**Estimated Effort**: 3-4 hours  
+**Estimated Effort**: 3-4 hours
 **Feature Flag**: `sw.workbox`
 
 #### Dependencies
@@ -317,7 +317,7 @@ const bgSyncPlugin = new BackgroundSyncPlugin('mutations-queue', {
 });
 
 registerRoute(
-  ({ url, request }) => 
+  ({ url, request }) =>
     url.pathname.startsWith('/api/') && ['POST', 'PUT', 'DELETE'].includes(request.method),
   new NetworkOnly({
     plugins: [bgSyncPlugin],
@@ -334,7 +334,7 @@ registerRoute(
 
 ### PR 6 - Native UX: iOS Live Activities + Deep Links
 
-**Estimated Effort**: 6-8 hours (requires Swift)  
+**Estimated Effort**: 6-8 hours (requires Swift)
 **Feature Flag**: `ux.liveActivities`
 
 #### Swift Widget Extension
@@ -453,7 +453,7 @@ export function setupDeepLinks() {
 
 ### PR 7 - Background Refresh
 
-**Estimated Effort**: 2-3 hours  
+**Estimated Effort**: 2-3 hours
 **Feature Flag**: `background.fetch`
 
 ```bash
@@ -471,13 +471,13 @@ export async function setupBackgroundFetch() {
     minimumFetchInterval: 15, // minutes
   }, async (taskId) => {
     console.log('[BackgroundFetch] Event:', taskId);
-    
+
     // Refresh RxDB indexes
     await rxdbService.getDatabase();
-    
+
     // Update widget data
     await updateWidgetData();
-    
+
     BackgroundFetch.finish(taskId);
   });
 
@@ -489,7 +489,7 @@ export async function setupBackgroundFetch() {
 
 ### PR 8 - Passkeys (WebAuthn)
 
-**Estimated Effort**: 5-6 hours  
+**Estimated Effort**: 5-6 hours
 **Feature Flag**: `security.passkeys`
 
 ```bash

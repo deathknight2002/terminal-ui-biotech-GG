@@ -7,7 +7,7 @@ Previously limited to 5 diseases (DMD, nSCLC, T2D, COVID-19, SCD), now includes:
 
 #### Cancer (SEER Data) - 5 diseases
 - Lung and Bronchus Cancer
-- Breast Cancer  
+- Breast Cancer
 - Colorectal Cancer
 - Prostate Cancer
 - Pancreatic Cancer

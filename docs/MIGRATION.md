@@ -283,7 +283,7 @@ npm run test:e2e
 npm run dev          # Frontend only
 cd backend && npm run dev  # Backend separately
 
-# After  
+# After
 npm run start:dev    # Full platform with hot reload
 npm run dev:backend  # Backend only
 npm run dev:terminal # Terminal app only

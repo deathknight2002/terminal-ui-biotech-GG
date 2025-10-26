@@ -115,13 +115,13 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedIndex(prev => 
+        setSelectedIndex(prev =>
           prev < flatResults.length - 1 ? prev + 1 : 0
         );
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setSelectedIndex(prev => 
+        setSelectedIndex(prev =>
           prev > 0 ? prev - 1 : flatResults.length - 1
         );
         break;
@@ -226,7 +226,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({
           {renderResultSection('Catalysts', results.catalysts, '📅')}
           {renderResultSection('Articles', results.articles, '📰')}
           {renderResultSection('Trials', results.trials, '🔬')}
-          
+
           {flatResults.length === 0 && !loading && (
             <div className="search-empty">
               No results found for "{query}"

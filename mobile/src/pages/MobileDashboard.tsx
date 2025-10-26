@@ -100,10 +100,10 @@ export const MobileDashboard: FC = () => {
       <div className="mobile-dashboard-header">
         <div className="mobile-page-title">Dashboard</div>
         <div className="mobile-page-time">
-          {currentTime.toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
+          {currentTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
             minute: '2-digit',
-            hour12: true 
+            hour12: true
           })}
         </div>
       </div>
@@ -203,8 +203,8 @@ export const MobileDashboard: FC = () => {
             </div>
             <div className="mobile-pipeline-progress-container">
               <div className="mobile-pipeline-progress-bar">
-                <div 
-                  className="mobile-pipeline-progress-fill" 
+                <div
+                  className="mobile-pipeline-progress-fill"
                   style={{ width: '75%' }}
                 />
               </div>
@@ -218,8 +218,8 @@ export const MobileDashboard: FC = () => {
             </div>
             <div className="mobile-pipeline-progress-container">
               <div className="mobile-pipeline-progress-bar">
-                <div 
-                  className="mobile-pipeline-progress-fill" 
+                <div
+                  className="mobile-pipeline-progress-fill"
                   style={{ width: '45%' }}
                 />
               </div>
@@ -233,8 +233,8 @@ export const MobileDashboard: FC = () => {
             </div>
             <div className="mobile-pipeline-progress-container">
               <div className="mobile-pipeline-progress-bar">
-                <div 
-                  className="mobile-pipeline-progress-fill" 
+                <div
+                  className="mobile-pipeline-progress-fill"
                   style={{ width: '20%' }}
                 />
               </div>

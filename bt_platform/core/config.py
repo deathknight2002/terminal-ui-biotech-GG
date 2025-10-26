@@ -17,36 +17,36 @@ except ModuleNotFoundError:
 
 class Settings(BaseSettings):
     """Application settings from environment variables"""
-    
+
     # Application
     APP_NAME: str = "Biotech Terminal Platform"
     DEBUG: bool = False
     API_VERSION: str = "v1"
-    
+
     # Server
     HOST: str = "0.0.0.0"
     PORT: int = 8000
-    
+
     # CORS
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
-        "http://localhost:3001", 
+        "http://localhost:3001",
         "http://localhost:5173",
         "http://localhost:8080"
     ]
-    
+
     # Database
     DATABASE_URL: str = "sqlite:///./biotech_terminal.db"
-    
+
     # Redis (optional)
     REDIS_URL: str = "redis://localhost:6379"
-    
+
     # External APIs (all optional - platform works without them)
     FDA_API_KEY: str = ""
     CLINICALTRIALS_API_KEY: str = ""
     PUBMED_API_KEY: str = ""
     PUBMED_EMAIL: str = "biotech-terminal@example.com"
-    
+
     # Advanced Intelligence APIs
     OPENFDA_API_KEY: str = ""
     PROTEIN_DATA_BANK_API_KEY: str = ""
@@ -56,29 +56,29 @@ class Settings(BaseSettings):
     DATA_LAKE_DIR: str = os.path.join("data", "lake")
     PARQUET_DIR: str = os.path.join("data", "lake", "parquet")
     DUCKDB_PATH: str = os.path.join("data", "lake", "biotech.duckdb")
-    
+
     # Evidence Graph Storage
     EVIDENCE_GRAPH_STORAGE: str = "json"  # "json" or "sqlite"
     EVIDENCE_GRAPH_DB_URL: str = "sqlite:///./data/evidence_graph.db"
-    
+
     # Security
     SECRET_KEY: str = "biotech-terminal-secret-key-change-in-production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    
+
     # Logging
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"  # "json" or "text"
-    
+
     # Observability
     SENTRY_DSN: str = ""
     SENTRY_ENVIRONMENT: str = "development"
     SENTRY_TRACES_SAMPLE_RATE: float = 0.1
     METRICS_ENABLED: bool = True
-    
+
     # Authentication
     API_TOKEN_ENABLED: bool = False
     API_TOKEN: str = ""  # Set via environment variable for write operations
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = True

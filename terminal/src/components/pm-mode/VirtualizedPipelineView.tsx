@@ -60,13 +60,13 @@ export const VirtualizedPipelineView: React.FC<VirtualizedPipelineViewProps> = (
 
     // Group by Therapeutic Area → Indication → Asset
     const taMap = new Map<string, Map<string, Program[]>>();
-    
+
     filteredPrograms.forEach(program => {
       if (!taMap.has(program.therapeuticArea)) {
         taMap.set(program.therapeuticArea, new Map());
       }
       const indicationMap = taMap.get(program.therapeuticArea)!;
-      
+
       if (!indicationMap.has(program.indication)) {
         indicationMap.set(program.indication, []);
       }
@@ -75,11 +75,11 @@ export const VirtualizedPipelineView: React.FC<VirtualizedPipelineViewProps> = (
 
     // Build hierarchy
     const hierarchy: HierarchyNode[] = [];
-    
+
     taMap.forEach((indicationMap, ta) => {
       const taPrograms: Program[] = [];
       indicationMap.forEach(progs => taPrograms.push(...progs));
-      
+
       const taNode: HierarchyNode = {
         id: `ta-${ta}`,
         type: 'therapeuticArea',
@@ -123,7 +123,7 @@ export const VirtualizedPipelineView: React.FC<VirtualizedPipelineViewProps> = (
             count: indicationPrograms.length,
           },
         };
-        
+
         taNode.children!.push(indNode);
       });
 
@@ -136,15 +136,15 @@ export const VirtualizedPipelineView: React.FC<VirtualizedPipelineViewProps> = (
   // Flatten hierarchy for virtualization
   const flattenedNodes = useMemo(() => {
     const flat: (HierarchyNode & { program?: Program })[] = [];
-    
+
     const flatten = (node: HierarchyNode) => {
       flat.push(node);
-      
+
       if (node.expanded && node.children) {
         node.children.forEach(child => flatten(child));
       }
     };
-    
+
     hierarchyData.forEach(node => flatten(node));
     return flat;
   }, [hierarchyData]);
@@ -244,8 +244,8 @@ export const VirtualizedPipelineView: React.FC<VirtualizedPipelineViewProps> = (
         >
           {rowVirtualizer.getVirtualItems().map(virtualRow => {
             const node = flattenedNodes[virtualRow.index];
-            const isTopDriver = node.type === 'asset' && 
-              node.programs[0] && 
+            const isTopDriver = node.type === 'asset' &&
+              node.programs[0] &&
               top10EvDrivers.includes(node.programs[0].id);
             const dimmed = isFocusMode && node.type === 'asset' && !isTopDriver;
 

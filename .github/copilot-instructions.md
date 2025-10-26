@@ -41,7 +41,7 @@ root/                           # Monorepo orchestration
 │   └── ingestion/              # DuckDB pipeline for data ingestion
 ├── frontend-components/        # React component library (publishable)
 │   ├── src/terminal/           # Bloomberg-style UI primitives
-│   ├── src/tables/             # Data grid components  
+│   ├── src/tables/             # Data grid components
 │   ├── src/plotly/             # Chart visualizations
 │   └── src/biotech/            # Domain-specific biotech widgets
 ├── backend/                    # Node.js Express API (TypeScript)
@@ -483,7 +483,7 @@ from pydantic import BaseModel, validator
 class DrugCreate(BaseModel):
     name: str
     phase: PhaseType
-    
+
     @validator('name')
     def name_not_empty(cls, v):
         if not v or not v.strip():
@@ -678,7 +678,7 @@ cd backend && npm run dev
 # In database.py
 class Drug(Base):
     __tablename__ = "drugs"
-    
+
     name = Column(String, index=True)  # Add index=True
     phase = Column(String, index=True)
 ```
@@ -749,7 +749,7 @@ import { MyComponent } from '@biotech-terminal/frontend-components/terminal';
 # 1. Define in platform/core/database.py
 class NewModel(Base):
     __tablename__ = "new_models"
-    
+
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

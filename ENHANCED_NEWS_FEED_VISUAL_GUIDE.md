@@ -261,5 +261,5 @@ Response: {
 
 ---
 
-**For Developers**: See `ENHANCED_NEWS_FEED_SUMMARY.md` for implementation details  
+**For Developers**: See `ENHANCED_NEWS_FEED_SUMMARY.md` for implementation details
 **For Users**: See `examples/EnhancedNewsFeedExample.tsx` for interactive demo

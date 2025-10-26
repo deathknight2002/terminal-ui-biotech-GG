@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
+import {
   ClinicalTrialsTimeline,
   type ClinicalTrial
 } from '../../../frontend-components/src/biotech';
@@ -69,7 +69,7 @@ const fetchTrialsData = async () => {
 };
 
 export function ClinicalTrialsPage() {
-  const { 
+  const {
     data: trialsData = DEFAULT_TRIALS,
   } = useQuery({
     queryKey: ['clinical-trials'],

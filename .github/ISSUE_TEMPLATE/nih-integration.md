@@ -13,7 +13,7 @@ assignees: ''
 
 
 ### Open/Free Confirmation
-<!-- 
+<!--
 REQUIRED: Confirm this data source is open-source and free to access
 Check ALL that apply:
 -->
@@ -44,10 +44,10 @@ https://example.com/api/v1/
 
 ### Rate Limits
 <!-- Published rate limits from API documentation -->
-- **Requests per second**: 
-- **Requests per minute**: 
-- **Requests per day**: 
-- **Burst capacity** (if applicable): 
+- **Requests per second**:
+- **Requests per minute**:
+- **Requests per day**:
+- **Burst capacity** (if applicable):
 
 ### Documentation
 <!-- Link to official API documentation -->

@@ -161,8 +161,8 @@ import { io } from 'socket.io-client';
 const socket = io('http://localhost:3001');
 
 // Subscribe to monitoring updates
-socket.emit('monitoring:subscribe', { 
-  channels: ['changes', 'alerts', 'monitors', 'portfolio'] 
+socket.emit('monitoring:subscribe', {
+  channels: ['changes', 'alerts', 'monitors', 'portfolio']
 });
 
 // Listen for changes
@@ -423,7 +423,7 @@ The monitoring system integrates with existing components:
    ```bash
    # Clear old changes
    curl -X DELETE http://localhost:3001/api/monitoring/changes
-   
+
    # Clear old alerts
    curl -X DELETE http://localhost:3001/api/monitoring/portfolio/alerts
    ```

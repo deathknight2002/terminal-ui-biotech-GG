@@ -131,15 +131,15 @@ function LiveMarketData() {
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:3001');
-    
+
     ws.onmessage = (event) => {
       const newData = JSON.parse(event.data);
       setData(newData);
-      
+
       // Trigger ripple effect
       setDataUpdated(true);
       setTimeout(() => setDataUpdated(false), 600);
-      
+
       // Add alert for significant changes
       if (newData.priceChange > 10) {
         addAlert({
@@ -156,8 +156,8 @@ function LiveMarketData() {
   }, []);
 
   return (
-    <GlassPanel 
-      urgency="high" 
+    <GlassPanel
+      urgency="high"
       texture="neural"
       showDataUpdate={dataUpdated}
     >
@@ -183,10 +183,10 @@ Override CSS variables in your app:
 :root {
   /* Make critical alerts even more visible */
   --glass-transparency-critical: 0.10;
-  
+
   /* Adjust blur intensity for your brand */
   --glass-blur-intense: 28px;
-  
+
   /* Custom sector colors */
   --aurora-oncology: #FF00FF;
 }
@@ -229,7 +229,7 @@ function App() {
   useEffect(() => {
     // Detect device performance
     const isHighPerformance = navigator.hardwareConcurrency > 4;
-    
+
     if (!isHighPerformance) {
       // Reduce blur on lower-end devices
       document.documentElement.style.setProperty('--glass-blur-intense', '12px');
@@ -261,7 +261,7 @@ function App() {
 function BiotechDashboard({ sector, sentiment }) {
   return (
     <div className="neural-glass-dashboard">
-      <div 
+      <div
         className="aurora-sector-background aurora-sentiment"
         data-sector={sector}
         data-sentiment={sentiment}
@@ -313,7 +313,7 @@ function SmartAlertSystem() {
   const handleEvent = (event) => {
     // Determine priority based on event data
     let priority = 'low';
-    
+
     if (event.type === 'fda_approval') {
       priority = 'critical';
     } else if (event.impactScore > 0.7) {
@@ -369,7 +369,7 @@ backdrop-filter: blur(24px);
   .glass-panel-adaptive {
     backdrop-filter: blur(8px) !important;
   }
-  
+
   .molecular-glass-grid::before,
   .molecular-glass-grid::after {
     display: none;

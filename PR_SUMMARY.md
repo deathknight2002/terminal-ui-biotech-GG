@@ -112,15 +112,15 @@ import { createCloudEventBus } from './src/core/cloudevent-bus';
 import { FAERSConnector, DrugsAtFDAConnector, CatalystEngine } from './src/connectors';
 
 // Initialize DI container
-container.registerSingleton(ServiceTokens.FAERSConnector, () => 
+container.registerSingleton(ServiceTokens.FAERSConnector, () =>
   new FAERSConnector(process.env.OPENFDA_API_KEY)
 );
 
-container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () => 
+container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () =>
   new DrugsAtFDAConnector(process.env.OPENFDA_API_KEY)
 );
 
-container.registerSingleton(ServiceTokens.CatalystEngine, (c) => 
+container.registerSingleton(ServiceTokens.CatalystEngine, (c) =>
   new CatalystEngine({
     faersConnector: c.resolve(ServiceTokens.FAERSConnector),
     drugsAtFDAConnector: c.resolve(ServiceTokens.DrugsAtFDAConnector),

@@ -622,7 +622,7 @@ const Risks = () => (
     <Stack spacing={2}>
       {content.risks.map((r, i) => (
         <Accordion key={i}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}> 
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="subtitle2" color="secondary">{r.area}</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -644,7 +644,7 @@ const Risks = () => (
 );
 
 const MyTake = () => (
-  <SectionCard title="My take" icon={<TableChartIcon fontSize="small" />}> 
+  <SectionCard title="My take" icon={<TableChartIcon fontSize="small" />}>
     <Stack spacing={2}>
       {content.take.map((t, i) => (
         <Paper key={i} sx={{ p: 2 }}>
@@ -666,7 +666,7 @@ const MyTake = () => (
 );
 
 const SuggestedReplies = () => (
-  <SectionCard title="Suggested reply lines to Laura" icon={<MenuBookIcon fontSize="small" />} actions={<CopyButton text={content.replies.join("\n")} />}> 
+  <SectionCard title="Suggested reply lines to Laura" icon={<MenuBookIcon fontSize="small" />} actions={<CopyButton text={content.replies.join("\n")} />}>
     <List dense>
       {content.replies.map((r, i) => (
         <ListItem key={i}>

@@ -1,6 +1,6 @@
 /**
  * Logger Service
- * 
+ *
  * Simple logging utility for mobile app
  */
 

@@ -4,26 +4,26 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
-  
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  
+
   min-width: 400px;
   max-width: 600px;
   padding: 1rem 1.5rem;
-  
+
   background-color: rgba(10, 10, 15, 0.95);
   border: 1px solid;
   border-radius: 4px;
-  
+
   font-family: 'Roboto Mono', 'Courier New', monospace;
   font-size: 0.875rem;
-  
+
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  
+
   animation: slideDown 0.3s ease-out;
 }
 

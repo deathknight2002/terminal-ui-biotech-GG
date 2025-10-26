@@ -8,10 +8,10 @@ import {
   Badge,
   Text
 } from '../src';
-import type { 
-  Asset, 
+import type {
+  Asset,
   FinancialProjection,
-  PipelineStage 
+  PipelineStage
 } from '../src';
 import styles from './BiotechExample.module.css';
 
@@ -59,7 +59,7 @@ const sampleProjection: FinancialProjection = {
       type: 'regulatory'
     },
     {
-      id: '2', 
+      id: '2',
       name: 'FDA Approval',
       date: '2025-Q2',
       probability: 0.65,
@@ -69,7 +69,7 @@ const sampleProjection: FinancialProjection = {
     {
       id: '3',
       name: 'EU Approval',
-      date: '2025-Q3', 
+      date: '2025-Q3',
       probability: 0.58,
       value: 380000000,
       type: 'regulatory'
@@ -101,7 +101,7 @@ const BiotechExample: React.FC = () => {
       label: 'Financial Dashboard',
       content: (
         <div className={styles.dashboardContent}>
-          <BiotechFinancialDashboard 
+          <BiotechFinancialDashboard
             asset={sampleAsset}
             projection={sampleProjection}
           />
@@ -185,7 +185,7 @@ const BiotechExample: React.FC = () => {
         showParticles={true}
         className="aurora-backdrop"
       />
-      
+
       <div className={styles.contentContainer}>
         <div className={styles.headerSection}>
           <Text variant="h1" color="primary" style={{ marginBottom: '8px' }}>

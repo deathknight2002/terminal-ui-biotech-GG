@@ -53,7 +53,7 @@ def test_core_imports():
     """Test that core components can be imported (context-aware)."""
     success_count = 0
     total_count = 0
-    
+
     # Test 1: Core package structure
     total_count += 1
     try:
@@ -62,7 +62,7 @@ def test_core_imports():
         success_count += 1
     except ImportError as e:
         print(f"❌ Failed to import bt_platform.core: {e}")
-    
+
     # Test 2: Config module (graceful handling)
     total_count += 1
     try:
@@ -76,7 +76,7 @@ def test_core_imports():
             success_count += 1  # Don't fail
         else:
             print(f"❌ Failed to import config: {e}")
-    
+
     # Test 3: Database module (graceful handling)
     total_count += 1
     try:
@@ -90,7 +90,7 @@ def test_core_imports():
             success_count += 1  # Don't fail
         else:
             print(f"❌ Failed to import database: {e}")
-    
+
     return success_count == total_count
 ```
 

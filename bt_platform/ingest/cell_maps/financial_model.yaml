@@ -135,7 +135,7 @@ formatting:
     percentage: "0.0%"
     millions: "#,##0.0"
     date: "mm/dd/yyyy"
-  
+
   styles:
     header:
       font_name: "Calibri"
@@ -143,19 +143,19 @@ formatting:
       font_bold: true
       fill_color: "1f4e78"
       font_color: "ffffff"
-    
+
     data:
       font_name: "Calibri"
       font_size: 10
       fill_color: "ffffff"
       font_color: "000000"
-    
+
     assumption:
       fill_color: "d9e2f3"
-    
+
     output:
       fill_color: "e2efda"
-    
+
     warning:
       fill_color: "fff2cc"
 

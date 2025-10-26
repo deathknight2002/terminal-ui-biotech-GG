@@ -4,15 +4,15 @@
 
 This document outlines the phased implementation plan for enhancing the Biotech Terminal with advanced terminal UI capabilities, interactive command system, and Glass UI integration. The plan is divided into three phases focusing on quick wins, core development, and polish & launch.
 
-**Timeline**: 6-8 weeks  
-**Milestone**: Phase1-QuickWins, Phase2-CoreDev, Phase3-Launch  
+**Timeline**: 6-8 weeks
+**Milestone**: Phase1-QuickWins, Phase2-CoreDev, Phase3-Launch
 **Related**: NIH Integration PR (#77) - All work adheres to open/free-only datasets
 
 ## Data Architecture & Storage
 
-**Database**: PostgreSQL with JSONB for flexible terminal session storage  
-**Terminal Rendering**: xterm.js or equivalent terminal emulator  
-**Data Sources**: Open/free datasets only (NIH, ClinicalTrials.gov, FDA.gov, PubMed, SEC EDGAR)  
+**Database**: PostgreSQL with JSONB for flexible terminal session storage
+**Terminal Rendering**: xterm.js or equivalent terminal emulator
+**Data Sources**: Open/free datasets only (NIH, ClinicalTrials.gov, FDA.gov, PubMed, SEC EDGAR)
 **Real-time**: WebSocket support for live terminal sessions
 
 ## Phase 1: Quick Wins (Week 1-2)
@@ -21,8 +21,8 @@ This document outlines the phased implementation plan for enhancing the Biotech 
 
 ### 1.1 Install Consola for Backend Logging
 
-**Owner**: Backend Team  
-**Effort**: 2-3 days  
+**Owner**: Backend Team
+**Effort**: 2-3 days
 **Priority**: High
 
 #### Objectives
@@ -52,8 +52,8 @@ See: [`docs/phase1_issue_drafts/01-install-consola.md`](./phase1_issue_drafts/01
 
 ### 1.2 Prototype LiveTerm Integration
 
-**Owner**: Frontend Team  
-**Effort**: 3-5 days  
+**Owner**: Frontend Team
+**Effort**: 3-5 days
 **Priority**: High
 
 #### Objectives
@@ -82,8 +82,8 @@ See: [`docs/phase1_issue_drafts/02-prototype-liveterm.md`](./phase1_issue_drafts
 
 ### 1.3 Glass UI Compatibility Testing
 
-**Owner**: UI/UX Team  
-**Effort**: 2-3 days  
+**Owner**: UI/UX Team
+**Effort**: 2-3 days
 **Priority**: Medium
 
 #### Objectives
@@ -124,9 +124,9 @@ See: [`docs/phase1_issue_drafts/03-glass-ui-compat-testing.md`](./phase1_issue_d
 - [ ] Review and merge Phase 1 PRs
 
 **Exit Criteria:**
-✅ Consola logging operational  
-✅ Terminal prototype renders and accepts commands  
-✅ Glass UI compatibility validated  
+✅ Consola logging operational
+✅ Terminal prototype renders and accepts commands
+✅ Glass UI compatibility validated
 ✅ All Phase 1 PRs merged and tested
 
 ---
@@ -137,8 +137,8 @@ See: [`docs/phase1_issue_drafts/03-glass-ui-compat-testing.md`](./phase1_issue_d
 
 ### 2.1 GlassTerminal Component
 
-**Owner**: Frontend Team  
-**Effort**: 1 week  
+**Owner**: Frontend Team
+**Effort**: 1 week
 **Priority**: High
 
 #### Objectives
@@ -183,8 +183,8 @@ interface GlassTerminalProps {
 
 ### 2.2 Command System Architecture
 
-**Owner**: Backend + Frontend Teams  
-**Effort**: 1 week  
+**Owner**: Backend + Frontend Teams
+**Effort**: 1 week
 **Priority**: High
 
 #### Objectives
@@ -243,8 +243,8 @@ const drugCommand: Command = {
 
 ### 2.3 Backend Integration
 
-**Owner**: Full Stack Team  
-**Effort**: 3-4 days  
+**Owner**: Full Stack Team
+**Effort**: 3-4 days
 **Priority**: High
 
 #### Objectives
@@ -316,9 +316,9 @@ CREATE INDEX idx_terminal_sessions_updated ON terminal_sessions(updated_at);
 - [ ] PostgreSQL schema deployment
 
 **Exit Criteria:**
-✅ GlassTerminal component production-ready  
-✅ Command system extensible and documented  
-✅ Backend integration complete with WebSocket support  
+✅ GlassTerminal component production-ready
+✅ Command system extensible and documented
+✅ Backend integration complete with WebSocket support
 ✅ All Phase 2 PRs merged and tested
 
 ---
@@ -329,8 +329,8 @@ CREATE INDEX idx_terminal_sessions_updated ON terminal_sessions(updated_at);
 
 ### 3.1 Performance Optimization
 
-**Owner**: Full Stack Team  
-**Effort**: 3-4 days  
+**Owner**: Full Stack Team
+**Effort**: 3-4 days
 **Priority**: High
 
 #### Objectives
@@ -368,8 +368,8 @@ CREATE INDEX idx_terminal_sessions_updated ON terminal_sessions(updated_at);
 
 ### 3.2 User Testing & Feedback
 
-**Owner**: Product + QA Team  
-**Effort**: 1 week  
+**Owner**: Product + QA Team
+**Effort**: 1 week
 **Priority**: Medium
 
 #### Objectives
@@ -406,8 +406,8 @@ CREATE INDEX idx_terminal_sessions_updated ON terminal_sessions(updated_at);
 
 ### 3.3 Documentation & Launch Preparation
 
-**Owner**: Full Team  
-**Effort**: 3-4 days  
+**Owner**: Full Team
+**Effort**: 3-4 days
 **Priority**: High
 
 #### Objectives
@@ -478,10 +478,10 @@ CREATE INDEX idx_terminal_sessions_updated ON terminal_sessions(updated_at);
 - [ ] 🚀 Go-live!
 
 **Exit Criteria:**
-✅ Performance targets met (60 FPS, <150KB bundle)  
-✅ User testing complete with >4/5 satisfaction  
-✅ Documentation published and reviewed  
-✅ All Phase 3 PRs merged and tested  
+✅ Performance targets met (60 FPS, <150KB bundle)
+✅ User testing complete with >4/5 satisfaction
+✅ Documentation published and reviewed
+✅ All Phase 3 PRs merged and tested
 ✅ Launch checklist complete
 
 ---
@@ -512,10 +512,10 @@ All Phase 1 issue drafts are located in `docs/phase1_issue_drafts/`. To create G
    ```python
    import os
    from github import Github
-   
+
    g = Github("YOUR_TOKEN")
    repo = g.get_repo("deathknight2002/terminal-ui-biotech-GG")
-   
+
    drafts_dir = "docs/phase1_issue_drafts"
    for filename in os.listdir(drafts_dir):
        with open(os.path.join(drafts_dir, filename)) as f:
@@ -704,9 +704,9 @@ This implementation plan builds on the NIH integration work in PR #77. Key consi
 
 ### Weekly Cadence
 
-**Monday**: Sprint planning, review Phase X checklist  
-**Wednesday**: Mid-week sync, unblock issues  
-**Friday**: Demo session, retrospective  
+**Monday**: Sprint planning, review Phase X checklist
+**Wednesday**: Mid-week sync, unblock issues
+**Friday**: Demo session, retrospective
 
 ### Communication Plan
 
@@ -722,15 +722,15 @@ This implementation plan builds on the NIH integration work in PR #77. Key consi
 
 ## Questions or Need Clarification?
 
-**Technical Questions**: Contact Tech Lead  
-**Timeline Questions**: Contact Project Manager  
+**Technical Questions**: Contact Tech Lead
+**Timeline Questions**: Contact Project Manager
 **Budget Questions**: Contact Finance Team
 
 **Office Hours**: Tuesday/Thursday 3-4pm for open Q&A
 
 ---
 
-**Last Updated**: 2025-10-14  
-**Document Owner**: Tech Lead  
-**Review Frequency**: Weekly during implementation  
+**Last Updated**: 2025-10-14
+**Document Owner**: Tech Lead
+**Review Frequency**: Weekly during implementation
 **Related PRs**: #77 (NIH Integration)

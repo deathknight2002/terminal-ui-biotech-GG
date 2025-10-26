@@ -83,7 +83,7 @@ export interface Catalyst {
   description?: string;
   expectedImpact?: ImpactLevel;
   category?: "Clinical" | "Regulatory" | "Commercial" | "Corporate";
-  
+
   // Ionis-style stealth catalyst scoring
   eventLeverage?: number;      // Hard endpoint likelihood (0-4)
   timingClarity?: number;       // Fixed PDUFA vs event-driven fog (0-3)
@@ -355,7 +355,7 @@ export interface NewsItem {
   impact?: ImpactLevel;
   tags?: string[];
   url?: string;
-  
+
   // Enhanced fields for robust news feed
   therapeuticAreas?: TherapeuticArea[];
   companies?: string[];
@@ -773,7 +773,7 @@ export interface EvidenceJournalData {
 }
 
 // Epidemiology Types
-export type DiseaseAreaType = 
+export type DiseaseAreaType =
   | "DMD" // Duchenne Muscular Dystrophy
   | "nSCLC" // Non-Small Cell Lung Cancer
   | "T2D" // Type 2 Diabetes
@@ -784,7 +784,7 @@ export type DiseaseAreaType =
   | "Infectious Disease"
   | "Other";
 
-export type EpidemiologicModelType = 
+export type EpidemiologicModelType =
   | "Survival"
   | "Hazard"
   | "Incidence"
@@ -792,7 +792,7 @@ export type EpidemiologicModelType =
   | "Mortality"
   | "Progression";
 
-export type GeographicRegion = 
+export type GeographicRegion =
   | "North America"
   | "Europe"
   | "Asia Pacific"
@@ -800,7 +800,7 @@ export type GeographicRegion =
   | "Middle East & Africa"
   | "Global";
 
-export type CohortStratification = 
+export type CohortStratification =
   | "Age"
   | "Gender"
   | "Ethnicity"
@@ -810,7 +810,7 @@ export type CohortStratification =
   | "Biomarker"
   | "Geographic";
 
-export type InterventionType = 
+export type InterventionType =
   | "Treatment"
   | "Prevention"
   | "Screening"
@@ -1115,7 +1115,7 @@ export interface AppModule {
 
 // Entitlements & Roles - Permission System (FactSet/LSEG pattern)
 export type UserRole = "admin" | "analyst" | "viewer" | "guest";
-export type FeatureEntitlement = 
+export type FeatureEntitlement =
   | "data_export"
   | "manual_refresh"
   | "layout_management"

@@ -44,7 +44,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
   const getFilteredData = (): ChartDataPoint[] => {
     const now = new Date();
     const cutoffDate = new Date();
-    
+
     switch (timeframe) {
       case '1D':
         cutoffDate.setDate(now.getDate() - 1);
@@ -71,7 +71,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
       case 'ALL':
         return data;
     }
-    
+
     return data.filter((d) => new Date(d.date) >= cutoffDate);
   };
 
@@ -81,7 +81,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
   const calculateSMA = (period: number): { x: string[]; y: number[] } => {
     const x: string[] = [];
     const y: number[] = [];
-    
+
     for (let i = period - 1; i < filteredData.length; i++) {
       const sum = filteredData
         .slice(i - period + 1, i + 1)
@@ -89,7 +89,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
       x.push(filteredData[i].date);
       y.push(sum / period);
     }
-    
+
     return { x, y };
   };
 
@@ -111,7 +111,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
           line: { color: 'var(--accent-cyan)', width: 2 },
         } as Data);
         break;
-      
+
       case 'area':
         traces.push({
           x: dates,
@@ -123,7 +123,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
           fillcolor: 'rgba(0, 255, 255, 0.1)',
         } as Data);
         break;
-      
+
       case 'candlestick':
         if (filteredData[0]?.open !== undefined) {
           traces.push({
@@ -139,7 +139,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
           } as Data);
         }
         break;
-      
+
       case 'bar':
         traces.push({
           x: dates,
@@ -149,7 +149,7 @@ export const AdvancedChart: React.FC<AdvancedChartProps> = ({
           marker: { color: 'var(--accent-cyan)' },
         } as Data);
         break;
-      
+
       case 'scatter':
         traces.push({
           x: dates,

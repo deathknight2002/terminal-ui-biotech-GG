@@ -580,7 +580,7 @@ curl "http://localhost:8000/api/v1/research/competitive-research?company=Pfizer&
 - **Cache**: Results cached for 1 hour
 
 ### PubMed/NCBI E-utilities
-- **Rate Limit**: 
+- **Rate Limit**:
   - With API key: 10 requests per second
   - Without API key: 3 requests per second
 - **Implementation**: Configurable delay based on API key
@@ -667,7 +667,7 @@ export const API_ENDPOINTS = {
     DASHBOARD: `${API_BASE_URL}/fda/dashboard`,
     SAFETY_SIGNALS: `${API_BASE_URL}/fda/safety-signals`,
   },
-  
+
   // Clinical Trials
   TRIALS: {
     SEARCH: `${API_BASE_URL}/trials/search`,
@@ -678,7 +678,7 @@ export const API_ENDPOINTS = {
     COMPETITIVE: `${API_BASE_URL}/trials/competitive-landscape`,
     ENROLLMENT: `${API_BASE_URL}/trials/enrollment-tracker`,
   },
-  
+
   // Research Intelligence
   RESEARCH: {
     SEARCH: `${API_BASE_URL}/research/search`,
@@ -783,7 +783,7 @@ Potential additions to enhance these integrations:
 
 ### Getting Help
 
-- Check API documentation: 
+- Check API documentation:
   - [OpenFDA](https://open.fda.gov/apis/)
   - [ClinicalTrials.gov](https://clinicaltrials.gov/api/v2)
   - [PubMed E-utilities](https://www.ncbi.nlm.nih.gov/books/NBK25501/)

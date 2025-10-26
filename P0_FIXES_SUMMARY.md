@@ -82,7 +82,7 @@ For new developers cloning the repository:
    ```bash
    # Windows
    .\scripts\setup.ps1
-   
+
    # macOS/Linux
    ./scripts/setup.sh
    ```
@@ -97,7 +97,7 @@ For new developers cloning the repository:
    ```bash
    # Remove old database
    rm biotech_terminal.db
-   
+
    # Restart backend (database will be recreated)
    poetry run uvicorn platform.core.app:app
    ```

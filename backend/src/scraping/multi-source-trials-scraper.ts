@@ -176,7 +176,7 @@ export class MultiSourceTrialsScraper {
     const rateLimiter = this.rateLimiters.get('clinicaltrials.gov')!;
     const circuitBreaker = this.circuitBreakers.get('clinicaltrials.gov')!;
     const allTrials: ClinicalTrial[] = [];
-    
+
     let pageToken: string | undefined = undefined;
     const pageSize = 100; // Max allowed by API
     const maxPages = Math.ceil(targetCount / pageSize);
@@ -187,16 +187,16 @@ export class MultiSourceTrialsScraper {
       try {
         const trials = await circuitBreaker.execute(async () => {
           const queryParams = this.buildClinicalTrialsGovQuery(params, pageSize, pageToken);
-          
+
           const response = await this.usClient.get('/studies', {
             params: queryParams,
           });
 
           const parsedTrials = this.parseClinicalTrialsGovResponse(response.data);
-          
+
           // Extract next page token
           pageToken = response.data.nextPageToken;
-          
+
           return parsedTrials;
         });
 
@@ -573,7 +573,7 @@ export class MultiSourceTrialsScraper {
     for (const trial of trials) {
       // Use NCT ID as primary deduplication key
       const key = trial.nctId.toLowerCase();
-      
+
       if (!seen.has(key)) {
         seen.add(key);
         unique.push(trial);

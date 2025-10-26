@@ -1,6 +1,6 @@
 /**
  * TypeScript Type Definitions for Science Event Store
- * 
+ *
  * These types match the backend Python schema and enable type-safe
  * integration with the Science Event Store API.
  */
@@ -94,42 +94,42 @@ export interface ScienceEvent {
   title: string;
   description?: string;
   summary?: string;
-  
+
   // Temporal
   event_date: string;  // ISO datetime
   published_date?: string;  // ISO date
-  
+
   // Entity associations
   entity_type?: EntityType;
   entity_id?: string;
   entity_name?: string;
   related_entities?: RelatedEntity[];
-  
+
   // Source and provenance
   source_type?: SourceType;
   source_url?: string;
   source_metadata?: Record<string, any>;
-  
+
   // Content
   content?: string;
   key_findings?: KeyFinding[];
   impact_assessment?: string;
-  
+
   // Classification
   evidence_class?: EvidenceClass;
   confidence_score?: number;  // 0-1
   impact_score?: number;  // 0-1
-  
+
   // Versioning
   version: number;
   parent_version_id?: number;
   is_current: boolean;
   change_summary?: string;
-  
+
   // Metadata
   tags?: string[];
   event_metadata?: Record<string, any>;
-  
+
   // Timestamps
   created_at: string;  // ISO datetime
   updated_at?: string;  // ISO datetime
@@ -292,7 +292,7 @@ export interface SearchResponse {
 
 export class ScienceEventStoreAPI {
   constructor(private baseUrl: string = '/api/v1/science') {}
-  
+
   /**
    * Create a new science event
    */
@@ -302,14 +302,14 @@ export class ScienceEventStoreAPI {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(event)
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to create event: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * List science events with filtering
    */
@@ -322,29 +322,29 @@ export class ScienceEventStoreAPI {
         }
       });
     }
-    
+
     const response = await fetch(`${this.baseUrl}/science-events?${params}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to list events: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Get a specific science event
    */
   async getEvent(eventId: number): Promise<ScienceEvent> {
     const response = await fetch(`${this.baseUrl}/science-events/${eventId}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to get event: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Update a science event (creates new version)
    */
@@ -357,27 +357,27 @@ export class ScienceEventStoreAPI {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(event)
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to update event: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Get version history of an event
    */
   async getEventHistory(eventId: number): Promise<EventHistoryResponse> {
     const response = await fetch(`${this.baseUrl}/science-events/${eventId}/history`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to get event history: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Get timeline of events for an entity
    */
@@ -394,18 +394,18 @@ export class ScienceEventStoreAPI {
         }
       });
     }
-    
+
     const response = await fetch(
       `${this.baseUrl}/science-events/timeline/${entityType}/${entityId}?${params}`
     );
-    
+
     if (!response.ok) {
       throw new Error(`Failed to get timeline: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Create a relationship between events
    */
@@ -417,14 +417,14 @@ export class ScienceEventStoreAPI {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(relationship)
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to create relationship: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Get relationships for an event
    */
@@ -437,18 +437,18 @@ export class ScienceEventStoreAPI {
     if (relationshipType) {
       params.append('relationship_type', relationshipType);
     }
-    
+
     const response = await fetch(
       `${this.baseUrl}/event-relationships/${eventId}?${params}`
     );
-    
+
     if (!response.ok) {
       throw new Error(`Failed to get relationships: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Aggregate events by type
    */
@@ -461,30 +461,30 @@ export class ScienceEventStoreAPI {
     if (fromDate) params.append('from_date', fromDate);
     if (toDate) params.append('to_date', toDate);
     if (entityType) params.append('entity_type', entityType);
-    
+
     const response = await fetch(
       `${this.baseUrl}/science-events/aggregate/by-type?${params}`
     );
-    
+
     if (!response.ok) {
       throw new Error(`Failed to aggregate events: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
-  
+
   /**
    * Search events by text
    */
   async searchEvents(query: string, limit: number = 50): Promise<SearchResponse> {
     const params = new URLSearchParams({ q: query, limit: String(limit) });
-    
+
     const response = await fetch(`${this.baseUrl}/science-events/search?${params}`);
-    
+
     if (!response.ok) {
       throw new Error(`Failed to search events: ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 }
@@ -497,7 +497,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useScienceEvents(query?: ListEventsQuery) {
   const api = new ScienceEventStoreAPI();
-  
+
   return useQuery({
     queryKey: ['science-events', query],
     queryFn: () => api.listEvents(query)
@@ -506,7 +506,7 @@ export function useScienceEvents(query?: ListEventsQuery) {
 
 export function useScienceEvent(eventId: number) {
   const api = new ScienceEventStoreAPI();
-  
+
   return useQuery({
     queryKey: ['science-event', eventId],
     queryFn: () => api.getEvent(eventId),
@@ -516,7 +516,7 @@ export function useScienceEvent(eventId: number) {
 
 export function useEventTimeline(entityType: EntityType, entityId: string, query?: TimelineQuery) {
   const api = new ScienceEventStoreAPI();
-  
+
   return useQuery({
     queryKey: ['timeline', entityType, entityId, query],
     queryFn: () => api.getTimeline(entityType, entityId, query)
@@ -526,7 +526,7 @@ export function useEventTimeline(entityType: EntityType, entityId: string, query
 export function useCreateEvent() {
   const api = new ScienceEventStoreAPI();
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (event: CreateScienceEventRequest) => api.createEvent(event),
     onSuccess: () => {
@@ -538,7 +538,7 @@ export function useCreateEvent() {
 export function useUpdateEvent(eventId: number) {
   const api = new ScienceEventStoreAPI();
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (event: UpdateScienceEventRequest) => api.updateEvent(eventId, event),
     onSuccess: () => {
@@ -550,7 +550,7 @@ export function useUpdateEvent(eventId: number) {
 
 export function useEventSearch(query: string, limit?: number) {
   const api = new ScienceEventStoreAPI();
-  
+
   return useQuery({
     queryKey: ['event-search', query, limit],
     queryFn: () => api.searchEvents(query, limit),
@@ -595,7 +595,7 @@ export function getEventTypeLabel(eventType: EventType): string {
     REJECTION: 'Rejection',
     LABEL_UPDATE: 'Label Update'
   };
-  
+
   return labels[eventType] || eventType;
 }
 

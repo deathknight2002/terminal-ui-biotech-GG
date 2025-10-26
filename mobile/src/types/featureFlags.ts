@@ -1,6 +1,6 @@
 /**
  * Feature Flag Types
- * 
+ *
  * All feature flags used in the mobile app.
  * Flags should be added here as they're introduced to ensure type safety.
  */

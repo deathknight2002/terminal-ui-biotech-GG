@@ -16,8 +16,8 @@ let prisma: PrismaClient | null = null;
 export function getPrismaClient(): PrismaClient {
   if (!prisma) {
     prisma = new PrismaClient({
-      log: process.env.NODE_ENV === 'development' 
-        ? ['query', 'error', 'warn'] 
+      log: process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
         : ['error'],
     });
 
@@ -28,7 +28,7 @@ export function getPrismaClient(): PrismaClient {
 
     logger.info('Prisma client initialized');
   }
-  
+
   return prisma;
 }
 
@@ -52,7 +52,7 @@ let redisClient: ReturnType<typeof createClient> | null = null;
 export async function getRedisClient() {
   if (!redisClient) {
     const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-    
+
     redisClient = createClient({
       url: redisUrl,
       socket: {

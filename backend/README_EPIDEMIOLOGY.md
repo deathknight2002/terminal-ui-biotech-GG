@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL 14+
 - Redis 6+
 - npm or yarn
@@ -118,12 +118,12 @@ The platform includes ETL connectors for three authoritative sources:
    - 5 major cancers
    - Survival rates and mortality trends
    - Race/ethnicity breakdowns
-   
+
 2. **WHO** (World Health Organization)
    - 4 infectious diseases
    - Global disease burden (DALYs, YLLs, YLDs)
    - Regional distribution
-   
+
 3. **CDC** (Centers for Disease Control and Prevention)
    - 7 chronic diseases
    - US state-level data
@@ -474,7 +474,7 @@ curl http://localhost:3001/health
 
 ```sql
 -- Table sizes
-SELECT 
+SELECT
   tablename,
   pg_size_pretty(pg_total_relation_size(tablename::regclass)) AS size
 FROM pg_tables
@@ -482,7 +482,7 @@ WHERE schemaname = 'public'
 ORDER BY pg_total_relation_size(tablename::regclass) DESC;
 
 -- Row counts
-SELECT 
+SELECT
   'diseases' AS table_name, COUNT(*) FROM diseases
 UNION ALL
 SELECT 'metrics', COUNT(*) FROM metrics

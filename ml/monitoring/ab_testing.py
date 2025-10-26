@@ -42,41 +42,41 @@ class ABTestResult:
 class ABTester:
     """
     A/B testing framework for ML models.
-    
+
     Features:
     - Traffic splitting
     - Statistical significance testing
     - Multi-metric comparison
     - Progressive rollout support
     """
-    
+
     def __init__(self, config: ABTestConfig):
         """
         Initialize A/B tester.
-        
+
         Args:
             config: A/B test configuration
         """
         self.config = config
-        
+
         # Storage for model results
         self.model_a_predictions = []
         self.model_a_confidences = []
         self.model_a_true_labels = []
         self.model_a_latencies = []
-        
+
         self.model_b_predictions = []
         self.model_b_confidences = []
         self.model_b_true_labels = []
         self.model_b_latencies = []
-        
+
         # Random state for reproducibility
         self.rng = np.random.RandomState(42)
-    
+
     def assign_variant(self) -> str:
         """
         Assign request to variant based on traffic split.
-        
+
         Returns:
             'model_a' or 'model_b'
         """
@@ -84,7 +84,7 @@ class ABTester:
             return 'model_a'
         else:
             return 'model_b'
-    
+
     def log_prediction(
         self,
         variant: str,
@@ -95,7 +95,7 @@ class ABTester:
     ):
         """
         Log a prediction from a variant.
-        
+
         Args:
             variant: 'model_a' or 'model_b'
             prediction: Model prediction
@@ -115,7 +115,7 @@ class ABTester:
             self.model_b_latencies.append(latency_ms)
         else:
             raise ValueError(f"Unknown variant: {variant}")
-    
+
     def compute_metrics(
         self,
         predictions: List[int],
@@ -125,13 +125,13 @@ class ABTester:
     ) -> Dict[str, Any]:
         """
         Compute metrics for a variant.
-        
+
         Args:
             predictions: List of predictions
             confidences: List of confidences
             true_labels: List of true labels
             latencies: List of latencies
-            
+
         Returns:
             Dictionary of metrics
         """
@@ -140,7 +140,7 @@ class ABTester:
             'avg_confidence': np.mean(confidences) if confidences else 0.0,
             'std_confidence': np.std(confidences) if confidences else 0.0,
         }
-        
+
         # Latency metrics
         valid_latencies = [l for l in latencies if l is not None]
         if valid_latencies:
@@ -150,20 +150,20 @@ class ABTester:
                 'p95_latency_ms': np.percentile(valid_latencies, 95),
                 'p99_latency_ms': np.percentile(valid_latencies, 99),
             })
-        
+
         # Accuracy metrics (if labels available)
         valid_indices = [i for i, label in enumerate(true_labels) if label is not None]
         if valid_indices:
             valid_preds = [predictions[i] for i in valid_indices]
             valid_labels = [true_labels[i] for i in valid_indices]
-            
+
             from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-            
+
             accuracy = accuracy_score(valid_labels, valid_preds)
             precision, recall, f1, _ = precision_recall_fscore_support(
                 valid_labels, valid_preds, average='weighted', zero_division=0
             )
-            
+
             metrics.update({
                 'n_labeled': len(valid_labels),
                 'accuracy': accuracy,
@@ -171,9 +171,9 @@ class ABTester:
                 'recall': recall,
                 'f1_score': f1,
             })
-        
+
         return metrics
-    
+
     def test_statistical_significance(
         self,
         metric_name: str,
@@ -182,37 +182,37 @@ class ABTester:
     ) -> Dict[str, Any]:
         """
         Test statistical significance between two metrics.
-        
+
         Args:
             metric_name: Name of the metric
             values_a: Values for model A
             values_b: Values for model B
-            
+
         Returns:
             Dictionary with significance test results
         """
         from scipy import stats
-        
+
         # Remove None values
         values_a = [v for v in values_a if v is not None]
         values_b = [v for v in values_b if v is not None]
-        
+
         if not values_a or not values_b:
             return {
                 'metric': metric_name,
                 'significant': False,
                 'reason': 'Insufficient data'
             }
-        
+
         # Two-sample t-test
         t_stat, p_value = stats.ttest_ind(values_a, values_b)
-        
+
         # Effect size (Cohen's d)
         pooled_std = np.sqrt((np.std(values_a)**2 + np.std(values_b)**2) / 2)
         cohens_d = (np.mean(values_a) - np.mean(values_b)) / pooled_std if pooled_std > 0 else 0
-        
+
         significant = p_value < (1 - self.config.confidence_level)
-        
+
         return {
             'metric': metric_name,
             'mean_a': np.mean(values_a),
@@ -225,18 +225,18 @@ class ABTester:
             'significant': significant,
             'confidence_level': self.config.confidence_level
         }
-    
+
     def is_ready_for_analysis(self) -> bool:
         """Check if test has enough data for analysis."""
         return (
             len(self.model_a_predictions) >= self.config.min_samples and
             len(self.model_b_predictions) >= self.config.min_samples
         )
-    
+
     def analyze(self) -> ABTestResult:
         """
         Analyze A/B test results.
-        
+
         Returns:
             ABTestResult with complete analysis
         """
@@ -246,7 +246,7 @@ class ABTester:
                 f"Need {self.config.min_samples} samples per variant. "
                 f"Current: A={len(self.model_a_predictions)}, B={len(self.model_b_predictions)}"
             )
-        
+
         # Compute metrics for both models
         metrics_a = self.compute_metrics(
             self.model_a_predictions,
@@ -254,24 +254,24 @@ class ABTester:
             self.model_a_true_labels,
             self.model_a_latencies
         )
-        
+
         metrics_b = self.compute_metrics(
             self.model_b_predictions,
             self.model_b_confidences,
             self.model_b_true_labels,
             self.model_b_latencies
         )
-        
+
         # Statistical significance tests
         significance_tests = {}
-        
+
         # Confidence test
         significance_tests['confidence'] = self.test_statistical_significance(
             'confidence',
             self.model_a_confidences,
             self.model_b_confidences
         )
-        
+
         # Latency test
         if self.model_a_latencies and self.model_b_latencies:
             significance_tests['latency'] = self.test_statistical_significance(
@@ -279,13 +279,13 @@ class ABTester:
                 [l for l in self.model_a_latencies if l is not None],
                 [l for l in self.model_b_latencies if l is not None]
             )
-        
+
         # Accuracy test (if labels available)
         if 'accuracy' in metrics_a and 'accuracy' in metrics_b:
             # For accuracy, we use the predictions themselves
             valid_a = [i for i, label in enumerate(self.model_a_true_labels) if label is not None]
             valid_b = [i for i, label in enumerate(self.model_b_true_labels) if label is not None]
-            
+
             if valid_a and valid_b:
                 # Binary indicator: 1 if correct, 0 if incorrect
                 correct_a = [
@@ -296,17 +296,17 @@ class ABTester:
                     1 if self.model_b_predictions[i] == self.model_b_true_labels[i] else 0
                     for i in valid_b
                 ]
-                
+
                 significance_tests['accuracy'] = self.test_statistical_significance(
                     'accuracy',
                     correct_a,
                     correct_b
                 )
-        
+
         # Determine winner
         winner = self._determine_winner(metrics_a, metrics_b, significance_tests)
         recommendation = self._make_recommendation(metrics_a, metrics_b, significance_tests, winner)
-        
+
         return ABTestResult(
             config=self.config,
             model_a_metrics=metrics_a,
@@ -315,7 +315,7 @@ class ABTester:
             winner=winner,
             recommendation=recommendation
         )
-    
+
     def _determine_winner(
         self,
         metrics_a: Dict[str, Any],
@@ -329,17 +329,17 @@ class ABTester:
                 return self.config.model_a_name
             else:
                 return self.config.model_b_name
-        
+
         # Secondary metric: confidence
         if 'confidence' in significance and significance['confidence']['significant']:
             if significance['confidence']['mean_a'] > significance['confidence']['mean_b']:
                 return self.config.model_a_name
             else:
                 return self.config.model_b_name
-        
+
         # No clear winner
         return None
-    
+
     def _make_recommendation(
         self,
         metrics_a: Dict[str, Any],
@@ -350,7 +350,7 @@ class ABTester:
         """Make deployment recommendation."""
         if winner:
             return f"Deploy {winner} to 100% of traffic. Shows statistically significant improvement."
-        
+
         # Check if models are similar
         if 'accuracy' in metrics_a and 'accuracy' in metrics_b:
             acc_diff = abs(metrics_a['accuracy'] - metrics_b['accuracy'])
@@ -361,11 +361,11 @@ class ABTester:
                         return f"Deploy {self.config.model_a_name}. Similar accuracy, lower latency."
                     else:
                         return f"Deploy {self.config.model_b_name}. Similar accuracy, lower latency."
-                
+
                 return "Models perform similarly. No strong recommendation."
-        
+
         return "Continue testing. Collect more data for conclusive results."
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """Get test summary."""
         return {
@@ -394,7 +394,7 @@ def create_ab_test(test_name: str, model_a_name: str, model_b_name: str, **kwarg
 if __name__ == "__main__":
     # Example usage
     logging.basicConfig(level=logging.INFO)
-    
+
     print("Testing A/B Framework...")
     ab_test = create_ab_test(
         test_name="TF-IDF vs FinBERT",
@@ -403,11 +403,11 @@ if __name__ == "__main__":
         traffic_split=0.5,
         min_samples=100
     )
-    
+
     # Simulate predictions
     for i in range(200):
         variant = ab_test.assign_variant()
-        
+
         # Simulate different performance
         if variant == 'model_a':
             pred = np.random.choice([1, 0, -1], p=[0.4, 0.3, 0.3])
@@ -418,12 +418,12 @@ if __name__ == "__main__":
             pred = np.random.choice([1, 0, -1], p=[0.45, 0.25, 0.3])
             conf = np.random.uniform(0.75, 0.95)
             latency = np.random.uniform(50, 100)  # But slower
-        
+
         # Ground truth
         true_label = np.random.choice([1, 0, -1], p=[0.45, 0.25, 0.3])
-        
+
         ab_test.log_prediction(variant, pred, conf, true_label, latency)
-    
+
     # Analyze results
     if ab_test.is_ready_for_analysis():
         result = ab_test.analyze()

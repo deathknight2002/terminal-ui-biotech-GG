@@ -1,6 +1,6 @@
 /**
  * Architecture Documentation Generator
- * 
+ *
  * Automatically generates comprehensive documentation from the system's
  * self-describing modules and infrastructure components.
  */
@@ -45,7 +45,7 @@ export class DocumentationGenerator {
    */
   private static async generateOverview(): Promise<string> {
     let docs = '## System Overview\n\n';
-    
+
     const services = ServiceRegistry.listServices();
     const health = await DiagnosticSystem.getHealth();
     const busStats = EventBus.getStats();
@@ -77,10 +77,10 @@ export class DocumentationGenerator {
     for (const service of services) {
       try {
         const module = ServiceRegistry.get<any>(service.name);
-        
+
         if (typeof module.describe === 'function') {
           const description = module.describe();
-          
+
           docs += `### ${description.name}\n\n`;
           docs += `**Version**: ${description.version}\n\n`;
           docs += `${description.description}\n\n`;
@@ -117,7 +117,7 @@ export class DocumentationGenerator {
           // Configuration
           docs += '**Configuration**:\n\n';
           docs += `Required fields: ${description.configuration.required.join(', ') || 'none'}\n\n`;
-          
+
           if (description.configuration.optional.length > 0) {
             docs += `Optional fields: ${description.configuration.optional.join(', ')}\n\n`;
           }
@@ -228,7 +228,7 @@ export class DocumentationGenerator {
     docs += '### Component Health\n\n';
     docs += '| Component | Status | Message |\n';
     docs += '|-----------|--------|----------|\n';
-    
+
     health.components.forEach(comp => {
       const statusEmoji = comp.status === 'healthy' ? '✅' : comp.status === 'degraded' ? '⚠️' : '❌';
       docs += `| ${comp.name} | ${statusEmoji} ${comp.status} | ${comp.message || '-'} |\n`;

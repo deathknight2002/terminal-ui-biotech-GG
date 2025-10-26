@@ -55,7 +55,7 @@ export function useCommandPalette() {
       if ('code' in item) {
         // It's a FunctionCode
         navigate(item.path);
-        
+
         // Convert to CommandPaletteItem for recent history
         const cmdItem: CommandPaletteItem = {
           id: item.code,
@@ -70,7 +70,7 @@ export function useCommandPalette() {
         item.action();
         saveRecentCommand(item);
       }
-      
+
       close();
     },
     [navigate, close, saveRecentCommand]

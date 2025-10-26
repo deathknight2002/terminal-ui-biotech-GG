@@ -4,7 +4,7 @@
 resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-db-subnet-group-${var.environment}"
   subnet_ids = var.database_subnet_ids
-  
+
   tags = {
     Name        = "${var.project_name}-db-subnet-group"
     Environment = var.environment
@@ -15,7 +15,7 @@ resource "aws_security_group" "db" {
   name        = "${var.project_name}-db-sg-${var.environment}"
   description = "Security group for RDS Postgres database"
   vpc_id      = var.vpc_id
-  
+
   ingress {
     description = "PostgreSQL from private subnets"
     from_port   = 5432
@@ -23,7 +23,7 @@ resource "aws_security_group" "db" {
     protocol    = "tcp"
     cidr_blocks = var.private_subnet_cidrs
   }
-  
+
   egress {
     description = "Allow all outbound"
     from_port   = 0
@@ -31,7 +31,7 @@ resource "aws_security_group" "db" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   tags = {
     Name        = "${var.project_name}-db-sg"
     Environment = var.environment
@@ -42,37 +42,37 @@ resource "aws_db_parameter_group" "postgres_timescale" {
   name        = "${var.project_name}-postgres-timescale-${var.environment}"
   family      = "postgres16"
   description = "Custom parameter group for TimescaleDB and pgvector"
-  
+
   parameter {
     name  = "shared_preload_libraries"
     value = "timescaledb,pg_stat_statements,pgvector"
   }
-  
+
   parameter {
     name  = "max_connections"
     value = var.environment == "prod" ? "200" : "100"
   }
-  
+
   parameter {
     name  = "shared_buffers"
     value = "{DBInstanceClassMemory/4096}"
   }
-  
+
   parameter {
     name  = "effective_cache_size"
     value = "{DBInstanceClassMemory/2048}"
   }
-  
+
   parameter {
     name  = "work_mem"
     value = "16384"  # 16MB
   }
-  
+
   parameter {
     name  = "maintenance_work_mem"
     value = "524288"  # 512MB
   }
-  
+
   tags = {
     Name        = "${var.project_name}-postgres-params"
     Environment = var.environment
@@ -99,35 +99,35 @@ resource "aws_db_instance" "main" {
   engine         = "postgres"
   engine_version = "16.4"
   instance_class = var.db_instance_class
-  
+
   allocated_storage     = var.db_allocated_storage
   max_allocated_storage = var.db_max_allocated_storage
   storage_type          = "gp3"
   storage_encrypted     = true
-  
+
   db_name  = var.db_name
   username = var.db_username
   password = random_password.db_password.result
-  
+
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.db.id]
   parameter_group_name   = aws_db_parameter_group.postgres_timescale.name
-  
+
   backup_retention_period = var.environment == "prod" ? 30 : 7
   backup_window           = "03:00-04:00"
   maintenance_window      = "mon:04:00-mon:05:00"
-  
+
   multi_az               = var.environment == "prod" ? true : false
   publicly_accessible    = false
   deletion_protection    = var.environment == "prod" ? true : false
   skip_final_snapshot    = var.environment != "prod"
   final_snapshot_identifier = var.environment == "prod" ? "${var.project_name}-db-final-${formatdate("YYYY-MM-DD-hhmm", timestamp())}" : null
-  
+
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-  
+
   performance_insights_enabled    = true
   performance_insights_retention_period = 7
-  
+
   tags = {
     Name        = "${var.project_name}-db"
     Environment = var.environment

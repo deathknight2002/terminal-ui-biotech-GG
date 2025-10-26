@@ -27,7 +27,7 @@ iOS-style mobile application for pharmaceutical intelligence with advanced glass
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
@@ -249,7 +249,7 @@ npx cap open ios
 
 1. **Set Bundle ID**: e.g., `com.yourcompany.bioterminal`
 2. **Add Icons**: Use Assets.xcassets for app icons
-3. **Configure Capabilities**: 
+3. **Configure Capabilities**:
    - Background modes (if needed)
    - Push notifications (if needed)
 4. **Set deployment target**: iOS 14.0+
@@ -313,14 +313,14 @@ struct ContentView: View {
 
 struct WebView: UIViewRepresentable {
     let url: URL
-    
+
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.load(URLRequest(url: url))
         return webView
     }
-    
+
     func updateUIView(_ uiView: WKWebView, context: Context) {}
 }
 ```
@@ -330,8 +330,8 @@ struct WebView: UIViewRepresentable {
 ```swift
 webView.scrollView.refreshControl = UIRefreshControl()
 webView.scrollView.refreshControl?.addTarget(
-    self, 
-    action: #selector(handleRefresh), 
+    self,
+    action: #selector(handleRefresh),
     for: .valueChanged
 )
 

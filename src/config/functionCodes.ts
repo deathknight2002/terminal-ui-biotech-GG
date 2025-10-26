@@ -15,7 +15,7 @@ export const FUNCTION_CODES: FunctionCode[] = [
     shortcut: '⌘+H',
     category: 'navigation',
   },
-  
+
   // News & Intelligence
   {
     code: 'NE',

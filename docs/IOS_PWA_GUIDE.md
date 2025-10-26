@@ -109,9 +109,9 @@ These effects match iOS 26's design language.
 
 ### No Background Activity
 
-❌ **WebSocket connections** - Disabled to eliminate background network  
-❌ **Periodic Background Sync** - Not used (Safari doesn't support it)  
-❌ **Background Fetch** - Not implemented  
+❌ **WebSocket connections** - Disabled to eliminate background network
+❌ **Periodic Background Sync** - Not used (Safari doesn't support it)
+❌ **Background Fetch** - Not implemented
 ❌ **Push Notifications** - Disabled (though iOS 16.4+ supports Web Push)
 
 **Why?** The manual-refresh model provides:

@@ -35,7 +35,7 @@ for i in 72 73 74 75 76 77; do git push origin conflict-resolve/pr-$i; done
 git branch | grep conflict-resolve
 
 # Check each branch's merge status
-for i in 72 73 74 75 76 77; do 
+for i in 72 73 74 75 76 77; do
     echo "=== PR #$i ==="
     git checkout conflict-resolve/pr-$i
     git log --oneline -1

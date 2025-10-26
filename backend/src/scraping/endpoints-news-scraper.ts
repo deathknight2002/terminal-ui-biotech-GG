@@ -1,7 +1,7 @@
 /**
  * Endpoints News Scraper
  * Scrapes biotech journalism, breaking news, and industry analysis
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://endpts.com
  */
@@ -39,7 +39,7 @@ export class EndpointsNewsScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<EndpointsArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -84,7 +84,7 @@ export class EndpointsNewsScraper {
    */
   async getLatestNews(maxResults: number = 20): Promise<EndpointsArticle[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached Endpoints articles');
@@ -94,9 +94,9 @@ export class EndpointsNewsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} articles from Endpoints...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get('/', {
             headers: {
@@ -106,10 +106,10 @@ export class EndpointsNewsScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Successfully fetched ${articles.length} Endpoints articles`);
         return articles;
       },
@@ -159,7 +159,7 @@ export class EndpointsNewsScraper {
    */
   private async getNewsByCategory(category: string, maxResults: number): Promise<EndpointsArticle[]> {
     const cacheKey = `category:${category}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached category articles');
@@ -169,9 +169,9 @@ export class EndpointsNewsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching ${category} articles from Endpoints...`);
-        
+
         const url = `/${category}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(url, {
@@ -182,10 +182,10 @@ export class EndpointsNewsScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles in category: ${category}`);
         return articles;
       },
@@ -215,7 +215,7 @@ export class EndpointsNewsScraper {
   async searchArticles(params: EndpointsSearchParams): Promise<EndpointsArticle[]> {
     const { query = '', maxResults = 20 } = params;
     const cacheKey = `search:${query}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -225,9 +225,9 @@ export class EndpointsNewsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching Endpoints for: "${query}"`);
-        
+
         const searchUrl = `/?s=${encodeURIComponent(query)}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(searchUrl, {
@@ -238,10 +238,10 @@ export class EndpointsNewsScraper {
         });
 
         const articles = this.parseSearchResults(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles for query: "${query}"`);
         return articles;
       },
@@ -278,13 +278,13 @@ export class EndpointsNewsScraper {
       try {
         const $article = $(element);
         const $title = $article.find('h2, h3, .entry-title, .article-title').first();
-        const $link = $title.find('a').first().length > 0 
-          ? $title.find('a').first() 
+        const $link = $title.find('a').first().length > 0
+          ? $title.find('a').first()
           : $article.find('a').first();
-        
+
         const title = $title.text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -295,7 +295,7 @@ export class EndpointsNewsScraper {
           title,
           url: fullUrl,
           author: $article.find('.author, .byline, [rel="author"]').first().text().trim() || 'Endpoints Staff',
-          publishedDate: $article.find('.date, .published, time').first().attr('datetime') 
+          publishedDate: $article.find('.date, .published, time').first().attr('datetime')
             || $article.find('.date, .published, time').first().text().trim()
             || new Date().toISOString(),
           summary: $article.find('.summary, .excerpt, .entry-summary, p').first().text().trim() || '',
@@ -327,13 +327,13 @@ export class EndpointsNewsScraper {
       try {
         const $result = $(element);
         const $title = $result.find('h2, h3, .entry-title').first();
-        const $link = $title.find('a').first().length > 0 
-          ? $title.find('a').first() 
+        const $link = $title.find('a').first().length > 0
+          ? $title.find('a').first()
           : $result.find('a').first();
-        
+
         const title = $title.text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -344,7 +344,7 @@ export class EndpointsNewsScraper {
           title,
           url: fullUrl,
           author: $result.find('.author, .byline').first().text().trim() || 'Endpoints Staff',
-          publishedDate: $result.find('.date, time').first().attr('datetime') 
+          publishedDate: $result.find('.date, time').first().attr('datetime')
             || $result.find('.date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $result.find('.summary, .excerpt').first().text().trim() || '',
@@ -369,7 +369,7 @@ export class EndpointsNewsScraper {
   private extractIdFromUrl(url: string): string {
     const matches = url.match(/\/(\d+)\//);
     if (matches) return matches[1];
-    
+
     const lastPart = url.split('/').filter(p => p).pop();
     return lastPart || url;
   }

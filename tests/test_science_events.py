@@ -26,7 +26,7 @@ def test_science_event_creation():
         "confidence_score": 0.95,
         "impact_score": 0.85
     }
-    
+
     # Validate with contract
     event_contract = ScienceEventContract(**event_data)
     assert event_contract.event_type == "CLINICAL_READOUT"
@@ -43,10 +43,10 @@ def test_science_event_versioning():
         version=1,
         is_current=True
     )
-    
+
     assert event.version == 1
     assert event.is_current is True
-    
+
     # Create updated version
     event_v2 = ScienceEvent(
         event_type="MECHANISM_INSIGHT",
@@ -57,7 +57,7 @@ def test_science_event_versioning():
         is_current=True,
         change_summary="Added new genetic evidence"
     )
-    
+
     assert event_v2.version == 2
     assert event_v2.parent_version_id == event.id
 
@@ -70,11 +70,11 @@ def test_event_relationship_contract():
         "relationship_type": "SUPPORTS",
         "confidence": 0.9
     }
-    
+
     rel = EventRelationshipContract(**rel_data)
     assert rel.relationship_type == "SUPPORTS"
     assert rel.confidence == 0.9
-    
+
     # Test validation: source and target cannot be the same
     with pytest.raises(ValueError):
         EventRelationshipContract(
@@ -96,7 +96,7 @@ def test_evidence_entity_linking():
         version=1,
         is_current=True
     )
-    
+
     assert evidence.catalyst_event_id is None  # Can be standalone
     assert evidence.entity_type == "TARGET"
     assert evidence.entity_id == "IL-23"
@@ -126,7 +126,7 @@ def test_science_event_related_entities():
             {"type": "INDICATION", "id": "IBD", "name": "Inflammatory Bowel Disease"}
         ]
     }
-    
+
     event = ScienceEventContract(**event_data)
     assert len(event.related_entities) == 2
     assert event.related_entities[0]["type"] == "COMPANY"
@@ -142,7 +142,7 @@ def test_event_tags_and_filtering():
         version=1,
         is_current=True
     )
-    
+
     assert "oncology" in event.tags
     assert len(event.tags) == 3
 
@@ -150,7 +150,7 @@ def test_event_tags_and_filtering():
 def test_evidence_citations():
     """Test evidence citation structure"""
     from bt_platform.core.contracts import EvidenceContract
-    
+
     evidence_data = {
         "evidence_type": "CLINICAL_DATA",
         "title": "Trial Results",
@@ -163,7 +163,7 @@ def test_evidence_citations():
         ],
         "linkage_verified": True
     }
-    
+
     evidence = EvidenceContract(**evidence_data)
     assert evidence.linkage_verified is True
     assert len(evidence.citations) == 1

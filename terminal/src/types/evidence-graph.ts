@@ -1,6 +1,6 @@
 /**
  * Evidence Graph Types
- * 
+ *
  * TypeScript types for the evidence graph feature.
  * Mirrors the Python Pydantic models.
  */

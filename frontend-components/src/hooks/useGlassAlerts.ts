@@ -3,14 +3,14 @@ import type { CatalystAlert } from '../biotech/organisms/CatalystGlassAlert';
 
 /**
  * useGlassAlerts - Hook for managing catalyst glass alerts
- * 
+ *
  * Provides methods to add, dismiss, and manage priority-based alerts
  * with automatic cleanup and queueing.
- * 
+ *
  * @example
  * ```tsx
  * const { alerts, addAlert, dismissAlert, clearAll } = useGlassAlerts();
- * 
+ *
  * addAlert({
  *   title: 'FDA Decision',
  *   message: 'PDUFA date approaching',
@@ -38,7 +38,7 @@ export function useGlassAlerts(maxAlerts: number = 5) {
     setAlerts((prev) => {
       // Remove oldest alert if at max capacity
       const updated = prev.length >= maxAlerts ? prev.slice(1) : prev;
-      
+
       // Add new alert, prioritizing by urgency
       return [...updated, newAlert].sort((a, b) => {
         const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };

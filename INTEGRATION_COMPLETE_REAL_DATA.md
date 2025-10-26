@@ -215,7 +215,7 @@ limiter = get_yahoo_rate_limiter()
 def fetch_historical_data(ticker: str):
     def _fetch():
         return requests.get(f"https://query1.finance.yahoo.com/v7/finance/download/{ticker}?...")
-    
+
     return limiter.get_cached_or_fetch(
         endpoint=f"historical_{ticker}",
         fetch_func=_fetch,
@@ -254,17 +254,17 @@ print(f"Cache hits: {stats['cache_size']}")
 ```typescript
 const getAuroraGradientColor = (value: number, baseColor: string): string => {
   const intensity = value / maxValue;  // 0-1 scale
-  
+
   // Parse hex color
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
-  
+
   // Brighten based on intensity (higher value = brighter)
   const adjustedR = Math.round(r + (255 - r) * (1 - intensity) * 0.3);
   const adjustedG = Math.round(g + (255 - g) * (1 - intensity) * 0.3);
   const adjustedB = Math.round(b + (255 - b) * (1 - intensity) * 0.3);
-  
+
   return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;
 };
 ```
@@ -365,7 +365,7 @@ import { TherapeuticAreaRadarChart } from '@/components/visualizations/Therapeut
 1. Seed Data (seed_data.py)
    ↓
 2. Database (SQLite/PostgreSQL)
-   ↓ 
+   ↓
 3. API Endpoints (/biotech/companies, /therapeutic-areas/areas/DMD)
    ↓
 4. Frontend Components

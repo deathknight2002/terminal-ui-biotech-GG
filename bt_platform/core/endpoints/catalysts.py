@@ -32,42 +32,42 @@ async def get_catalyst_calendar(
     """
     try:
         query = db.query(Catalyst)
-        
+
         # Parse dates
         if from_date:
             from_dt = datetime.fromisoformat(from_date.replace('Z', '+00:00'))
             query = query.filter(
                 (Catalyst.date >= from_dt) | (Catalyst.event_date >= from_dt)
             )
-        
+
         if to_date:
             to_dt = datetime.fromisoformat(to_date.replace('Z', '+00:00'))
             query = query.filter(
                 (Catalyst.date <= to_dt) | (Catalyst.event_date <= to_dt)
             )
-        
+
         if company:
             query = query.filter(Catalyst.company.ilike(f"%{company}%"))
-        
+
         if kind:
             query = query.filter(
                 (Catalyst.kind.ilike(f"%{kind}%")) | (Catalyst.event_type.ilike(f"%{kind}%"))
             )
-        
+
         if status:
             query = query.filter(Catalyst.status == status)
-        
+
         # Order by date
         catalysts = query.order_by(
             Catalyst.date.asc().nullslast(),
             Catalyst.event_date.asc().nullslast()
         ).all()
-        
+
         # Format results for calendar view
         calendar_events = []
         for catalyst in catalysts:
             event_date = catalyst.date or catalyst.event_date
-            
+
             calendar_events.append({
                 "id": catalyst.id,
                 "name": catalyst.name or catalyst.title,
@@ -82,7 +82,7 @@ async def get_catalyst_calendar(
                 "status": catalyst.status,
                 "source_url": catalyst.source_url
             })
-        
+
         # Group by month for calendar view
         months = {}
         for event in calendar_events:
@@ -92,7 +92,7 @@ async def get_catalyst_calendar(
                 if month_key not in months:
                     months[month_key] = []
                 months[month_key].append(event)
-        
+
         return {
             "events": calendar_events,
             "count": len(calendar_events),
@@ -105,7 +105,7 @@ async def get_catalyst_calendar(
                 "status": status
             }
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching catalyst calendar: {e}")
         return {
@@ -129,15 +129,15 @@ async def get_past_catalysts(
         query = db.query(Catalyst).filter(
             (Catalyst.date < datetime.utcnow()) | (Catalyst.event_date < datetime.utcnow())
         )
-        
+
         if company:
             query = query.filter(Catalyst.company.ilike(f"%{company}%"))
-        
+
         catalysts = query.order_by(
             Catalyst.date.desc().nullslast(),
             Catalyst.event_date.desc().nullslast()
         ).limit(limit).all()
-        
+
         result = []
         for catalyst in catalysts:
             event_date = catalyst.date or catalyst.event_date
@@ -152,12 +152,12 @@ async def get_past_catalysts(
                 "description": catalyst.description,
                 "status": catalyst.status
             })
-        
+
         return {
             "catalysts": result,
             "count": len(result)
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching past catalysts: {e}")
         return {"error": str(e), "catalysts": [], "count": 0}

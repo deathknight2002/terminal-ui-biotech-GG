@@ -70,7 +70,7 @@ import { useMonitoring } from './hooks/useMonitoring';
 
 function Dashboard() {
   const { alerts, stats, isConnected } = useMonitoring();
-  
+
   return (
     <div>
       {isConnected && <span>🟢 Connected</span>}
@@ -122,7 +122,7 @@ Frontend (React)
     ↓ WebSocket + REST
 Backend Services (Node.js)
     ├── Change Detection Service
-    ├── Portfolio Monitor Service  
+    ├── Portfolio Monitor Service
     └── News Monitor Service
         ↓ HTTP
 Existing Scrapers
@@ -214,8 +214,8 @@ POST   /api/monitoring/news/stop
 
 ### Subscribe
 ```typescript
-socket.emit('monitoring:subscribe', { 
-  channels: ['changes', 'alerts', 'news', 'portfolio'] 
+socket.emit('monitoring:subscribe', {
+  channels: ['changes', 'alerts', 'news', 'portfolio']
 });
 ```
 

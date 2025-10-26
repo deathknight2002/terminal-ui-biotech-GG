@@ -20,7 +20,7 @@ therapeutic_areas:
       - "spinal muscular atrophy type 1"
       - "spinal muscular atrophy type 2"
       - "spinal muscular atrophy type 3"
-    
+
   GLP-1:
     name: "GLP-1 Receptor Agonists"
     keywords:
@@ -37,7 +37,7 @@ therapeutic_areas:
     aliases:
       - "GLP1"
       - "incretin"
-      
+
   Oncology:
     name: "Oncology"
     keywords:
@@ -63,7 +63,7 @@ therapeutic_areas:
       - "hematology-oncology"
       - "solid tumor"
       - "liquid tumor"
-      
+
   Rare_Disease:
     name: "Rare Disease"
     keywords:
@@ -83,7 +83,7 @@ therapeutic_areas:
     aliases:
       - "ultra rare disease"
       - "orphan indication"
-      
+
   Immunology:
     name: "Immunology"
     keywords:
@@ -107,7 +107,7 @@ therapeutic_areas:
     aliases:
       - "immune-mediated"
       - "inflammation"
-      
+
   Neurology:
     name: "Neurology"
     keywords:
@@ -129,7 +129,7 @@ therapeutic_areas:
       - "neuroscience"
       - "CNS"
       - "central nervous system"
-      
+
   Cardiovascular:
     name: "Cardiovascular"
     keywords:
@@ -154,7 +154,7 @@ therapeutic_areas:
     aliases:
       - "CV"
       - "cardiac"
-      
+
   Metabolic:
     name: "Metabolic"
     keywords:
@@ -176,7 +176,7 @@ therapeutic_areas:
     aliases:
       - "endocrine"
       - "metabolic disorder"
-      
+
   Hematology:
     name: "Hematology"
     keywords:
@@ -193,7 +193,7 @@ therapeutic_areas:
     aliases:
       - "blood disease"
       - "coagulation"
-      
+
   Pulmonology:
     name: "Pulmonology"
     keywords:
@@ -211,7 +211,7 @@ therapeutic_areas:
     aliases:
       - "respiratory disease"
       - "lung disease"
-      
+
   Infectious_Disease:
     name: "Infectious Disease"
     keywords:
@@ -233,7 +233,7 @@ therapeutic_areas:
     aliases:
       - "infectious diseases"
       - "communicable disease"
-      
+
   Ophthalmology:
     name: "Ophthalmology"
     keywords:
@@ -251,7 +251,7 @@ therapeutic_areas:
     aliases:
       - "retinal disease"
       - "eye disease"
-      
+
   Dermatology:
     name: "Dermatology"
     keywords:

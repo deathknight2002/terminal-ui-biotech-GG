@@ -1,9 +1,9 @@
 /**
  * Therapeutic Areas Intelligence Page
- * 
+ *
  * Spider web/radar chart visualization comparing therapeutic areas
  * across science attributes (unmet need, market size, etc.)
- * 
+ *
  * Features:
  * - Interactive radar chart with Aurora gradient theming
  * - Real biotech company data from DMD, Cardiology, IBD primers
@@ -65,7 +65,7 @@ export const TherapeuticAreasPage: React.FC = () => {
   const fetchTherapeuticAreas = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Fetch all therapeutic areas
       const areasData = await apiFetch<{ areas: TherapeuticArea[] }>(API_ENDPOINTS.THERAPEUTIC_AREAS.LIST);
@@ -74,7 +74,7 @@ export const TherapeuticAreasPage: React.FC = () => {
       // Fetch radar chart comparison data
       const radarData = await apiFetch<RadarChartData>(API_ENDPOINTS.THERAPEUTIC_AREAS.COMPARE_RADAR);
       setRadarData(radarData);
-      
+
       setLastRefreshed(new Date());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
@@ -124,9 +124,9 @@ export const TherapeuticAreasPage: React.FC = () => {
             Spider Web Analysis: Science Attributes × Market Dynamics
           </p>
         </div>
-        
+
         <div className={styles.headerActions}>
-          <button 
+          <button
             className={styles.refreshButton}
             onClick={handleRefresh}
             disabled={loading}
@@ -160,7 +160,7 @@ export const TherapeuticAreasPage: React.FC = () => {
 
           <div className={styles.areasList}>
             {areas.map((area) => (
-              <div 
+              <div
                 key={area.id}
                 className={`${styles.areaCard} ${
                   selectedAreas.includes(area.id) ? styles.areaCardActive : ''
@@ -172,7 +172,7 @@ export const TherapeuticAreasPage: React.FC = () => {
                   <div className={styles.areaIndicator} />
                 </div>
                 <p className={styles.areaDescription}>{area.metadata.description}</p>
-                
+
                 <div className={styles.areaMetrics}>
                   <div className={styles.metric}>
                     <span className={styles.metricLabel}>PREVALENCE</span>
@@ -298,13 +298,13 @@ export const TherapeuticAreasPage: React.FC = () => {
         <div className={styles.panelHeader}>
           <h2 className={styles.panelTitle}>KEY INSIGHTS</h2>
         </div>
-        
+
         <div className={styles.insightsGrid}>
           <div className={styles.insightCard}>
             <div className={styles.insightIcon}>🧬</div>
             <h3 className={styles.insightTitle}>Rare Disease Dynamics</h3>
             <p className={styles.insightText}>
-              DMD and other rare diseases show high unmet need (9.5+) and strong patient advocacy, 
+              DMD and other rare diseases show high unmet need (9.5+) and strong patient advocacy,
               offset by smaller market size (6.5-7.8) and regulatory tailwinds via orphan drug status.
             </p>
           </div>
@@ -313,7 +313,7 @@ export const TherapeuticAreasPage: React.FC = () => {
             <div className={styles.insightIcon}>❤️</div>
             <h3 className={styles.insightTitle}>Cardiology at Scale</h3>
             <p className={styles.insightText}>
-              Cardiovascular area leads in market size (9.5) and scientific validation (9.0), 
+              Cardiovascular area leads in market size (9.5) and scientific validation (9.0),
               but faces intense competition (9.0) and complex reimbursement landscapes.
             </p>
           </div>
@@ -322,7 +322,7 @@ export const TherapeuticAreasPage: React.FC = () => {
             <div className={styles.insightIcon}>🔬</div>
             <h3 className={styles.insightTitle}>Innovation Frontiers</h3>
             <p className={styles.insightText}>
-              Gene therapy (DMD), RNAi therapeutics (Cardiology), and myosin inhibition represent 
+              Gene therapy (DMD), RNAi therapeutics (Cardiology), and myosin inhibition represent
               mechanistic differentiation opportunities with high scientific validation.
             </p>
           </div>

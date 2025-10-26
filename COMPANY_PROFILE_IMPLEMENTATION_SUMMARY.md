@@ -294,7 +294,7 @@ To use in production:
    -- Add columns to companies table
    ALTER TABLE companies ADD COLUMN is_xbi_constituent BOOLEAN DEFAULT FALSE;
    -- etc...
-   
+
    -- Create new tables
    CREATE TABLE company_sources (...);
    CREATE TABLE company_articles (...);

@@ -251,7 +251,7 @@ New tabs:
 
 1. **Code Splitting**: Dynamic imports for heavy components
 2. **Image Optimization**: WebP format, lazy loading
-3. **Bundle Size**: 
+3. **Bundle Size**:
    - Main bundle: 588 KB (gzipped: 178 KB)
    - Consider splitting Recharts into separate chunk
 4. **Memory Management**: Cleanup intervals and listeners
@@ -386,7 +386,7 @@ For personal use:
 
 1. **Chart Bundle Size**: Recharts adds ~200KB to bundle
    - **Solution**: Consider lazy loading charts
-   
+
 2. **Voice Input**: Placeholder only, not functional
    - **Solution**: Implement Web Speech API
 

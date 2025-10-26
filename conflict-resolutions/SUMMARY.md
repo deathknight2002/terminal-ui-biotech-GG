@@ -81,7 +81,7 @@ pyproject.toml
 
 ### PR #76 - Biotech Intelligence ✅ CLEAN
 
-**Status**: Merged cleanly with no conflicts  
+**Status**: Merged cleanly with no conflicts
 **Files Added**: Phase implementation plans and milestones from main
 
 **Branch**: `conflict-resolve/pr-76`

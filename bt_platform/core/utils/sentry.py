@@ -20,7 +20,7 @@ def init_sentry(
 ):
     """
     Initialize Sentry error tracking.
-    
+
     Args:
         dsn: Sentry DSN (if None, Sentry is disabled)
         environment: Environment name (development, staging, production)
@@ -30,7 +30,7 @@ def init_sentry(
     if not enable or not dsn:
         logger.info("Sentry is disabled (no DSN provided)")
         return
-    
+
     try:
         sentry_sdk.init(
             dsn=dsn,
@@ -55,7 +55,7 @@ def init_sentry(
 def capture_exception(error: Exception, **kwargs):
     """
     Capture an exception in Sentry with additional context.
-    
+
     Args:
         error: The exception to capture
         **kwargs: Additional context to attach
@@ -70,7 +70,7 @@ def capture_exception(error: Exception, **kwargs):
 def capture_message(message: str, level: str = "info", **kwargs):
     """
     Capture a message in Sentry.
-    
+
     Args:
         message: The message to capture
         level: Severity level (debug, info, warning, error, fatal)
@@ -86,7 +86,7 @@ def capture_message(message: str, level: str = "info", **kwargs):
 def set_user(user_id: str = None, email: str = None, username: str = None, **kwargs):
     """
     Set user context for Sentry events.
-    
+
     Args:
         user_id: User ID
         email: User email
@@ -105,7 +105,7 @@ def set_user(user_id: str = None, email: str = None, username: str = None, **kwa
 def set_tag(key: str, value: str):
     """
     Set a tag for Sentry events.
-    
+
     Args:
         key: Tag key
         value: Tag value
@@ -117,7 +117,7 @@ def set_tag(key: str, value: str):
 def set_context(key: str, value: dict):
     """
     Set context for Sentry events.
-    
+
     Args:
         key: Context key
         value: Context value (dict)

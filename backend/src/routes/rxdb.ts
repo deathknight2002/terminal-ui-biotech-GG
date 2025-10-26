@@ -1,6 +1,6 @@
 /**
  * RxDB Replication API Routes
- * 
+ *
  * Provides HTTP replication endpoints for RxDB.
  * Supports pull (server -> client) and push (client -> server).
  */
@@ -81,7 +81,7 @@ rxdbRouter.post('/:collection/push', (req, res) => {
     // Store documents with checkpoint
     documents.forEach((doc) => {
       checkpointCounter++;
-      
+
       // Find existing document
       const existingIndex = replicationStore[collection].findIndex(
         (d) => d.id === doc.id

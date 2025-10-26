@@ -1,6 +1,6 @@
 {
   "name": "biotech-terminal-app",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "description": "Biotech Terminal Application - Full-featured pharmaceutical intelligence platform",
   "type": "module",
   "private": true,

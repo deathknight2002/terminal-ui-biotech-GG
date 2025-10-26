@@ -15,35 +15,35 @@ export function setupAIChatWebSocket(io: SocketServer): void {
       context?: any[];
     }) => {
       const { message, messageId, context } = data;
-      
+
       logger.info(`[AI Chat] Stream request: ${message.substring(0, 50)}...`);
 
       try {
         // Simulate streaming response (in production, this would call an AI API)
         const response = await generateStreamingResponse(message);
-        
+
         // Stream response in chunks
         const chunkSize = 5; // words per chunk
         const words = response.split(' ');
-        
+
         for (let i = 0; i < words.length; i += chunkSize) {
           const chunk = words.slice(i, i + chunkSize).join(' ') + ' ';
-          
+
           // Emit chunk
           socket.emit('ai_stream_chunk', {
             messageId,
             chunk,
           });
-          
+
           // Simulate processing delay
           await delay(100);
         }
-        
+
         // Emit completion
         socket.emit('ai_stream_complete', {
           messageId,
         });
-        
+
         logger.info(`[AI Chat] Stream completed: ${messageId}`);
       } catch (error) {
         logger.error(`[AI Chat] Stream error:`, error);
@@ -59,7 +59,7 @@ export function setupAIChatWebSocket(io: SocketServer): void {
       try {
         // In production, fetch from database
         const history = [];
-        
+
         socket.emit('ai_chat_history_response', {
           history,
         });

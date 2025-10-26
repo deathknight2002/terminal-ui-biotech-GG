@@ -212,7 +212,7 @@ import { LARGE_PIPELINE } from '../data/testLargePipeline';
 ## Troubleshooting
 
 ### Issue: Slow scrolling performance
-**Solution**: 
+**Solution**:
 - Check browser DevTools for console errors
 - Verify @tanstack/react-virtual is installed
 - Clear browser cache and reload

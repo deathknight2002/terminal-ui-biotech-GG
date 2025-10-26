@@ -146,40 +146,40 @@ from bt_platform.scrapers.base.interface import ScraperInterface, ScraperResult,
 
 class SEC13FScraper(ScraperInterface):
     """Scraper for SEC 13F filings"""
-    
+
     REDMILE_CIK = "0001454691"
     BASE_URL = "https://www.sec.gov"
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         super().__init__(config)
         self.cik = config.get('cik', self.REDMILE_CIK)
         self.include_sectors = config.get('sectors', ['Biotechnology', 'Pharmaceuticals', 'Life Sciences'])
-        
+
     async def discover(self, method: str = "rss", **kwargs) -> List[str]:
         """
         Discover 13F filing URLs for a CIK
-        
+
         Returns list of 13F-HR filing URLs
         """
         filing_list_url = f"{self.BASE_URL}/cgi-bin/browse-edgar?action=getcompany&CIK={self.cik}&type=13F&dateb=&owner=exclude&count=10&output=atom"
-        
+
         # Parse RSS feed to get filing URLs
         # Implementation details...
         pass
-    
+
     async def fetch(self, urls: List[str], batch_size: int = 5) -> List[Dict[str, Any]]:
         """
         Fetch 13F-HR XML files
-        
+
         Respects SEC rate limits (10 requests per second max)
         """
         # Implementation with rate limiting...
         pass
-    
+
     async def parse(self, raw_content: Dict[str, Any]) -> Dict[str, Any]:
         """
         Parse 13F-HR XML to extract holdings
-        
+
         Returns:
         {
             'filing_date': '2024-11-15',
@@ -201,7 +201,7 @@ class SEC13FScraper(ScraperInterface):
         # Parse XML, extract <infoTable> entries
         # Filter by sector if configured
         pass
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """
         Normalize to PortfolioHoldingContract
@@ -218,7 +218,7 @@ class SEC13FScraper(ScraperInterface):
                 'filing_date': parsed_data['filing_date'],
                 'report_date': parsed_data['period_of_report']
             })
-        
+
         return ScraperResult(
             content_type=ContentType.FINANCIAL,
             data={
@@ -247,32 +247,32 @@ Add to `bt_platform/core/database.py`:
 class PortfolioHolding(Base):
     """Institutional portfolio holdings from 13F filings"""
     __tablename__ = "portfolio_holdings"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     fund_name = Column(String, index=True)  # e.g., "Redmile Group, LLC"
     fund_cik = Column(String, index=True)
     ticker = Column(String, index=True)
     cusip = Column(String, index=True)
     company_name = Column(String, index=True)
-    
+
     # Position details
     shares = Column(Integer)
     market_value = Column(Float)
     portfolio_weight = Column(Float)  # % of total portfolio
-    
+
     # Dates
     filing_date = Column(DateTime, index=True)
     report_date = Column(DateTime, index=True)  # Quarter-end date
-    
+
     # Change tracking
     prev_shares = Column(Integer)
     shares_change = Column(Integer)  # Delta from previous quarter
     change_pct = Column(Float)
     is_new_position = Column(Boolean, default=False)
     is_closed_position = Column(Boolean, default=False)
-    
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+
     # Index for efficient queries
     __table_args__ = (
         Index('idx_fund_ticker_report', 'fund_cik', 'ticker', 'report_date'),
@@ -298,13 +298,13 @@ async def get_redmile_holdings(
 ):
     """
     Get Redmile Group's biotech/pharma holdings
-    
+
     Returns current positions with metadata for catalyst filtering
     """
     query = db.query(PortfolioHolding).filter(
         PortfolioHolding.fund_name == "Redmile Group, LLC"
     )
-    
+
     if as_of_date:
         target_date = datetime.fromisoformat(as_of_date)
         query = query.filter(PortfolioHolding.report_date == target_date)
@@ -314,12 +314,12 @@ async def get_redmile_holdings(
             PortfolioHolding.fund_name == "Redmile Group, LLC"
         ).scalar()
         query = query.filter(PortfolioHolding.report_date == latest)
-    
+
     if min_weight:
         query = query.filter(PortfolioHolding.portfolio_weight >= min_weight)
-    
+
     holdings = query.order_by(PortfolioHolding.portfolio_weight.desc()).all()
-    
+
     return {
         "fund_name": "Redmile Group, LLC",
         "report_date": holdings[0].report_date.isoformat() if holdings else None,
@@ -347,14 +347,14 @@ async def get_holdings_history(
 ):
     """
     Get historical position sizing for a specific ticker
-    
+
     Useful for understanding conviction changes over time
     """
     holdings = db.query(PortfolioHolding).filter(
         PortfolioHolding.fund_name == "Redmile Group, LLC",
         PortfolioHolding.ticker == ticker
     ).order_by(PortfolioHolding.report_date.desc()).limit(quarters).all()
-    
+
     return {
         "ticker": ticker,
         "history": [
@@ -390,33 +390,33 @@ async def get_catalysts(
         Catalyst.event_date >= datetime.utcnow(),
         Catalyst.event_date <= datetime.utcnow() + timedelta(days=upcoming_days)
     )
-    
+
     # Portfolio filtering
     if portfolio == "redmile":
         # Get Redmile tickers
         latest_report = db.query(func.max(PortfolioHolding.report_date)).filter(
             PortfolioHolding.fund_name == "Redmile Group, LLC"
         ).scalar()
-        
+
         holdings = db.query(PortfolioHolding.ticker).filter(
             PortfolioHolding.fund_name == "Redmile Group, LLC",
             PortfolioHolding.report_date == latest_report
         ).all()
-        
+
         tickers = [h.ticker for h in holdings]
-        
+
         # Join with companies table to filter catalysts
         query = query.join(Company, Catalyst.company == Company.name).filter(
             Company.ticker.in_(tickers)
         )
-    
+
     if min_score:
         # Filter by computed score
         catalysts = query.all()
         catalysts = [c for c in catalysts if compute_catalyst_score(c).total >= min_score]
     else:
         catalysts = query.all()
-    
+
     return format_catalyst_response(catalysts, include_portfolio_context=bool(portfolio))
 ```
 
@@ -491,12 +491,12 @@ export interface EnhancedCatalystScore extends CatalystScore {
   surpriseFactor: number;      // 0-3
   downsideContained: number;   // 0-3
   marketDepth: number;         // 0-3
-  
+
   // New
   streetDifferential: number;  // 0-3
   volatilityPotential: number; // 0-2
   executionRisk: number;       // 0-2 (inverted)
-  
+
   total: number;               // 0-24
   tier: 'Ultra-High' | 'High-Torque' | 'Tradable' | 'Watch';
 }
@@ -511,20 +511,20 @@ export function computeEnhancedCatalystScore(
   const surpriseFactor = catalyst.surpriseFactor ?? 0;
   const downsideContained = catalyst.downsideContained ?? 0;
   const marketDepth = catalyst.marketDepth ?? 0;
-  
+
   // New: Street Differential
   const streetDifferential = computeStreetDifferential(catalyst, streetConsensus);
-  
+
   // New: Volatility Potential
   const volatilityPotential = computeVolatilityPotential(catalyst);
-  
+
   // New: Execution Risk (inverted - higher is better)
   const executionRisk = computeExecutionRisk(catalyst);
-  
-  const total = eventLeverage + timingClarity + surpriseFactor + 
-                downsideContained + marketDepth + streetDifferential + 
+
+  const total = eventLeverage + timingClarity + surpriseFactor +
+                downsideContained + marketDepth + streetDifferential +
                 volatilityPotential + executionRisk;
-  
+
   // New tier system
   let tier: EnhancedCatalystScore['tier'];
   if (total >= 16) {
@@ -536,7 +536,7 @@ export function computeEnhancedCatalystScore(
   } else {
     tier = 'Watch';
   }
-  
+
   return {
     eventLeverage,
     timingClarity,
@@ -561,13 +561,13 @@ function computeStreetDifferential(
   streetConsensus?: StreetConsensusData
 ): number {
   if (!streetConsensus) return 0;
-  
+
   // Compare Street POS vs internal assessment
   const streetPoS = streetConsensus.probability_of_success;
   const internalPoS = catalyst.probability ?? 0.5;
-  
+
   const differential = internalPoS - streetPoS;
-  
+
   if (differential > 0.25) return 3;  // Street materially underweight
   if (differential > 0.15) return 2;  // Modest upside vs Street
   if (differential > 0.05) return 1;  // Slight edge
@@ -578,12 +578,12 @@ function computeVolatilityPotential(catalyst: Catalyst): number {
   // Factors: market cap, peak sales potential, binary nature
   const marketCap = catalyst.companyMarketCap ?? 1000;  // $M
   const peakSales = catalyst.peakSalesPotential ?? 500;  // $M
-  
+
   const salesToMcap = peakSales / marketCap;
-  
+
   // Binary events (FDA approval, Phase 3 readout) have higher vol
   const isBinary = ['FDA Approval', 'Phase 3 Readout', 'PDUFA Action'].includes(catalyst.eventType ?? '');
-  
+
   if (isBinary && salesToMcap > 0.5) return 2;  // >30% move likely
   if (salesToMcap > 0.3 || isBinary) return 1;  // 15-30% move
   return 0;
@@ -591,17 +591,17 @@ function computeVolatilityPotential(catalyst: Catalyst): number {
 
 function computeExecutionRisk(catalyst: Catalyst): number {
   const eventType = catalyst.eventType ?? '';
-  
+
   // Low risk: regulatory decisions, label expansions
   if (['FDA Approval', 'PDUFA Action', 'Label Expansion'].includes(eventType)) {
     return 2;
   }
-  
+
   // Moderate risk: Phase 3 readouts (known endpoints)
   if (eventType === 'Phase 3 Readout') {
     return 1;
   }
-  
+
   // High risk: novel tech, Phase 1/2, manufacturing scale-up
   return 0;
 }
@@ -615,17 +615,17 @@ Add new columns to `Catalyst` table:
 # In bt_platform/core/database.py
 class Catalyst(Base):
     # ... existing columns ...
-    
+
     # Enhanced scoring fields
     street_differential = Column(Integer)  # 0-3
     volatility_potential = Column(Integer)  # 0-2
     execution_risk = Column(Integer)  # 0-2
-    
+
     # Street consensus data
     street_pos = Column(Float)  # Street probability of success
     street_pt_mean = Column(Float)  # Mean analyst price target
     analyst_count = Column(Integer)  # Number of covering analysts
-    
+
     # Company context for scoring
     company_market_cap = Column(Float)
     peak_sales_potential = Column(Float)
@@ -656,15 +656,15 @@ These are fixed regulatory deadlines - high timing clarity catalysts.
 
 class FDAPDUFAScraper(ScraperInterface):
     """Scraper for FDA PDUFA action dates"""
-    
+
     PDUFA_CALENDAR_URL = "https://www.fda.gov/industry/user-fee-performance-reports"
-    
+
     async def discover(self, **kwargs) -> List[str]:
         """Discover upcoming PDUFA dates from FDA calendar"""
         # Scrape FDA's PDUFA calendar page
         # Return list of application URLs
         pass
-    
+
     async def parse(self, raw_content: Dict[str, Any]) -> Dict[str, Any]:
         """
         Extract PDUFA data:
@@ -677,7 +677,7 @@ class FDAPDUFAScraper(ScraperInterface):
         - Breakthrough Therapy designation
         """
         pass
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """
         Convert to Catalyst format with:
@@ -714,7 +714,7 @@ AdComm meetings often precede PDUFA dates and can provide early signals on appro
 **Objective**: Track Phase 3 trial readouts and interim analyses.
 
 **Current Status**: Basic CTGov scraper exists
-**Enhancement Needed**: 
+**Enhancement Needed**:
 1. Filter for Phase 3 trials only
 2. Parse "Primary Completion Date" as catalyst date
 3. Identify trials with hard endpoints (MACE, mortality, event-driven)
@@ -726,11 +726,11 @@ AdComm meetings often precede PDUFA dates and can provide early signals on appro
 # Enhance existing bt_platform/scrapers/sites/clinical_trials_scraper.py
 
 class ClinicalTrialsScraper(ScraperInterface):
-    
+
     async def discover_phase3_readouts(self, **kwargs) -> List[str]:
         """
         Query CTGov API v2 for Phase 3 trials with upcoming completion dates
-        
+
         API: https://clinicaltrials.gov/api/v2/studies
         Filters:
         - query.term: Phase 3
@@ -745,35 +745,35 @@ class ClinicalTrialsScraper(ScraperInterface):
             "sort": "PrimaryCompletionDate:asc",
             "pageSize": 100
         }
-        
+
         # Fetch trials with completion dates in next 365 days
         # Return NCT IDs
         pass
-    
+
     def classify_endpoint_type(self, trial_data: Dict) -> str:
         """
         Classify trial endpoints as hard vs surrogate
-        
+
         Hard endpoints (high event leverage):
         - MACE, CV death, all-cause mortality
         - Hospitalization events
         - Fracture, amputation
         - Pancreatitis events
-        
+
         Surrogate endpoints (lower event leverage):
         - Biomarkers (LDL-C, HbA1c, etc.)
         - Imaging endpoints
         - PRO (patient-reported outcomes)
         """
         title = trial_data.get('BriefTitle', '').lower()
-        
-        hard_keywords = ['mace', 'mortality', 'death', 'hospitalization', 
+
+        hard_keywords = ['mace', 'mortality', 'death', 'hospitalization',
                          'fracture', 'amputation', 'event', 'pancreatitis']
-        
+
         if any(kw in title for kw in hard_keywords):
             return 'hard'
         return 'surrogate'
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """
         Convert trial to Catalyst:
@@ -783,7 +783,7 @@ class ClinicalTrialsScraper(ScraperInterface):
         - timing_clarity = 2 (event-driven but guided timeline)
         """
         endpoint_type = self.classify_endpoint_type(parsed_data)
-        
+
         return ScraperResult(
             content_type=ContentType.CLINICAL,
             data={
@@ -822,34 +822,34 @@ class ClinicalTrialsScraper(ScraperInterface):
 
 class EDGAR8KScraper(EDGARScraper):
     """Scraper for SEC 8-K filings with catalyst detection"""
-    
+
     CATALYST_KEYWORDS = [
         # Clinical
         'topline', 'interim analysis', 'primary endpoint', 'trial results',
         'statistically significant', 'p-value', 'met primary endpoint',
-        
+
         # Regulatory
         'fda approval', 'complete response letter', 'crl', 'breakthrough designation',
         'orphan drug', 'priority review', 'accelerated approval',
-        
+
         # Commercial
         'partnership', 'collaboration agreement', 'licensing agreement',
         'acquisition', 'merger', 'divestiture',
-        
+
         # Financial
         'milestone payment', 'upfront payment', 'royalty'
     ]
-    
+
     async def discover(self, **kwargs) -> List[str]:
         """
         Discover 8-K filings for biotech/pharma companies
-        
+
         Filter to companies in Redmile portfolio for relevance
         """
         # Query EDGAR for recent 8-K filings
         # Limit to tickers in portfolio_holdings table
         pass
-    
+
     async def parse(self, raw_content: Dict[str, Any]) -> Dict[str, Any]:
         """
         Parse 8-K filing:
@@ -860,11 +860,11 @@ class EDGAR8KScraper(EDGARScraper):
         5. Classify catalyst type
         """
         pass
-    
+
     def detect_catalyst(self, filing_text: str) -> Optional[Dict]:
         """
         NLP-based catalyst detection
-        
+
         Returns:
         {
             'type': 'clinical_result' | 'regulatory' | 'partnership',
@@ -897,7 +897,7 @@ class EDGAR8KScraper(EDGARScraper):
 
 class ConferenceCalendarScraper(ScraperInterface):
     """Scraper for biotech conference abstract databases"""
-    
+
     CONFERENCES = {
         'ASCO': {
             'url': 'https://meetings.asco.org/abstracts-presentations/search',
@@ -915,17 +915,17 @@ class ConferenceCalendarScraper(ScraperInterface):
             'months': [11]  # November
         }
     }
-    
+
     async def discover_presentations(self, conference: str, year: int) -> List[str]:
         """
         Search conference abstract database for portfolio companies
-        
+
         Returns list of abstract IDs/URLs
         """
         # Query abstract database
         # Filter by company/drug names from Redmile holdings
         pass
-    
+
     async def parse(self, raw_content: Dict[str, Any]) -> Dict[str, Any]:
         """
         Extract from abstract:
@@ -937,7 +937,7 @@ class ConferenceCalendarScraper(ScraperInterface):
         - Abstract text (for endpoint assessment)
         """
         pass
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """
         Convert to Catalyst:
@@ -945,7 +945,7 @@ class ConferenceCalendarScraper(ScraperInterface):
         - event_date = presentation datetime
         - timing_clarity = 3 (scheduled event)
         - event_leverage = varies (assess from abstract)
-        
+
         Note: Oral presentations > Posters for materiality
         """
         pass
@@ -967,11 +967,11 @@ class ConferenceCalendarScraper(ScraperInterface):
 
 class InsiderTransactionScraper(ScraperInterface):
     """Scraper for SEC Form 4 insider transactions"""
-    
+
     async def discover(self, tickers: List[str], days_back: int = 90) -> List[str]:
         """
         Find Form 4 filings for portfolio companies
-        
+
         Args:
             tickers: List of ticker symbols to monitor
             days_back: How far back to search
@@ -979,7 +979,7 @@ class InsiderTransactionScraper(ScraperInterface):
         # Query EDGAR for Form 4 filings
         # Filter by CIK for portfolio companies
         pass
-    
+
     async def parse(self, raw_content: Dict[str, Any]) -> Dict[str, Any]:
         """
         Extract from Form 4:
@@ -991,25 +991,25 @@ class InsiderTransactionScraper(ScraperInterface):
         - Total ownership after transaction
         """
         pass
-    
+
     def compute_signal_strength(self, transactions: List[Dict]) -> float:
         """
         Aggregate insider activity into signal strength
-        
+
         Logic:
         - Weight by insider seniority (CEO=3x, CFO/CSO=2x, Director=1x)
         - Weight by transaction size relative to salary
         - Decay over time (recent transactions weighted higher)
         - Cluster detection (multiple insiders buying in same week)
-        
+
         Returns signal strength: -1.0 (very bearish) to +1.0 (very bullish)
         """
         pass
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """
         Store insider transactions for signal computation
-        
+
         Not directly a catalyst, but affects scoring of upcoming catalysts
         """
         return ScraperResult(
@@ -1061,10 +1061,10 @@ logger = logging.getLogger(__name__)
 class CatalystPipeline:
     """
     Pipeline for catalyst data ingestion
-    
+
     Runs daily to discover new catalysts and update existing ones.
     """
-    
+
     def __init__(self):
         self.scrapers = {
             'pdufa': FDAPDUFAScraper(),
@@ -1073,11 +1073,11 @@ class CatalystPipeline:
             'conferences': ConferenceCalendarScraper(),
             'insiders': InsiderTransactionScraper()
         }
-        
+
     async def run_full_ingestion(self):
         """
         Run all scrapers and ingest catalysts
-        
+
         Order:
         1. Get Redmile portfolio holdings (for filtering)
         2. Run scrapers in parallel
@@ -1087,52 +1087,52 @@ class CatalystPipeline:
         6. Upsert to database
         """
         db = SessionLocal()
-        
+
         try:
             # Step 1: Get portfolio tickers
             portfolio_tickers = self.get_portfolio_tickers(db)
             logger.info(f"Found {len(portfolio_tickers)} tickers in Redmile portfolio")
-            
+
             # Step 2: Run scrapers
             all_catalysts = await self.run_scrapers(portfolio_tickers)
             logger.info(f"Discovered {len(all_catalysts)} potential catalysts")
-            
+
             # Step 3: Deduplicate
             unique_catalysts = self.deduplicate_catalysts(all_catalysts)
             logger.info(f"After dedup: {len(unique_catalysts)} unique catalysts")
-            
+
             # Step 4: Enrich
             enriched = await self.enrich_catalysts(unique_catalysts, db)
-            
+
             # Step 5: Score
             scored = self.score_catalysts(enriched, db)
-            
+
             # Step 6: Upsert
             self.upsert_catalysts(scored, db)
             db.commit()
-            
+
             logger.info(f"Pipeline complete. Ingested {len(scored)} catalysts.")
-            
+
         except Exception as e:
             logger.error(f"Pipeline failed: {e}")
             db.rollback()
             raise
         finally:
             db.close()
-    
+
     def get_portfolio_tickers(self, db: Session) -> List[str]:
         """Get list of tickers in Redmile portfolio"""
         latest_date = db.query(func.max(PortfolioHolding.report_date)).filter(
             PortfolioHolding.fund_name == "Redmile Group, LLC"
         ).scalar()
-        
+
         holdings = db.query(PortfolioHolding.ticker).filter(
             PortfolioHolding.fund_name == "Redmile Group, LLC",
             PortfolioHolding.report_date == latest_date
         ).all()
-        
+
         return [h.ticker for h in holdings]
-    
+
     async def run_scrapers(self, tickers: List[str]) -> List[ScraperResult]:
         """Run all scrapers in parallel"""
         tasks = [
@@ -1142,9 +1142,9 @@ class CatalystPipeline:
             self.scrapers['conferences'].run(companies=tickers),
             self.scrapers['insiders'].run(tickers=tickers)
         ]
-        
+
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         # Flatten results
         all_catalysts = []
         for result in results:
@@ -1152,24 +1152,24 @@ class CatalystPipeline:
                 logger.error(f"Scraper failed: {result}")
                 continue
             all_catalysts.extend(result)
-        
+
         return all_catalysts
-    
+
     def deduplicate_catalysts(self, catalysts: List[ScraperResult]) -> List[ScraperResult]:
         """
         Remove duplicate catalysts from different sources
-        
+
         Dedup logic:
         - Same company + drug + event_date (within 7 days) = duplicate
         - Prefer higher-quality source (FDA > CTGov > 8-K > Conference)
         """
         # Implementation...
         pass
-    
+
     async def enrich_catalysts(self, catalysts: List[ScraperResult], db: Session) -> List[Dict]:
         """
         Enrich catalysts with company data
-        
+
         Add:
         - Company ticker (if not present)
         - Market cap
@@ -1178,20 +1178,20 @@ class CatalystPipeline:
         """
         # Implementation...
         pass
-    
+
     def score_catalysts(self, catalysts: List[Dict], db: Session) -> List[Dict]:
         """
         Compute tradeability scores for all catalysts
-        
+
         Uses enhanced 8-dimension scoring algorithm
         """
         # Implementation...
         pass
-    
+
     def upsert_catalysts(self, catalysts: List[Dict], db: Session):
         """
         Insert new catalysts or update existing
-        
+
         Update logic:
         - If catalyst exists (same company + drug + date), update scores
         - If new, insert
@@ -1323,10 +1323,10 @@ export const CatalystCalendarPM: React.FC<CatalystCalendarPMProps> = ({
     const therapeuticArea = catalyst.therapeuticArea || 'Other';
     const color = THERAPEUTIC_AREA_COLORS[therapeuticArea] || '#999';
     const icon = EVENT_TYPE_ICONS[catalyst.eventType] || '📌';
-    
+
     // Size based on market cap (normalized)
     const size = Math.min(Math.max(catalyst.marketCapImpact / 500, 40), 100); // 40-100px
-    
+
     // Border thickness based on tradeability score
     const borderWidth = catalyst.tier === 'Ultra-High' ? 4 :
                         catalyst.tier === 'High-Torque' ? 3 :
@@ -1725,7 +1725,7 @@ class SurpriseDetector:
     """
     Analyzes catalyst setups for Street mispricing opportunities
     """
-    
+
     def analyze_catalyst(
         self,
         catalyst: Catalyst,
@@ -1734,7 +1734,7 @@ class SurpriseDetector:
     ) -> Dict:
         """
         Compare Street expectations vs internal assessment
-        
+
         Returns:
         {
             'street_pos': 0.45,  # Street probability of success
@@ -1748,29 +1748,29 @@ class SurpriseDetector:
         """
         # Extract Street PoS from analyst reports
         street_pos = street_consensus.get('probability_of_success', 0.5)
-        
+
         # Internal PoS based on data quality, precedents
         internal_pos = self.compute_internal_pos(catalyst, historical_analogues)
-        
+
         # Differential = opportunity
         differential = internal_pos - street_pos
-        
+
         # Calculate upside scenarios
         current_price = catalyst.company.last_price
         street_pt = street_consensus.get('price_target_mean', current_price)
-        
+
         # Model success scenario PT
         success_pt = self.model_success_price_target(catalyst)
-        
+
         upside_if_success = (success_pt - current_price) / current_price
         downside_if_fail = self.model_failure_downside(catalyst)
-        
+
         risk_reward = abs(upside_if_success / downside_if_fail) if downside_if_fail != 0 else float('inf')
-        
+
         # Conviction based on data quality
         conviction = 'High' if differential > 0.20 and risk_reward > 2.0 else \
                      'Medium' if differential > 0.10 else 'Low'
-        
+
         return {
             'street_pos': street_pos,
             'internal_pos': internal_pos,
@@ -1781,11 +1781,11 @@ class SurpriseDetector:
             'risk_reward': risk_reward,
             'conviction': conviction
         }
-    
+
     def compute_internal_pos(self, catalyst: Catalyst, analogues: List[Dict]) -> float:
         """
         Internal probability of success assessment
-        
+
         Factors:
         - Endpoint type (hard vs surrogate)
         - Trial design quality (randomized, blinded, powered)
@@ -1801,33 +1801,33 @@ class SurpriseDetector:
             'FDA Approval': 0.85,
             'Label Expansion': 0.75
         }.get(catalyst.event_type, 0.50)
-        
+
         # Adjust for endpoint quality
         if catalyst.endpoint_type == 'hard':
             base_pos += 0.10  # Hard endpoints more convincing
-        
+
         # Adjust for regulatory momentum
         if catalyst.breakthrough_designation:
             base_pos += 0.15
-        
+
         # Adjust based on analogues
         if analogues:
             analogue_success_rate = sum(a['success'] for a in analogues) / len(analogues)
             base_pos = (base_pos + analogue_success_rate) / 2
-        
+
         return min(base_pos, 0.95)  # Cap at 95%
-    
+
     def model_success_price_target(self, catalyst: Catalyst) -> float:
         """
         Model stock price if catalyst succeeds
-        
+
         Uses peak sales potential and comparable valuations
         """
         peak_sales = catalyst.peak_sales_potential
         if not peak_sales:
             # Estimate from indication prevalence
             peak_sales = self.estimate_peak_sales(catalyst)
-        
+
         # Biotech rule of thumb: EV/Peak Sales multiples
         # Rare disease: 5-7x, Oncology: 3-5x, Chronic: 2-4x
         multiple = {
@@ -1836,21 +1836,21 @@ class SurpriseDetector:
             'Cardiometabolic': 3.0,
             'Immunology': 3.5
         }.get(catalyst.therapeutic_area, 3.0)
-        
+
         implied_ev = peak_sales * multiple
         current_ev = catalyst.company.market_cap + catalyst.company.net_debt
-        
+
         upside_ev = implied_ev - current_ev
         upside_per_share = upside_ev / catalyst.company.shares_outstanding
-        
+
         success_pt = catalyst.company.last_price + upside_per_share
-        
+
         return success_pt
-    
+
     def model_failure_downside(self, catalyst: Catalyst) -> float:
         """
         Model downside if catalyst fails
-        
+
         Depends on:
         - Pipeline depth (other shots on goal?)
         - Cash runway (time to next catalyst)
@@ -1858,15 +1858,15 @@ class SurpriseDetector:
         """
         # Base downside: -30% for single-asset companies
         downside = -0.30
-        
+
         # Adjust for pipeline depth
         if catalyst.company.pipeline_count > 3:
             downside = -0.20  # Less concentrated risk
-        
+
         # Adjust for cash runway
         if catalyst.company.cash_runway_months > 24:
             downside = downside * 0.8  # More time to recover
-        
+
         return downside
 ```
 
@@ -1886,25 +1886,25 @@ class SurpriseDetector:
 class HistoricalCatalyst(Base):
     """Historical catalyst outcomes for pattern recognition"""
     __tablename__ = "historical_catalysts"
-    
+
     id = Column(Integer, primary_key=True)
     company = Column(String, index=True)
     ticker = Column(String, index=True)
     drug = Column(String, index=True)
     indication = Column(String, index=True)
     therapeutic_area = Column(String, index=True)
-    
+
     # Event details
     event_type = Column(String, index=True)
     event_date = Column(DateTime, index=True)
     endpoint_type = Column(String)  # hard vs surrogate
-    
+
     # Outcome
     outcome = Column(String, index=True)  # success, partial, failure
     outcome_details = Column(Text)
     met_primary_endpoint = Column(Boolean)
     met_secondary_endpoints = Column(Boolean)
-    
+
     # Market reaction
     price_before = Column(Float)
     price_after_1d = Column(Float)
@@ -1912,11 +1912,11 @@ class HistoricalCatalyst(Base):
     price_change_1d_pct = Column(Float)
     price_change_1w_pct = Column(Float)
     volume_spike = Column(Float)  # Multiple of avg volume
-    
+
     # Street context
     street_pos_before = Column(Float)  # Consensus PoS before event
     street_surprise = Column(Boolean)  # Did it surprise Street?
-    
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 ```
 
@@ -1926,7 +1926,7 @@ class HistoricalCatalyst(Base):
 def find_analogues(catalyst: Catalyst, db: Session) -> List[HistoricalCatalyst]:
     """
     Find historical analogues for pattern matching
-    
+
     Match on:
     - Therapeutic area
     - Event type
@@ -1938,14 +1938,14 @@ def find_analogues(catalyst: Catalyst, db: Session) -> List[HistoricalCatalyst]:
         HistoricalCatalyst.event_type == catalyst.event_type,
         HistoricalCatalyst.endpoint_type == catalyst.endpoint_type
     ).order_by(HistoricalCatalyst.event_date.desc()).limit(20).all()
-    
+
     return analogues
 
 def compute_success_rate_for_analogues(analogues: List[HistoricalCatalyst]) -> float:
     """Compute historical success rate for similar catalysts"""
     if not analogues:
         return 0.5  # Default
-    
+
     successes = sum(1 for a in analogues if a.outcome == 'success')
     return successes / len(analogues)
 ```
@@ -1961,11 +1961,11 @@ class CompetitiveLandscapeAnalyzer:
     """
     Analyzes competitive dynamics for a catalyst
     """
-    
+
     def analyze_landscape(self, catalyst: Catalyst, db: Session) -> Dict:
         """
         Map competitive landscape
-        
+
         Returns:
         {
             'competitors': [
@@ -1986,43 +1986,43 @@ class CompetitiveLandscapeAnalyzer:
         """
         # Find competing assets
         competitors = self.find_competitors(catalyst, db)
-        
+
         # Assess differentiation
         diff_score = self.score_differentiation(catalyst, competitors)
-        
+
         # Determine market position
         position = self.determine_market_position(catalyst, competitors)
-        
+
         return {
             'competitors': [self.format_competitor(c) for c in competitors],
             'market_position': position,
             'differentiation_score': diff_score,
             'competitive_threat': 'Low' if diff_score > 0.7 else 'Medium' if diff_score > 0.4 else 'High'
         }
-    
+
     def find_competitors(self, catalyst: Catalyst, db: Session) -> List[Drug]:
         """
         Find competing drugs in same indication
-        
+
         Search by:
         - Same indication
         - Similar mechanism of action
         - Active Phase 2/3 development or approved
         """
         indication = catalyst.indication
-        
+
         competitors = db.query(Drug).filter(
             Drug.indication.ilike(f"%{indication}%"),
             Drug.id != catalyst.drug_id,
             Drug.phase.in_(['Phase 2', 'Phase 3', 'Filed', 'Approved'])
         ).all()
-        
+
         return competitors
-    
+
     def score_differentiation(self, catalyst: Catalyst, competitors: List[Drug]) -> float:
         """
         Score how differentiated the asset is
-        
+
         Factors:
         - Novel mechanism of action
         - Improved efficacy
@@ -2032,39 +2032,39 @@ class CompetitiveLandscapeAnalyzer:
         """
         if not competitors:
             return 1.0  # First-in-class
-        
+
         # Check for novel MOA
         novel_moa = catalyst.mechanism not in [c.mechanism for c in competitors]
-        
+
         # Check timeline advantage
         first_to_market = all(
             catalyst.expected_approval_date < c.expected_approval_date
             for c in competitors if c.expected_approval_date
         )
-        
+
         score = 0.5  # Base
         if novel_moa:
             score += 0.3
         if first_to_market:
             score += 0.2
-        
+
         return min(score, 1.0)
-    
+
     def determine_market_position(self, catalyst: Catalyst, competitors: List[Drug]) -> str:
         """Classify market position"""
         if not competitors:
             return "First-in-class"
-        
+
         # Check if any approved drugs in indication
         approved = [c for c in competitors if c.status == 'Approved']
-        
+
         if not approved:
             return "First-in-class"
-        
+
         # Check differentiation
         if catalyst.mechanism not in [c.mechanism for c in approved]:
             return "Best-in-class (novel MOA)"
-        
+
         return "Fast-follower"
 ```
 

@@ -25,7 +25,7 @@ constituents:
     name: Exact Sciences Corporation
   - ticker: UTHR
     name: United Therapeutics Corporation
-  
+
   # Mid Cap Biotech
   - ticker: TECH
     name: Bio-Techne Corporation
@@ -57,7 +57,7 @@ constituents:
     name: Sage Therapeutics Inc
   - ticker: VRTX
     name: Vertex Pharmaceuticals Inc
-  
+
   # Small to Mid Cap
   - ticker: BBIO
     name: BridgeBio Pharma Inc

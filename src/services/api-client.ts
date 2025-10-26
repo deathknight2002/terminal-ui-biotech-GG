@@ -50,7 +50,7 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.config.baseUrl}${endpoint}`;
-    
+
     try {
       const response = await fetch(url, {
         ...options,

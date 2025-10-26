@@ -174,10 +174,10 @@ See [docs/IOS_PWA_GUIDE.md](docs/IOS_PWA_GUIDE.md) for detailed iOS installation
 
 ### PWA Features
 
-✅ **Standalone fullscreen** - No Safari UI when launched  
-✅ **Safe area support** - Respects iPhone notch and bottom bar  
-✅ **Liquid Glass effects** - Backdrop blur headers (iOS 26 design)  
-✅ **Offline app shell** - Cached static assets work offline  
+✅ **Standalone fullscreen** - No Safari UI when launched
+✅ **Safe area support** - Respects iPhone notch and bottom bar
+✅ **Liquid Glass effects** - Backdrop blur headers (iOS 26 design)
+✅ **Offline app shell** - Cached static assets work offline
 ✅ **Service worker** - Static assets only, no dynamic data caching
 
 ### Native iOS App (Personal Use)
@@ -395,10 +395,10 @@ See [docs/TUI.md](docs/TUI.md) for detailed usage instructions.
    ```bash
    git clone <repository-url>
    cd biotech-terminal-platform
-   
+
    # Windows
    .\scripts\setup.ps1
-   
+
    # macOS/Linux
    ./scripts/setup.sh
    ```
@@ -415,7 +415,7 @@ See [docs/TUI.md](docs/TUI.md) for detailed usage instructions.
    ```bash
    # Windows
    .\scripts\setup.ps1 dev
-   
+
    # macOS/Linux
    ./scripts/setup.sh dev
    ```

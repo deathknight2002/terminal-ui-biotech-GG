@@ -83,13 +83,13 @@ echo ""
 echo "6. Checking iOS native project..."
 if [ -d "mobile/ios" ]; then
     check_pass "iOS project directory exists"
-    
+
     if [ -f "mobile/ios/App/App.xcworkspace/contents.xcworkspacedata" ]; then
         check_pass "Xcode workspace configured"
     else
         check_warn "Xcode workspace may need to be regenerated"
     fi
-    
+
     if [ -f "mobile/ios/App/Podfile" ]; then
         check_pass "Podfile exists"
     else
@@ -110,7 +110,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         check_fail "Xcode not found - install from Mac App Store"
     fi
     echo ""
-    
+
     # 8. Check CocoaPods
     echo "8. Checking CocoaPods..."
     if command -v pod &> /dev/null; then
@@ -135,7 +135,7 @@ echo ""
 echo "10. Checking web assets..."
 if [ -d "mobile/dist" ]; then
     check_pass "mobile/dist/ exists"
-    
+
     if [ -f "mobile/dist/index.html" ]; then
         check_pass "Web assets built"
     else

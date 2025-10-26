@@ -44,7 +44,7 @@ Evaluate and integrate modern terminal tools (Tabby, Hyper, LiveTerm, Consola) f
 ```typescript
 import { GlassTerminal } from '@/components/terminal';
 
-<GlassTerminal 
+<GlassTerminal
   urgency="high"              // Adaptive transparency
   texture="neural"            // Pattern overlay
   blur={20}                   // Backdrop blur
@@ -111,21 +111,21 @@ biotech $ clear              # Clear screen
 
 ## 🔐 Security Considerations
 
-✅ Command whitelist  
-✅ Input sanitization (DOMPurify)  
-✅ No arbitrary code execution  
-✅ CSP headers  
-✅ XSS prevention  
+✅ Command whitelist
+✅ Input sanitization (DOMPurify)
+✅ No arbitrary code execution
+✅ CSP headers
+✅ XSS prevention
 
 ---
 
 ## ♿ Accessibility
 
-✅ Keyboard navigation (↑↓ arrows, Tab, Enter, Esc)  
-✅ Screen reader support (ARIA labels)  
-✅ WCAG AA minimum, AAA preferred  
-✅ High contrast ratios (7:1)  
-✅ Reduced motion support  
+✅ Keyboard navigation (↑↓ arrows, Tab, Enter, Esc)
+✅ Screen reader support (ARIA labels)
+✅ WCAG AA minimum, AAA preferred
+✅ High contrast ratios (7:1)
+✅ Reduced motion support
 
 ---
 

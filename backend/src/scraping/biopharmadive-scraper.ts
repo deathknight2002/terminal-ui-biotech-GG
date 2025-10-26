@@ -1,7 +1,7 @@
 /**
  * BioPharma Dive Scraper
  * Scrapes drug pipeline tracking, development updates, and therapeutic area news
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://www.biopharmadive.com
  */
@@ -43,7 +43,7 @@ export class BioPharmaDigestScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<BioPharmaDigestArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -88,7 +88,7 @@ export class BioPharmaDigestScraper {
    */
   async getLatestNews(maxResults: number = 20): Promise<BioPharmaDigestArticle[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached BioPharma Dive articles');
@@ -98,9 +98,9 @@ export class BioPharmaDigestScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} articles from BioPharma Dive...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/news', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -109,10 +109,10 @@ export class BioPharmaDigestScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} articles from BioPharma Dive`);
         return articles;
       },
@@ -127,7 +127,7 @@ export class BioPharmaDigestScraper {
    */
   async getPipelineUpdates(maxResults: number = 20): Promise<BioPharmaDigestArticle[]> {
     const cacheKey = `pipeline:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached pipeline updates');
@@ -137,9 +137,9 @@ export class BioPharmaDigestScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching pipeline updates from BioPharma Dive...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/news/pipeline', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -148,10 +148,10 @@ export class BioPharmaDigestScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} pipeline updates`);
         return articles;
       },
@@ -166,7 +166,7 @@ export class BioPharmaDigestScraper {
    */
   async searchArticles(params: BioPharmaDigestSearchParams): Promise<BioPharmaDigestArticle[]> {
     const cacheKey = `search:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -176,9 +176,9 @@ export class BioPharmaDigestScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching BioPharma Dive: "${params.query || 'all'}"`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/search', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -193,10 +193,10 @@ export class BioPharmaDigestScraper {
         });
 
         const articles = this.parseSearchResults(response.data, params.maxResults || 20);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Found ${articles.length} articles matching search`);
         return articles;
       },
@@ -211,19 +211,19 @@ export class BioPharmaDigestScraper {
    */
   private parseArticles(html: string, maxResults: number): BioPharmaDigestArticle[] {
     const articles: BioPharmaDigestArticle[] = [];
-    
+
     try {
       const $ = cheerio.load(html);
-      
+
       $('.article, .feed__item, .news-item').each((index, element) => {
         if (articles.length >= maxResults) return false;
-        
+
         const $element = $(element);
         const title = $element.find('.article__title, h2, h3, .feed__title').first().text().trim();
         const url = $element.find('a').first().attr('href') || '';
         const author = $element.find('.author, .byline, .feed__author').first().text().trim() || 'BioPharma Dive Staff';
-        const publishedDate = $element.find('.published, time, .feed__date').first().attr('datetime') || 
-                              $element.find('.published, time, .feed__date').first().text().trim() || 
+        const publishedDate = $element.find('.published, time, .feed__date').first().attr('datetime') ||
+                              $element.find('.published, time, .feed__date').first().text().trim() ||
                               new Date().toISOString();
         const summary = $element.find('.article__deck, .feed__description, p').first().text().trim();
         const category = $element.find('.topic, .category').first().text().trim() || 'Pipeline';
@@ -231,7 +231,7 @@ export class BioPharmaDigestScraper {
         const company = $element.find('.company-tag, [data-company]').first().text().trim();
         const therapeuticArea = $element.find('.therapeutic-area, [data-therapeutic-area]').first().text().trim();
         const pipelineStage = $element.find('.pipeline-stage, [data-stage]').first().text().trim();
-        
+
         if (title && url) {
           articles.push({
             id: this.extractIdFromUrl(url),
@@ -254,7 +254,7 @@ export class BioPharmaDigestScraper {
       this.rateLimiter.recordError();
       throw error;
     }
-    
+
     return articles;
   }
 
@@ -278,14 +278,14 @@ export class BioPharmaDigestScraper {
    */
   private extractTags($element: any): string[] {
     const tags: string[] = [];
-    
+
     $element.find('.tag, .label, .topic__link').each((_: number, tag: any) => {
       const tagText = $(tag).text().trim();
       if (tagText) {
         tags.push(tagText);
       }
     });
-    
+
     return tags;
   }
 

@@ -262,7 +262,7 @@ function calculateMACD(
   // Calculate signal line (EMA of MACD)
   const macdValues = macd.filter((m) => m !== null) as number[];
   const signalLine = calculateEMA(macdValues, signalPeriod);
-  
+
   // Pad signal line with nulls to match MACD length
   const paddingLength = macd.length - signalLine.length;
   const signal = [...Array(paddingLength).fill(null), ...signalLine];

@@ -350,11 +350,11 @@
   .aurora-bar-inner {
     padding: 0.75rem 1rem;
   }
-  
+
   .aurora-bar-menu {
     gap: 0.25rem;
   }
-  
+
   .menu-item {
     padding: 0.5rem 0.75rem;
     font-size: 0.7rem;
@@ -366,14 +366,14 @@
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  
+
   .aurora-bar-menu {
     order: 3;
     width: 100%;
     flex-wrap: wrap;
     justify-content: flex-start;
   }
-  
+
   .mega-menu {
     left: 0;
     transform: none;

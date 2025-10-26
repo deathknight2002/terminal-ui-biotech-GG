@@ -1,7 +1,7 @@
 /**
  * Genetic Engineering & Biotechnology News (GEN) Scraper
  * Scrapes research updates, scientific breakthroughs, and technology news
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://www.genengnews.com
  */
@@ -41,7 +41,7 @@ export class GenEngNewsScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<GenEngNewsArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -86,7 +86,7 @@ export class GenEngNewsScraper {
    */
   async getLatestNews(maxResults: number = 20): Promise<GenEngNewsArticle[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached GEN articles');
@@ -96,9 +96,9 @@ export class GenEngNewsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} articles from GEN News...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/news', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -107,10 +107,10 @@ export class GenEngNewsScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} articles from GEN News`);
         return articles;
       },
@@ -125,7 +125,7 @@ export class GenEngNewsScraper {
    */
   async getResearchNews(topic: string, maxResults: number = 20): Promise<GenEngNewsArticle[]> {
     const cacheKey = `research:${topic}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug(`📦 Returning cached research articles for ${topic}`);
@@ -135,9 +135,9 @@ export class GenEngNewsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching research news on ${topic} from GEN News...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/topics/research', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -146,10 +146,10 @@ export class GenEngNewsScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} research articles on ${topic}`);
         return articles;
       },
@@ -164,7 +164,7 @@ export class GenEngNewsScraper {
    */
   async searchArticles(params: GenEngNewsSearchParams): Promise<GenEngNewsArticle[]> {
     const cacheKey = `search:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -174,9 +174,9 @@ export class GenEngNewsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching GEN News: "${params.query || 'all'}"`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/search', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -190,10 +190,10 @@ export class GenEngNewsScraper {
         });
 
         const articles = this.parseSearchResults(response.data, params.maxResults || 20);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Found ${articles.length} articles matching search`);
         return articles;
       },
@@ -208,13 +208,13 @@ export class GenEngNewsScraper {
    */
   private parseArticles(html: string, maxResults: number): GenEngNewsArticle[] {
     const articles: GenEngNewsArticle[] = [];
-    
+
     try {
       const $ = cheerio.load(html);
-      
+
       $('.article-item, .news-item, .post-item').each((index, element) => {
         if (articles.length >= maxResults) return false;
-        
+
         const $element = $(element);
         const title = $element.find('.article-title, h2, h3, .entry-title').first().text().trim();
         const url = $element.find('a').first().attr('href') || '';
@@ -225,7 +225,7 @@ export class GenEngNewsScraper {
         const imageUrl = $element.find('img').first().attr('src');
         const researchArea = $element.find('.research-area, .topic').first().text().trim();
         const institution = $element.find('.institution, .university').first().text().trim();
-        
+
         if (title && url) {
           articles.push({
             id: this.extractIdFromUrl(url),
@@ -247,7 +247,7 @@ export class GenEngNewsScraper {
       this.rateLimiter.recordError();
       throw error;
     }
-    
+
     return articles;
   }
 
@@ -271,14 +271,14 @@ export class GenEngNewsScraper {
    */
   private extractTags($element: any): string[] {
     const tags: string[] = [];
-    
+
     $element.find('.tag, .label, .badge, .tag-links a').each((_: number, tag: any) => {
       const tagText = $(tag).text().trim();
       if (tagText) {
         tags.push(tagText);
       }
     });
-    
+
     return tags;
   }
 

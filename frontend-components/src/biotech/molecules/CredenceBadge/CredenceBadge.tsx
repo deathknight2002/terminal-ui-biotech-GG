@@ -4,7 +4,7 @@ import './CredenceBadge.css';
 /**
  * Credence Badge Types
  */
-export type CredenceType = 
+export type CredenceType =
   | 'db-lock'           // Database lock - trial data locked
   | 'sap-lock'          // Statistical Analysis Plan locked
   | 'adjudication'      // Endpoint adjudication complete
@@ -36,20 +36,20 @@ export interface CredenceBadgeProps {
 
 /**
  * Credence Badge Component
- * 
+ *
  * Displays data credibility indicators for catalysts and evidence:
  * - DB-lock: Database locked, unblinding imminent
  * - SAP-lock: Statistical Analysis Plan finalized
  * - Adjudication: Endpoint adjudication complete
  * - Federal Register: AdComm meeting confirmed
  * - etc.
- * 
+ *
  * Automatically upgrades dateConfidence when credence indicators appear.
- * 
+ *
  * Example:
  * ```tsx
- * <CredenceBadge 
- *   type="db-lock" 
+ * <CredenceBadge
+ *   type="db-lock"
  *   sourceUrl="https://clinicaltrials.gov/study/NCT12345678"
  *   date="2026-03-15"
  * />
@@ -123,7 +123,7 @@ export const CredenceBadge: React.FC<CredenceBadgeProps> = ({
   const confidence = info.confidence;
 
   const badge = (
-    <div 
+    <div
       className={`credence-badge credence-badge--${confidence} ${compact ? 'credence-badge--compact' : ''}`}
       title={showTooltip ? info.desc : undefined}
     >
@@ -139,9 +139,9 @@ export const CredenceBadge: React.FC<CredenceBadgeProps> = ({
 
   if (sourceUrl) {
     return (
-      <a 
-        href={sourceUrl} 
-        target="_blank" 
+      <a
+        href={sourceUrl}
+        target="_blank"
         rel="noopener noreferrer"
         className="credence-badge__link"
       >

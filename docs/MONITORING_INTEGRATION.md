@@ -144,8 +144,8 @@ Full API documentation: [LIVE_MONITORING.md](./LIVE_MONITORING.md)
 ### Subscribe to Updates
 
 ```typescript
-socket.emit('monitoring:subscribe', { 
-  channels: ['changes', 'alerts', 'news', 'portfolio'] 
+socket.emit('monitoring:subscribe', {
+  channels: ['changes', 'alerts', 'news', 'portfolio']
 });
 ```
 

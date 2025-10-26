@@ -1,7 +1,7 @@
 /**
  * Fierce Biotech News Scraper
  * Scrapes biotech industry news, drug development updates, and company announcements
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s to avoid server load
  * Source: https://www.fiercebiotech.com
  */
@@ -40,7 +40,7 @@ export class FierceBiotechScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<FierceBiotechArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -95,9 +95,9 @@ export class FierceBiotechScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} articles from Fierce Biotech...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get('/', {
             headers: {
@@ -107,10 +107,10 @@ export class FierceBiotechScraper {
         });
 
         const articles = this.parseArticlesFromHomepage(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Successfully fetched ${articles.length} Fierce Biotech articles`);
         return articles;
       },
@@ -130,7 +130,7 @@ export class FierceBiotechScraper {
     if (result.success && result.data) {
       return result.data;
     }
-    
+
     throw result.error || new Error('Failed to fetch Fierce Biotech articles');
   }
 
@@ -140,7 +140,7 @@ export class FierceBiotechScraper {
   async searchArticles(params: FierceBiotechSearchParams): Promise<FierceBiotechArticle[]> {
     const { query = '', maxResults = 20, sortBy = 'date' } = params;
     const cacheKey = `search:${query}:${maxResults}:${sortBy}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -150,9 +150,9 @@ export class FierceBiotechScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching Fierce Biotech for: "${query}"`);
-        
+
         const searchUrl = `/search?q=${encodeURIComponent(query)}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(searchUrl, {
@@ -163,10 +163,10 @@ export class FierceBiotechScraper {
         });
 
         const articles = this.parseSearchResults(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles for query: "${query}"`);
         return articles;
       },
@@ -192,7 +192,7 @@ export class FierceBiotechScraper {
     maxResults: number = 20
   ): Promise<FierceBiotechArticle[]> {
     const cacheKey = `category:${category}:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached category articles');
@@ -202,9 +202,9 @@ export class FierceBiotechScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching articles from category: ${category}`);
-        
+
         const categoryUrl = `/${category}`;
         const response = await this.circuitBreaker.execute(async () => {
           return this.client.get(categoryUrl, {
@@ -215,10 +215,10 @@ export class FierceBiotechScraper {
         });
 
         const articles = this.parseArticlesFromHomepage(response.data, maxResults);
-        
+
         this.cache.set(cacheKey, articles);
         this.rateLimiter.recordSuccess();
-        
+
         logger.info(`✅ Found ${articles.length} articles in category: ${category}`);
         return articles;
       },
@@ -250,13 +250,13 @@ export class FierceBiotechScraper {
       try {
         const $article = $(element);
         const $title = $article.find('h2, h3, .article-title, .headline').first();
-        const $link = $title.find('a').first().length > 0 
-          ? $title.find('a').first() 
+        const $link = $title.find('a').first().length > 0
+          ? $title.find('a').first()
           : $article.find('a').first();
-        
+
         const title = $title.text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -267,7 +267,7 @@ export class FierceBiotechScraper {
           title,
           url: fullUrl,
           author: $article.find('.author, .byline, [itemprop="author"]').first().text().trim() || 'Unknown',
-          publishedDate: $article.find('.date, .publish-date, time').first().attr('datetime') 
+          publishedDate: $article.find('.date, .publish-date, time').first().attr('datetime')
             || $article.find('.date, .publish-date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $article.find('.summary, .excerpt, .description').first().text().trim() || '',
@@ -298,13 +298,13 @@ export class FierceBiotechScraper {
       try {
         const $result = $(element);
         const $title = $result.find('h2, h3, .title').first();
-        const $link = $title.find('a').first().length > 0 
-          ? $title.find('a').first() 
+        const $link = $title.find('a').first().length > 0
+          ? $title.find('a').first()
           : $result.find('a').first();
-        
+
         const title = $title.text().trim();
         const url = $link.attr('href');
-        
+
         if (!title || !url) return;
 
         const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
@@ -315,7 +315,7 @@ export class FierceBiotechScraper {
           title,
           url: fullUrl,
           author: $result.find('.author, .byline').first().text().trim() || 'Unknown',
-          publishedDate: $result.find('.date, time').first().attr('datetime') 
+          publishedDate: $result.find('.date, time').first().attr('datetime')
             || $result.find('.date, time').first().text().trim()
             || new Date().toISOString(),
           summary: $result.find('.summary, .snippet, .excerpt').first().text().trim() || '',

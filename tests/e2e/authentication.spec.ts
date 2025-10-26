@@ -1,6 +1,6 @@
 /**
  * Authentication E2E Tests
- * 
+ *
  * Tests API token authentication for write operations.
  * Based on middleware in bt_platform/core/middleware/auth.py
  */
@@ -13,14 +13,14 @@ test.describe('API Authentication', () => {
 
   test('should allow GET requests without authentication', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/biotech/drugs`);
-    
+
     // GET requests should work without token
     expect(response.ok()).toBeTruthy();
   });
 
   test('should allow HEAD requests without authentication', async ({ page }) => {
     const response = await page.request.head(`${API_BASE}/evidence-graph/nodes`);
-    
+
     // HEAD requests should work without token
     expect(response.ok()).toBeTruthy();
   });
@@ -29,7 +29,7 @@ test.describe('API Authentication', () => {
     const response = await page.request.fetch(`${API_BASE}/biotech/drugs`, {
       method: 'OPTIONS'
     });
-    
+
     // OPTIONS requests should work without token
     expect(response.ok()).toBeTruthy();
   });
@@ -44,7 +44,7 @@ test.describe('API Authentication', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // Without token, should get 401 Unauthorized (if auth enabled) or succeed (if disabled)
     if (response.status() === 401) {
       expect(response.status()).toBe(401);
@@ -68,7 +68,7 @@ test.describe('API Authentication', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // With valid token (if auth enabled and token matches) or without auth, should succeed
     // Status will be 201 (created), 200 (ok), or 403 (wrong token)
     expect([200, 201, 403, 503]).toContain(response.status());
@@ -86,7 +86,7 @@ test.describe('API Authentication', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // With valid token (if auth enabled and token matches) or without auth, should succeed
     expect([200, 201, 403, 503]).toContain(response.status());
   });
@@ -103,7 +103,7 @@ test.describe('API Authentication', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // With invalid token (if auth enabled), should get 403 Forbidden
     if (response.status() === 403) {
       expect(response.status()).toBe(403);
@@ -120,7 +120,7 @@ test.describe('API Authentication', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // Without token, should get 401 (if auth enabled) or succeed (if disabled)
     expect([200, 201, 401]).toContain(response.status());
   });
@@ -129,7 +129,7 @@ test.describe('API Authentication', () => {
     const response = await page.request.delete(`${API_BASE}/evidence-graph/nodes/test-node`, {
       failOnStatusCode: false
     });
-    
+
     // Without token, should get 401 (if auth enabled) or succeed (if disabled)
     expect([200, 204, 401, 404]).toContain(response.status());
   });
@@ -141,7 +141,7 @@ test.describe('API Authentication', () => {
       },
       failOnStatusCode: false
     });
-    
+
     // Without token, should get 401 (if auth enabled) or succeed (if disabled)
     expect([200, 401, 404]).toContain(response.status());
   });
@@ -152,12 +152,12 @@ test.describe('API Authentication', () => {
       '/docs',
       '/metrics'
     ];
-    
+
     for (const path of publicPaths) {
       const response = await page.request.get(`http://localhost:8000${path}`, {
         failOnStatusCode: false
       });
-      
+
       // Public paths should always be accessible
       expect(response.ok() || response.status() === 404).toBeTruthy();
     }
@@ -169,7 +169,7 @@ test.describe('CORS Headers', () => {
 
   test('should include CORS headers in responses', async ({ page }) => {
     const response = await page.request.get(`${API_BASE}/biotech/drugs`);
-    
+
     const headers = response.headers();
     expect(headers['access-control-allow-origin']).toBeDefined();
     expect(headers['access-control-allow-methods']).toBeDefined();
@@ -183,7 +183,7 @@ test.describe('CORS Headers', () => {
         'Access-Control-Request-Method': 'POST'
       }
     });
-    
+
     expect(response.ok()).toBeTruthy();
     const headers = response.headers();
     expect(headers['access-control-allow-methods']).toBeDefined();

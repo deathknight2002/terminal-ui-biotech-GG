@@ -1,9 +1,9 @@
 import type { PipelineProgram } from '../components/visualizations/PipelineVisualization';
-import type { 
-  PMHeaderMetrics, 
-  RnpvLadderItem, 
+import type {
+  PMHeaderMetrics,
+  RnpvLadderItem,
   CatalystTimelineEvent,
-  Phase 
+  Phase
 } from '../../../src/types/biotech';
 
 /**
@@ -34,16 +34,16 @@ export function convertToPMMetrics(
       const milestoneText = p.nextMilestone || '';
       const yearMatch = milestoneText.match(/\d{4}/);
       const year = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear() + 1;
-      
+
       // Estimate month based on quarter
       let month = 6; // Default to mid-year
       if (milestoneText.includes('Q1')) month = 2;
       else if (milestoneText.includes('Q2')) month = 5;
       else if (milestoneText.includes('Q3')) month = 8;
       else if (milestoneText.includes('Q4')) month = 11;
-      
+
       const estimatedDate = new Date(year, month, 15);
-      
+
       return {
         program: p.name,
         date: estimatedDate.toISOString(),
@@ -107,22 +107,22 @@ export function convertToCatalystTimeline(
       const milestoneText = p.nextMilestone || '';
       const yearMatch = milestoneText.match(/\d{4}/);
       const year = yearMatch ? parseInt(yearMatch[0]) : new Date().getFullYear() + 1;
-      
+
       let month = 6;
       if (milestoneText.includes('Q1')) month = 2;
       else if (milestoneText.includes('Q2')) month = 5;
       else if (milestoneText.includes('Q3')) month = 8;
       else if (milestoneText.includes('Q4')) month = 11;
-      
+
       const estimatedDate = new Date(year, month, 15);
-      
+
       // Determine event type from milestone text
       let eventType: 'Data' | 'Filing' | 'AdCom' | 'PDUFA' | 'Other' = 'Other';
       if (milestoneText.toLowerCase().includes('data')) eventType = 'Data';
       else if (milestoneText.toLowerCase().includes('filing')) eventType = 'Filing';
       else if (milestoneText.toLowerCase().includes('adcom')) eventType = 'AdCom';
       else if (milestoneText.toLowerCase().includes('pdufa')) eventType = 'PDUFA';
-      
+
       return {
         id: p.id,
         date: estimatedDate.toISOString(),

@@ -196,7 +196,7 @@ export async function runCDCETL(): Promise<ETLResult> {
   logger.info('Starting CDC ETL pipeline...');
   const startTime = Date.now();
   const prisma = getPrismaClient();
-  
+
   const counts = {
     diseases: 0,
     created: 0,
@@ -212,7 +212,7 @@ export async function runCDCETL(): Promise<ETLResult> {
       parseInt(process.env.ETL_BATCH_SIZE || '10'),
       async (batch) => {
         const results = [];
-        
+
         for (const disease of batch) {
           try {
             await processCDCDisease(disease, prisma, counts);
@@ -223,7 +223,7 @@ export async function runCDCETL(): Promise<ETLResult> {
             errors.push(errorMsg);
           }
         }
-        
+
         return results;
       },
       (processed, total) => {
@@ -288,11 +288,11 @@ async function createCDCMetrics(
 ): Promise<void> {
   const sourceName = 'CDC';
   const sourceUrl = 'https://data.cdc.gov/';
-  
+
   // US Cases - Prevalence (overall)
   const usPopulation = 331900000; // 2023 US population
   const prevalenceRate = (disease.usCases / usPopulation) * 100000;
-  
+
   await upsertMetric(
     diseaseId,
     'prevalence',
@@ -314,7 +314,7 @@ async function createCDCMetrics(
 
   // US Deaths - Mortality rate
   const mortalityRate = (disease.usDeaths / usPopulation) * 100000;
-  
+
   await upsertMetric(
     diseaseId,
     'mortality',

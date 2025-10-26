@@ -17,13 +17,13 @@ export async function connectDatabases(): Promise<void> {
     logger.info('   - FDA Orange Book Database');
     logger.info('   - SEC EDGAR Filings');
     logger.info('   - Institutional Holdings Data');
-    
+
     // Simulate connection to real data sources
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Mark as connected
     connectionState = true;
-    
+
     logger.info('✅ LIVE data sources connected');
     logger.info('🧬 Real biotech data pipeline ready');
     logger.info('📈 Real-time market data streaming enabled');

@@ -48,12 +48,12 @@ router = APIRouter()
 def parse_quarter(quarter_str: str) -> tuple[date, date]:
     """
     Parse quarter string (e.g., 'Q1 2025', '2025-Q1') into date range.
-    
+
     Returns tuple of (quarter_start, quarter_end) dates.
     """
     # Normalize format
     quarter_str = quarter_str.upper().strip()
-    
+
     # Try different formats
     if 'Q' in quarter_str:
         parts = quarter_str.replace('Q', '').replace('-', ' ').split()
@@ -68,7 +68,7 @@ def parse_quarter(quarter_str: str) -> tuple[date, date]:
             raise ValueError(f"Invalid quarter format: {quarter_str}")
     else:
         raise ValueError(f"Invalid quarter format: {quarter_str}")
-    
+
     # Calculate quarter dates
     if q == 1:
         start = date(year, 1, 1)
@@ -84,14 +84,14 @@ def parse_quarter(quarter_str: str) -> tuple[date, date]:
         end = date(year, 12, 31)
     else:
         raise ValueError(f"Invalid quarter number: {q}")
-    
+
     return start, end
 
 
 def compute_quality_score(catalyst: CatalystEvent) -> float:
     """
     Compute transparent catalyst quality score (0-100).
-    
+
     Formula components:
     - phase_weight * 30 (Phase III = 30, Phase II = 20, Phase I = 10)
     - endpoint_rigor * 20
@@ -102,34 +102,34 @@ def compute_quality_score(catalyst: CatalystEvent) -> float:
     - complexity_penalty * -5
     """
     score = 0.0
-    
+
     # Phase weight
     if catalyst.phase_weight:
         score += catalyst.phase_weight * 30
-    
+
     # Endpoint rigor
     if catalyst.endpoint_rigor:
         score += catalyst.endpoint_rigor * 20
-    
+
     # Enrollment (log scale)
     if catalyst.n:
         import math
         score += min(20, math.log1p(catalyst.n) * 2)
-    
+
     # Regulatory designations
     if catalyst.breakthrough:
         score += 10
     if catalyst.orphan:
         score += 8
-    
+
     # Market depth
     if catalyst.market_depth:
         score += catalyst.market_depth * 10
-    
+
     # Complexity penalty
     if catalyst.complexity_penalty:
         score -= catalyst.complexity_penalty * 5
-    
+
     return max(0, min(100, score))
 
 
@@ -181,7 +181,7 @@ def get_entity_sources(
         EntitySourceLink.entity_type == entity_type,
         EntitySourceLink.entity_id == entity_id
     ).all()
-    
+
     return [
         db.query(SourceProvenance).get(link.source_provenance_id)
         for link in links
@@ -197,47 +197,47 @@ def get_entity_sources(
 async def get_catalysts(
     # Search
     search: Optional[str] = Query(None, description="Search in title, description, company, drug"),
-    
+
     # Company filters
     company: Optional[str] = Query(None, description="Company name or ticker"),
     ticker: Optional[str] = Query(None, description="Company ticker"),
     company_id: Optional[int] = Query(None, description="Company ID"),
-    
+
     # Event type filters
     event_type: Optional[str] = Query(None, description="Event type (use CatalystEventType enum)"),
-    
+
     # Phase filter
     phase: Optional[str] = Query(None, description="Trial phase (e.g., 'Phase III')"),
-    
+
     # Date filters
     quarter: Optional[str] = Query(None, description="Quarter (e.g., 'Q1 2025')"),
     from_date: Optional[date] = Query(None, alias="from", description="Start date"),
     to_date: Optional[date] = Query(None, alias="to", description="End date"),
-    
+
     # PoS and confidence filters
     pos_min: Optional[float] = Query(None, ge=0, le=1, description="Minimum probability of success"),
     pos_max: Optional[float] = Query(None, ge=0, le=1, description="Maximum probability of success"),
     confidence: Optional[str] = Query(None, description="Date confidence level"),
-    
+
     # Additional filters
     target_gene: Optional[str] = Query(None, description="Target gene"),
     indication: Optional[str] = Query(None, description="Indication"),
     orphan: Optional[bool] = Query(None, description="Has orphan designation"),
     fast_track: Optional[bool] = Query(None, description="Has fast track designation"),
     breakthrough: Optional[bool] = Query(None, description="Has breakthrough designation"),
-    
+
     # Status
     event_status: Optional[str] = Query("UPCOMING", description="Event status"),
-    
+
     # Pagination
     limit: int = Query(50, ge=1, le=200, description="Results per page"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
-    
+
     db: Session = Depends(get_db)
 ):
     """
     Get catalyst events with advanced filtering and provenance.
-    
+
     Supports multi-facet filtering by:
     - Company (name, ticker, ID)
     - Event type (controlled vocabulary)
@@ -248,13 +248,13 @@ async def get_catalysts(
     - Target gene, indication
     - Regulatory designations (orphan, fast track, breakthrough)
     - Status
-    
+
     Returns paginated results with provenance links.
     """
     try:
         # Build base query
         query = db.query(CatalystEvent)
-        
+
         # Search filter
         if search:
             search_term = f"%{search}%"
@@ -268,7 +268,7 @@ async def get_catalysts(
                     CatalystEvent.indication.ilike(search_term),
                 )
             )
-        
+
         # Company filters
         if company_id:
             query = query.filter(CatalystEvent.company_id == company_id)
@@ -279,15 +279,15 @@ async def get_catalysts(
                 query = query.filter(Company.name.ilike(f"%{company}%"))
             if ticker:
                 query = query.filter(Company.ticker.ilike(f"%{ticker}%"))
-        
+
         # Event type filter
         if event_type:
             query = query.filter(CatalystEvent.event_type == event_type)
-        
+
         # Phase filter
         if phase:
             query = query.filter(CatalystEvent.trial_phase.ilike(f"%{phase}%"))
-        
+
         # Date filters
         if quarter:
             try:
@@ -311,7 +311,7 @@ async def get_catalysts(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Invalid quarter format: {str(e)}"
                 )
-        
+
         if from_date:
             query = query.filter(
                 or_(
@@ -319,7 +319,7 @@ async def get_catalysts(
                     CatalystEvent.expected_date >= from_date
                 )
             )
-        
+
         if to_date:
             query = query.filter(
                 or_(
@@ -327,43 +327,43 @@ async def get_catalysts(
                     CatalystEvent.expected_date <= to_date
                 )
             )
-        
+
         # PoS filters
         if pos_min is not None:
             query = query.filter(CatalystEvent.prob_of_success >= pos_min)
-        
+
         if pos_max is not None:
             query = query.filter(CatalystEvent.prob_of_success <= pos_max)
-        
+
         # Confidence filter
         if confidence:
             query = query.filter(CatalystEvent.date_confidence == confidence)
-        
+
         # Target gene filter
         if target_gene:
             query = query.filter(CatalystEvent.target_gene.ilike(f"%{target_gene}%"))
-        
+
         # Indication filter
         if indication:
             query = query.filter(CatalystEvent.indication.ilike(f"%{indication}%"))
-        
+
         # Regulatory designation filters
         if orphan is not None:
             query = query.filter(CatalystEvent.orphan == orphan)
-        
+
         if fast_track is not None:
             query = query.filter(CatalystEvent.fast_track == fast_track)
-        
+
         if breakthrough is not None:
             query = query.filter(CatalystEvent.breakthrough == breakthrough)
-        
+
         # Status filter
         if event_status:
             query = query.filter(CatalystEvent.status == event_status)
-        
+
         # Count total results
         total = query.count()
-        
+
         # Apply pagination and ordering
         query = query.order_by(
             CatalystEvent.event_window_start.asc().nullslast(),
@@ -371,10 +371,10 @@ async def get_catalysts(
             CatalystEvent.created_at.desc()
         )
         query = query.offset(offset).limit(limit)
-        
+
         # Execute query
         catalysts = query.all()
-        
+
         # Build response with provenance
         response_data = []
         for catalyst in catalysts:
@@ -395,13 +395,13 @@ async def get_catalysts(
                 )
                 for src in sources
             ]
-            
+
             # Get analyst notes
             notes = db.query(AnalystNote).filter(
                 AnalystNote.entity_type == "CATALYST_EVENT",
                 AnalystNote.entity_id == catalyst.id
             ).all()
-            
+
             analyst_notes = [
                 AnalystNoteResponse(
                     id=note.id,
@@ -417,7 +417,7 @@ async def get_catalysts(
                 )
                 for note in notes
             ]
-            
+
             response_data.append(
                 CatalystEventDetailResponse(
                     id=catalyst.id,
@@ -465,7 +465,7 @@ async def get_catalysts(
                     analyst_notes=analyst_notes
                 )
             )
-        
+
         return CatalystEventListResponse(
             data=response_data,
             total=total,
@@ -492,7 +492,7 @@ async def get_catalysts(
                 "status": event_status
             }
         )
-        
+
     except Exception as e:
         logger.error(f"Error fetching catalysts: {e}", exc_info=True)
         raise HTTPException(
@@ -508,7 +508,7 @@ async def get_catalyst_by_id(
 ):
     """
     Get catalyst event by ID with full provenance.
-    
+
     Returns:
     - Complete catalyst details
     - All linked source provenance records with excerpts
@@ -519,13 +519,13 @@ async def get_catalyst_by_id(
         catalyst = db.query(CatalystEvent).filter(
             CatalystEvent.id == catalyst_id
         ).first()
-        
+
         if not catalyst:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Catalyst event {catalyst_id} not found"
             )
-        
+
         # Get source provenance
         sources = get_entity_sources(db, "CATALYST_EVENT", catalyst.id)
         evidence = [
@@ -543,13 +543,13 @@ async def get_catalyst_by_id(
             )
             for src in sources
         ]
-        
+
         # Get analyst notes
         notes = db.query(AnalystNote).filter(
             AnalystNote.entity_type == "CATALYST_EVENT",
             AnalystNote.entity_id == catalyst.id
         ).order_by(AnalystNote.created_at.desc()).all()
-        
+
         analyst_notes = [
             AnalystNoteResponse(
                 id=note.id,
@@ -565,7 +565,7 @@ async def get_catalyst_by_id(
             )
             for note in notes
         ]
-        
+
         return CatalystEventDetailResponse(
             id=catalyst.id,
             company_id=catalyst.company_id,
@@ -611,7 +611,7 @@ async def get_catalyst_by_id(
             evidence=evidence,
             analyst_notes=analyst_notes
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -629,12 +629,12 @@ async def create_catalyst(
 ):
     """
     Create a new catalyst event with provenance.
-    
+
     Requires:
     - At least one source provenance record
     - Valid company_id reference
     - Event window dates (if provided) must be logical
-    
+
     Returns created catalyst with all provenance attached.
     """
     try:
@@ -645,7 +645,7 @@ async def create_catalyst(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Company {catalyst_data.company_id} not found"
             )
-        
+
         # Validate program if provided
         if catalyst_data.program_id:
             program = db.query(Program).get(catalyst_data.program_id)
@@ -654,7 +654,7 @@ async def create_catalyst(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Program {catalyst_data.program_id} not found"
                 )
-        
+
         # Validate trial if provided
         if catalyst_data.trial_id:
             trial = db.query(Trial).get(catalyst_data.trial_id)
@@ -663,7 +663,7 @@ async def create_catalyst(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Trial {catalyst_data.trial_id} not found"
                 )
-        
+
         # Create catalyst event
         catalyst = CatalystEvent(
             company_id=catalyst_data.company_id,
@@ -698,29 +698,29 @@ async def create_catalyst(
             expected_impact=catalyst_data.expected_impact,
             status=catalyst_data.status
         )
-        
+
         # Compute quality score
         db.add(catalyst)
         db.flush()  # Get ID
-        
+
         catalyst.quality_score = compute_quality_score(catalyst)
-        
+
         # Create source provenance records
         source_ids = []
         for prov_data in catalyst_data.source_provenance:
             prov = create_source_provenance(db, prov_data)
             source_ids.append(prov.id)
-        
+
         # Link sources to catalyst
         link_entity_to_sources(db, "CATALYST_EVENT", catalyst.id, source_ids)
-        
+
         # Commit transaction
         db.commit()
         db.refresh(catalyst)
-        
+
         # Return with provenance
         return await get_catalyst_by_id(catalyst.id, db)
-        
+
     except HTTPException:
         db.rollback()
         raise
@@ -741,7 +741,7 @@ async def update_catalyst(
 ):
     """
     Update catalyst event.
-    
+
     Allows updating catalyst details and adding new provenance records.
     If source_provenance is provided, new sources are linked to the catalyst.
     """
@@ -753,36 +753,36 @@ async def update_catalyst(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Catalyst event {catalyst_id} not found"
             )
-        
+
         # Update fields
         update_dict = update_data.model_dump(exclude_unset=True, exclude={'source_provenance'})
         for field, value in update_dict.items():
             setattr(catalyst, field, value)
-        
+
         # Recompute quality score if scoring fields changed
-        if any(f in update_dict for f in ['event_leverage', 'endpoint_rigor', 'market_depth', 
+        if any(f in update_dict for f in ['event_leverage', 'endpoint_rigor', 'market_depth',
                                            'phase_weight', 'unmet_need', 'complexity_penalty', 'n']):
             catalyst.quality_score = compute_quality_score(catalyst)
-        
+
         # Add new provenance if provided
         if update_data.source_provenance:
             source_ids = []
             for prov_data in update_data.source_provenance:
                 prov = create_source_provenance(db, prov_data)
                 source_ids.append(prov.id)
-            
+
             # Link new sources
             link_entity_to_sources(db, "CATALYST_EVENT", catalyst.id, source_ids)
-        
+
         # Update timestamp
         catalyst.updated_at = datetime.utcnow()
-        
+
         db.commit()
         db.refresh(catalyst)
-        
+
         # Return updated catalyst with provenance
         return await get_catalyst_by_id(catalyst.id, db)
-        
+
     except HTTPException:
         db.rollback()
         raise

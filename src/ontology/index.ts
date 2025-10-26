@@ -1,6 +1,6 @@
 /**
  * Ontology - Canonical biomedical ontology mappings
- * 
+ *
  * Provides standardized ID mapping for genes, proteins, diseases, and units
  * Supporting: HGNC, UniProt, MONDO, DOID, OncoTree, UCUM
  */
@@ -139,7 +139,7 @@ export const DiseaseMapper = {
   }): DiseaseOntology {
     const normalized = name.toLowerCase();
     const ontology = this.nameToOntology.get(normalized);
-    
+
     return {
       name,
       mondoId: options?.mondoId || ontology?.mondo,
@@ -177,7 +177,7 @@ export const UnitMapper = {
   normalize(value: number, unit: string): UnitNormalized {
     const ucumUnit = this.toUCUM.get(unit) || unit;
     const standardUnit = ucumUnit.replace(/[^a-zA-Z0-9]/g, '_');
-    
+
     return {
       value,
       unit: ucumUnit,
@@ -191,10 +191,10 @@ export const UnitMapper = {
   parseDose(doseString: string): UnitNormalized | null {
     const match = doseString.match(/^([\d.]+)\s*([^\d\s].*)$/);
     if (!match) return null;
-    
+
     const value = parseFloat(match[1]);
     const unit = match[2].trim();
-    
+
     return this.normalize(value, unit);
   },
 };

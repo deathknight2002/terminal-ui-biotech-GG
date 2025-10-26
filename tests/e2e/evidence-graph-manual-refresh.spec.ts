@@ -1,12 +1,12 @@
 /**
  * Evidence Graph — Manual Refresh Only Contract Test
- * 
+ *
  * This test codifies the "manual refresh only" behavior requirement:
  * - No WebSocket connections
- * - No polling intervals  
+ * - No polling intervals
  * - Refresh only happens on explicit user button click
  * - Last-updated timestamp changes only after refresh
- * 
+ *
  * Based on requirements from issue specification.
  */
 
@@ -23,18 +23,18 @@ test.describe('Evidence Graph — manual refresh only', () => {
     // Last-updated stamp changes only on click
     const stampSel = '.stamp, [data-testid="last-updated"]';
     const stampExists = await page.locator(stampSel).first().count();
-    
+
     let before = '';
     if (stampExists > 0) {
       before = await page.locator(stampSel).first().textContent() || '';
     }
 
     await refresh.click();
-    
+
     // Wait for loading indicator if present
     const loadingIndicator = page.locator('[data-testid="loading-indicator"], .loading, [aria-busy="true"]');
     const hasLoading = await loadingIndicator.count();
-    
+
     if (hasLoading > 0) {
       await expect(loadingIndicator).toBeVisible({ timeout: 5000 });
       await expect(loadingIndicator).toBeHidden({ timeout: 10000 });
@@ -73,16 +73,16 @@ test.describe('Evidence Graph — manual refresh only', () => {
 
     // Navigate to evidence graph page
     await page.goto('/evidence-graph');
-    
+
     // Wait for initial load
     await page.waitForLoadState('networkidle');
-    
+
     // Clear request log after initial load
     apiRequests.length = 0;
-    
+
     // Wait 5 seconds to ensure no background polling
     await page.waitForTimeout(5000);
-    
+
     // Should have no API requests in the background
     expect(apiRequests.length).toBe(0);
   });
@@ -96,17 +96,17 @@ test.describe('Evidence Graph — manual refresh only', () => {
 
     await page.goto('/evidence-graph');
     await page.waitForLoadState('networkidle');
-    
+
     // Wait a bit to ensure no delayed WS connections
     await page.waitForTimeout(2000);
-    
+
     expect(wsConnectionAttempted).toBe(false);
   });
 
   test('refresh button updates data explicitly', async ({ page }) => {
     await page.goto('/evidence-graph');
     await page.waitForLoadState('networkidle');
-    
+
     // Track API requests
     const apiRequests: string[] = [];
     page.on('request', request => {
@@ -115,23 +115,23 @@ test.describe('Evidence Graph — manual refresh only', () => {
         apiRequests.push(url);
       }
     });
-    
+
     // Clear initial requests
     apiRequests.length = 0;
-    
+
     // Click refresh button
     const refresh = page.getByRole('button', { name: /refresh/i });
     await refresh.click();
-    
+
     // Wait for network activity
     await page.waitForLoadState('networkidle');
-    
+
     // Should have made API request only when button clicked
     expect(apiRequests.length).toBeGreaterThan(0);
-    
+
     // Clear requests
     apiRequests.length = 0;
-    
+
     // Wait another 5 seconds - no more requests should be made
     await page.waitForTimeout(5000);
     expect(apiRequests.length).toBe(0);

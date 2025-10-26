@@ -212,7 +212,7 @@ export const IonisProfilePage: React.FC = () => {
                   const totalPeakSales = IONIS_PIPELINE
                     .filter(p => p.therapeuticArea === ta)
                     .reduce((sum, p) => sum + (p.peakSales || 0), 0);
-                  
+
                   return (
                     <div key={ta} className="ta-card">
                       <div className="ta-name">{ta}</div>

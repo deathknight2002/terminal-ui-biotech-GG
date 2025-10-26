@@ -110,7 +110,7 @@ export const CompanyProfilePage: React.FC = () => {
   const [pipeline, setPipeline] = useState<PipelineByTA[]>([]);
   const [catalysts, setCatalysts] = useState<Catalyst[]>([]);
   // const [stockData, setStockData] = useState<StockDataPoint[]>([]);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'pipeline' | 'catalysts' | 'sources' | 'ownership'>('overview');
@@ -397,8 +397,8 @@ export const CompanyProfilePage: React.FC = () => {
                       <div key={program.id} className="program-card">
                         <div className="program-header">
                           <h3 className="program-name">{program.name}</h3>
-                          <span 
-                            className="program-phase" 
+                          <span
+                            className="program-phase"
                             style={{ color: getPhaseColor(program.phase) }}
                           >
                             {program.phase}

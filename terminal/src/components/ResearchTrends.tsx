@@ -1,6 +1,6 @@
 /**
  * Research Trends Component
- * 
+ *
  * Visualizes publication trends and research velocity from PubMed
  */
 
@@ -39,7 +39,7 @@ export const ResearchTrends: React.FC = () => {
   // Fetch publication trends
   const { data: trendsData, isLoading: trendsLoading, refetch: refetchTrends } = useQuery<TrendData>({
     queryKey: ['research-trends', searchQuery],
-    queryFn: () => 
+    queryFn: () =>
       apiFetch(`${API_ENDPOINTS.RESEARCH.TRENDS}?query=${encodeURIComponent(searchQuery)}&years=10`),
     enabled: activeTab === 'trends',
     staleTime: 10 * 60 * 1000,
@@ -48,7 +48,7 @@ export const ResearchTrends: React.FC = () => {
   // Fetch hot topics
   const { data: hotTopicsData, isLoading: hotTopicsLoading, refetch: refetchHotTopics } = useQuery<HotTopicsData>({
     queryKey: ['hot-topics', therapeuticArea],
-    queryFn: () => 
+    queryFn: () =>
       apiFetch(`${API_ENDPOINTS.RESEARCH.HOT_TOPICS}?therapeutic_area=${encodeURIComponent(therapeuticArea)}&years=5`),
     enabled: activeTab === 'hot-topics',
     staleTime: 10 * 60 * 1000,
@@ -174,7 +174,7 @@ export const ResearchTrends: React.FC = () => {
                   {trendsData.data.map((yearData, idx) => {
                     const maxCount = Math.max(...trendsData.data.map(d => d.count));
                     const percentage = (yearData.count / maxCount * 100).toFixed(1);
-                    
+
                     return (
                       <div key={idx} className="space-y-1">
                         <div className="flex justify-between items-center">
@@ -221,7 +221,7 @@ export const ResearchTrends: React.FC = () => {
                   </thead>
                   <tbody>
                     {hotTopicsData.hot_topics.map((topic, idx) => (
-                      <tr 
+                      <tr
                         key={idx}
                         className="border-b border-terminal-border/50 hover:bg-terminal-bg-hover"
                       >

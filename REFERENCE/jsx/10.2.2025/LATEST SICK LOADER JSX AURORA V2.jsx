@@ -684,7 +684,7 @@ const Risks = () => (
     <Stack spacing={2}>
       {content.risks.map((r, i) => (
         <Accordion key={i}>
-          <AccordionSummary expandIcon={<ChevronDown />}> 
+          <AccordionSummary expandIcon={<ChevronDown />}>
             <Typography variant="subtitle2" color="secondary">{r.area}</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -706,7 +706,7 @@ const Risks = () => (
 );
 
 const MyTake = () => (
-  <SectionCard title="My take" icon={<FileSpreadsheet size={18} />}> 
+  <SectionCard title="My take" icon={<FileSpreadsheet size={18} />}>
     <Stack spacing={2}>
       {content.take.map((t, i) => (
         <Paper key={i} sx={{ p: 2 }}>

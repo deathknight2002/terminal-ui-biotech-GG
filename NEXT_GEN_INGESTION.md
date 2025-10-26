@@ -34,7 +34,7 @@ Everything runs when an analyst hits **Refresh** — but inside that click, we g
   - [ ] Fall back to GET if HEAD not supported
 - [ ] Enable compressed transport
   - [ ] Accept `gzip` encoding in requests
-  - [ ] Accept `br` (Brotli) encoding in requests  
+  - [ ] Accept `br` (Brotli) encoding in requests
   - [ ] Accept `zstd` encoding where supported
   - [ ] Automatic decompression in HTTP client
 - [ ] Implement HTTP/2 multiplexing
@@ -411,7 +411,7 @@ Everything runs when an analyst hits **Refresh** — but inside that click, we g
 **Implementation Checklist**:
 - [ ] Expand entity graph data model
   - [ ] **Nodes**: Drug, Target, Indication, Company, Modality
-  - [ ] **Edges**: 
+  - [ ] **Edges**:
     - Drug → Target (mechanism of action)
     - Drug → Indication (approved/investigated for)
     - Drug → Company (manufacturer)
@@ -429,8 +429,8 @@ Everything runs when an analyst hits **Refresh** — but inside that click, we g
   - [ ] Find all drugs in same indication + line of therapy
   - [ ] Calculate exposure score:
     ```
-    exposure = (target_match * 0.5) + 
-               (class_match * 0.3) + 
+    exposure = (target_match * 0.5) +
+               (class_match * 0.3) +
                (indication_match * 0.2)
     ```
   - [ ] Weight by development stage (Phase 3 > Phase 2 > Phase 1)
@@ -1011,7 +1011,7 @@ Just ask and I'll generate the detailed sprint plan! 🚀
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2024-10-17  
-**Maintained By**: Biotech Terminal Engineering Team  
+**Document Version**: 1.0
+**Last Updated**: 2024-10-17
+**Maintained By**: Biotech Terminal Engineering Team
 **Questions**: Open an issue or ping #biotech-terminal-dev

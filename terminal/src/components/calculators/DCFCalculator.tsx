@@ -57,7 +57,7 @@ export const DCFCalculator: React.FC<DCFCalculatorProps> = ({
       const capex = revenue * (params.capexPercent / 100);
       const wcChange = revenue * (params.wcPercent / 100);
       const fcf = nopat - capex - wcChange;
-      
+
       const discountFactor = Math.pow(1 + params.wacc / 100, year);
       fcfs.push(fcf / discountFactor);
     }
@@ -69,7 +69,7 @@ export const DCFCalculator: React.FC<DCFCalculatorProps> = ({
 
     // Enterprise value
     const enterpriseValue = fcfs.reduce((sum, fcf) => sum + fcf, 0) + discountedTerminalValue;
-    
+
     // Equity value per share
     const equityValue = enterpriseValue - params.netDebt;
     return equityValue / params.sharesOutstanding;
@@ -88,11 +88,11 @@ export const DCFCalculator: React.FC<DCFCalculatorProps> = ({
       const newValue = typeof baseParamValue === 'number'
         ? baseParamValue * (1 + changePercent / 100)
         : baseParamValue;
-      
+
       const newInputs = { ...inputs, [sensitivityVar]: newValue };
       const dcfValue = calculateDCF(newInputs);
       const valueChange = ((dcfValue - baseValue) / baseValue) * 100;
-      
+
       results.push({
         variable: `${changePercent.toFixed(0)}%`,
         change: changePercent,
@@ -106,7 +106,7 @@ export const DCFCalculator: React.FC<DCFCalculatorProps> = ({
   // Tornado chart data
   const tornadoData = useMemo((): Data[] => {
     const top10 = sensitivityAnalysis.slice(0, 10);
-    
+
     return [{
       x: top10.map(r => r.value),
       y: top10.map(r => r.variable),
@@ -130,7 +130,7 @@ export const DCFCalculator: React.FC<DCFCalculatorProps> = ({
         {/* Input Form */}
         <div className="dcf-inputs">
           <h3 className="dcf-section-title">INPUT ASSUMPTIONS</h3>
-          
+
           <div className="input-group">
             <label>Current Revenue ($M)</label>
             <input
@@ -253,7 +253,7 @@ export const DCFCalculator: React.FC<DCFCalculatorProps> = ({
 
           <div className="sensitivity-controls">
             <h3 className="dcf-section-title">SENSITIVITY ANALYSIS</h3>
-            
+
             <div className="input-group">
               <label>Variable to Test</label>
               <select

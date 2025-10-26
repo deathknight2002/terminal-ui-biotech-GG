@@ -178,7 +178,7 @@ export class PythonBackendBridge extends BaseModule implements DataProviderModul
 
   protected async onInitialize() {
     this.baseUrl = this.config.apiUrl || 'http://localhost:8000';
-    
+
     // Subscribe to events that need backend sync
     this.subscribe(EventTypes.DATA_UPDATED, this.syncToBackend);
   }
@@ -220,7 +220,7 @@ export class WebSocketBridge extends BaseModule {
 
   protected async onInitialize() {
     const wsUrl = this.config.wsUrl || 'ws://localhost:3001';
-    
+
     this.socket = io(wsUrl);
 
     // Forward WebSocket events to event bus

@@ -157,9 +157,9 @@ const handleRefresh = async (source: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ source }),
   });
-  
+
   const result = await response.json();
-  
+
   showToast({
     title: 'Refresh Complete',
     description: `${result.records_inserted} records inserted`,
@@ -530,6 +530,6 @@ MIT License - See LICENSE file for details
 
 ---
 
-**Last Updated**: January 2025  
-**Version**: 1.0.0  
+**Last Updated**: January 2025
+**Version**: 1.0.0
 **Status**: Production-Ready Architecture, Active Development

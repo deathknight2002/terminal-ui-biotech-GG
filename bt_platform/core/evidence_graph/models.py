@@ -20,7 +20,7 @@ class EdgeDelta(BaseModel):
 class NodeBase(BaseModel):
     """
     Base node in the evidence graph.
-    
+
     Can represent:
     - trial: Clinical trial with readout data
     - catalyst: Regulatory or market event (PDUFA, AdComm, etc.)
@@ -61,7 +61,7 @@ class NodeBase(BaseModel):
 class Edge(BaseModel):
     """
     Edge connecting nodes in the evidence graph.
-    
+
     Represents relationships like:
     - supports: Evidence supports a thesis
     - contradicts: Evidence contradicts a thesis

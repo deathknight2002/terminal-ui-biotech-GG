@@ -43,7 +43,7 @@ export class HTTP2ConnectionPool extends EventEmitter {
   private readonly idleTimeout: number;
   private readonly requestTimeout: number;
   private readonly retryOnTimeout: boolean;
-  
+
   private cleanupInterval?: NodeJS.Timeout;
   private totalConnections: number = 0;
   private totalRequests: number = 0;
@@ -51,7 +51,7 @@ export class HTTP2ConnectionPool extends EventEmitter {
 
   constructor(config: ConnectionPoolConfig = {}) {
     super();
-    
+
     this.maxConnections = config.maxConnections || 100;
     this.maxConnectionsPerOrigin = config.maxConnectionsPerOrigin || 10;
     this.connectionTimeout = config.connectionTimeout || 30000;
@@ -60,7 +60,7 @@ export class HTTP2ConnectionPool extends EventEmitter {
     this.retryOnTimeout = config.retryOnTimeout ?? true;
 
     this.startCleanup();
-    
+
     logger.info('🔗 HTTP/2 Connection Pool initialized');
   }
 
@@ -74,15 +74,15 @@ export class HTTP2ConnectionPool extends EventEmitter {
   }> {
     const urlObj = new URL(url);
     const origin = `${urlObj.protocol}//${urlObj.host}`;
-    
+
     this.totalRequests++;
 
     try {
       const connection = await this.getConnection(origin);
       const result = await this.executeRequest(connection, url, options);
-      
+
       this.releaseConnection(connection);
-      
+
       return result;
     } catch (error) {
       this.failedRequests++;
@@ -139,7 +139,7 @@ export class HTTP2ConnectionPool extends EventEmitter {
 
       session.on('connect', () => {
         clearTimeout(timeoutId);
-        
+
         const connection: PoolConnection = {
           session,
           origin,
@@ -151,12 +151,12 @@ export class HTTP2ConnectionPool extends EventEmitter {
         const originConnections = this.connections.get(origin) || [];
         originConnections.push(connection);
         this.connections.set(origin, originConnections);
-        
+
         this.totalConnections++;
-        
+
         logger.debug(`HTTP/2 connection created for ${origin}`);
         this.emit('connection:created', { origin });
-        
+
         resolve(connection);
       });
 
@@ -205,17 +205,17 @@ export class HTTP2ConnectionPool extends EventEmitter {
       }, options.timeout || this.requestTimeout);
 
       stream.on('response', (headers) => {
-        const statusCode = headers[':status'] 
+        const statusCode = headers[':status']
           ? parseInt(String(headers[':status']), 10)
           : 500;
-        
+
         stream.on('data', (chunk: Buffer) => {
           chunks.push(chunk);
         });
 
         stream.on('end', () => {
           clearTimeout(timeout);
-          
+
           resolve({
             statusCode,
             headers: headers as Record<string, string | string[]>,
@@ -233,7 +233,7 @@ export class HTTP2ConnectionPool extends EventEmitter {
       if (options.body) {
         stream.write(options.body);
       }
-      
+
       stream.end();
     });
   }
@@ -244,7 +244,7 @@ export class HTTP2ConnectionPool extends EventEmitter {
   private releaseConnection(connection: PoolConnection): void {
     connection.activeRequests = Math.max(0, connection.activeRequests - 1);
     connection.lastUsed = Date.now();
-    
+
     this.emit('connection:released', { origin: connection.origin });
   }
 
@@ -281,13 +281,13 @@ export class HTTP2ConnectionPool extends EventEmitter {
     if (index !== -1) {
       connections.splice(index, 1);
       this.totalConnections--;
-      
+
       if (connections.length === 0) {
         this.connections.delete(origin);
       } else {
         this.connections.set(origin, connections);
       }
-      
+
       logger.debug(`HTTP/2 connection removed for ${origin}`);
       this.emit('connection:removed', { origin });
     }
@@ -355,8 +355,8 @@ export class HTTP2ConnectionPool extends EventEmitter {
       activeRequests: activeRequestCount,
       totalRequests: this.totalRequests,
       failedRequests: this.failedRequests,
-      successRate: this.totalRequests > 0 
-        ? ((this.totalRequests - this.failedRequests) / this.totalRequests) * 100 
+      successRate: this.totalRequests > 0
+        ? ((this.totalRequests - this.failedRequests) / this.totalRequests) * 100
         : 0,
     };
   }
@@ -382,10 +382,10 @@ export class HTTP2ConnectionPool extends EventEmitter {
     }
 
     await Promise.all(closePromises);
-    
+
     this.connections.clear();
     this.totalConnections = 0;
-    
+
     logger.info('🔗 HTTP/2 Connection Pool closed');
   }
 }

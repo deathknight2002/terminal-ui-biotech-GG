@@ -127,7 +127,7 @@ interface TrialAudit {
 async def get_evidence_journal(db: Session = Depends(get_db)):
     """
     Main aggregator endpoint for Evidence Journal.
-    
+
     Returns all data entities required for science-first biotech intelligence.
     All data includes mandatory provenance (source.url, source.domain, pulledAt).
     """
@@ -255,7 +255,7 @@ const score = computeDifferentiation(assetId, evidence, competitors);
 **SourceChip component** (frontend-components/src/terminal/atoms/SourceChip):
 
 ```tsx
-<SourceChip 
+<SourceChip
   citation={{
     url: "https://platform.opentargets.org/target/ENSG00000113302",
     domain: "opentargets.org",

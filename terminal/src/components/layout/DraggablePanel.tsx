@@ -37,7 +37,7 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
-  
+
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Handle drag start
@@ -131,7 +131,7 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
           )}
         </div>
       </div>
-      
+
       <div className="draggable-panel-content">
         <Panel cornerBrackets={cornerBrackets} className="inner-panel">
           {children}

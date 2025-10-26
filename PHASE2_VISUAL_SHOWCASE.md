@@ -355,7 +355,7 @@ All components support 5 terminal themes:
 
 ---
 
-**Created**: October 10, 2025  
-**Components**: 3 new molecules (BayesianSnapshot, CredenceBadge), 1 enhanced atom (SourceChip)  
-**Data Connectors**: 5 new + 1 enhanced (CT.gov)  
+**Created**: October 10, 2025
+**Components**: 3 new molecules (BayesianSnapshot, CredenceBadge), 1 enhanced atom (SourceChip)
+**Data Connectors**: 5 new + 1 enhanced (CT.gov)
 **EndpointTruth**: 10+ indications, 60+ regulatory-grade endpoints

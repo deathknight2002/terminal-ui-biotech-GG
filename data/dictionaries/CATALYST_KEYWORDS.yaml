@@ -19,7 +19,7 @@ catalysts:
       - "BLA approval"
       - "NDA approval"
     tradability: critical
-    
+
   AdCom:
     name: "Advisory Committee"
     weight: 95
@@ -32,7 +32,7 @@ catalysts:
       - "ODAC"
       - "CDER advisory"
     tradability: critical
-    
+
   Pivotal:
     name: "Pivotal Trial Data"
     weight: 90
@@ -46,7 +46,7 @@ catalysts:
       - "met primary endpoint"
       - "primary endpoint achieved"
     tradability: critical
-    
+
   # Tier 2: High Impact
   Topline:
     name: "Topline Results"
@@ -59,7 +59,7 @@ catalysts:
       - "trial results"
       - "study results"
     tradability: high
-    
+
   Phase_3:
     name: "Phase 3"
     weight: 80
@@ -70,7 +70,7 @@ catalysts:
       - "phase 3 trial"
       - "phase III study"
     tradability: high
-    
+
   Breakthrough_Designation:
     name: "Breakthrough Designation"
     weight: 75
@@ -80,7 +80,7 @@ catalysts:
       - "BTD"
       - "breakthrough status"
     tradability: high
-    
+
   Fast_Track:
     name: "Fast Track"
     weight: 70
@@ -91,7 +91,7 @@ catalysts:
       - "priority review"
       - "rolling review"
     tradability: high
-    
+
   # Tier 3: Medium-High Impact
   M_A:
     name: "M&A / Acquisition"
@@ -105,7 +105,7 @@ catalysts:
       - "agrees to acquire"
       - "to be acquired"
     tradability: critical
-    
+
   Licensing:
     name: "Licensing Deal"
     weight: 65
@@ -118,7 +118,7 @@ catalysts:
       - "partnership"
       - "strategic collaboration"
     tradability: medium_high
-    
+
   Partnering:
     name: "Partnering"
     weight: 60
@@ -130,7 +130,7 @@ catalysts:
       - "co-development"
       - "joint development"
     tradability: medium_high
-    
+
   # Tier 4: Medium Impact
   Phase_2:
     name: "Phase 2"
@@ -144,7 +144,7 @@ catalysts:
       - "proof of concept"
       - "POC"
     tradability: medium
-    
+
   Regulatory_Filing:
     name: "Regulatory Filing"
     weight: 55
@@ -157,7 +157,7 @@ catalysts:
       - "MAA"
       - "marketing authorization application"
     tradability: medium
-    
+
   Financing:
     name: "Financing"
     weight: 45
@@ -176,7 +176,7 @@ catalysts:
       - "series B"
       - "series C"
     tradability: medium
-    
+
   # Tier 5: Lower Impact but Still Relevant
   Phase_1:
     name: "Phase 1"
@@ -189,7 +189,7 @@ catalysts:
       - "FIH"
       - "dose escalation"
     tradability: medium_low
-    
+
   Manufacturing:
     name: "Manufacturing"
     weight: 35
@@ -202,7 +202,7 @@ catalysts:
       - "facility"
       - "GMP"
     tradability: medium_low
-    
+
   # Tier 6: Negative Catalysts
   Safety:
     name: "Safety Issue"
@@ -218,7 +218,7 @@ catalysts:
       - "toxicity"
     tradability: critical
     negative: true
-    
+
   Clinical_Hold:
     name: "Clinical Hold"
     weight: 95  # Very high impact, negative
@@ -232,7 +232,7 @@ catalysts:
       - "full hold"
     tradability: critical
     negative: true
-    
+
   # Tier 7: Pipeline Events
   IND:
     name: "IND Filing"
@@ -245,7 +245,7 @@ catalysts:
       - "IND clearance"
       - "IND approval"
     tradability: low
-    
+
   Preclinical:
     name: "Preclinical"
     weight: 20
@@ -257,7 +257,7 @@ catalysts:
       - "mouse model"
       - "xenograft"
     tradability: low
-    
+
   # Corporate Events
   Leadership:
     name: "Leadership Change"
@@ -274,7 +274,7 @@ catalysts:
       - "resigns"
       - "steps down"
     tradability: medium_low
-    
+
   Presentation:
     name: "Conference Presentation"
     weight: 25
@@ -302,14 +302,14 @@ scoring_rules:
     cross_source_count_2plus: 10  # +10 if 2+ sources
     smid_cap: 10  # +10 if SMID cap company
     large_cap_discount: -15  # -15 if large cap (unless megadeal)
-    
+
   # Map final score to importance bands
   importance_bands:
     critical: 85  # 85-100
     high: 70      # 70-84
     medium: 40    # 40-69
     low: 0        # 0-39
-    
+
 # SMID vs Large Cap classification
 market_cap_buckets:
   smid:

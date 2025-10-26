@@ -160,7 +160,7 @@ def test_with_mock(mocker):
     """Test with mocked dependency."""
     mock_db = mocker.Mock()
     mock_db.query.return_value = []
-    
+
     result = my_function(mock_db)
     assert result == expected_value
 ```

@@ -26,14 +26,14 @@ export interface TherapeuticAreaRadarChartProps {
 
 /**
  * TherapeuticAreaRadarChart - Enhanced radar chart for comparing therapeutic areas
- * 
+ *
  * Features:
  * - Multi-series support (multiple therapeutic areas on one chart)
  * - Aurora-themed gradient coloring based on values
  * - Interactive hover tooltips
  * - Toggle series visibility
  * - 0-10 scale for science attributes
- * 
+ *
  * Example usage:
  * ```tsx
  * <TherapeuticAreaRadarChart
@@ -80,21 +80,21 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
 
   const getAuroraGradientColor = (value: number, baseColor: string): string => {
     if (!auroraGradient) return baseColor;
-    
+
     // Create gradient based on value (0-10 scale)
     const intensity = value / maxValue;
-    
+
     // Parse base color (assumes hex format)
     const hex = baseColor.replace('#', '');
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    
+
     // Apply intensity gradient (brighter = higher value)
     const adjustedR = Math.round(r + (255 - r) * (1 - intensity) * 0.3);
     const adjustedG = Math.round(g + (255 - g) * (1 - intensity) * 0.3);
     const adjustedB = Math.round(b + (255 - b) * (1 - intensity) * 0.3);
-    
+
     return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;
   };
 
@@ -143,7 +143,7 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
 
         ctx.closePath();
         ctx.stroke();
-        
+
         // Draw level label
         if (level === levels) {
           ctx.fillStyle = 'rgba(148, 163, 184, 0.5)';
@@ -170,7 +170,7 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
 
       // Draw data polygons for each active series
       const currentProgress = animate ? progress : 1;
-      
+
       series.forEach(s => {
         if (!activeSeries.has(s.id)) return;
 
@@ -184,7 +184,7 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
         ctx.lineWidth = isHovered ? 3 : 2;
 
         ctx.beginPath();
-        
+
         s.values.forEach((value, i) => {
           const angle = angleStep * i - Math.PI / 2;
           const normalizedValue = (value / maxValue) * currentProgress;
@@ -212,25 +212,25 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
           const y = centerY + Math.sin(angle) * pointRadius;
 
           ctx.save();
-          
+
           // Use gradient color for points if auroraGradient is enabled
           const pointColor = auroraGradient ? getAuroraGradientColor(value, s.color) : s.color;
           ctx.fillStyle = pointColor;
-          
+
           ctx.beginPath();
           ctx.arc(x, y, isHovered ? 5 : 4, 0, Math.PI * 2);
           ctx.fill();
-          
+
           // Add glow effect for hovered series
           if (isHovered) {
             ctx.shadowBlur = 10;
             ctx.shadowColor = s.color;
             ctx.fill();
           }
-          
+
           ctx.restore();
         });
-        
+
         ctx.globalAlpha = 1;
       });
 
@@ -298,7 +298,7 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
 
   return (
     <div className={clsx(styles.therapeuticAreaRadarChart, className)}>
-      <canvas 
+      <canvas
         ref={canvasRef}
         onMouseMove={(e) => {
           // TODO: Implement hover detection for tooltips
@@ -308,7 +308,7 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
           setTooltipData(null);
         }}
       />
-      
+
       {showLegend && (
         <div className={styles.legend}>
           {series.map(s => (
@@ -325,8 +325,8 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
               onMouseEnter={() => setHoveredSeries(s.id)}
               onMouseLeave={() => setHoveredSeries(null)}
             >
-              <span 
-                className={styles.legendColor} 
+              <span
+                className={styles.legendColor}
                 style={{ backgroundColor: s.color }}
               />
               <span className={styles.legendLabel}>{s.name}</span>
@@ -339,11 +339,11 @@ export const TherapeuticAreaRadarChart: React.FC<TherapeuticAreaRadarChartProps>
       )}
 
       {tooltipData && (
-        <div 
+        <div
           className={styles.tooltip}
-          style={{ 
-            left: tooltipData.x, 
-            top: tooltipData.y 
+          style={{
+            left: tooltipData.x,
+            top: tooltipData.y
           }}
         >
           {tooltipData.text}

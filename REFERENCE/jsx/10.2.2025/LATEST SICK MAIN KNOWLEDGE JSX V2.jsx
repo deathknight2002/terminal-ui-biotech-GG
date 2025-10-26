@@ -472,7 +472,7 @@ export default function App({ indications=MOCK_INDICATIONS, documents=MOCK_DOCS,
   const tabbed = useMemo(()=>{
     if (tab==='onco') return ranked.filter(i=> normalizeIndication(i).area.toLowerCase().includes('onco'));
     if (tab==='neuro') return ranked.filter(i=> normalizeIndication(i).area.toLowerCase().includes('neuro'));
-    if (tab==='oph') return ranked.filter(i=> normalizeIndication(i).area.toLowerCase().includes('oph')); 
+    if (tab==='oph') return ranked.filter(i=> normalizeIndication(i).area.toLowerCase().includes('oph'));
     return ranked;
   },[tab, ranked]);
 
@@ -540,7 +540,7 @@ export default function App({ indications=MOCK_INDICATIONS, documents=MOCK_DOCS,
       </main>
 
       {/* Details modal */}
-      {active && <DetailsModal item={active} onClose={()=>setActive(null)}/>} 
+      {active && <DetailsModal item={active} onClose={()=>setActive(null)}/>}
 
       {/* Global RAG dialog */}
       <AnimatePresence>

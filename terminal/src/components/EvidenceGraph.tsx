@@ -1,6 +1,6 @@
 /**
  * Evidence Graph Force Layout Component
- * 
+ *
  * A simple force-directed graph visualization for evidence nodes and edges.
  * Uses a basic physics simulation without D3 to minimize dependencies.
  */
@@ -63,17 +63,17 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
     const simulate = () => {
       setGraphNodes(prevNodes => {
         const newNodes = [...prevNodes];
-        
+
         // Force parameters
         const centerForce = 0.01;
         const repelForce = 5000;
         const linkForce = 0.05;
         const damping = 0.85;
-        
+
         // Apply forces
         for (let i = 0; i < newNodes.length; i++) {
           const node = newNodes[i];
-          
+
           // Skip if node is being dragged
           if (node.fx !== undefined && node.fy !== undefined) {
             node.x = node.fx;
@@ -82,13 +82,13 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
             node.vy = 0;
             continue;
           }
-          
+
           // Center force
           const dx = width / 2 - node.x;
           const dy = height / 2 - node.y;
           node.vx += dx * centerForce;
           node.vy += dy * centerForce;
-          
+
           // Repel force (node-node repulsion)
           for (let j = 0; j < newNodes.length; j++) {
             if (i === j) continue;
@@ -100,12 +100,12 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
             node.vx += (dx / dist) * force;
             node.vy += (dy / dist) * force;
           }
-          
+
           // Link force (edge connections)
           edges.forEach(edge => {
             const source = newNodes.find(n => n.id === edge.from);
             const target = newNodes.find(n => n.id === edge.to);
-            
+
             if (source && target) {
               if (node.id === source.id) {
                 const dx = target.x - source.x;
@@ -120,31 +120,31 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
               }
             }
           });
-          
+
           // Apply damping
           node.vx *= damping;
           node.vy *= damping;
-          
+
           // Update position
           node.x += node.vx;
           node.y += node.vy;
-          
+
           // Boundary constraints
           const margin = 30;
           node.x = Math.max(margin, Math.min(width - margin, node.x));
           node.y = Math.max(margin, Math.min(height - margin, node.y));
         }
-        
+
         return newNodes;
       });
-      
+
       animationRef.current = requestAnimationFrame(simulate);
     };
-    
+
     if (graphNodes.length > 0) {
       animationRef.current = requestAnimationFrame(simulate);
     }
-    
+
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
@@ -156,26 +156,26 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
+
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
-    
+
     // Draw edges
     ctx.strokeStyle = '#4a5568';
     ctx.lineWidth = 2;
-    
+
     edges.forEach(edge => {
       const source = graphNodes.find(n => n.id === edge.from);
       const target = graphNodes.find(n => n.id === edge.to);
-      
+
       if (source && target) {
         ctx.beginPath();
         ctx.moveTo(source.x, source.y);
         ctx.lineTo(target.x, target.y);
-        
+
         // Color by relation type
         switch (edge.relation) {
           case 'supports':
@@ -193,23 +193,23 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
           default:
             ctx.strokeStyle = '#718096';
         }
-        
+
         // Thicker line if edge has significant delta
         if (edge.delta?.pos && Math.abs(edge.delta.pos) > 0.05) {
           ctx.lineWidth = 3;
         } else {
           ctx.lineWidth = 2;
         }
-        
+
         ctx.stroke();
       }
     });
-    
+
     // Draw nodes
     graphNodes.forEach(node => {
       ctx.beginPath();
       ctx.arc(node.x, node.y, 20, 0, 2 * Math.PI);
-      
+
       // Color by node type
       switch (node.type) {
         case 'thesis':
@@ -230,7 +230,7 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
         default:
           ctx.fillStyle = '#718096';
       }
-      
+
       // Highlight selected or hovered
       if (node.id === selectedNode) {
         ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
@@ -241,17 +241,17 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
       } else {
         ctx.shadowBlur = 0;
       }
-      
+
       ctx.fill();
       ctx.shadowBlur = 0;
-      
+
       // Draw node label
       ctx.fillStyle = '#ffffff';
       ctx.font = '12px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      
-      const label = node.type === 'thesis' ? '◆' : 
+
+      const label = node.type === 'thesis' ? '◆' :
                    node.type === 'trial' ? '●' :
                    node.type === 'catalyst' ? '★' : '■';
       ctx.fillText(label, node.x, node.y);
@@ -262,17 +262,17 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const clickedNode = graphNodes.find(node => {
       const dx = node.x - x;
       const dy = node.y - y;
       return Math.sqrt(dx * dx + dy * dy) < 20;
     });
-    
+
     if (clickedNode) {
       setDraggingNode(clickedNode.id);
       setSelectedNode(clickedNode.id);
@@ -287,15 +287,15 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     if (draggingNode) {
-      setGraphNodes(prev => prev.map(node => 
-        node.id === draggingNode 
-          ? { ...node, fx: x, fy: y } 
+      setGraphNodes(prev => prev.map(node =>
+        node.id === draggingNode
+          ? { ...node, fx: x, fy: y }
           : node
       ));
     } else {
@@ -310,9 +310,9 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
 
   const handleMouseUp = () => {
     if (draggingNode) {
-      setGraphNodes(prev => prev.map(node => 
-        node.id === draggingNode 
-          ? { ...node, fx: undefined, fy: undefined } 
+      setGraphNodes(prev => prev.map(node =>
+        node.id === draggingNode
+          ? { ...node, fx: undefined, fy: undefined }
           : node
       ));
       setDraggingNode(null);

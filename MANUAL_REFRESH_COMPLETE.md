@@ -170,12 +170,12 @@ See `docs/MANUAL_REFRESH_TESTING.md` for comprehensive testing guide.
 
 ## Guardrails Maintained
 
-✅ No WebSocket usage (disabled by default)  
-✅ No EventSource/SSE  
-✅ No periodic sync  
-✅ No API caching in service worker  
-✅ No push notifications  
-✅ React Query manual-only refresh  
+✅ No WebSocket usage (disabled by default)
+✅ No EventSource/SSE
+✅ No periodic sync
+✅ No API caching in service worker
+✅ No push notifications
+✅ React Query manual-only refresh
 
 ## Performance Impact
 
@@ -282,15 +282,15 @@ See `docs/MANUAL_REFRESH_TESTING.md` for comprehensive testing guide.
 
 The manual-refresh PWA implementation is **complete and verified**. All requirements from the problem statement have been implemented:
 
-✅ PWA manifest with iOS optimization  
-✅ All icon sizes generated  
-✅ Viewport meta tag with safe-area support  
-✅ Service worker (static assets only)  
-✅ Zero background updaters removed  
-✅ Manual refresh with timestamp  
-✅ Backend caching (Cache-Control, ETag, 304)  
-✅ Error banner with WCAG compliance  
-✅ Documentation (README, testing guide)  
-✅ Verification script  
+✅ PWA manifest with iOS optimization
+✅ All icon sizes generated
+✅ Viewport meta tag with safe-area support
+✅ Service worker (static assets only)
+✅ Zero background updaters removed
+✅ Manual refresh with timestamp
+✅ Backend caching (Cache-Control, ETag, 304)
+✅ Error banner with WCAG compliance
+✅ Documentation (README, testing guide)
+✅ Verification script
 
 **Result:** Clean, quota-friendly manual-refresh UX with iOS-26 vibes and zero sneaky background traffic. 👨‍🍳💋

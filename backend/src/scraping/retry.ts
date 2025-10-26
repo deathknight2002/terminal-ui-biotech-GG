@@ -35,15 +35,15 @@ export function calculateBackoff(
   }
 ): number {
   const { initialDelay, maxDelay, factor, jitter } = config;
-  
+
   // Calculate exponential delay
   let delay = Math.min(initialDelay * Math.pow(factor, attempt), maxDelay);
-  
+
   // Add jitter to prevent thundering herd
   if (jitter) {
     delay = delay * (0.5 + Math.random() * 0.5);
   }
-  
+
   return Math.floor(delay);
 }
 
@@ -69,7 +69,7 @@ export async function retryWithBackoff<T>(
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
       const data = await fn();
-      
+
       return {
         success: true,
         data,
@@ -78,7 +78,7 @@ export async function retryWithBackoff<T>(
       };
     } catch (error) {
       lastError = error;
-      
+
       // Don't retry on last attempt
       if (attempt === maxAttempts - 1) {
         break;
@@ -179,7 +179,7 @@ export async function retryOnError<T>(
     if (typeof retryableErrors === 'function') {
       return retryableErrors(error);
     }
-    
+
     return retryableErrors.some(ErrorType => error instanceof ErrorType);
   };
 
@@ -218,7 +218,7 @@ export async function batchRetry<T>(
   const results = await Promise.all(
     operations.map(op => retryWithBackoff(op, config))
   );
-  
+
   return results;
 }
 

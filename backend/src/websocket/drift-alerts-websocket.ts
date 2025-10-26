@@ -34,7 +34,7 @@ export function setupDriftAlertsWebSocket(io: SocketServer): void {
     // Subscribe to drift alerts
     socket.on('subscribe:drift_alerts', (data: { model_names?: string[] }) => {
       const { model_names } = data;
-      
+
       if (model_names && model_names.length > 0) {
         model_names.forEach(model => {
           const room = `drift:${model}`;
@@ -46,7 +46,7 @@ export function setupDriftAlertsWebSocket(io: SocketServer): void {
         socket.join('drift:all');
         logger.info(`Client ${socket.id} subscribed to all drift alerts`);
       }
-      
+
       socket.emit('drift_subscription_confirmed', {
         success: true,
         model_names: model_names || ['all']
@@ -56,7 +56,7 @@ export function setupDriftAlertsWebSocket(io: SocketServer): void {
     // Unsubscribe from drift alerts
     socket.on('unsubscribe:drift_alerts', (data: { model_names?: string[] }) => {
       const { model_names } = data;
-      
+
       if (model_names && model_names.length > 0) {
         model_names.forEach(model => {
           const room = `drift:${model}`;
@@ -67,7 +67,7 @@ export function setupDriftAlertsWebSocket(io: SocketServer): void {
         socket.leave('drift:all');
         logger.info(`Client ${socket.id} unsubscribed from all drift alerts`);
       }
-      
+
       socket.emit('drift_unsubscription_confirmed', {
         success: true,
         model_names: model_names || ['all']
@@ -77,13 +77,13 @@ export function setupDriftAlertsWebSocket(io: SocketServer): void {
     // Subscribe to model metrics
     socket.on('subscribe:model_metrics', (data: { model_names: string[] }) => {
       const { model_names } = data;
-      
+
       model_names.forEach(model => {
         const room = `metrics:${model}`;
         socket.join(room);
         logger.info(`Client ${socket.id} subscribed to metrics for model: ${model}`);
       });
-      
+
       socket.emit('metrics_subscription_confirmed', {
         success: true,
         model_names
@@ -100,7 +100,7 @@ export function setupDriftAlertsWebSocket(io: SocketServer): void {
         last_check: Date.now(),
         status: 'healthy'
       };
-      
+
       if (callback) {
         callback(status);
       } else {
@@ -120,17 +120,17 @@ export function broadcastDriftAlert(
   alert: DriftAlert
 ): void {
   const { model_name, severity, type } = alert;
-  
+
   // Broadcast to specific model subscribers
   if (model_name) {
     const room = `drift:${model_name}`;
     io.to(room).emit('drift_alert', alert);
     logger.info(`📢 Drift alert broadcast to ${room}: ${type} (${severity})`);
   }
-  
+
   // Broadcast to all subscribers
   io.to('drift:all').emit('drift_alert', alert);
-  
+
   // Also send as system alert if critical
   if (severity === 'critical') {
     io.emit('system_alert', {
@@ -154,7 +154,7 @@ export function broadcastModelMetrics(
 ): void {
   const { model_name } = metrics;
   const room = `metrics:${model_name}`;
-  
+
   io.to(room).emit('model_metrics', metrics);
   logger.debug(`📊 Model metrics broadcast for ${model_name}`);
 }
@@ -167,10 +167,10 @@ export function broadcastDriftAlertsBatch(
   alerts: DriftAlert[]
 ): void {
   if (alerts.length === 0) return;
-  
+
   // Group alerts by model
   const alertsByModel = new Map<string, DriftAlert[]>();
-  
+
   alerts.forEach(alert => {
     if (alert.model_name) {
       const existing = alertsByModel.get(alert.model_name) || [];
@@ -178,7 +178,7 @@ export function broadcastDriftAlertsBatch(
       alertsByModel.set(alert.model_name, existing);
     }
   });
-  
+
   // Broadcast to specific models
   for (const [model_name, modelAlerts] of alertsByModel.entries()) {
     const room = `drift:${model_name}`;
@@ -189,14 +189,14 @@ export function broadcastDriftAlertsBatch(
       timestamp: Date.now()
     });
   }
-  
+
   // Broadcast all to general subscribers
   io.to('drift:all').emit('drift_alerts_batch', {
     alerts,
     count: alerts.length,
     timestamp: Date.now()
   });
-  
+
   logger.info(`📢 Broadcast batch of ${alerts.length} drift alerts`);
 }
 
@@ -219,17 +219,17 @@ export function broadcastRetrainingComplete(
 ): void {
   const { model_name } = data;
   const room = `drift:${model_name}`;
-  
+
   io.to(room).emit('retraining_complete', {
     ...data,
     timestamp: Date.now()
   });
-  
+
   io.to('drift:all').emit('retraining_complete', {
     ...data,
     timestamp: Date.now()
   });
-  
+
   logger.info(
     `🔄 Retraining complete notification sent for ${model_name} ` +
     `(${data.metrics.improvement > 0 ? '+' : ''}${data.metrics.improvement}% accuracy)`
@@ -247,22 +247,22 @@ export function getDriftAlertStats(io: SocketServer): {
     active_subscriptions: 0,
     models_monitored: new Set<string>()
   };
-  
+
   // Count subscriptions
   const adapter = io.of('/').adapter;
   const rooms = adapter.rooms;
-  
+
   for (const [room, sockets] of rooms.entries()) {
     if (room.startsWith('drift:')) {
       stats.active_subscriptions += sockets.size;
-      
+
       const modelName = room.replace('drift:', '');
       if (modelName !== 'all') {
         stats.models_monitored.add(modelName);
       }
     }
   }
-  
+
   return stats;
 }
 

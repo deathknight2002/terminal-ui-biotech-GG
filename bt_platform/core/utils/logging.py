@@ -11,20 +11,20 @@ from pythonjsonlogger import jsonlogger
 
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
     """Custom JSON formatter with additional context"""
-    
+
     def add_fields(self, log_record, record, message_dict):
         super().add_fields(log_record, record, message_dict)
-        
+
         # Add standard fields
         log_record['level'] = record.levelname
         log_record['logger'] = record.name
         log_record['timestamp'] = self.formatTime(record, self.datefmt)
-        
+
         # Add source location
         log_record['file'] = record.pathname
         log_record['line'] = record.lineno
         log_record['function'] = record.funcName
-        
+
         # Add process info
         log_record['process_id'] = record.process
         log_record['thread_id'] = record.thread
@@ -36,25 +36,25 @@ def setup_structured_logging(
 ) -> logging.Logger:
     """
     Setup structured logging for the application.
-    
+
     Args:
         level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         json_format: Whether to use JSON formatting (True) or plain text (False)
-    
+
     Returns:
         Configured logger instance
     """
     # Get root logger
     logger = logging.getLogger()
     logger.setLevel(getattr(logging, level.upper()))
-    
+
     # Remove existing handlers
     logger.handlers = []
-    
+
     # Create console handler
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(getattr(logging, level.upper()))
-    
+
     # Set formatter
     if json_format:
         formatter = CustomJsonFormatter(
@@ -66,20 +66,20 @@ def setup_structured_logging(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
-    
+
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    
+
     return logger
 
 
 def get_logger(name: str) -> logging.Logger:
     """
     Get a logger instance with the given name.
-    
+
     Args:
         name: Logger name (typically __name__)
-    
+
     Returns:
         Logger instance
     """

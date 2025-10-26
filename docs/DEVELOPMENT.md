@@ -62,7 +62,7 @@ from .base import Provider
 class MyProvider(Provider):
     async def fetch_data(self, **kwargs):
         return {"data": "example"}
-    
+
     def get_schema(self):
         return {"required": ["field1"]}
 ```

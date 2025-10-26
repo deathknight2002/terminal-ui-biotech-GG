@@ -55,7 +55,7 @@ export const PipelineVisualization: React.FC<PipelineVisualizationProps> = ({
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +84,7 @@ export const PipelineVisualization: React.FC<PipelineVisualizationProps> = ({
   const handleWheel = (e: React.WheelEvent) => {
     if (!enableZoom) return;
     e.preventDefault();
-    
+
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = Math.max(0.5, Math.min(3, zoomLevel * delta));
     setZoomLevel(newZoom);
@@ -231,7 +231,7 @@ export const PipelineVisualization: React.FC<PipelineVisualizationProps> = ({
                   {therapeuticAreas.map(ta => {
                     const key = `${ta}:${phase}`;
                     const programsInCell = groupedPrograms[key] || [];
-                    
+
                     if (programsInCell.length === 0) {
                       return (
                         <div key={key} className="program-cell empty" />

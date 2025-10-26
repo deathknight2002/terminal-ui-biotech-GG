@@ -8,10 +8,10 @@ import './EvidenceJournalPage.css';
 
 /**
  * Evidence Journal Page
- * 
- * A science-first evidence journal that ranks companies and assets by mechanistic 
+ *
+ * A science-first evidence journal that ranks companies and assets by mechanistic
  * differentiation and surfaces near-term catalysts with transparent evidence trails.
- * 
+ *
  * Features:
  * - Manual/Scheduled/Live refresh modes
  * - Today's Evidence updates
@@ -19,7 +19,7 @@ import './EvidenceJournalPage.css';
  * - MoA Explorer (mechanism differentiation)
  * - Company Scorecard (evidence stack)
  * - Journal notebook (pinned notes + evidence stream)
- * 
+ *
  * Routes:
  * - /evidence → Today's Evidence
  * - /catalysts → Catalyst Board
@@ -35,7 +35,7 @@ export function EvidenceJournalPage() {
   const [evidenceData, setEvidenceData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Determine active tab from route
   const getActiveTabFromRoute = (): 'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal' => {
     const path = location.pathname;
@@ -175,8 +175,8 @@ function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: Refres
             count={1}
             description="FDA label updates, guidance documents, safety alerts"
             items={[
-              { 
-                label: 'FDA Guidance', 
+              {
+                label: 'FDA Guidance',
                 detail: 'Heart Failure endpoints - functional capacity now approvable',
                 badge: 'FDA'
               },
@@ -226,7 +226,7 @@ function CatalystBoardView({ evidenceData }: { evidenceData: any }) {
       <Panel title="CATALYST BOARD" subtitle="Next 90-180 days" cornerBrackets>
         <div className="timeline-notice">
           <p>
-            <strong>Catalyst Timeline:</strong> PDUFA dates, AdComm meetings, trial readouts, 
+            <strong>Catalyst Timeline:</strong> PDUFA dates, AdComm meetings, trial readouts,
             CHMP opinions. Color-coded by confidence level. Click for detailed dossier.
           </p>
         </div>
@@ -362,7 +362,7 @@ function JournalNotebookView() {
             <div className="note-item">
               <h4>IL-23 vs TL1A in IBD</h4>
               <p>
-                <strong>So what?</strong> IL-23 has broader genetic support but TL1A may offer 
+                <strong>So what?</strong> IL-23 has broader genetic support but TL1A may offer
                 better endoscopic remission rates. Watch for combo studies.
               </p>
               <div className="note-sources">
@@ -374,7 +374,7 @@ function JournalNotebookView() {
             <div className="note-item">
               <h4>DMD: Elevidys vs Next-Gen</h4>
               <p>
-                <strong>So what?</strong> First-mover advantage vs better expression profile. 
+                <strong>So what?</strong> First-mover advantage vs better expression profile.
                 Safety durability is the key differentiator.
               </p>
               <div className="note-sources">
@@ -407,7 +407,7 @@ function JournalNotebookView() {
                 <span className="evidence-date">2026-01-09</span>
               </div>
               <p className="evidence-snippet">
-                NCT12345: Phase II IBD trial, endpoint = MMS (Mayo score), multiplicity-controlled, 
+                NCT12345: Phase II IBD trial, endpoint = MMS (Mayo score), multiplicity-controlled,
                 N=250, powered for superiority
               </p>
               <a href="#" className="evidence-link">View NCT12345 →</a>

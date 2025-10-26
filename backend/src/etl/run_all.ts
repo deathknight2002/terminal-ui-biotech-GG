@@ -28,21 +28,21 @@ async function runAllETL(): Promise<{
 }> {
   logger.info('Starting all ETL pipelines...');
   const startTime = Date.now();
-  
+
   try {
     // Initialize crosswalks first (idempotent)
     logger.info('Ensuring ICD crosswalks are initialized...');
     await initializeCrosswalks();
-    
+
     // Run all ETL pipelines in parallel for faster execution
     const [seerResult, whoResult, cdcResult] = await Promise.all([
       runSEERETL(),
       runWHOETL(),
       runCDCETL(),
     ]);
-    
+
     const duration = Date.now() - startTime;
-    
+
     const summary = {
       totalDiseases: seerResult.diseasesProcessed + whoResult.diseasesProcessed + cdcResult.diseasesProcessed,
       totalCreated: seerResult.metricsCreated + whoResult.metricsCreated + cdcResult.metricsCreated,
@@ -51,12 +51,12 @@ async function runAllETL(): Promise<{
       totalErrors: seerResult.errors.length + whoResult.errors.length + cdcResult.errors.length,
       duration,
     };
-    
+
     logger.info('All ETL pipelines completed', {
       duration: `${(duration / 1000).toFixed(2)}s`,
       summary,
     });
-    
+
     console.log('\n✅ ETL pipelines completed successfully!');
     console.log(`   Total diseases processed: ${summary.totalDiseases}`);
     console.log(`   Metrics created: ${summary.totalCreated}`);
@@ -64,7 +64,7 @@ async function runAllETL(): Promise<{
     console.log(`   Metrics skipped (unchanged): ${summary.totalSkipped}`);
     console.log(`   Errors: ${summary.totalErrors}`);
     console.log(`   Duration: ${(duration / 1000).toFixed(2)}s\n`);
-    
+
     return {
       seer: seerResult,
       who: whoResult,
@@ -82,7 +82,7 @@ async function runAllETL(): Promise<{
  */
 async function runSpecificETL(source: 'seer' | 'who' | 'cdc'): Promise<ETLResult> {
   logger.info(`Running ${source.toUpperCase()} ETL pipeline...`);
-  
+
   switch (source) {
     case 'seer':
       return await runSEERETL();
@@ -99,7 +99,7 @@ async function runSpecificETL(source: 'seer' | 'who' | 'cdc'): Promise<ETLResult
 if (require.main === module) {
   const args = process.argv.slice(2);
   const source = args[0] as 'seer' | 'who' | 'cdc' | 'all';
-  
+
   if (!source || source === 'all') {
     runAllETL()
       .then(() => process.exit(0))
