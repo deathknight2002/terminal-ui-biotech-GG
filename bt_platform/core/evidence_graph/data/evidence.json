@@ -1,72 +1,99 @@
 {
-  "nodes": [
-    {
-      "id": "thesis:SRRK-core",
-      "type": "thesis",
-      "company": "Scholar Rock",
-      "asset": "Apitegromab",
-      "indication": "SMA",
-      "notes": "Scholar Rock / Apitegromab / Spinal Muscular Atrophy thesis"
-    },
-    {
-      "id": "thesis:IONIS-ATTR",
-      "type": "thesis",
-      "company": "Ionis",
-      "asset": "Eplontersen",
-      "indication": "ATTR-PN",
-      "notes": "Ionis / Eplontersen / ATTR polyneuropathy thesis"
-    },
-    {
-      "id": "trial:SRRK-301-P3-RESILIENT",
-      "type": "trial",
-      "date": "2025-05-12",
-      "company": "Scholar Rock",
-      "asset": "Apitegromab",
-      "indication": "SMA",
-      "phase": "Phase III",
-      "pos_estimate": 0.62,
-      "sentiment": 0.15,
-      "source_url": "https://clinicaltrials.gov/study/NCT03921528",
-      "notes": "RESILIENT Phase 3 trial in SMA Type 2/3"
-    },
-    {
-      "id": "event:PDUFA-IONIS-ATTR-2025-12-21",
-      "type": "catalyst",
-      "date": "2025-12-21",
-      "company": "Ionis",
-      "asset": "Eplontersen",
-      "indication": "ATTR-PN",
-      "catalyst_type": "PDUFA",
-      "pos_estimate": 0.73,
-      "sentiment": 0.2,
-      "source_url": "https://www.fda.gov/drugs/new-drugs-fda-cders-new-molecular-entities-and-new-therapeutic-biological-products/novel-drug-approvals",
-      "notes": "PDUFA date for eplontersen in ATTR-PN"
-    }
-  ],
   "edges": [
     {
-      "from": "trial:SRRK-301-P3-RESILIENT",
-      "to": "thesis:SRRK-core",
-      "relation": "updates",
+      "confidence": 0.85,
+      "created_at": "2025-10-01T12:00:00Z",
       "delta": {
         "pos": -0.03,
         "sentiment": -0.05
       },
-      "confidence": 0.85,
+      "from": "trial:SRRK-301-P3-RESILIENT",
       "reason": "Phase 3 readout showed mixed results - primary endpoint not met but secondary endpoints promising",
-      "created_at": "2025-10-01T12:00:00Z"
+      "relation": "updates",
+      "to": "thesis:SRRK-core"
     },
     {
-      "from": "event:PDUFA-IONIS-ATTR-2025-12-21",
-      "to": "thesis:IONIS-ATTR",
-      "relation": "catalyst_for",
+      "confidence": 0.92,
+      "created_at": "2025-10-05T15:30:00Z",
       "delta": {
         "pos": 0.02,
         "sentiment": 0.1
       },
-      "confidence": 0.92,
+      "from": "event:PDUFA-IONIS-ATTR-2025-12-21",
       "reason": "Strong Phase 3 data supports approval; PDUFA catalyst approaching",
-      "created_at": "2025-10-05T15:30:00Z"
+      "relation": "catalyst_for",
+      "to": "thesis:IONIS-ATTR"
+    },
+    {
+      "confidence": 0.5,
+      "created_at": "2025-10-26T14:08:45Z",
+      "delta": {
+        "pos": 0.01,
+        "sentiment": null,
+        "tam": null
+      },
+      "from": "test:smoke-test-node",
+      "reason": "Smoke test edge",
+      "relation": "updates",
+      "to": "test:smoke-test-node"
+    }
+  ],
+  "nodes": [
+    {
+      "asset": "Apitegromab",
+      "company": "Scholar Rock",
+      "id": "thesis:SRRK-core",
+      "indication": "SMA",
+      "notes": "Scholar Rock / Apitegromab / Spinal Muscular Atrophy thesis",
+      "type": "thesis"
+    },
+    {
+      "asset": "Eplontersen",
+      "company": "Ionis",
+      "id": "thesis:IONIS-ATTR",
+      "indication": "ATTR-PN",
+      "notes": "Ionis / Eplontersen / ATTR polyneuropathy thesis",
+      "type": "thesis"
+    },
+    {
+      "asset": "Apitegromab",
+      "company": "Scholar Rock",
+      "date": "2025-05-12",
+      "id": "trial:SRRK-301-P3-RESILIENT",
+      "indication": "SMA",
+      "notes": "RESILIENT Phase 3 trial in SMA Type 2/3",
+      "phase": "Phase III",
+      "pos_estimate": 0.62,
+      "sentiment": 0.15,
+      "source_url": "https://clinicaltrials.gov/study/NCT03921528",
+      "type": "trial"
+    },
+    {
+      "asset": "Eplontersen",
+      "catalyst_type": "PDUFA",
+      "company": "Ionis",
+      "date": "2025-12-21",
+      "id": "event:PDUFA-IONIS-ATTR-2025-12-21",
+      "indication": "ATTR-PN",
+      "notes": "PDUFA date for eplontersen in ATTR-PN",
+      "pos_estimate": 0.73,
+      "sentiment": 0.2,
+      "source_url": "https://www.fda.gov/drugs/new-drugs-fda-cders-new-molecular-entities-and-new-therapeutic-biological-products/novel-drug-approvals",
+      "type": "catalyst"
+    },
+    {
+      "asset": null,
+      "catalyst_type": null,
+      "company": null,
+      "date": null,
+      "id": "test:smoke-test-node",
+      "indication": null,
+      "notes": "Smoke test node",
+      "phase": null,
+      "pos_estimate": null,
+      "sentiment": null,
+      "source_url": null,
+      "type": "thesis"
     }
   ]
 }
