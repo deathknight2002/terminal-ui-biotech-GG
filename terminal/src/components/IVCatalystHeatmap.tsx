@@ -48,9 +48,8 @@ export const IVCatalystHeatmap: React.FC<IVCatalystHeatmapProps> = ({ className 
   const fetchCalendarData = useCallback(async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      
-      const response = await fetch(`/api/v1/iv/calendar?${params}`);
+      // Future: Add ticker filtering via URLSearchParams
+      const response = await fetch('/api/v1/iv/calendar');
       if (!response.ok) throw new Error('Failed to fetch IV calendar data');
       
       const data = await response.json();
