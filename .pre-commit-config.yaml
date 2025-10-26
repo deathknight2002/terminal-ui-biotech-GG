@@ -83,3 +83,12 @@ repos:
           - eslint@9.36.0
           - typescript@5.9.3
           - typescript-eslint@8.45.0
+
+  # Evidence Graph: Manual-refresh-only policy enforcement
+  - repo: local
+    hooks:
+      - id: forbid-realtime-evidence-graph
+        name: Forbid realtime constructs in Evidence Graph (manual-refresh-only)
+        language: system
+        pass_filenames: false
+        entry: bash -c 'set -e; paths="terminal/src/pages/EvidenceGraph terminal/src/components/EvidenceGraph terminal/src/utils/evidence-graph"; patterns="WebSocket|EventSource|socket\\.io|setInterval|setTimeout|useSWR|refreshInterval"; if grep -RInE "$patterns" $paths* 2>/dev/null; then echo "Realtime primitive detected in Evidence Graph. Manual-refresh-only policy violated."; exit 1; fi; exit 0'

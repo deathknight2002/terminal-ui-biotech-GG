@@ -1,0 +1,10 @@
+# Evidence Graph code + docs must be reviewed by the core maintainers
+docs/evidence-graph/*              @deathknight2002
+terminal/src/pages/EvidenceGraph*  @deathknight2002
+terminal/src/components/EvidenceGraph* @deathknight2002
+terminal/src/types/evidence-graph.ts @deathknight2002
+terminal/src/utils/evidence-graph-api.ts @deathknight2002
+bt_platform/core/endpoints/evidence_graph.py @deathknight2002
+bt_platform/core/evidence_graph/** @deathknight2002
+standalone_evidence_api.py         @deathknight2002
+test_evidence_graph.sh             @deathknight2002
