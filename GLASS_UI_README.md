@@ -43,9 +43,9 @@ import { GlassPanel } from '@biotech-terminal/frontend-components/terminal';
 ```tsx
 import { MolecularGlassGrid } from '@biotech-terminal/frontend-components/biotech';
 
-<MolecularGlassGrid 
-  show3DStructure 
-  showConnections 
+<MolecularGlassGrid
+  show3DStructure
+  showConnections
   animationSpeed="normal"
 >
   <h3>Compound Analysis</h3>
@@ -418,8 +418,8 @@ function LiveDataPanel() {
   }, []);
 
   return (
-    <GlassPanel 
-      urgency="high" 
+    <GlassPanel
+      urgency="high"
       texture="neural"
       showDataUpdate={updated}
     >

@@ -10,8 +10,8 @@ This document details all external data sources used by the Biotech Terminal Cat
 
 ### ClinicalTrials.gov
 
-**Provider**: U.S. National Library of Medicine  
-**API**: https://clinicaltrials.gov/api/v2/  
+**Provider**: U.S. National Library of Medicine
+**API**: https://clinicaltrials.gov/api/v2/
 **License**: Public Domain (U.S. Government work)
 
 **Terms of Service**:
@@ -41,8 +41,8 @@ Last updated: 2024-01-15
 
 ### FDA.gov
 
-**Provider**: U.S. Food and Drug Administration  
-**API**: https://api.fda.gov/  
+**Provider**: U.S. Food and Drug Administration
+**API**: https://api.fda.gov/
 **License**: Public Domain (U.S. Government work)
 
 **Terms of Service**:
@@ -69,11 +69,11 @@ Via openFDA API: https://open.fda.gov/
 
 ### EMA (European Medicines Agency)
 
-**Provider**: European Medicines Agency  
-**Website**: https://www.ema.europa.eu/  
+**Provider**: European Medicines Agency
+**Website**: https://www.ema.europa.eu/
 **API**: SPOR (Substances, Products, Organisations and Referentials)
 
-**License**: EMA policy on access to documents (Policy/0043)  
+**License**: EMA policy on access to documents (Policy/0043)
 **Terms of Service**:
 - Data for public interest purposes
 - Attribution required
@@ -96,8 +96,8 @@ Data accessed via SPOR portal
 
 ### SEC EDGAR
 
-**Provider**: U.S. Securities and Exchange Commission  
-**Website**: https://www.sec.gov/edgar  
+**Provider**: U.S. Securities and Exchange Commission
+**Website**: https://www.sec.gov/edgar
 **API**: EDGAR Data API
 
 **License**: Public Domain (U.S. Government work)
@@ -130,8 +130,8 @@ Source: SEC EDGAR (Accession Number: 0001234567-24-000123)
 
 ### Yahoo Finance
 
-**Provider**: Yahoo Finance (Verizon Media)  
-**Library**: yfinance (Python wrapper)  
+**Provider**: Yahoo Finance (Verizon Media)
+**Library**: yfinance (Python wrapper)
 **License**: Data for personal, non-commercial use
 
 **Terms of Service**:
@@ -158,7 +158,7 @@ For informational purposes only
 
 ### Options Data
 
-**Provider**: TBD (Polygon.io recommended for production)  
+**Provider**: TBD (Polygon.io recommended for production)
 **Current**: Derived from Yahoo Finance options chain
 
 **License**: Depends on provider
@@ -177,7 +177,7 @@ For informational purposes only
 
 ### ASCO (American Society of Clinical Oncology)
 
-**Provider**: ASCO  
+**Provider**: ASCO
 **Website**: https://meetings.asco.org/
 
 **License**: Abstracts publicly available, full papers subscription
@@ -210,8 +210,8 @@ Similar policies apply:
 
 ### PubMed
 
-**Provider**: U.S. National Library of Medicine  
-**API**: E-utilities (Entrez Programming Utilities)  
+**Provider**: U.S. National Library of Medicine
+**API**: E-utilities (Entrez Programming Utilities)
 **License**: Public Domain
 
 **Terms of Service**:
@@ -306,11 +306,11 @@ def check_robots_txt(url):
     rp = RobotFileParser()
     rp.set_url(f"{url}/robots.txt")
     rp.read()
-    
+
     user_agent = "Biotech-Terminal/1.0"
     if not rp.can_fetch(user_agent, url):
         raise PermissionError(f"Scraping not allowed: {url}")
-    
+
     crawl_delay = rp.crawl_delay(user_agent) or 1
     return crawl_delay
 
@@ -346,7 +346,7 @@ providers:
     retry:
       max_attempts: 3
       backoff_multiplier: 2
-  
+
   fda_gov:
     rate_limit:
       calls_per_second: 5
@@ -354,7 +354,7 @@ providers:
     retry:
       max_attempts: 5
       backoff_multiplier: 1.5
-  
+
   sec_edgar:
     rate_limit:
       calls_per_second: 9  # Conservative (SEC allows 10)
@@ -427,6 +427,6 @@ For data provider inquiries:
 
 ---
 
-**Last Updated**: 2024-01-15  
-**Maintained By**: Data Platform Team  
+**Last Updated**: 2024-01-15
+**Maintained By**: Data Platform Team
 **Review Frequency**: Quarterly

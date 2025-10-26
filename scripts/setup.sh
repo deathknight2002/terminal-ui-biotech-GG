@@ -10,40 +10,40 @@ echo "🚀 Setting up Biotech Terminal Platform..."
 # Check prerequisites
 check_prerequisites() {
     echo "📋 Checking prerequisites..."
-    
+
     if ! command -v python3 &> /dev/null; then
         echo "❌ Python 3.9+ is required but not installed."
         exit 1
     fi
-    
+
     if ! command -v node &> /dev/null; then
         echo "❌ Node.js 18+ is required but not installed."
         exit 1
     fi
-    
+
     if ! command -v npm &> /dev/null; then
         echo "❌ npm is required but not installed."
         exit 1
     fi
-    
+
     echo "✅ Prerequisites check passed"
 }
 
 # Setup Python environment
 setup_python() {
     echo "🐍 Setting up Python environment..."
-    
+
     # Install Poetry if not available
     if ! command -v poetry &> /dev/null; then
         echo "📦 Installing Poetry..."
         curl -sSL https://install.python-poetry.org | python3 -
         export PATH="$HOME/.local/bin:$PATH"
     fi
-    
+
     # Install Python dependencies
     echo "📦 Installing Python dependencies..."
     poetry install
-    
+
     # Initialize database
     echo "🗄️ Initializing database..."
     poetry run python -c "
@@ -51,44 +51,44 @@ import asyncio
 from bt_platform.core.database import init_db
 asyncio.run(init_db())
 "
-    
+
     echo "✅ Python setup complete"
 }
 
-# Setup Node.js environment  
+# Setup Node.js environment
 setup_nodejs() {
     echo "📦 Setting up Node.js environment..."
-    
+
     # Install root dependencies
     echo "📦 Installing root dependencies..."
     npm install
-    
+
     # Setup frontend components
     echo "🎨 Setting up frontend components..."
     cd frontend-components
     npm install
     npm run build
     cd ..
-    
+
     # Setup terminal application
     echo "🖥️ Setting up terminal application..."
     cd terminal
     npm install
     cd ..
-    
+
     # Setup examples
     echo "📚 Setting up examples..."
     cd examples
     npm install
     cd ..
-    
+
     echo "✅ Node.js setup complete"
 }
 
 # Create environment file
 create_env_file() {
     echo "⚙️ Creating environment configuration..."
-    
+
     if [ ! -f .env ]; then
         cat > .env << EOF
 # Biotech Terminal Platform Configuration
@@ -128,14 +128,14 @@ EOF
 # Start services
 start_services() {
     echo "🚀 Starting services..."
-    
+
     # Start backend in background
     echo "🔧 Starting backend platform..."
     poetry run uvicorn bt_platform.core.app:app --reload --port 8000 &
     BACKEND_PID=$!
-    
+
     sleep 3
-    
+
     # Check if backend started successfully
     if curl -s http://localhost:8000/health > /dev/null; then
         echo "✅ Backend platform running at http://localhost:8000"
@@ -145,17 +145,17 @@ start_services() {
         kill $BACKEND_PID 2>/dev/null || true
         exit 1
     fi
-    
+
     # Start frontend
     echo "🎨 Starting terminal application..."
     cd terminal
     npm run dev &
     FRONTEND_PID=$!
     cd ..
-    
+
     sleep 3
     echo "✅ Terminal application will be available at http://localhost:3000"
-    
+
     # Cleanup function
     cleanup() {
         echo "🔄 Shutting down services..."
@@ -163,10 +163,10 @@ start_services() {
         kill $FRONTEND_PID 2>/dev/null || true
         exit 0
     }
-    
+
     # Handle Ctrl+C
     trap cleanup SIGINT SIGTERM
-    
+
     echo ""
     echo "🎉 Biotech Terminal Platform is running!"
     echo ""
@@ -175,7 +175,7 @@ start_services() {
     echo "🖥️ Terminal App: http://localhost:3000"
     echo ""
     echo "Press Ctrl+C to stop all services"
-    
+
     # Wait for user to stop
     wait
 }
@@ -189,21 +189,21 @@ run_dev() {
 # Build for production
 build_production() {
     echo "🏗️ Building for production..."
-    
+
     # Build Python package
     echo "📦 Building Python package..."
     poetry build
-    
+
     # Build frontend components
     echo "🎨 Building frontend components..."
     npm run build
-    
+
     # Build terminal application
     echo "🖥️ Building terminal application..."
     cd terminal
     npm run build
     cd ..
-    
+
     echo "✅ Production build complete"
     echo "📦 Artifacts:"
     echo "  - Python wheel: dist/"
@@ -235,7 +235,7 @@ main() {
         "python")
             setup_python
             ;;
-        "nodejs") 
+        "nodejs")
             setup_nodejs
             ;;
         *)

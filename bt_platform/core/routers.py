@@ -19,7 +19,7 @@ api_router.include_router(
 
 api_router.include_router(
     financial.router,
-    prefix="/financials", 
+    prefix="/financials",
     tags=["financials"]
 )
 

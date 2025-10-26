@@ -361,8 +361,8 @@ For questions or issues with PM Mode:
 
 ## Phase B - Enhanced Pipeline Visualization 🚧
 
-**Status**: In Progress  
-**Implementation Date**: January 2025  
+**Status**: In Progress
+**Implementation Date**: January 2025
 **Goal**: Support 150+ programs at 60fps with advanced filtering and focus mode
 
 ### 1. Virtualized Pipeline View
@@ -398,11 +398,11 @@ Three-level hierarchical structure with aggregation:
 1. **Therapeutic Area** (Level 0)
    - Aggregates: Total rNPV, Average PoS, Program count
    - Visual: Highlighted background, uppercase text
-   
+
 2. **Indication** (Level 1)
    - Aggregates: Per-indication metrics
    - Visual: Slightly indented, grouped under TA
-   
+
 3. **Asset** (Level 2)
    - Individual program details
    - Visual: Full program card with metrics
@@ -432,24 +432,24 @@ A right-side slide-out drawer showing comprehensive program information.
 **Sections:**
 1. **Basic Information**
    - Phase, Modality, Target, Indication, Therapeutic Area
-   
+
 2. **Financial Metrics**
    - rNPV, Peak Sales (Base), PoS (Base), PoS (Adjusted)
-   
+
 3. **Partnership**
    - Partner name, Stage, Royalty terms, Milestones
-   
+
 4. **Next Milestone**
    - Date, Type, Confidence level
-   
+
 5. **Sources & Provenance**
    - Clickable source links with "as of" dates
-   
+
 6. **PoS Rationale**
    - Explanation of probability calculations
    - Phase transition rates
    - Mechanistic validation
-   
+
 7. **External Links**
    - ClinicalTrials.gov search
    - PubMed search
@@ -471,14 +471,14 @@ Comprehensive filtering system with saved views.
 **Filter Categories:**
 1. **Phase Filters**
    - All phases: Preclinical, Phase I, II, III, Filed, Approved
-   
+
 2. **Therapeutic Area Filters**
    - Dynamically generated from program data
-   
+
 3. **Indication Filters**
    - First 12 shown, "+N more" indicator
    - Scrollable list
-   
+
 4. **Partnership Status**
    - Partnered vs. Wholly Owned toggle
 

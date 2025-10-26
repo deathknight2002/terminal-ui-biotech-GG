@@ -198,7 +198,7 @@ broadcastDriftAlert(io, {
 ```tsx
 import { MLMonitoringDashboard } from '@biotech-terminal/frontend-components/biotech';
 
-<MLMonitoringDashboard 
+<MLMonitoringDashboard
   modelNames={['finbert', 'biobert']}
   autoConnect={true}
 />

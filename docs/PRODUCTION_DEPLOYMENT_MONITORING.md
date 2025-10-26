@@ -1,8 +1,8 @@
 # Production Deployment & Monitoring Guide
 ## Redmile Catalyst Intelligence System
 
-> **Target:** Production-grade deployment with 99.5% uptime  
-> **Monitoring:** Prometheus + Grafana + Alerting  
+> **Target:** Production-grade deployment with 99.5% uptime
+> **Monitoring:** Prometheus + Grafana + Alerting
 > **Infrastructure:** Docker + Kubernetes (or Docker Compose for simpler setup)
 
 ---
@@ -412,33 +412,33 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      
+
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-      
+
       - name: Install dependencies
         run: |
           poetry install
-      
+
       - name: Run linters
         run: |
           poetry run ruff check bt_platform/
           poetry run black --check bt_platform/
-      
+
       - name: Run tests
         run: |
           poetry run pytest tests/ --cov=bt_platform --cov-report=xml
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -450,17 +450,17 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Log in to Container Registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v4
@@ -470,7 +470,7 @@ jobs:
             type=ref,event=branch
             type=sha,prefix={{branch}}-
             type=semver,pattern={{version}}
-      
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -485,10 +485,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Deploy to production
         uses: appleboy/ssh-action@master
         with:
@@ -500,12 +500,12 @@ jobs:
             docker-compose pull
             docker-compose up -d --no-deps api
             docker-compose exec -T api alembic upgrade head
-      
+
       - name: Verify deployment
         run: |
           sleep 30
           curl -f https://api.biotech-terminal.com/health || exit 1
-      
+
       - name: Rollback on failure
         if: failure()
         uses: appleboy/ssh-action@master
@@ -638,22 +638,22 @@ catalysts_count = Gauge(
 async def add_metrics(request, call_next):
     """Add Prometheus metrics to all requests"""
     start_time = time.time()
-    
+
     response = await call_next(request)
-    
+
     duration = time.time() - start_time
-    
+
     request_count.labels(
         method=request.method,
         endpoint=request.url.path,
         status=response.status_code
     ).inc()
-    
+
     request_duration.labels(
         method=request.method,
         endpoint=request.url.path
     ).observe(duration)
-    
+
     return response
 
 
@@ -672,10 +672,10 @@ def health_check(db: Session = Depends(get_db)):
     try:
         # Check database
         db.execute("SELECT 1")
-        
+
         # Check Redis
         # redis_client.ping()
-        
+
         return {
             "status": "healthy",
             "timestamp": datetime.now().isoformat(),
@@ -837,13 +837,13 @@ route:
   group_interval: 10s
   repeat_interval: 12h
   receiver: 'default'
-  
+
   routes:
     - match:
         severity: critical
       receiver: 'pagerduty'
       continue: true
-    
+
     - match:
         severity: warning
       receiver: 'slack'
@@ -1037,7 +1037,7 @@ gunzip < backup_20250101.sql.gz | docker-compose exec -T postgres psql -U biotec
 
 ### Disaster Recovery Plan
 
-**RTO (Recovery Time Objective):** 4 hours  
+**RTO (Recovery Time Objective):** 4 hours
 **RPO (Recovery Point Objective):** 24 hours
 
 **Steps:**
@@ -1134,6 +1134,6 @@ This production deployment guide provides a comprehensive roadmap for deploying 
 
 ---
 
-*Last Updated: 2025-10-14*  
-*Version: 1.0*  
+*Last Updated: 2025-10-14*
+*Version: 1.0*
 *Status: Production Ready*

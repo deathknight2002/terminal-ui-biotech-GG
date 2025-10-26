@@ -160,14 +160,14 @@ ab_test = create_ab_test(
 # Log predictions
 for text, true_label in zip(test_texts, test_labels):
     variant = ab_test.assign_variant()
-    
+
     if variant == 'model_a':
         pred = model_a.predict([text])[0]
         conf = model_a.predict_proba([text])[0][pred]
     else:
         pred = model_b.predict([text])[0]
         conf = model_b.predict_proba([text])[0][pred]
-    
+
     ab_test.log_prediction(variant, pred, conf, true_label)
 
 # Analyze results
@@ -242,14 +242,14 @@ async def get_catalysts(
     db: Session = Depends(get_db)
 ):
     catalysts = db.query(Catalyst).all()
-    
+
     # Convert to dict
     catalyst_dicts = [catalyst_to_dict(c) for c in catalysts]
-    
+
     # Optionally add sentiment
     if include_sentiment:
         catalyst_dicts = sentiment_scorer.batch_score_catalysts(catalyst_dicts)
-    
+
     return {"data": catalyst_dicts}
 ```
 

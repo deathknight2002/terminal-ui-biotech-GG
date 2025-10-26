@@ -9,16 +9,16 @@
 
 @keyframes aurora-shimmer {
   0%, 100% {
-    background: linear-gradient(135deg, 
-      rgba(0, 212, 255, 0.05) 0%, 
+    background: linear-gradient(135deg,
+      rgba(0, 212, 255, 0.05) 0%,
       rgba(255, 107, 107, 0.05) 25%,
       rgba(78, 205, 196, 0.05) 50%,
       rgba(155, 89, 182, 0.05) 75%,
       rgba(52, 152, 219, 0.05) 100%);
   }
   50% {
-    background: linear-gradient(135deg, 
-      rgba(255, 107, 107, 0.08) 0%, 
+    background: linear-gradient(135deg,
+      rgba(255, 107, 107, 0.08) 0%,
       rgba(78, 205, 196, 0.08) 25%,
       rgba(155, 89, 182, 0.08) 50%,
       rgba(52, 152, 219, 0.08) 75%,
@@ -68,7 +68,7 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(148, 163, 184, 0.15);
   border-radius: 16px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   padding: 24px;
@@ -142,7 +142,7 @@
   background: rgba(0, 212, 255, 0.15);
   border-color: var(--aurora-primary);
   color: var(--aurora-primary);
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(0, 212, 255, 0.4),
     inset 0 0 20px rgba(0, 212, 255, 0.1);
 }
@@ -177,16 +177,16 @@
   .terminal-frame.aurora-shimmer {
     padding: 16px;
   }
-  
+
   .terminal-headline h1 {
     font-size: 2rem;
   }
-  
+
   .glass-panel {
     padding: 16px;
     margin-bottom: 16px;
   }
-  
+
   .glass-panel-full-width {
     grid-column: span 1;
   }

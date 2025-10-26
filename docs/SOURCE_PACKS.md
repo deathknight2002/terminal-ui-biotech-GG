@@ -67,27 +67,27 @@ from platform.scrapers.utils.deduplication import canonical_url, content_hash, c
 class MySourceScraper(ScraperInterface):
     """
     Scraper for My Source.
-    
+
     Uses RSS feed for discovery and HTML parsing for content.
     """
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         super().__init__(config)
-        
+
         self.base_url = config.get('base_url', 'https://mysource.com')
         self.rss_url = config.get('rss_url', f'{self.base_url}/rss')
-        
+
         self.http_client = AsyncHTTPClient(
             user_agent=config.get('user_agent', 'BiotechTerminal/1.0'),
             timeout=30.0,
         )
-        
+
         max_rps = config.get('max_rps', 1.0)
         self.rate_limiter = TokenBucketRateLimiter(
             default_rate=max_rps,
             default_capacity=int(max_rps * 10),
         )
-    
+
     async def discover(
         self,
         method: str = "rss",
@@ -99,10 +99,10 @@ class MySourceScraper(ScraperInterface):
         """Discover article URLs from RSS feed"""
         if method == "url" and urls:
             return urls
-        
+
         # Fetch RSS feed
         feed = feedparser.parse(self.rss_url)
-        
+
         discovered_urls = []
         for entry in feed.entries:
             # Check date filter
@@ -113,16 +113,16 @@ class MySourceScraper(ScraperInterface):
                         continue
                 except (AttributeError, TypeError):
                     pass
-            
+
             url = entry.get('link', '')
             if url:
                 discovered_urls.append(canonical_url(url))
-            
+
             if limit and len(discovered_urls) >= limit:
                 break
-        
+
         return discovered_urls
-    
+
     async def fetch(
         self,
         urls: List[str],
@@ -130,19 +130,19 @@ class MySourceScraper(ScraperInterface):
     ) -> List[Dict[str, Any]]:
         """Fetch article HTML with rate limiting"""
         results = []
-        
+
         for url in urls:
             await self.rate_limiter.acquire(url)
-            
+
             try:
                 response = await self.http_client.get(url)
                 results.append(response)
             except Exception as e:
                 print(f"Error fetching {url}: {e}")
                 continue
-        
+
         return results
-    
+
     async def parse(
         self,
         raw_content: Dict[str, Any]
@@ -150,14 +150,14 @@ class MySourceScraper(ScraperInterface):
         """Parse article HTML into structured data"""
         html = raw_content.get('html', '')
         url = raw_content.get('url', '')
-        
+
         # Extract metadata (JSON-LD, OpenGraph, etc.)
         metadata = extract_article_metadata(html)
-        
+
         # Extract article content
         # Customize selector for your source
         content = extract_text_content(html, selector='article.main-content')
-        
+
         return {
             'url': url,
             'title': metadata.get('title', ''),
@@ -168,7 +168,7 @@ class MySourceScraper(ScraperInterface):
             'content': content,
             'metadata': metadata,
         }
-    
+
     async def normalize(
         self,
         parsed_data: Dict[str, Any]
@@ -176,14 +176,14 @@ class MySourceScraper(ScraperInterface):
         """Normalize parsed data into Article model"""
         url = canonical_url(parsed_data['url'])
         content = parsed_data.get('content', '')
-        
+
         # Generate hashes
         content_hash_value = content_hash(content)
         fingerprint = content_fingerprint(content)
-        
+
         # Extract tags (customize for your source)
         tags = self._extract_tags(parsed_data)
-        
+
         result = ScraperResult(
             content_type=ContentType.ARTICLE,
             data={
@@ -206,9 +206,9 @@ class MySourceScraper(ScraperInterface):
             fingerprint=fingerprint,
             published_at=parsed_data.get('published_at'),
         )
-        
+
         return result
-    
+
     async def link(
         self,
         result: ScraperResult
@@ -216,29 +216,29 @@ class MySourceScraper(ScraperInterface):
         """Link article to companies, diseases, and catalysts"""
         # TODO: Implement entity resolution
         return result
-    
+
     def _extract_tags(self, parsed_data: Dict[str, Any]) -> List[str]:
         """Extract tags from parsed data"""
         tags = []
-        
+
         # Simple keyword matching
         content = (parsed_data.get('title', '') + ' ' + parsed_data.get('content', '')).lower()
-        
+
         # Add domain tags
         if any(word in content for word in ['fda', 'approval', 'regulatory']):
             tags.append('regulatory')
-        
+
         if any(word in content for word in ['trial', 'phase', 'clinical']):
             tags.append('clinical')
-        
+
         if any(word in content for word in ['acquisition', 'merger', 'deal']):
             tags.append('mna')
-        
+
         return tags
-    
+
     async def __aenter__(self):
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.http_client.close()
 ```
@@ -269,7 +269,7 @@ async def test_my_source_discover():
     """Test URL discovery"""
     scraper = MySourceScraper()
     urls = await scraper.discover(limit=5)
-    
+
     assert len(urls) > 0
     assert all(url.startswith('https://') for url in urls)
 
@@ -279,9 +279,9 @@ async def test_my_source_fetch():
     """Test content fetching"""
     scraper = MySourceScraper()
     urls = await scraper.discover(limit=2)
-    
+
     results = await scraper.fetch(urls)
-    
+
     assert len(results) > 0
     assert 'html' in results[0]
     assert 'url' in results[0]
@@ -291,18 +291,18 @@ async def test_my_source_fetch():
 async def test_my_source_parse():
     """Test HTML parsing"""
     scraper = MySourceScraper()
-    
+
     # Use a fixture
     with open('platform/scrapers/tests/fixtures/my_source_sample.html', 'r') as f:
         html = f.read()
-    
+
     raw_content = {
         'url': 'https://mysource.com/article',
         'html': html,
     }
-    
+
     parsed = await scraper.parse(raw_content)
-    
+
     assert parsed['title']
     assert parsed['url']
     assert parsed['content']
@@ -312,7 +312,7 @@ async def test_my_source_parse():
 async def test_my_source_normalize():
     """Test normalization"""
     scraper = MySourceScraper()
-    
+
     parsed_data = {
         'url': 'https://mysource.com/article',
         'title': 'Test Article',
@@ -320,9 +320,9 @@ async def test_my_source_normalize():
         'published_at': None,
         'content': 'Test content',
     }
-    
+
     result = await scraper.normalize(parsed_data)
-    
+
     assert result.content_type.value == 'article'
     assert result.data['title'] == 'Test Article'
     assert result.hash
@@ -412,7 +412,7 @@ from .selectors import ARTICLE_SELECTORS
 
 async def parse(self, raw_content):
     tree = HTMLParser(raw_content['html'])
-    
+
     title = tree.css_first(ARTICLE_SELECTORS['title'])
     # ...
 ```
@@ -423,16 +423,16 @@ async def parse(self, raw_content):
 async def discover(self, method="sitemap", **kwargs):
     if method == "sitemap":
         import xml.etree.ElementTree as ET
-        
+
         response = await self.http_client.get(f'{self.base_url}/sitemap.xml')
         root = ET.fromstring(response['content'])
-        
+
         urls = []
         for url_elem in root.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}url'):
             loc = url_elem.find('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')
             if loc is not None and '/news/' in loc.text:
                 urls.append(loc.text)
-        
+
         return urls[:limit] if limit else urls
 ```
 
@@ -443,27 +443,27 @@ async def discover(self, method="archive", **kwargs):
     if method == "archive":
         urls = []
         page = 1
-        
+
         while True:
             archive_url = f'{self.base_url}/news?page={page}'
             response = await self.http_client.get(archive_url)
-            
+
             tree = HTMLParser(response['html'])
             articles = tree.css('.article-link')
-            
+
             if not articles:
                 break
-            
+
             for article in articles:
                 url = article.attributes.get('href')
                 if url:
                     urls.append(url)
-            
+
             page += 1
-            
+
             if limit and len(urls) >= limit:
                 break
-        
+
         return urls[:limit] if limit else urls
 ```
 
@@ -475,24 +475,24 @@ import pytz
 
 async def parse(self, raw_content):
     # ...
-    
+
     # Parse date with timezone
     date_str = metadata.get('published', '')
     if date_str:
         try:
             pub_date = date_parser.parse(date_str)
-            
+
             # Convert to UTC
             if pub_date.tzinfo is None:
                 # Assume source timezone
                 tz = pytz.timezone(self.config.get('timezone', 'UTC'))
                 pub_date = tz.localize(pub_date)
-            
+
             pub_date = pub_date.astimezone(pytz.UTC)
-            
+
         except Exception as e:
             pub_date = None
-    
+
     return {
         'published_at': pub_date,
         # ...

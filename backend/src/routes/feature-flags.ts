@@ -1,6 +1,6 @@
 /**
  * Feature Flags API Routes
- * 
+ *
  * Provides endpoints for feature flag management
  */
 
@@ -97,7 +97,7 @@ featureFlagsRouter.put('/:name', (req, res) => {
 featureFlagsRouter.post('/client', (req, res) => {
   try {
     const flags = featureFlagService.getAllFlags();
-    
+
     // Convert to Unleash proxy format
     const toggles = flags.map((flag) => ({
       name: flag.name,

@@ -2,9 +2,9 @@
 
 ## Issue Overview
 
-**Status**: Open for Evaluation  
-**Priority**: Medium  
-**Category**: Infrastructure / User Experience  
+**Status**: Open for Evaluation
+**Priority**: Medium
+**Category**: Infrastructure / User Experience
 **Created**: October 2025
 
 ## Executive Summary
@@ -58,7 +58,7 @@ This document evaluates modern front-end terminal tools for potential integratio
   - Desktop application - not web-native
   - Requires separate packaging for each platform
 
-**Performance Score**: 8/10  
+**Performance Score**: 8/10
 **Use Case Fit**: Medium - Would require wrapping our web app in Electron
 
 ---
@@ -76,7 +76,7 @@ This document evaluates modern front-end terminal tools for potential integratio
   - Plugin system adds complexity
   - Heavier than native terminals
 
-**Performance Score**: 6/10  
+**Performance Score**: 6/10
 **Use Case Fit**: Low - Desktop app, not suitable for web terminal
 
 ---
@@ -95,7 +95,7 @@ This document evaluates modern front-end terminal tools for potential integratio
   - Limited command execution capabilities
   - No real terminal protocol support
 
-**Performance Score**: 9/10 (for web use case)  
+**Performance Score**: 9/10 (for web use case)
 **Use Case Fit**: High - Web-native, matches our architecture
 
 ---
@@ -114,7 +114,7 @@ This document evaluates modern front-end terminal tools for potential integratio
   - No UI component
   - Cannot be used for front-end
 
-**Performance Score**: 10/10 (for its purpose)  
+**Performance Score**: 10/10 (for its purpose)
 **Use Case Fit**: Medium - Only for backend logging, not UI
 
 ---
@@ -142,7 +142,7 @@ This document evaluates modern front-end terminal tools for potential integratio
 5. Package for each platform
 6. Manage desktop-specific features
 ```
-**Estimated Time**: 4-6 weeks  
+**Estimated Time**: 4-6 weeks
 **Complexity**: High
 
 ---
@@ -156,7 +156,7 @@ This document evaluates modern front-end terminal tools for potential integratio
 4. Style to match glass theme
 5. Deploy as part of existing web app
 ```
-**Estimated Time**: 1-2 weeks  
+**Estimated Time**: 1-2 weeks
 **Complexity**: Low
 
 ---
@@ -169,7 +169,7 @@ This document evaluates modern front-end terminal tools for potential integratio
 3. Configure log levels
 4. Set up pretty printing
 ```
-**Estimated Time**: 2-3 days  
+**Estimated Time**: 2-3 days
 **Complexity**: Minimal
 
 ---
@@ -192,7 +192,7 @@ Our current design system features:
 - ✅ GPU-accelerated rendering effects
 - ⚠️ Desktop window chrome (not web-native)
 
-**Design Score**: 7/10  
+**Design Score**: 7/10
 **Glass UI Compatibility**: Medium
 
 ---
@@ -205,7 +205,7 @@ Our current design system features:
 - ⚠️ Can look "heavy" with Electron chrome
 - ⚠️ Plugin conflicts possible
 
-**Design Score**: 8/10  
+**Design Score**: 8/10
 **Glass UI Compatibility**: Medium
 
 ---
@@ -219,7 +219,7 @@ Our current design system features:
 - ✅ No desktop chrome constraints
 - ✅ Perfect for our existing glass components
 
-**Design Score**: 10/10  
+**Design Score**: 10/10
 **Glass UI Compatibility**: Excellent
 
 ---
@@ -231,7 +231,7 @@ Our current design system features:
 - ⚠️ Backend only (no UI)
 - ⚠️ Not applicable to front-end design
 
-**Design Score**: N/A (backend only)  
+**Design Score**: N/A (backend only)
 **Glass UI Compatibility**: N/A
 
 ---
@@ -254,7 +254,7 @@ Our glass-themed terminal UI needs:
 ```typescript
 // Challenge: Electron window + web glass effects
 // Would need custom window frame and web view styling
-<TabbyTerminal 
+<TabbyTerminal
   theme="custom-glass"
   background="transparent"
   blur={20}
@@ -271,7 +271,7 @@ Our glass-themed terminal UI needs:
 ```typescript
 // Challenge: Similar to Tabby
 // Hyper has some transparency support via plugins
-<HyperTerminal 
+<HyperTerminal
   config={{
     backgroundColor: 'rgba(10, 10, 15, 0.85)',
     windowOpacity: 0.9
@@ -482,7 +482,7 @@ export const GlassTerminal: React.FC<GlassTerminalProps> = ({
         {history.map(line => <TerminalLine key={line.id} {...line} />)}
       </div>
       <div className="terminal-input">
-        <input 
+        <input
           type="text"
           onKeyDown={handleCommand}
           placeholder="Enter command..."
@@ -502,17 +502,17 @@ export const BIOTECH_COMMANDS = {
   'pipeline': () => <DrugPipelineView />,
   'drug <symbol>': (symbol) => <DrugDetailView symbol={symbol} />,
   'trials': () => <ClinicalTrialsView />,
-  
+
   // Market Intelligence
   'market': () => <MarketDashboard />,
   'catalyst': () => <CatalystCalendar />,
   'company <ticker>': (ticker) => <CompanyProfile ticker={ticker} />,
-  
+
   // Data & Analytics
   'search <query>': (query) => <SearchResults query={query} />,
   'export <format>': (format) => handleExport(format),
   'analyze <dataset>': (dataset) => <AnalysisView dataset={dataset} />,
-  
+
   // System
   'help': () => <HelpPanel />,
   'settings': () => <SettingsPanel />,
@@ -614,7 +614,7 @@ const suggestions = useMemo(() => {
   content: '';
   position: absolute;
   inset: 0;
-  background: 
+  background:
     linear-gradient(45deg, transparent 30%, rgba(99, 102, 241, 0.03) 50%, transparent 70%),
     linear-gradient(-45deg, transparent 30%, rgba(139, 92, 246, 0.03) 50%, transparent 70%);
   animation: neural-pulse 10s ease-in-out infinite;
@@ -752,7 +752,7 @@ export const CommandInterface = () => {
         <Terminal size={20} />
         Open Terminal (⌘+T)
       </button>
-      
+
       {isOpen && (
         <Modal>
           <GlassTerminal commands={BIOTECH_COMMANDS} />
@@ -774,7 +774,7 @@ export const useTerminalShortcut = () => {
         toggleTerminal();
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
@@ -786,13 +786,13 @@ export const useTerminalShortcut = () => {
 // Users can choose between GUI and CLI interfaces
 <TerminalLayout>
   <Header>
-    <ModeToggle 
-      mode={viewMode} 
+    <ModeToggle
+      mode={viewMode}
       onChange={setViewMode}
       options={['gui', 'terminal', 'hybrid']}
     />
   </Header>
-  
+
   {viewMode === 'gui' && <StandardDashboard />}
   {viewMode === 'terminal' && <GlassTerminal />}
   {viewMode === 'hybrid' && (
@@ -865,23 +865,23 @@ const CommandOutput = memo(({ output }) => {
 ```typescript
 // Whitelist allowed commands
 const ALLOWED_COMMANDS = new Set([
-  'pipeline', 'drug', 'trials', 'market', 
+  'pipeline', 'drug', 'trials', 'market',
   'catalyst', 'company', 'search', 'help'
 ]);
 
 const executeCommand = (cmd: string) => {
   const [command, ...args] = cmd.trim().split(' ');
-  
+
   // Validate command
   if (!ALLOWED_COMMANDS.has(command)) {
     return <ErrorMessage>Command not found: {command}</ErrorMessage>;
   }
-  
+
   // Sanitize arguments
-  const sanitizedArgs = args.map(arg => 
+  const sanitizedArgs = args.map(arg =>
     arg.replace(/[^a-zA-Z0-9-_]/g, '')
   );
-  
+
   return BIOTECH_COMMANDS[command](...sanitizedArgs);
 };
 ```
@@ -931,9 +931,9 @@ const sanitizeInput = (input: string): string => {
 ### Screen Reader Support
 ```typescript
 // Announce command results
-<div 
-  role="log" 
-  aria-live="polite" 
+<div
+  role="log"
+  aria-live="polite"
   aria-atomic="false"
 >
   {commandOutput}
@@ -952,15 +952,15 @@ describe('GlassTerminal', () => {
     render(<GlassTerminal urgency="high" texture="neural" />);
     expect(screen.getByRole('application')).toHaveClass('glass-high');
   });
-  
+
   it('executes commands', async () => {
     const onCommand = jest.fn();
     render(<GlassTerminal onCommand={onCommand} />);
-    
+
     const input = screen.getByPlaceholderText('Enter command...');
     fireEvent.change(input, { target: { value: 'pipeline' } });
     fireEvent.keyDown(input, { key: 'Enter' });
-    
+
     expect(onCommand).toHaveBeenCalledWith('pipeline');
   });
 });
@@ -971,12 +971,12 @@ describe('GlassTerminal', () => {
 // Test full command flow
 it('displays drug pipeline on command', async () => {
   render(<TerminalApp />);
-  
+
   await userEvent.type(
     screen.getByRole('textbox'),
     'drug DRUG-001{Enter}'
   );
-  
+
   await waitFor(() => {
     expect(screen.getByText(/Drug Details/i)).toBeInTheDocument();
   });
@@ -1094,8 +1094,8 @@ it('displays drug pipeline on command', async () => {
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: October 2025  
-**Status**: Open for Review  
-**Assignees**: Frontend Team, UX Team  
+**Document Version**: 1.0
+**Last Updated**: October 2025
+**Status**: Open for Review
+**Assignees**: Frontend Team, UX Team
 **Labels**: `enhancement`, `terminal`, `ui`, `glass-ui`, `evaluation`

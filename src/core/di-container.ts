@@ -1,6 +1,6 @@
 /**
  * Dependency Injection Container
- * 
+ *
  * Simple IoC container for managing service dependencies and lifecycle
  * Supports singleton and transient service lifetimes
  */
@@ -63,7 +63,7 @@ export class DIContainer {
    */
   resolve<T>(key: string | symbol): T {
     const descriptor = this.services.get(key);
-    
+
     if (!descriptor) {
       throw new Error(`Service not registered: ${String(key)}`);
     }
@@ -117,7 +117,7 @@ export class DIContainer {
    */
   createScope(): DIContainer {
     const scope = new DIContainer();
-    
+
     // Copy singleton instances to child
     this.services.forEach((descriptor, key) => {
       if (descriptor.lifetime === 'singleton' && descriptor.instance) {

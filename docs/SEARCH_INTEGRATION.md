@@ -270,7 +270,7 @@ import { useSearch } from './hooks/useSearch';
 
 function GlobalSearch() {
   const { search, results, loading } = useSearch();
-  
+
   const handleSearch = async (query: string) => {
     const data = await search(query, { useFTS: true, limit: 50 });
     // Display results
@@ -304,7 +304,7 @@ Check index sizes and performance:
 
 ```sql
 -- Check FTS index size
-SELECT 
+SELECT
     name,
     pgsize / 1024.0 / 1024.0 as size_mb
 FROM dbstat

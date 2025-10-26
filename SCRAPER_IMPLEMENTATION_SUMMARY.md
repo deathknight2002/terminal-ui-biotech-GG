@@ -540,17 +540,17 @@ ls tmp/fixtures/fierce_biotech/
 
 ## Success Metrics
 
-✅ **Framework**: Complete plugin architecture with strict interface  
-✅ **Performance**: HTTP/2, connection pooling, rate limiting  
-✅ **Deduplication**: SimHash + MinHash LSH clustering  
-✅ **CLI**: Full-featured harness with all flags  
-✅ **API**: 3 admin endpoints (ingest, preview, stats)  
-✅ **Scrapers**: 9 source implementations  
-✅ **Fixtures**: Offline testing system  
-✅ **Documentation**: 4 comprehensive guides (200+ KB)  
-✅ **Scripts**: Bash wrapper + Makefile targets  
-✅ **Tests**: 6/6 passing  
-✅ **Dependencies**: All added to pyproject.toml  
+✅ **Framework**: Complete plugin architecture with strict interface
+✅ **Performance**: HTTP/2, connection pooling, rate limiting
+✅ **Deduplication**: SimHash + MinHash LSH clustering
+✅ **CLI**: Full-featured harness with all flags
+✅ **API**: 3 admin endpoints (ingest, preview, stats)
+✅ **Scrapers**: 9 source implementations
+✅ **Fixtures**: Offline testing system
+✅ **Documentation**: 4 comprehensive guides (200+ KB)
+✅ **Scripts**: Bash wrapper + Makefile targets
+✅ **Tests**: 6/6 passing
+✅ **Dependencies**: All added to pyproject.toml
 
 ## Next Steps
 
@@ -601,9 +601,9 @@ The framework is ready for production use and can be extended incrementally.
 
 ---
 
-**Total Lines of Code:** ~8,000  
-**Files Created:** 29  
-**Tests Passing:** 6/6  
-**Documentation:** 200+ KB  
-**Sources Supported:** 11  
-**API Endpoints:** 3  
+**Total Lines of Code:** ~8,000
+**Files Created:** 29
+**Tests Passing:** 6/6
+**Documentation:** 200+ KB
+**Sources Supported:** 11
+**API Endpoints:** 3

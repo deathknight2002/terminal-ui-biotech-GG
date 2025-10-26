@@ -153,7 +153,7 @@ export class JSONLinesParser extends Transform {
     try {
       this.buffer += chunk.toString();
       const lines = this.buffer.split('\n');
-      
+
       // Keep the last incomplete line in the buffer
       this.buffer = lines.pop() || '';
 
@@ -222,7 +222,7 @@ export class CSVParser extends Transform {
     try {
       this.buffer += chunk.toString();
       const lines = this.buffer.split('\n');
-      
+
       this.buffer = lines.pop() || '';
 
       for (const line of lines) {
@@ -234,11 +234,11 @@ export class CSVParser extends Transform {
         } else {
           const values = line.split(',').map(v => v.trim());
           const obj: Record<string, string> = {};
-          
+
           this.headers.forEach((header, index) => {
             obj[header] = values[index] || '';
           });
-          
+
           this.push(obj);
         }
       }
@@ -253,11 +253,11 @@ export class CSVParser extends Transform {
     if (this.buffer.trim() && !this.isFirstLine) {
       const values = this.buffer.split(',').map(v => v.trim());
       const obj: Record<string, string> = {};
-      
+
       this.headers.forEach((header, index) => {
         obj[header] = values[index] || '';
       });
-      
+
       this.push(obj);
     }
     callback();
@@ -419,7 +419,7 @@ export const StreamUtils = {
    */
   fromArray<T>(array: T[]): Readable {
     let index = 0;
-    
+
     return new Readable({
       objectMode: true,
       read() {
@@ -458,11 +458,11 @@ export const StreamUtils = {
    */
   async toArray<T>(stream: Readable): Promise<T[]> {
     const items: T[] = [];
-    
+
     for await (const chunk of stream) {
       items.push(chunk);
     }
-    
+
     return items;
   },
 

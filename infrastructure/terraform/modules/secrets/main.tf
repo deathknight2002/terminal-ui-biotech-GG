@@ -5,7 +5,7 @@ resource "aws_kms_key" "secrets" {
   description             = "${var.project_name} secrets encryption key - ${var.environment}"
   deletion_window_in_days = 30
   enable_key_rotation     = true
-  
+
   tags = {
     Name        = "${var.project_name}-secrets-key"
     Environment = var.environment
@@ -22,7 +22,7 @@ resource "aws_secretsmanager_secret" "provider_keys" {
   name        = "${var.project_name}/${var.environment}/providers/api-keys"
   description = "External provider API keys"
   kms_key_id  = aws_kms_key.secrets.id
-  
+
   tags = {
     Name        = "provider-api-keys"
     Environment = var.environment
@@ -44,7 +44,7 @@ resource "aws_secretsmanager_secret" "ml_config" {
   name        = "${var.project_name}/${var.environment}/ml/config"
   description = "ML model configuration and hyperparameters"
   kms_key_id  = aws_kms_key.secrets.id
-  
+
   tags = {
     Name        = "ml-config"
     Environment = var.environment
@@ -56,7 +56,7 @@ resource "aws_secretsmanager_secret" "dagster_config" {
   name        = "${var.project_name}/${var.environment}/dagster/config"
   description = "Dagster orchestration configuration"
   kms_key_id  = aws_kms_key.secrets.id
-  
+
   tags = {
     Name        = "dagster-config"
     Environment = var.environment

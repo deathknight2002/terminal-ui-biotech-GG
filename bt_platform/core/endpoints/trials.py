@@ -29,7 +29,7 @@ async def search_trials(
 ):
     """
     Search clinical trials with advanced filters
-    
+
     **Examples:**
     - `/trials/search?condition=Breast Cancer&phase=PHASE3` - Phase 3 breast cancer trials
     - `/trials/search?intervention=CAR-T&status=RECRUITING` - Recruiting CAR-T trials
@@ -61,9 +61,9 @@ async def get_recruiting_trials(
 ):
     """
     Get currently recruiting clinical trials
-    
+
     Useful for identifying enrollment opportunities and competitive landscape.
-    
+
     **Examples:**
     - `/trials/recruiting?condition=Lung Cancer&phase=PHASE3` - Recruiting lung cancer Phase 3 trials
     - `/trials/recruiting?condition=Rare Disease` - Recruiting rare disease trials
@@ -87,7 +87,7 @@ async def get_completed_trials(
 ):
     """
     Get completed trials with posted results
-    
+
     Useful for competitive intelligence and clinical evidence analysis.
     """
     try:
@@ -106,19 +106,19 @@ async def get_trial_details(
 ):
     """
     Get detailed information for a specific clinical trial
-    
+
     Returns comprehensive trial information including arms, outcomes,
     eligibility criteria, locations, and references.
-    
+
     **Example:**
     - `/trials/details/NCT04280705` - Get full details for NCT04280705
     """
     try:
         result = await ct_provider.get_study_details(nct_id=nct_id)
-        
+
         if result.get("error"):
             raise HTTPException(status_code=404, detail=result["error"])
-        
+
         return result
     except HTTPException:
         raise
@@ -134,7 +134,7 @@ async def get_trial_statistics(
 ):
     """
     Get aggregated statistics about clinical trials
-    
+
     **Examples:**
     - `/trials/statistics?group_by=phase&condition=Cancer` - Cancer trials by phase
     - `/trials/statistics?group_by=status&sponsor=Pfizer` - Pfizer trials by status
@@ -156,7 +156,7 @@ async def get_trials_dashboard(
 ):
     """
     Get comprehensive clinical trials dashboard data
-    
+
     Returns recruiting trials, phase distribution, and completion statistics.
     Optimized for dashboard visualization.
     """
@@ -166,19 +166,19 @@ async def get_trials_dashboard(
             condition=condition,
             limit=50
         )
-        
+
         # Get phase statistics
         phase_stats = await ct_provider.get_statistics(
             group_by="phase",
             condition=condition
         )
-        
+
         # Get status statistics
         status_stats = await ct_provider.get_statistics(
             group_by="status",
             condition=condition
         )
-        
+
         return {
             "recruiting_trials": recruiting.get("data", []),
             "recruiting_count": recruiting.get("count", 0),
@@ -201,10 +201,10 @@ async def get_competitive_landscape(
 ):
     """
     Get competitive landscape analysis for a specific condition
-    
+
     Returns trial distribution by sponsor, phase, and recruitment status
     to understand the competitive dynamics in a therapeutic area.
-    
+
     **Example:**
     - `/trials/competitive-landscape?condition=Multiple Myeloma&phase=PHASE3`
     """
@@ -215,19 +215,19 @@ async def get_competitive_landscape(
             phase=phase,
             limit=limit
         )
-        
+
         # Get sponsor distribution
         sponsor_stats = await ct_provider.get_statistics(
             group_by="sponsor",
             condition=condition
         )
-        
+
         # Get phase distribution
         phase_stats = await ct_provider.get_statistics(
             group_by="phase",
             condition=condition
         )
-        
+
         return {
             "condition": condition,
             "total_trials": trials.get("total", 0),
@@ -250,7 +250,7 @@ async def track_enrollment(
 ):
     """
     Track trial enrollment status and projections
-    
+
     Returns recruiting trials with enrollment information for monitoring
     recruitment progress and competitive enrollment dynamics.
     """
@@ -261,19 +261,19 @@ async def track_enrollment(
             status="RECRUITING",
             limit=limit
         )
-        
+
         trials = recruiting.get("data", [])
-        
+
         # Enrich with enrollment metrics
         for trial in trials:
             enrollment = trial.get("enrollment", 0)
             start_date = trial.get("start_date")
             completion_date = trial.get("primary_completion_date")
-            
+
             # Calculate enrollment progress indicators
             trial["enrollment_size"] = enrollment
             trial["has_enrollment_target"] = enrollment is not None and enrollment > 0
-            
+
             # Categorize by size
             if enrollment:
                 if enrollment < 50:
@@ -282,7 +282,7 @@ async def track_enrollment(
                     trial["enrollment_category"] = "medium"
                 else:
                     trial["enrollment_category"] = "large"
-        
+
         return {
             "trials": trials,
             "count": len(trials),

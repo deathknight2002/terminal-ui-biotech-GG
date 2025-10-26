@@ -1,6 +1,6 @@
 /**
  * Diagnostic System - Self-observing architecture
- * 
+ *
  * Provides deep introspection into system state, performance metrics,
  * and inter-module communication patterns.
  */

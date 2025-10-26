@@ -534,16 +534,16 @@ async def get_drugs(
 ):
     """Get drug pipeline data"""
     query = db.query(Drug)
-    
+
     if therapeutic_area:
         query = query.filter(Drug.therapeutic_area.ilike(f"%{therapeutic_area}%"))
     if phase:
         query = query.filter(Drug.phase.ilike(f"%{phase}%"))
     if company:
         query = query.filter(Drug.company.ilike(f"%{company}%"))
-    
+
     drugs = query.limit(limit).all()
-    
+
     return {
         "data": [
             {
@@ -665,14 +665,14 @@ async def get_companies(
 ):
     """Get biotech/pharma company data"""
     query = db.query(Company)
-    
+
     if company_type:
         query = query.filter(Company.company_type.ilike(f"%{company_type}%"))
     if min_market_cap:
         query = query.filter(Company.market_cap >= min_market_cap)
-    
+
     companies = query.limit(limit).all()
-    
+
     return {
         "data": [
             {
@@ -702,22 +702,22 @@ async def get_catalysts(
 ):
     """Get upcoming market catalysts"""
     query = db.query(Catalyst)
-    
+
     # Filter for upcoming events
     now = datetime.utcnow()
     future_date = now + timedelta(days=upcoming_days)
     query = query.filter(Catalyst.event_date <= future_date)
     query = query.filter(Catalyst.event_date >= now)
-    
+
     if company:
         query = query.filter(Catalyst.company.ilike(f"%{company}%"))
     if event_type:
         query = query.filter(Catalyst.event_type.ilike(f"%{event_type}%"))
     if min_probability:
         query = query.filter(Catalyst.probability >= min_probability)
-    
+
     catalysts = query.order_by(Catalyst.event_date).all()
-    
+
     return {
         "data": [
             {
@@ -774,16 +774,16 @@ async def get_catalysts(
 @router.get("/pipeline-overview")
 async def get_pipeline_overview(db: Session = Depends(get_db)):
     """Get pipeline overview statistics"""
-    
+
     # Phase distribution
     phase_counts = db.query(Drug.phase, db.func.count(Drug.id)).group_by(Drug.phase).all()
-    
-    # Therapeutic area distribution  
+
+    # Therapeutic area distribution
     area_counts = db.query(Drug.therapeutic_area, db.func.count(Drug.id)).group_by(Drug.therapeutic_area).all()
-    
+
     # Company pipeline sizes
     company_counts = db.query(Drug.company, db.func.count(Drug.id)).group_by(Drug.company).all()
-    
+
     return {
         "phase_distribution": [{"phase": phase, "count": count} for phase, count in phase_counts],
         "therapeutic_areas": [{"area": area, "count": count} for area, count in area_counts],
@@ -803,7 +803,7 @@ async def search_biotech_data(
 ):
     """Search across biotech data"""
     results = {"drugs": [], "trials": [], "companies": []}
-    
+
     if category in ["drugs", "all"]:
         drugs = db.query(Drug).filter(
             Drug.name.ilike(f"%{q}%") |
@@ -811,7 +811,7 @@ async def search_biotech_data(
             Drug.indication.ilike(f"%{q}%") |
             Drug.mechanism.ilike(f"%{q}%")
         ).limit(limit).all()
-        
+
         results["drugs"] = [
             {
                 "id": drug.id,
@@ -822,14 +822,14 @@ async def search_biotech_data(
             }
             for drug in drugs
         ]
-    
+
     if category in ["trials", "all"]:
         trials = db.query(ClinicalTrial).filter(
             ClinicalTrial.title.ilike(f"%{q}%") |
             ClinicalTrial.condition.ilike(f"%{q}%") |
             ClinicalTrial.sponsor.ilike(f"%{q}%")
         ).limit(limit).all()
-        
+
         results["trials"] = [
             {
                 "id": trial.id,
@@ -840,13 +840,13 @@ async def search_biotech_data(
             }
             for trial in trials
         ]
-    
+
     if category in ["companies", "all"]:
         companies = db.query(Company).filter(
             Company.name.ilike(f"%{q}%") |
             Company.ticker.ilike(f"%{q}%")
         ).limit(limit).all()
-        
+
         results["companies"] = [
             {
                 "id": company.id,
@@ -856,5 +856,5 @@ async def search_biotech_data(
             }
             for company in companies
         ]
-    
+
     return results

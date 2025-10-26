@@ -1,6 +1,6 @@
 /**
  * Data Contracts - Interface definitions for inter-module communication
- * 
+ *
  * Defines explicit contracts that modules must adhere to, ensuring
  * type safety and clear expectations across the ecosystem.
  */

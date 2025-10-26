@@ -29,7 +29,7 @@ def test_tui_imports():
         from bt_platform.tui.services import WatchlistManager, RecentAssetsTracker
         from bt_platform.tui.helpers import get_risk_metrics
         print("✅ TUI services import successfully")
-        
+
         # Test instantiation
         wm = WatchlistManager()
         rat = RecentAssetsTracker()
@@ -44,10 +44,10 @@ def test_core_imports():
     """Test that core components can be imported (context-aware)."""
     # Core functionality tests should focus on what can be imported without all dependencies
     # Database and config modules require sqlalchemy, pydantic-settings which may not be installed
-    
+
     success_count = 0
     total_count = 0
-    
+
     # Test 1: Check if core package structure exists
     total_count += 1
     try:
@@ -56,7 +56,7 @@ def test_core_imports():
         success_count += 1
     except ImportError as e:
         print(f"❌ Failed to import bt_platform.core: {e}")
-    
+
     # Test 2: Try importing config (with graceful handling)
     total_count += 1
     try:
@@ -70,7 +70,7 @@ def test_core_imports():
             success_count += 1  # Don't fail for missing optional deps
         else:
             print(f"❌ Failed to import config: {e}")
-    
+
     # Test 3: Try importing database (with graceful handling)
     total_count += 1
     try:
@@ -84,7 +84,7 @@ def test_core_imports():
             success_count += 1  # Don't fail for missing optional deps
         else:
             print(f"❌ Failed to import database: {e}")
-    
+
     if success_count == total_count:
         print(f"✅ Core imports test passed ({success_count}/{total_count})")
         return True
@@ -117,7 +117,7 @@ def check_new_bt_platform_exists():
     new_bt_platform = project_root / "bt_platform"
     if new_bt_platform.exists() and new_bt_platform.is_dir():
         print("✅ New 'bt_platform/' directory exists")
-        
+
         # Check for key subdirectories
         subdirs = ['core', 'tui', 'cli', 'scrapers', 'providers']
         for subdir in subdirs:
@@ -141,25 +141,25 @@ def check_documentation_updated():
         "package.json",
         "pyproject.toml",
     ]
-    
+
     print("\n📝 Checking documentation updates...")
     all_good = True
-    
+
     for file_path in files_to_check:
         full_path = project_root / file_path
         if not full_path.exists():
             print(f"   ⚠️  {file_path} not found")
             continue
-        
+
         content = full_path.read_text()
-        
+
         # Check for old references
         old_refs = ["python -m platform.tui", "python -m platform.cli", "from platform.", "import platform."]
         has_old = any(ref in content for ref in old_refs if "bt_platform" not in content)
-        
+
         # Check for new references
         has_new = "bt_platform" in content or file_path not in ["README.md", "docs/TUI.md", "docs/DEVELOPMENT.md"]
-        
+
         if has_old:
             print(f"   ⚠️  {file_path} may have old 'platform' references")
             all_good = False
@@ -167,7 +167,7 @@ def check_documentation_updated():
             print(f"   ✓ {file_path}")
         else:
             print(f"   ? {file_path} (no bt_platform references found)")
-    
+
     return all_good
 
 def main():
@@ -176,7 +176,7 @@ def main():
     print("bt_platform Package Renaming Verification")
     print("=" * 70)
     print()
-    
+
     tests = [
         ("Basic Import", test_basic_import),
         ("TUI Imports", test_tui_imports),
@@ -185,25 +185,25 @@ def main():
         ("Old Directory Removed", check_old_platform_removed),
         ("New Directory Exists", check_new_bt_platform_exists),
     ]
-    
+
     results = []
     for name, test_func in tests:
         print(f"\n{name}:")
         print("-" * 70)
         results.append(test_func())
-    
+
     # Check documentation
     doc_result = check_documentation_updated()
-    
+
     print("\n" + "=" * 70)
     print("Summary:")
     print("=" * 70)
-    
+
     passed = sum(results)
     total = len(results)
-    
+
     print(f"Tests passed: {passed}/{total}")
-    
+
     if passed == total and doc_result:
         print("\n🎉 All verifications passed! Package rename successful.")
         return 0

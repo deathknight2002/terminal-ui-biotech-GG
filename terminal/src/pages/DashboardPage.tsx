@@ -1,11 +1,11 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
+import {
   BioAuroraDashboard,
 } from '../../../frontend-components/src/biotech';
-import type { 
+import type {
   Catalyst,
-  PortfolioPosition 
+  PortfolioPosition
 } from '../../../frontend-components/src/types/biotech';
 import { API_ENDPOINTS, apiFetch } from '../config/api';
 import styles from './DashboardPage.module.css';
@@ -23,8 +23,8 @@ const fetchDashboardData = async () => {
 };
 
 export function DashboardPage() {
-  const { 
-    data: dashboardData, 
+  const {
+    data: dashboardData,
     isLoading,
     error
   } = useQuery({
@@ -35,7 +35,7 @@ export function DashboardPage() {
 
   const handleSelectCatalyst = (catalyst: Catalyst) => {
     console.log('Selected catalyst:', catalyst);
-    
+
     if (catalyst.url) {
       // Open the catalyst link in a new tab
       window.open(catalyst.url, '_blank', 'noopener,noreferrer');

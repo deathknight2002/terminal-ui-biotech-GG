@@ -56,7 +56,7 @@ export async function compareDiseases(
   };
 }> {
   const prisma = getPrismaClient();
-  
+
   try {
     const diseases = await prisma.disease.findMany({
       where: {
@@ -83,10 +83,10 @@ export async function compareDiseases(
 
     const comparisons: DiseaseComparison[] = diseases.map(disease => {
       const metrics: { [key: string]: any } = {};
-      
+
       for (const metricType of metricTypes) {
         const metric = disease.metrics.find(m => m.metricType === metricType);
-        
+
         if (metric) {
           metrics[metricType] = {
             value: metric.valueNumeric,
@@ -121,7 +121,7 @@ export async function compareDiseases(
           .map(c => c.metrics[metricType]?.unit)
           .filter(u => u !== null)
       );
-      
+
       if (units.size > 1) {
         warnings.push(`Unit mismatch detected for ${metricType}: ${Array.from(units).join(', ')}`);
       }
@@ -176,7 +176,7 @@ export async function getDiseaseTrend(
   };
 }> {
   const prisma = getPrismaClient();
-  
+
   try {
     const disease = await prisma.disease.findUnique({
       where: { id: diseaseId },
@@ -298,7 +298,7 @@ export async function detectOutliers(
   };
 }> {
   const prisma = getPrismaClient();
-  
+
   try {
     const metrics = await prisma.metric.findMany({
       where: {
@@ -373,7 +373,7 @@ export async function getRegionalComparison(
   };
 }> {
   const prisma = getPrismaClient();
-  
+
   try {
     const disease = await prisma.disease.findUnique({
       where: { id: diseaseId },
@@ -412,7 +412,7 @@ export async function getRegionalComparison(
     const min = Math.min(...values);
     const max = Math.max(...values);
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
-    const median = values.length > 0 
+    const median = values.length > 0
       ? values[Math.floor(values.length / 2)]
       : 0;
 

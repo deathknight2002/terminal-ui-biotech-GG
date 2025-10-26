@@ -183,7 +183,7 @@ score = (
   - test_catalysts_api.py: 700 lines
   - CATALYST_API_README.md: 450 lines
   - Migration SQL: 217 lines
-  
+
 - **New Tables**: 4
 - **Enhanced Tables**: 2 (catalyst_events, trials)
 - **New API Endpoints**: 4

@@ -177,10 +177,10 @@ class CachingMiddleware(BaseHTTPMiddleware):
         if any(x in path for x in ["/trials", "/news"]):
             return 900   # 15 minutes
         return self.default_ttl
-    
+
     def _generate_etag(self, content: bytes) -> str:
         return f'"{hashlib.md5(content).hexdigest()}"'
-    
+
     async def dispatch(self, request: Request, call_next):
         # Generate ETag, check If-None-Match, return 304 if match
 ```
@@ -193,7 +193,7 @@ export const StatusBanner: React.FC<StatusBannerProps> = ({
   message, variant, visible, onDismiss
 }) => {
   if (!visible) return null;
-  
+
   return (
     <div
       className={`status-banner status-banner--${variant}`}

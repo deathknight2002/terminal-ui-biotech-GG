@@ -224,24 +224,24 @@ model.train(train_texts, train_labels)
 for iteration in range(10):
     # Select most informative samples
     priorities = learner.select_samples(model)
-    
+
     # Present to human labeler
     selected_texts = [p.text for p in priorities]
     labels = human_label(selected_texts)  # Your labeling interface
-    
+
     # Update pools
     indices = [p.index for p in priorities]
     learner.update_pools(indices, labels)
-    
+
     # Retrain model
     train_texts, train_labels = learner.get_training_data()
     model.train(train_texts, train_labels)
-    
+
     # Evaluate and log
     accuracy = evaluate_model(model, test_texts, test_labels)
     avg_uncertainty = sum(p.uncertainty_score for p in priorities) / len(priorities)
     learner.log_iteration(accuracy, len(labels), avg_uncertainty)
-    
+
     print(f"Iteration {iteration + 1}: Accuracy = {accuracy:.3f}")
 
 # Get final statistics
@@ -273,8 +273,8 @@ Real-time WebSocket notifications for model drift detection and performance degr
 #### Backend Usage:
 
 ```typescript
-import { 
-  broadcastDriftAlert, 
+import {
+  broadcastDriftAlert,
   broadcastModelMetrics,
   broadcastRetrainingComplete
 } from './websocket';
@@ -440,7 +440,7 @@ Frontend:
 ```tsx
 import { MLMonitoringDashboard } from '@biotech-terminal/frontend-components/biotech';
 
-<MLMonitoringDashboard 
+<MLMonitoringDashboard
   modelNames={['finbert', 'biobert']}
   autoConnect={true}
 />
@@ -457,7 +457,7 @@ monitor = ModelMonitor(drift_threshold=0.05)
 # In your prediction loop
 def on_prediction(text, prediction, confidence):
     monitor.log_prediction(prediction, confidence)
-    
+
     # Check for drift
     alerts = monitor.check_alerts()
     for alert in alerts:

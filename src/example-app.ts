@@ -1,6 +1,6 @@
 /**
  * Example Application - Demonstrates Neural Architecture
- * 
+ *
  * Shows how to initialize and use the modular ecosystem for a
  * biotech intelligence terminal.
  */
@@ -30,7 +30,7 @@ async function main() {
   // STEP 1: Initialize Core Infrastructure
   // ============================================
   console.log('📦 Initializing core infrastructure...');
-  
+
   await initializeCore({
     cache: {
       maxSize: 1000,
@@ -45,7 +45,7 @@ async function main() {
   // STEP 2: Register Circuit Breakers
   // ============================================
   console.log('🔌 Setting up circuit breakers...');
-  
+
   CircuitBreaker.create('drug-data-provider', {
     failureThreshold: 3,
     successThreshold: 2,
@@ -57,7 +57,7 @@ async function main() {
   // STEP 3: Initialize Modules
   // ============================================
   console.log('🧩 Initializing modules...');
-  
+
   const drugModule = new DrugDataModule();
   await drugModule.initialize({
     apiEndpoint: 'https://api.biotech-terminal.example/drugs',
@@ -69,7 +69,7 @@ async function main() {
   // STEP 4: Subscribe to Events
   // ============================================
   console.log('📡 Setting up event listeners...');
-  
+
   EventBus.subscribe(EventTypes.DATA_LOADED, (event) => {
     console.log(`✅ Data loaded from ${event.source}:`, event.payload);
   });
@@ -198,7 +198,7 @@ async function main() {
   console.log('📚 Generating system documentation...');
   const docs = await DocumentationGenerator.generateSystemDocs();
   console.log(`Generated ${docs.length} characters of documentation`);
-  
+
   // Optional: export to file
   // await DocumentationGenerator.exportToFile('./SYSTEM_DOCS.md');
 
@@ -253,7 +253,7 @@ async function main() {
   // STEP 13: Module Capabilities
   // ============================================
   console.log('\n🎯 Module Capabilities\n');
-  
+
   const moduleDesc = drugModule.describe();
   console.log(`Module: ${moduleDesc.name} v${moduleDesc.version}`);
   console.log(`Description: ${moduleDesc.description}`);
@@ -268,7 +268,7 @@ async function main() {
   // STEP 14: Export Diagnostic Report
   // ============================================
   console.log('\n📋 Generating Diagnostic Report\n');
-  
+
   const report = await DiagnosticSystem.generateReport();
   console.log(`Report generated in ${report.duration}ms`);
   console.log(`Event history entries: ${report.eventHistory.length}`);
@@ -278,10 +278,10 @@ async function main() {
   // Cleanup
   // ============================================
   console.log('\n🛑 Shutting down...');
-  
+
   await drugModule.shutdown();
   DiagnosticSystem.stopMonitoring();
-  
+
   console.log('\n✅ Demo complete!');
   console.log('\nKey Achievements:');
   console.log('  ✅ Modular architecture with autonomous components');

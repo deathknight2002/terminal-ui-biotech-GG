@@ -3,7 +3,7 @@
 
 // Re-export all categories
 export * from './terminal';
-export * from './tables'; 
+export * from './tables';
 export * from './plotly';
 export * from './biotech';
 

@@ -8,15 +8,15 @@ const logFormat = winston.format.combine(
   winston.format.json(),
   winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
     const baseLog = `${timestamp} [${level.toUpperCase()}]: ${message}`;
-    
+
     if (stack) {
       return `${baseLog}\n${stack}`;
     }
-    
+
     if (Object.keys(meta).length > 0) {
       return `${baseLog} ${JSON.stringify(meta)}`;
     }
-    
+
     return baseLog;
   })
 );
@@ -34,7 +34,7 @@ export const logger = winston.createLogger({
         winston.format.simple()
       )
     }),
-    
+
     // File transport for errors
     new winston.transports.File({
       filename: config.logging.file.replace('.log', '-error.log'),
@@ -42,7 +42,7 @@ export const logger = winston.createLogger({
       maxsize: 5242880, // 5MB
       maxFiles: 5,
     }),
-    
+
     // File transport for all logs
     new winston.transports.File({
       filename: config.logging.file,

@@ -11,7 +11,7 @@ export interface RefreshModeToggleProps {
 
 /**
  * RefreshModeToggle - Toggle between Manual, Scheduled, and Live refresh modes
- * 
+ *
  * Modes:
  * - Manual: Zero background network after load; refresh button updates data (DEFAULT)
  * - Scheduled: Pull every N minutes; show countdown; pause on user edit
@@ -30,7 +30,7 @@ export function RefreshModeToggle({
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
+
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     const diffHours = Math.floor(diffMins / 60);
@@ -66,7 +66,7 @@ export function RefreshModeToggle({
           <span className="mode-label">LIVE</span>
         </button>
       </div>
-      
+
       {lastRefreshed && (
         <div className="refresh-status">
           <span className="status-label">LAST REFRESH:</span>

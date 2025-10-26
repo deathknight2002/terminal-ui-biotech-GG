@@ -271,7 +271,7 @@ interface ExportConfig {
 ```typescript
 type UserRole = "admin" | "analyst" | "viewer" | "guest";
 
-type FeatureEntitlement = 
+type FeatureEntitlement =
   | "data_export"
   | "manual_refresh"
   | "layout_management"
@@ -296,7 +296,7 @@ if (userPermissions.entitlements.includes('data_export')) {
 }
 
 // Gate menu items by role
-{menuItems.filter(item => 
+{menuItems.filter(item =>
   !item.requiresRole || user.role === item.requiresRole
 )}
 ```
@@ -506,7 +506,7 @@ function NewsPanel() {
     const activeEntity = getActiveEntity(channel);
     if (activeEntity && activeEntity.type === 'company') {
       // Filter news by selected company
-      const filtered = allNews.filter(n => 
+      const filtered = allNews.filter(n =>
         n.companies.includes(activeEntity.name)
       );
       setNewsFiltered(filtered);

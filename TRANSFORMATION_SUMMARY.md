@@ -137,7 +137,7 @@ CircuitBreaker.create('api-service', {
   timeout: 60000
 });
 
-const data = await CircuitBreaker.execute('api-service', 
+const data = await CircuitBreaker.execute('api-service',
   async () => await fetch(url)
 );
 // Automatic failure detection, isolation, recovery

@@ -1,7 +1,7 @@
 /**
  * BioSpace Jobs Scraper
  * Scrapes biotech and pharmaceutical job postings
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: https://www.biospace.com/jobs
  */
@@ -46,7 +46,7 @@ export class BioSpaceJobsScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<BioSpaceJobPosting[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -91,7 +91,7 @@ export class BioSpaceJobsScraper {
    */
   async getLatestJobs(maxResults: number = 20): Promise<BioSpaceJobPosting[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached BioSpace job postings');
@@ -101,9 +101,9 @@ export class BioSpaceJobsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} job postings from BioSpace...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/jobs', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -112,10 +112,10 @@ export class BioSpaceJobsScraper {
         });
 
         const jobs = this.parseJobs(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, jobs);
-        
+
         logger.info(`✅ Fetched ${jobs.length} job postings from BioSpace`);
         return jobs;
       },
@@ -130,7 +130,7 @@ export class BioSpaceJobsScraper {
    */
   async searchJobs(params: BioSpaceJobsSearchParams): Promise<BioSpaceJobPosting[]> {
     const cacheKey = `search:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached job search results');
@@ -140,9 +140,9 @@ export class BioSpaceJobsScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching BioSpace jobs: "${params.query || 'all'}"`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/jobs/search', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -159,10 +159,10 @@ export class BioSpaceJobsScraper {
         });
 
         const jobs = this.parseSearchResults(response.data, params.maxResults || 20);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, jobs);
-        
+
         logger.info(`✅ Found ${jobs.length} job postings matching search`);
         return jobs;
       },
@@ -177,13 +177,13 @@ export class BioSpaceJobsScraper {
    */
   private parseJobs(html: string, maxResults: number): BioSpaceJobPosting[] {
     const jobs: BioSpaceJobPosting[] = [];
-    
+
     try {
       const $ = cheerio.load(html);
-      
+
       $('.job-item, .job-listing, .job-card, article.job').each((index, element) => {
         if (jobs.length >= maxResults) return false;
-        
+
         const $element = $(element);
         const title = $element.find('.job-title, h2, h3, .title').first().text().trim();
         const url = $element.find('a').first().attr('href') || '';
@@ -198,7 +198,7 @@ export class BioSpaceJobsScraper {
         const salary = $element.find('.salary, .compensation').first().text().trim();
         const department = $element.find('.department, [data-department]').first().text().trim();
         const therapeuticArea = $element.find('.therapeutic-area, [data-area]').first().text().trim();
-        
+
         if (title && company) {
           jobs.push({
             id: this.extractIdFromUrl(url),
@@ -222,7 +222,7 @@ export class BioSpaceJobsScraper {
       this.rateLimiter.recordError();
       throw error;
     }
-    
+
     return jobs;
   }
 
@@ -246,14 +246,14 @@ export class BioSpaceJobsScraper {
    */
   private extractTags($element: any): string[] {
     const tags: string[] = [];
-    
+
     $element.find('.tag, .skill, .badge, .label').each((_: number, tag: any) => {
       const tagText = $(tag).text().trim();
       if (tagText) {
         tags.push(tagText);
       }
     });
-    
+
     return tags;
   }
 

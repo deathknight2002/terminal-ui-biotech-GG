@@ -1,6 +1,6 @@
 /**
  * Health - K8s-friendly health check system
- * 
+ *
  * Provides readiness and liveness probes with dependency tracking
  * Compatible with Kubernetes health check patterns
  */

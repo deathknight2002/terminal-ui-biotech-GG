@@ -1,6 +1,6 @@
 /**
  * Open Targets GraphQL Connector
- * 
+ *
  * Queries Open Targets Platform for genetic and target-disease evidence
  * Provides mechanism evidence for biotech intelligence
  */
@@ -47,7 +47,7 @@ export class OpenTargetsConnector {
   private graphqlEndpoint = 'https://api.platform.opentargets.org/api/v4/graphql';
   private platformUrl = 'https://platform.opentargets.org';
   private platformVersion = '24.09'; // Update as needed
-  
+
   /**
    * Query target-disease associations for a gene
    */
@@ -56,7 +56,7 @@ export class OpenTargetsConnector {
     minScore = 0.5
   ): Promise<TargetDiseaseAssociationContract[]> {
     const pulledAt = new Date().toISOString();
-    
+
     // In production, send GraphQL query:
     /*
     query TargetAssociations($geneSymbol: String!) {
@@ -80,7 +80,7 @@ export class OpenTargetsConnector {
       }
     }
     */
-    
+
     // Mock data for demonstration
     return [
       {
@@ -129,7 +129,7 @@ export class OpenTargetsConnector {
       },
     ];
   }
-  
+
   /**
    * Get genetic evidence for a target
    */
@@ -142,7 +142,7 @@ export class OpenTargetsConnector {
     overallScore: number;
   }> {
     // In production, query GraphQL for genetic evidence details
-    
+
     return {
       gwasAssociations: 15,
       rareVariants: 8,
@@ -150,19 +150,19 @@ export class OpenTargetsConnector {
       overallScore: 0.91,
     };
   }
-  
+
   /**
    * Search diseases by name
    */
   async searchDiseases(query: string): Promise<Array<{ id: string; name: string }>> {
     // In production, use Open Targets search API
-    
+
     return [
       { id: 'EFO_0000729', name: 'ulcerative colitis' },
       { id: 'EFO_0000384', name: "Crohn's disease" },
     ];
   }
-  
+
   /**
    * Get known drugs for a target
    */
@@ -173,7 +173,7 @@ export class OpenTargetsConnector {
     indication: string;
   }>> {
     // In production, query GraphQL for known drugs
-    
+
     return [
       {
         drugName: 'Stelara',
@@ -189,7 +189,7 @@ export class OpenTargetsConnector {
       },
     ];
   }
-  
+
   /**
    * Build GraphQL query for target-disease associations
    */
@@ -217,14 +217,14 @@ export class OpenTargetsConnector {
       }
     `;
   }
-  
+
   /**
    * Execute GraphQL query
    */
   private async executeQuery(query: string, variables?: Record<string, any>): Promise<any> {
     // In production, send POST request to GraphQL endpoint
     // with proper error handling and rate limiting
-    
+
     const response = await fetch(this.graphqlEndpoint, {
       method: 'POST',
       headers: {
@@ -235,11 +235,11 @@ export class OpenTargetsConnector {
         variables,
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Open Targets API error: ${response.status} ${response.statusText}`);
     }
-    
+
     return response.json();
   }
 }

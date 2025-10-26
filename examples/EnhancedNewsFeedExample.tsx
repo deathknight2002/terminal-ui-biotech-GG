@@ -16,7 +16,7 @@ const sampleNews: NewsItem[] = [
     date: new Date().toISOString(),
     publishedAt: new Date().toISOString(),
     scrapedAt: new Date().toISOString(),
-    
+
     // Enhanced metadata
     source: 'Fierce Biotech',
     category: 'Trial Results',
@@ -44,7 +44,7 @@ const sampleNews: NewsItem[] = [
     date: new Date(Date.now() - 3600000).toISOString(),
     publishedAt: new Date(Date.now() - 3600000).toISOString(),
     scrapedAt: new Date().toISOString(),
-    
+
     source: 'BioPharma Dive',
     category: 'FDA Approval',
     importance: 'High',
@@ -71,7 +71,7 @@ const sampleNews: NewsItem[] = [
     date: new Date(Date.now() - 7200000).toISOString(),
     publishedAt: new Date(Date.now() - 7200000).toISOString(),
     scrapedAt: new Date().toISOString(),
-    
+
     source: 'Endpoints News',
     category: 'Trial Results',
     importance: 'High',
@@ -98,7 +98,7 @@ const sampleNews: NewsItem[] = [
     date: new Date(Date.now() - 10800000).toISOString(),
     publishedAt: new Date(Date.now() - 10800000).toISOString(),
     scrapedAt: new Date().toISOString(),
-    
+
     source: 'STAT News',
     category: 'Trial Results',
     importance: 'Medium',
@@ -125,7 +125,7 @@ const sampleNews: NewsItem[] = [
     date: new Date(Date.now() - 14400000).toISOString(),
     publishedAt: new Date(Date.now() - 14400000).toISOString(),
     scrapedAt: new Date().toISOString(),
-    
+
     source: 'Company PR',
     category: 'Partnership',
     importance: 'Medium',
@@ -152,7 +152,7 @@ const sampleNews: NewsItem[] = [
     date: new Date(Date.now() - 18000000).toISOString(),
     publishedAt: new Date(Date.now() - 18000000).toISOString(),
     scrapedAt: new Date().toISOString(),
-    
+
     source: 'GEN News',
     category: 'Regulatory',
     importance: 'Low',
@@ -176,7 +176,7 @@ export function EnhancedNewsFeedExample() {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       // In real app, would fetch from /api/news/aggregate
@@ -187,7 +187,7 @@ export function EnhancedNewsFeedExample() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
-      <h1 style={{ 
+      <h1 style={{
         fontFamily: 'var(--font-mono, "Courier New", monospace)',
         color: 'var(--accent-primary, #00ff00)',
         marginBottom: '2rem',

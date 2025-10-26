@@ -21,13 +21,13 @@ export function exportToCSV(data: any[], columns?: string[], filename: string = 
 
   // Determine columns from first data item if not provided
   const headers = columns || Object.keys(data[0]);
-  
+
   // Build CSV content
   const csvRows: string[] = [];
-  
+
   // Add header row
   csvRows.push(headers.map(h => `"${h}"`).join(','));
-  
+
   // Add data rows
   data.forEach(item => {
     const row = headers.map(header => {
@@ -63,10 +63,10 @@ export function exportToTSV(data: any[], columns?: string[], filename: string = 
   }
 
   const headers = columns || Object.keys(data[0]);
-  
+
   const tsvRows: string[] = [];
   tsvRows.push(headers.join('\t'));
-  
+
   data.forEach(item => {
     const row = headers.map(header => {
       const value = item[header];
@@ -85,7 +85,7 @@ export function exportToTSV(data: any[], columns?: string[], filename: string = 
  */
 export function exportData(data: any[], options: ExportOptions): void {
   const { format, filename } = options;
-  
+
   switch (format) {
     case 'csv':
       exportToCSV(data, undefined, filename || 'export.csv');
@@ -107,15 +107,15 @@ export function exportData(data: any[], options: ExportOptions): void {
 function downloadFile(content: string, filename: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
-  
+
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
   link.style.display = 'none';
-  
+
   document.body.appendChild(link);
   link.click();
-  
+
   // Cleanup
   setTimeout(() => {
     document.body.removeChild(link);
@@ -128,7 +128,7 @@ function downloadFile(content: string, filename: string, mimeType: string): void
  */
 export async function copyToClipboard(data: any[], format: 'csv' | 'json' | 'tsv' = 'csv'): Promise<void> {
   let content: string;
-  
+
   switch (format) {
     case 'csv':
       const headers = Object.keys(data[0]);
@@ -150,7 +150,7 @@ export async function copyToClipboard(data: any[], format: 'csv' | 'json' | 'tsv
       content = tsvRows.join('\n');
       break;
   }
-  
+
   try {
     await navigator.clipboard.writeText(content);
   } catch (err) {
@@ -184,12 +184,12 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
  */
 export function formatDate(date: Date | string, format: 'short' | 'medium' | 'long' = 'medium'): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  
+
   const options: Intl.DateTimeFormatOptions = format === 'short'
     ? { month: 'numeric', day: 'numeric', year: '2-digit' }
     : format === 'medium'
     ? { month: 'short', day: 'numeric', year: 'numeric' }
     : { month: 'long', day: 'numeric', year: 'numeric' };
-  
+
   return d.toLocaleDateString('en-US', options);
 }

@@ -30,9 +30,9 @@ describe('News Scrapers', () => {
     it('should have cache management', () => {
       const health1 = scraper.getHealth();
       expect(health1.cache.size).toBe(0);
-      
+
       scraper.clearCache();
-      
+
       const health2 = scraper.getHealth();
       expect(health2.cache.size).toBe(0);
     });

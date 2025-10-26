@@ -27,7 +27,7 @@ export class LRUCache<T = any> {
   private cleanupInterval: number;
   private cleanupTimer?: NodeJS.Timeout;
   private onEvict?: (key: string, value: T) => void;
-  
+
   private hits: number = 0;
   private misses: number = 0;
 
@@ -58,7 +58,7 @@ export class LRUCache<T = any> {
     // Check if entry has expired
     const now = Date.now();
     const ttl = entry.ttl || this.defaultTTL;
-    
+
     if (now - entry.timestamp > ttl) {
       this.cache.delete(key);
       this.misses++;
@@ -106,7 +106,7 @@ export class LRUCache<T = any> {
    */
   has(key: string): boolean {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       return false;
     }
@@ -114,7 +114,7 @@ export class LRUCache<T = any> {
     // Check expiration
     const now = Date.now();
     const ttl = entry.ttl || this.defaultTTL;
-    
+
     if (now - entry.timestamp > ttl) {
       this.cache.delete(key);
       return false;
@@ -129,11 +129,11 @@ export class LRUCache<T = any> {
   delete(key: string): boolean {
     const entry = this.cache.get(key);
     const deleted = this.cache.delete(key);
-    
+
     if (deleted && entry && this.onEvict) {
       this.onEvict(key, entry.value);
     }
-    
+
     return deleted;
   }
 
@@ -142,17 +142,17 @@ export class LRUCache<T = any> {
    */
   clear(): void {
     const size = this.cache.size;
-    
+
     if (this.onEvict) {
       for (const [key, entry] of this.cache.entries()) {
         this.onEvict(key, entry.value);
       }
     }
-    
+
     this.cache.clear();
     this.hits = 0;
     this.misses = 0;
-    
+
     logger.info(`🗑️ Cache cleared: ${size} entries removed`);
   }
 
@@ -161,15 +161,15 @@ export class LRUCache<T = any> {
    */
   private evictLRU(): void {
     const firstKey = this.cache.keys().next().value;
-    
+
     if (firstKey) {
       const entry = this.cache.get(firstKey);
       this.cache.delete(firstKey);
-      
+
       if (entry && this.onEvict) {
         this.onEvict(firstKey, entry.value);
       }
-      
+
       logger.debug(`🗑️ Evicted LRU entry: ${firstKey}`);
     }
   }
@@ -179,14 +179,14 @@ export class LRUCache<T = any> {
    */
   getMany(keys: string[]): Map<string, T> {
     const results = new Map<string, T>();
-    
+
     for (const key of keys) {
       const value = this.get(key);
       if (value !== undefined) {
         results.set(key, value);
       }
     }
-    
+
     return results;
   }
 
@@ -195,7 +195,7 @@ export class LRUCache<T = any> {
    */
   setMany(entries: Map<string, T> | Record<string, T>, ttl?: number): void {
     const entriesMap = entries instanceof Map ? entries : new Map(Object.entries(entries));
-    
+
     for (const [key, value] of entriesMap.entries()) {
       this.set(key, value, ttl);
     }
@@ -219,11 +219,11 @@ export class LRUCache<T = any> {
 
     for (const [key, entry] of this.cache.entries()) {
       const ttl = entry.ttl || this.defaultTTL;
-      
+
       if (now - entry.timestamp > ttl) {
         this.cache.delete(key);
         expiredCount++;
-        
+
         if (this.onEvict) {
           this.onEvict(key, entry.value);
         }
@@ -241,10 +241,10 @@ export class LRUCache<T = any> {
   getStats() {
     const now = Date.now();
     const entries = Array.from(this.cache.values());
-    
+
     const totalRequests = this.hits + this.misses;
     const hitRate = totalRequests > 0 ? (this.hits / totalRequests) * 100 : 0;
-    
+
     const avgAccessCount = entries.length > 0
       ? entries.reduce((sum, entry) => sum + entry.accessCount, 0) / entries.length
       : 0;
@@ -297,7 +297,7 @@ export class LRUCache<T = any> {
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
     }
-    
+
     this.clear();
     logger.info('💾 LRU Cache destroyed');
   }
@@ -324,7 +324,7 @@ export class MultiTierCache<T = any> {
   async get(key: string): Promise<T | undefined> {
     // Try memory cache first
     let value = this.memoryCache.get(key);
-    
+
     if (value !== undefined) {
       return value;
     }
@@ -332,7 +332,7 @@ export class MultiTierCache<T = any> {
     // Try persistent cache (would be Redis in production)
     if (this.persistentCache) {
       value = this.persistentCache.get(key);
-      
+
       if (value !== undefined) {
         // Populate memory cache
         this.memoryCache.set(key, value);
@@ -346,7 +346,7 @@ export class MultiTierCache<T = any> {
   async set(key: string, value: T, ttl?: number): Promise<void> {
     // Set in memory cache
     this.memoryCache.set(key, value, ttl);
-    
+
     // Set in persistent cache (would be Redis in production)
     if (this.persistentCache) {
       this.persistentCache.set(key, value);
@@ -355,7 +355,7 @@ export class MultiTierCache<T = any> {
 
   async delete(key: string): Promise<void> {
     this.memoryCache.delete(key);
-    
+
     if (this.persistentCache) {
       this.persistentCache.delete(key);
     }

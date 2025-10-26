@@ -7,7 +7,7 @@
   --ios-glass-background: rgba(10, 10, 15, 0.85);
   --ios-glass-surface: rgba(255, 255, 255, 0.08);
   --ios-glass-border: rgba(255, 255, 255, 0.12);
-  
+
   /* iOS System Colors */
   --ios-blue: #007AFF;
   --ios-green: #34C759;
@@ -16,27 +16,27 @@
   --ios-purple: #AF52DE;
   --ios-pink: #FF2D55;
   --ios-teal: #5AC8FA;
-  
+
   /* iOS Typography */
   --ios-font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
   --ios-font-mono: 'SF Mono', 'Monaco', 'Menlo', monospace;
-  
+
   /* iOS Spacing */
   --ios-safe-area-top: env(safe-area-inset-top, 44px);
   --ios-safe-area-bottom: env(safe-area-inset-bottom, 34px);
   --ios-safe-area-left: env(safe-area-inset-left, 0px);
   --ios-safe-area-right: env(safe-area-inset-right, 0px);
-  
+
   /* iOS Blur Intensity */
   --ios-blur-light: 20px;
   --ios-blur-medium: 30px;
   --ios-blur-heavy: 50px;
-  
+
   /* iOS Shadow */
   --ios-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --ios-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
   --ios-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
-  
+
   /* Animation durations */
   --ios-transition-fast: 0.2s;
   --ios-transition-normal: 0.3s;

@@ -1,7 +1,7 @@
 /**
  * FDA News Tracker Scraper
  * Scrapes FDA drug approvals, regulatory updates, and safety announcements
- * 
+ *
  * Rate Limits: Respectful crawling - max 1 req/2s
  * Source: FDA News aggregated from multiple FDA sources
  */
@@ -45,7 +45,7 @@ export class FDANewsTrackerScraper {
   private circuitBreaker: CircuitBreaker;
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<FDANewsArticle[]>;
-  
+
   private readonly userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -90,7 +90,7 @@ export class FDANewsTrackerScraper {
    */
   async getLatestNews(maxResults: number = 20): Promise<FDANewsArticle[]> {
     const cacheKey = `latest:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached FDA news');
@@ -100,9 +100,9 @@ export class FDANewsTrackerScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching latest ${maxResults} FDA news items...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/news-events/newsroom/press-announcements', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -111,10 +111,10 @@ export class FDANewsTrackerScraper {
         });
 
         const articles = this.parseArticles(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} FDA news items`);
         return articles;
       },
@@ -129,7 +129,7 @@ export class FDANewsTrackerScraper {
    */
   async getRecentApprovals(maxResults: number = 20): Promise<FDANewsArticle[]> {
     const cacheKey = `approvals:${maxResults}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached FDA approvals');
@@ -139,9 +139,9 @@ export class FDANewsTrackerScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Fetching recent FDA approvals...`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/drugs/news-events/drug-approvals', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -150,10 +150,10 @@ export class FDANewsTrackerScraper {
         });
 
         const articles = this.parseApprovals(response.data, maxResults);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Fetched ${articles.length} FDA approvals`);
         return articles;
       },
@@ -168,7 +168,7 @@ export class FDANewsTrackerScraper {
    */
   async searchNews(params: FDANewsSearchParams): Promise<FDANewsArticle[]> {
     const cacheKey = `search:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('📦 Returning cached search results');
@@ -178,9 +178,9 @@ export class FDANewsTrackerScraper {
     const result = await retryWithBackoff(
       async () => {
         await this.rateLimiter.waitForLimit();
-        
+
         logger.info(`🔍 Searching FDA news: "${params.query || 'all'}"`);
-        
+
         const response = await this.circuitBreaker.execute(async () => {
           return await this.client.get('/search', {
             headers: { 'User-Agent': this.getRandomUserAgent() },
@@ -197,10 +197,10 @@ export class FDANewsTrackerScraper {
         });
 
         const articles = this.parseSearchResults(response.data, params.maxResults || 20);
-        
+
         this.rateLimiter.recordSuccess();
         this.cache.set(cacheKey, articles);
-        
+
         logger.info(`✅ Found ${articles.length} FDA news items matching search`);
         return articles;
       },
@@ -215,13 +215,13 @@ export class FDANewsTrackerScraper {
    */
   private parseArticles(html: string, maxResults: number): FDANewsArticle[] {
     const articles: FDANewsArticle[] = [];
-    
+
     try {
       const $ = cheerio.load(html);
-      
+
       $('.press-release, .news-item, article').each((index, element) => {
         if (articles.length >= maxResults) return false;
-        
+
         const $element = $(element);
         const title = $element.find('h2, h3, .title').first().text().trim();
         const url = $element.find('a').first().attr('href') || '';
@@ -230,7 +230,7 @@ export class FDANewsTrackerScraper {
                               new Date().toISOString();
         const summary = $element.find('p, .summary').first().text().trim();
         const category = this.extractCategory($element) || 'General';
-        
+
         if (title && url) {
           articles.push({
             id: this.extractIdFromUrl(url),
@@ -251,7 +251,7 @@ export class FDANewsTrackerScraper {
       this.rateLimiter.recordError();
       throw error;
     }
-    
+
     return articles;
   }
 
@@ -260,13 +260,13 @@ export class FDANewsTrackerScraper {
    */
   private parseApprovals(html: string, maxResults: number): FDANewsArticle[] {
     const articles: FDANewsArticle[] = [];
-    
+
     try {
       const $ = cheerio.load(html);
-      
+
       $('.approval-item, .drug-approval, tr, article').each((index, element) => {
         if (articles.length >= maxResults) return false;
-        
+
         const $element = $(element);
         const title = $element.find('.drug-name, td:first-child, h3').first().text().trim();
         const url = $element.find('a').first().attr('href') || '';
@@ -276,7 +276,7 @@ export class FDANewsTrackerScraper {
         const company = $element.find('.company, [data-company], td:nth-child(4)').first().text().trim();
         const approvalType = $element.find('.approval-type, [data-type]').first().text().trim();
         const indication = summary;
-        
+
         if (title) {
           articles.push({
             id: this.extractIdFromUrl(url) || `approval-${Date.now()}-${index}`,
@@ -299,7 +299,7 @@ export class FDANewsTrackerScraper {
       this.rateLimiter.recordError();
       throw error;
     }
-    
+
     return articles;
   }
 
@@ -354,14 +354,14 @@ export class FDANewsTrackerScraper {
    */
   private extractTags($element: any): string[] {
     const tags: string[] = [];
-    
+
     $element.find('.tag, .label, .category').each((_: number, tag: any) => {
       const tagText = $(tag).text().trim();
       if (tagText) {
         tags.push(tagText);
       }
     });
-    
+
     return tags;
   }
 

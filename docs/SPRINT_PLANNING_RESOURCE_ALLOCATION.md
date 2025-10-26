@@ -1,9 +1,9 @@
 # Sprint Planning & Resource Allocation
 ## Redmile Catalyst Intelligence System - 13 Week Implementation
 
-> **Project Timeline:** 13 weeks (3 months) to production-grade system  
-> **Start Date:** TBD  
-> **Target Production Date:** Week 13  
+> **Project Timeline:** 13 weeks (3 months) to production-grade system
+> **Start Date:** TBD
+> **Target Production Date:** Week 13
 > **Team Size:** 4-6 developers + 1 PM + 1 QA
 
 ---
@@ -152,8 +152,8 @@ This document provides a comprehensive sprint plan for implementing the Redmile 
 ## Sprint Overview
 
 ### Sprint 1: Portfolio Foundation (2 weeks)
-**Team:** 2 Backend + 1 Full-Stack + Technical Lead  
-**Effort:** 140 hours  
+**Team:** 2 Backend + 1 Full-Stack + Technical Lead
+**Effort:** 140 hours
 **Deliverables:**
 - SEC 13F scraper for Redmile holdings
 - PortfolioHolding database model
@@ -162,8 +162,8 @@ This document provides a comprehensive sprint plan for implementing the Redmile 
 - API documentation
 
 ### Sprint 2: Enhanced Scoring (2 weeks)
-**Team:** 2 Backend + 1 Full-Stack + Technical Lead  
-**Effort:** 140 hours  
+**Team:** 2 Backend + 1 Full-Stack + Technical Lead
+**Effort:** 140 hours
 **Deliverables:**
 - 8-dimension scoring algorithm
 - Street consensus data scraper
@@ -172,8 +172,8 @@ This document provides a comprehensive sprint plan for implementing the Redmile 
 - Scoring documentation
 
 ### Sprint 3: Multi-Source Aggregation (3 weeks)
-**Team:** 2 Backend + 1 Full-Stack + Technical Lead  
-**Effort:** 210 hours  
+**Team:** 2 Backend + 1 Full-Stack + Technical Lead
+**Effort:** 210 hours
 **Deliverables:**
 - FDA PDUFA scraper
 - Enhanced ClinicalTrials.gov scraper
@@ -184,8 +184,8 @@ This document provides a comprehensive sprint plan for implementing the Redmile 
 - Deduplication logic
 
 ### Sprint 4: PM Calendar UI (2 weeks)
-**Team:** 1 Frontend + 1 Full-Stack + Technical Lead  
-**Effort:** 100 hours  
+**Team:** 1 Frontend + 1 Full-Stack + Technical Lead
+**Effort:** 100 hours
 **Deliverables:**
 - PM calendar React component
 - Visual encoding (therapeutic area colors, market size bubbles)
@@ -195,8 +195,8 @@ This document provides a comprehensive sprint plan for implementing the Redmile 
 - Responsive design
 
 ### Sprint 5: Intelligence Features (3 weeks)
-**Team:** 2 Backend + 1 Frontend + 1 Full-Stack + Technical Lead  
-**Effort:** 210 hours  
+**Team:** 2 Backend + 1 Frontend + 1 Full-Stack + Technical Lead
+**Effort:** 210 hours
 **Deliverables:**
 - Surprise factor detector
 - Historical catalyst database
@@ -206,8 +206,8 @@ This document provides a comprehensive sprint plan for implementing the Redmile 
 - Analytics API endpoints
 
 ### Sprint 6: Documentation & Polish (1 week)
-**Team:** Full team  
-**Effort:** 100 hours  
+**Team:** Full team
+**Effort:** 100 hours
 **Deliverables:**
 - User documentation and tutorials
 - API documentation (OpenAPI)
@@ -657,8 +657,8 @@ Assuming industry-standard rates:
 ### Technical Risks
 
 #### Risk 1: SEC Rate Limiting
-**Probability:** Medium  
-**Impact:** High  
+**Probability:** Medium
+**Impact:** High
 **Mitigation:**
 - Implement aggressive rate limiting (10 req/sec max)
 - Add exponential backoff and retry logic
@@ -667,8 +667,8 @@ Assuming industry-standard rates:
 - Monitor SEC fair access policy compliance
 
 #### Risk 2: Data Quality Issues
-**Probability:** High  
-**Impact:** Medium  
+**Probability:** High
+**Impact:** Medium
 **Mitigation:**
 - Implement robust parsing with fallbacks
 - Add data validation at ingestion
@@ -677,8 +677,8 @@ Assuming industry-standard rates:
 - Implement data quality dashboards
 
 #### Risk 3: Scraper Breakage (Site Changes)
-**Probability:** High  
-**Impact:** Medium  
+**Probability:** High
+**Impact:** Medium
 **Mitigation:**
 - Use official APIs where available (FDA, CTGov)
 - Implement circuit breakers for failed scrapers
@@ -687,8 +687,8 @@ Assuming industry-standard rates:
 - Maintain flexible parsing logic
 
 #### Risk 4: Performance Issues
-**Probability:** Medium  
-**Impact:** Medium  
+**Probability:** Medium
+**Impact:** Medium
 **Mitigation:**
 - Async processing for scrapers
 - Database query optimization
@@ -697,8 +697,8 @@ Assuming industry-standard rates:
 - Load testing before production
 
 #### Risk 5: Integration Complexity
-**Probability:** Medium  
-**Impact:** High  
+**Probability:** Medium
+**Impact:** High
 **Mitigation:**
 - Clear API contracts between components
 - Integration tests for all endpoints
@@ -708,8 +708,8 @@ Assuming industry-standard rates:
 ### Schedule Risks
 
 #### Risk 1: Scope Creep
-**Probability:** High  
-**Impact:** High  
+**Probability:** High
+**Impact:** High
 **Mitigation:**
 - Strict sprint planning with defined scope
 - Change control process
@@ -718,8 +718,8 @@ Assuming industry-standard rates:
 - Deferred features backlog
 
 #### Risk 2: Resource Availability
-**Probability:** Medium  
-**Impact:** High  
+**Probability:** Medium
+**Impact:** High
 **Mitigation:**
 - Cross-training team members
 - Documentation of all components
@@ -728,8 +728,8 @@ Assuming industry-standard rates:
 - Flexible team allocation
 
 #### Risk 3: Dependencies on External APIs
-**Probability:** Medium  
-**Impact:** Medium  
+**Probability:** Medium
+**Impact:** Medium
 **Mitigation:**
 - Early validation of API access
 - Mock data for development
@@ -739,8 +739,8 @@ Assuming industry-standard rates:
 ### Business Risks
 
 #### Risk 1: Stakeholder Expectations Mismatch
-**Probability:** Medium  
-**Impact:** High  
+**Probability:** Medium
+**Impact:** High
 **Mitigation:**
 - Regular sprint demos
 - Early MVP feedback
@@ -748,8 +748,8 @@ Assuming industry-standard rates:
 - Iterative development approach
 
 #### Risk 2: Regulatory Compliance
-**Probability:** Low  
-**Impact:** High  
+**Probability:** Low
+**Impact:** High
 **Mitigation:**
 - Legal review of data sources
 - Terms of service compliance
@@ -938,6 +938,6 @@ This sprint planning document provides a comprehensive roadmap for implementing 
 
 ---
 
-*Last Updated: 2025-10-14*  
-*Version: 1.0*  
+*Last Updated: 2025-10-14*
+*Version: 1.0*
 *Status: Draft - Awaiting Stakeholder Approval*

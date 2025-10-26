@@ -14,7 +14,7 @@ import json
 
 class LLMPrompts:
     """LLM prompt templates for news intelligence"""
-    
+
     @staticmethod
     def article_to_structured_record(
         title: str,
@@ -24,7 +24,7 @@ class LLMPrompts:
     ) -> str:
         """
         Prompt A: Article → Structured Record
-        
+
         Returns a prompt that asks LLM to extract:
         - ta_tags (therapeutic areas)
         - catalyst_tags (FDA Approval, Phase 3, etc.)
@@ -33,7 +33,7 @@ class LLMPrompts:
         - summary_250 (≤250 chars)
         - rationale (why this matters)
         """
-        
+
         prompt = f"""You are a biotech news structurer for an investment firm. Input is a news headline, optional summary, and the source URL + publish time.
 
 Output a single JSON object with these fields:
@@ -58,18 +58,18 @@ Rules:
 Input:
 - Title: {title}
 """
-        
+
         if summary:
             prompt += f"- Summary: {summary}\n"
         if source_url:
             prompt += f"- Source URL: {source_url}\n"
         if published_at:
             prompt += f"- Published At: {published_at}\n"
-        
+
         prompt += "\nOutput (JSON only, no markdown):"
-        
+
         return prompt
-    
+
     @staticmethod
     def competitor_read_throughs(
         article_json: Dict[str, Any],
@@ -77,10 +77,10 @@ Input:
     ) -> str:
         """
         Prompt B: Competitor / Read-Through Suggestions
-        
+
         Given structured article and portfolio, suggest competitor exposures
         """
-        
+
         prompt = f"""Given the structured article JSON and the portfolio watchlist, suggest competitor read-through tickers.
 
 Output `exposures` JSON object:
@@ -99,9 +99,9 @@ Portfolio Watchlist (tickers):
 
 Output (JSON only, no markdown):
 """
-        
+
         return prompt
-    
+
     @staticmethod
     def importance_rescoring(
         article_json: Dict[str, Any],
@@ -110,14 +110,14 @@ Output (JSON only, no markdown):
     ) -> str:
         """
         Prompt C: Importance Re-Scoring with Cross-Source Lift
-        
+
         Re-score importance and relevance_score based on:
         - Catalyst weight
         - Portfolio relevance
         - Cross-source count
         - SMID bucket
         """
-        
+
         prompt = f"""Input: structured article JSON + cross_source_count + portfolio_relevance (boolean).
 
 Re-score `importance` and `relevance_score 0–100`:
@@ -136,9 +136,9 @@ Portfolio Relevance: {portfolio_relevance}
 
 Output (JSON only, no markdown):
 """
-        
+
         return prompt
-    
+
     @staticmethod
     def price_reaction_note(
         article_json: Dict[str, Any],
@@ -152,10 +152,10 @@ Output (JSON only, no markdown):
     ) -> str:
         """
         Prompt D: Price Reaction Note
-        
+
         Generate a 1-2 sentence analyst note for price reaction
         """
-        
+
         prompt = f"""Input: article JSON, ticker, event_time, returns (raw_return, benchmark_return, abnormal_return, window, p_value optional).
 
 Output a 1–2 sentence analyst note:
@@ -174,14 +174,14 @@ Input:
 - Abnormal Return: {abnormal_return:.2%}
 - Window: {window}
 """
-        
+
         if p_value is not None:
             prompt += f"- P-Value: {p_value:.4f}\n"
-        
+
         prompt += "\nOutput (plain text note, no JSON):"
-        
+
         return prompt
-    
+
     @staticmethod
     def parse_json_response(response: str) -> Dict[str, Any]:
         """
@@ -196,9 +196,9 @@ Input:
             response = response[3:]  # Remove ```
         if response.endswith("```"):
             response = response[:-3]  # Remove trailing ```
-        
+
         response = response.strip()
-        
+
         try:
             return json.loads(response)
         except json.JSONDecodeError as e:

@@ -1,6 +1,6 @@
 /**
  * Circuit Breaker - Fault tolerance and resilience
- * 
+ *
  * Prevents cascade failures by monitoring service health and temporarily
  * blocking requests to failing services.
  */
@@ -75,7 +75,7 @@ class CircuitBreakerImpl {
     // Check if circuit is open
     if (stats.state === 'open') {
       const timeSinceOpen = Date.now() - stats.lastStateChange;
-      
+
       if (timeSinceOpen < config.timeout) {
         throw new Error(`Circuit breaker ${name} is OPEN`);
       }

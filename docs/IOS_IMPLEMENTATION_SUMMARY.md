@@ -168,9 +168,9 @@ npm run cap:open:ios
 
 ## Limitations (Free Apple ID)
 
-⚠️ **7-day certificate expiration** - Need to reinstall weekly  
-⚠️ **3 apps maximum** on device at once  
-⚠️ **No App Store distribution** - Personal devices only  
+⚠️ **7-day certificate expiration** - Need to reinstall weekly
+⚠️ **3 apps maximum** on device at once
+⚠️ **No App Store distribution** - Personal devices only
 ⚠️ **No TestFlight** - Can't beta test with others
 
 **Solution**: Upgrade to paid Apple Developer Program ($99/year) to remove these limits.
@@ -388,13 +388,13 @@ Users can now:
 
 ## Credits
 
-**Implementation**: GitHub Copilot  
-**Platform**: Biotech Terminal  
-**Technology**: Capacitor + React + FastAPI  
+**Implementation**: GitHub Copilot
+**Platform**: Biotech Terminal
+**Technology**: Capacitor + React + FastAPI
 **License**: MIT
 
 ---
 
-**Ready to build?** Start with: `npm run verify:ios`  
-**Need help?** Read: `docs/IOS_NATIVE_APP_GUIDE.md`  
+**Ready to build?** Start with: `npm run verify:ios`
+**Need help?** Read: `docs/IOS_NATIVE_APP_GUIDE.md`
 **Quick start?** Check: `docs/IOS_QUICK_REFERENCE.md`

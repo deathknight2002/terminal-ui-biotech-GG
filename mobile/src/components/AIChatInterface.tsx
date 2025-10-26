@@ -75,7 +75,7 @@ export const AIChatInterface: FC<AIChatInterfaceProps> = ({
 
   const handleVoiceInput = async () => {
     await triggerHaptic('medium');
-    
+
     if (!isSpeechSupported) {
       console.warn('[Voice Input] Speech recognition not supported');
       return;

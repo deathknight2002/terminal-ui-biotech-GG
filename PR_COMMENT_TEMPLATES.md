@@ -22,7 +22,7 @@ A conflict-resolution branch has been created for this PR: `conflict-resolve/pr-
 - ✅ bt_platform/core/database.py (from PR)
 - ✅ bt_platform/core/routers.py (from PR)
 - ✅ frontend-components/src/biotech/index.ts (from PR)
-- ✅ pyproject.toml (from main)  
+- ✅ pyproject.toml (from main)
 - ✅ 14 terminal page files (from PR)
 
 ### Next Steps
@@ -40,7 +40,7 @@ A conflict-resolution branch has been created for this PR: `conflict-resolve/pr-
 If you disagree with any conflict resolution decisions, please comment below with specific files and we'll adjust.
 
 ---
-**Resolution Date**: October 14, 2025  
+**Resolution Date**: October 14, 2025
 **Strategy**: Strategy A (PR code, main dependencies)
 ```
 

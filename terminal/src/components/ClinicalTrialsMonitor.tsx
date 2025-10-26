@@ -1,6 +1,6 @@
 /**
  * Clinical Trials Monitor Component
- * 
+ *
  * Real-time clinical trials intelligence from ClinicalTrials.gov
  */
 
@@ -38,7 +38,7 @@ export const ClinicalTrialsMonitor: React.FC = () => {
   const { data, isLoading, error, refetch } = useQuery<TrialsDashboardData>({
     queryKey: ['trials-dashboard', condition],
     queryFn: () => {
-      const url = condition 
+      const url = condition
         ? `${API_ENDPOINTS.TRIALS.DASHBOARD}?condition=${encodeURIComponent(condition)}`
         : API_ENDPOINTS.TRIALS.DASHBOARD;
       return apiFetch(url);
@@ -104,10 +104,10 @@ export const ClinicalTrialsMonitor: React.FC = () => {
         <Panel title="PHASE DISTRIBUTION" cornerBrackets>
           <div className="p-4 space-y-2">
             {data.phase_distribution.map((phase, idx) => {
-              const percentage = data.total_trials > 0 
+              const percentage = data.total_trials > 0
                 ? (phase.count / data.total_trials * 100).toFixed(1)
                 : '0.0';
-              
+
               return (
                 <div key={idx} className="space-y-1">
                   <div className="flex justify-between items-center">
@@ -135,7 +135,7 @@ export const ClinicalTrialsMonitor: React.FC = () => {
               const percentage = data.total_trials > 0
                 ? (status.count / data.total_trials * 100).toFixed(1)
                 : '0.0';
-              
+
               return (
                 <div key={idx} className="space-y-1">
                   <div className="flex justify-between items-center">
@@ -179,12 +179,12 @@ export const ClinicalTrialsMonitor: React.FC = () => {
             </thead>
             <tbody>
               {data.recruiting_trials.slice(0, 20).map((trial, idx) => (
-                <tr 
+                <tr
                   key={idx}
                   className="border-b border-terminal-border/50 hover:bg-terminal-bg-hover"
                 >
                   <td className="p-3 font-mono text-terminal-accent">
-                    <a 
+                    <a
                       href={`https://clinicaltrials.gov/study/${trial.nct_id}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -212,7 +212,7 @@ export const ClinicalTrialsMonitor: React.FC = () => {
                   <td className="p-3 text-xs">
                     <div className="flex flex-wrap gap-1">
                       {trial.conditions?.slice(0, 2).map((cond, i) => (
-                        <span 
+                        <span
                           key={i}
                           className="px-2 py-1 bg-terminal-bg-hover rounded"
                         >

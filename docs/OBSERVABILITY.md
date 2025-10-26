@@ -220,13 +220,13 @@ from bt_platform.core.utils.sentry import (
 try:
     risky_operation()
 except Exception as e:
-    capture_exception(e, 
+    capture_exception(e,
         user={"id": "12345", "email": "user@example.com"},
         request={"url": "/api/v1/drugs", "method": "GET"}
     )
 
 # Capture message
-capture_message("Important event occurred", level="info", 
+capture_message("Important event occurred", level="info",
     custom_data={"key": "value"}
 )
 
@@ -253,7 +253,7 @@ The global exception handler automatically captures unhandled exceptions:
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     logger.error(f"Global exception: {exc}", exc_info=True)
-    
+
     # Automatically capture in Sentry
     from bt_platform.core.utils.sentry import capture_exception
     capture_exception(exc, request={
@@ -302,7 +302,7 @@ async def health_check():
         db_status = "healthy"
     except Exception:
         db_status = "unhealthy"
-    
+
     return {
         "status": "healthy" if db_status == "healthy" else "degraded",
         "service": "biotech-terminal-platform",
@@ -439,18 +439,18 @@ import time
 class RequestTrackingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         start_time = time.time()
-        
+
         # Log request
         logger.info("Request started", extra={
             "method": request.method,
             "path": request.url.path,
             "client_ip": request.client.host
         })
-        
+
         try:
             response = await call_next(request)
             duration = time.time() - start_time
-            
+
             # Log response
             logger.info("Request completed", extra={
                 "method": request.method,
@@ -458,11 +458,11 @@ class RequestTrackingMiddleware(BaseHTTPMiddleware):
                 "status_code": response.status_code,
                 "duration_ms": duration * 1000
             })
-            
+
             return response
         except Exception as e:
             duration = time.time() - start_time
-            
+
             # Log error
             logger.error("Request failed", extra={
                 "method": request.method,
@@ -470,7 +470,7 @@ class RequestTrackingMiddleware(BaseHTTPMiddleware):
                 "duration_ms": duration * 1000,
                 "error": str(e)
             }, exc_info=True)
-            
+
             # Capture in Sentry
             capture_exception(e)
             raise

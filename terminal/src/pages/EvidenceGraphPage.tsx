@@ -1,6 +1,6 @@
 /**
  * Evidence Graph Page
- * 
+ *
  * Main page for visualizing and interacting with the evidence graph.
  * Features:
  * - Force-directed graph visualization
@@ -24,7 +24,7 @@ export const EvidenceGraphPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<'graph' | 'timeline'>('graph');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  
+
   // AbortController ref for canceling in-flight requests
   const controllerRef = useRef<AbortController | null>(null);
 
@@ -32,15 +32,15 @@ export const EvidenceGraphPage: React.FC = () => {
   const loadData = async () => {
     // Debounce guard - prevent double-clicks
     if (loading) return;
-    
+
     // Cancel any in-flight requests
     controllerRef.current?.abort();
     controllerRef.current = new AbortController();
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       // Fetch with abort signal
       const [nodesData, edgesData] = await Promise.all([
         fetch(`${import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000'}/api/v1/evidence-graph/nodes`, {
@@ -50,7 +50,7 @@ export const EvidenceGraphPage: React.FC = () => {
           signal: controllerRef.current.signal
         }).then(r => r.json())
       ]);
-      
+
       setNodes(nodesData);
       setEdges(edgesData);
       setLastUpdated(new Date());
@@ -69,13 +69,13 @@ export const EvidenceGraphPage: React.FC = () => {
   // Initial load only - no auto-refresh/polling
   useEffect(() => {
     loadData();
-    
+
     // Cleanup: abort any pending requests on unmount
     return () => {
       controllerRef.current?.abort();
     };
   }, []);
-  
+
   // Keyboard shortcut: Press 'R' to refresh
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -87,7 +87,7 @@ export const EvidenceGraphPage: React.FC = () => {
         }
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [loading]); // Re-bind when loading state changes to respect debounce
@@ -95,7 +95,7 @@ export const EvidenceGraphPage: React.FC = () => {
   // Handle node selection
   const handleNodeClick = async (node: NodeBase) => {
     setSelectedNode(node);
-    
+
     // If thesis node, load timeline
     if (node.type === 'thesis') {
       try {
@@ -146,7 +146,7 @@ export const EvidenceGraphPage: React.FC = () => {
         <p className="page-subtitle">
           Graph-based evidence tracking • Nodes: {nodes.length} • Edges: {edges.length}
         </p>
-        
+
         <div className="view-controls">
           <div className="refresh-section">
             <button

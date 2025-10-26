@@ -1,6 +1,6 @@
 /**
  * Migration Service
- * 
+ *
  * Migrates data from offlineStorage (IndexedDB) to RxDB.
  * Guarded by the storage.rxdb feature flag.
  */
@@ -116,10 +116,10 @@ class MigrationService {
         db.portfolio,
         (data: any) => {
           if (!data || typeof data !== 'object') return [];
-          
+
           // Portfolio might be stored as a single object or array
           const items = Array.isArray(data) ? data : [data];
-          
+
           return items.map((item: any, index: number) => ({
             id: item.id || `portfolio-${index}`,
             userId: item.userId || item.user_id || 'default-user',
@@ -134,7 +134,7 @@ class MigrationService {
 
       // Mark migration as completed
       localStorage.setItem(MIGRATION_FLAG_KEY, 'true');
-      
+
       logger.info('[Migration] Migration completed successfully');
     } catch (error) {
       logger.error('[Migration] Migration failed:', error);
@@ -157,7 +157,7 @@ class MigrationService {
 
       // Get data from old storage
       const oldData = await offlineStorage.get(storeName, 'all');
-      
+
       if (!oldData) {
         logger.info(`[Migration] No data found in ${storeName}`);
         return;
@@ -165,7 +165,7 @@ class MigrationService {
 
       // Transform data to match RxDB schema
       const documents = transformer(oldData);
-      
+
       if (documents.length === 0) {
         logger.info(`[Migration] No documents to migrate in ${storeName}`);
         return;

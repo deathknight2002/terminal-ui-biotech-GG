@@ -97,7 +97,7 @@ errors_total = Counter(
 async def metrics():
     """
     Prometheus metrics endpoint.
-    
+
     Returns metrics in Prometheus exposition format.
     """
     return Response(
@@ -151,29 +151,29 @@ def update_active_connections(count: int):
 
 class MetricsMiddleware:
     """Middleware to track HTTP metrics automatically"""
-    
+
     def __init__(self, app):
         self.app = app
-    
+
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
-        
+
         method = scope.get("method", "UNKNOWN")
         path = scope.get("path", "/")
-        
+
         start_time = time.time()
-        
+
         async def send_wrapper(message):
             if message["type"] == "http.response.start":
                 status = message.get("status", 500)
                 duration = time.time() - start_time
-                
+
                 # Track metrics
                 track_http_request(method, path, status)
                 track_http_duration(method, path, duration)
-            
+
             await send(message)
-        
+
         await self.app(scope, receive, send_wrapper)

@@ -99,7 +99,7 @@ We don't need full articles to compute impact. Title + deck, press release excer
 ## 4) Read-Through Exposures (competitor + ETF)
 
 - Maintain a lightweight **Entity Graph**: company ↔ indication, company ↔ target, class_peers.
-- **Weights:** 
+- **Weights:**
   - direct mention = 1.0
   - same indication/target competitor = 0.6
   - same class peer = 0.3
@@ -149,11 +149,11 @@ If a gate fails → send to **"Needs Review"** queue (visible in UI).
 ### A) Article → Structured Record
 
 ```
-You are a biotech news structurer for an investment firm. Input is a news headline, optional dek/summary, and the source URL + publish time. 
+You are a biotech news structurer for an investment firm. Input is a news headline, optional dek/summary, and the source URL + publish time.
 Output a single JSON object with these fields:
 - ta_tags: array of therapeutic areas from this controlled list ["SMA","GLP-1","Oncology","Rare Disease","Immunology","Neurology","Cardiovascular","Metabolic","Hematology","Pulmonology","Infectious Disease"].
 - catalyst_tags: array from ["FDA Approval","AdCom","Breakthrough Designation","Fast Track","Phase 1","Phase 2","Phase 3","Pivotal","Topline","Partnering","Licensing","M&A","Financing","Manufacturing","Safety","Clinical Hold","Regulatory Filing"].
-- entities: array of objects with {kind: "company"|"drug"|"disease"|"target", name, ticker?, role: "primary"|"mentioned", confidence: 0–1}. 
+- entities: array of objects with {kind: "company"|"drug"|"disease"|"target", name, ticker?, role: "primary"|"mentioned", confidence: 0–1}.
 - importance: one of "Critical","High","Medium","Low" – decide using your best judgment for **tradability** (SMID-cap clinical/regulatory events rank higher).
 - summary_250: ≤250 chars, factual, no hype; include the catalyst explicitly.
 - rationale: one sentence why this matters to a trader.

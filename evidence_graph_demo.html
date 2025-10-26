@@ -103,7 +103,7 @@
 <body>
     <div class="container">
         <h1>Evidence Graph API Demo</h1>
-        
+
         <div class="section">
             <h2>API Status</h2>
             <button onclick="checkHealth()">Check Health</button>
@@ -154,7 +154,7 @@
             try {
                 const response = await fetch(`${API_BASE}/nodes`);
                 const nodes = await response.json();
-                
+
                 container.innerHTML = nodes.map(node => `
                     <div class="node-card">
                         <div><span class="label">ID:</span> <span class="value">${node.id}</span></div>
@@ -176,7 +176,7 @@
             try {
                 const response = await fetch(`${API_BASE}/edges`);
                 const edges = await response.json();
-                
+
                 container.innerHTML = edges.map(edge => `
                     <div class="edge-card">
                         <div><span class="label">FROM:</span> <span class="value">${edge.from}</span></div>
@@ -203,7 +203,7 @@
             try {
                 const response = await fetch(`${API_BASE}/thesis/thesis:SRRK-core/timeline`);
                 const data = await response.json();
-                
+
                 let html = `
                     <div class="node-card">
                         <h3>Thesis: ${data.thesis.id}</h3>
@@ -212,7 +212,7 @@
                         <div><span class="label">TOTAL UPDATES:</span> <span class="value">${data.summary.total_updates}</span></div>
                     </div>
                 `;
-                
+
                 html += '<h3>Timeline:</h3>';
                 html += data.timeline.map(entry => `
                     <div class="edge-card">
@@ -224,7 +224,7 @@
                         ` : ''}
                     </div>
                 `).join('');
-                
+
                 container.innerHTML = html;
             } catch (error) {
                 container.innerHTML = `<div class="status error">Error loading timeline: ${error.message}</div>`;

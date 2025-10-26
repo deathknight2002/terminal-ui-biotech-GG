@@ -4,7 +4,7 @@ Migrate Evidence Graph from JSON to SQLite storage.
 
 Usage:
     python scripts/migrate_to_sqlite.py [--dry-run] [--backup]
-    
+
 Options:
     --dry-run    Show what would be migrated without making changes
     --backup     Create a backup of JSON data before migration

@@ -85,7 +85,7 @@ describe('CatalystEngine', () => {
 
       engine.addCatalyst(catalyst1);
       engine.addCatalyst(catalyst2);
-      
+
       expect(engine.count()).toBe(1);
       expect(engine.getCatalyst('cat-001')?.data.title).toBe('FDA Approval V2');
     });
@@ -151,7 +151,7 @@ describe('CatalystEngine', () => {
 
       engine.addCatalyst(catalyst);
       const retrieved = engine.getCatalyst('cat-001');
-      
+
       expect(retrieved).toBeDefined();
       expect(retrieved?.data.id).toBe('cat-001');
     });
@@ -181,7 +181,7 @@ describe('CatalystEngine', () => {
 
       engine.addCatalyst(catalyst);
       expect(engine.count()).toBe(1);
-      
+
       const removed = engine.removeCatalyst('cat-001');
       expect(removed).toBe(true);
       expect(engine.count()).toBe(0);
@@ -353,7 +353,7 @@ describe('CatalystEngine', () => {
 
     it('should get timeline with summary', () => {
       const timeline = engine.getTimeline('2023-01-01', '2023-12-31');
-      
+
       expect(timeline.startDate).toBe('2023-01-01');
       expect(timeline.endDate).toBe('2023-12-31');
       expect(timeline.catalysts).toHaveLength(2);
@@ -362,19 +362,19 @@ describe('CatalystEngine', () => {
 
     it('should calculate summary by type', () => {
       const timeline = engine.getTimeline('2023-01-01', '2023-12-31');
-      
+
       expect(timeline.summary.byType['approval']).toBe(2);
     });
 
     it('should calculate summary by impact', () => {
       const timeline = engine.getTimeline('2023-01-01', '2023-12-31');
-      
+
       expect(timeline.summary.byImpact['positive']).toBe(2);
     });
 
     it('should calculate top drugs', () => {
       const timeline = engine.getTimeline('2023-01-01', '2023-12-31');
-      
+
       expect(timeline.summary.topDrugs).toHaveLength(1);
       expect(timeline.summary.topDrugs[0].drugId).toBe('drug-001');
       expect(timeline.summary.topDrugs[0].count).toBe(2);
@@ -382,7 +382,7 @@ describe('CatalystEngine', () => {
 
     it('should calculate top companies', () => {
       const timeline = engine.getTimeline('2023-01-01', '2023-12-31');
-      
+
       expect(timeline.summary.topCompanies).toHaveLength(1);
       expect(timeline.summary.topCompanies[0].companyId).toBe('company-001');
       expect(timeline.summary.topCompanies[0].count).toBe(2);
@@ -393,7 +393,7 @@ describe('CatalystEngine', () => {
     it('should get upcoming catalysts', () => {
       const futureDate = new Date();
       futureDate.setDate(futureDate.getDate() + 30);
-      
+
       const catalyst: CatalystContract = {
         version: '1.0',
         schema: 'catalyst',
@@ -412,7 +412,7 @@ describe('CatalystEngine', () => {
 
       engine.addCatalyst(catalyst);
       const upcoming = engine.getUpcoming(90);
-      
+
       expect(upcoming.length).toBeGreaterThan(0);
     });
   });
@@ -421,7 +421,7 @@ describe('CatalystEngine', () => {
     it('should get recent catalysts', () => {
       const pastDate = new Date();
       pastDate.setDate(pastDate.getDate() - 15);
-      
+
       const catalyst: CatalystContract = {
         version: '1.0',
         schema: 'catalyst',
@@ -440,7 +440,7 @@ describe('CatalystEngine', () => {
 
       engine.addCatalyst(catalyst);
       const recent = engine.getRecent(30);
-      
+
       expect(recent.length).toBeGreaterThan(0);
     });
   });
@@ -465,7 +465,7 @@ describe('CatalystEngine', () => {
 
       engine.addCatalyst(catalyst);
       expect(engine.count()).toBe(1);
-      
+
       engine.clear();
       expect(engine.count()).toBe(0);
     });
@@ -474,7 +474,7 @@ describe('CatalystEngine', () => {
   describe('count', () => {
     it('should return correct count', () => {
       expect(engine.count()).toBe(0);
-      
+
       const catalyst: CatalystContract = {
         version: '1.0',
         schema: 'catalyst',

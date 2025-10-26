@@ -312,12 +312,12 @@
   .analytics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .alerts-section,
   .trend-section {
     grid-column: span 1;
   }
-  
+
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -329,17 +329,17 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .model-selector {
     width: 100%;
     flex-wrap: wrap;
   }
-  
+
   .model-tab {
     flex: 1;
     min-width: 100px;
   }
-  
+
   .metrics-grid {
     grid-template-columns: 1fr;
   }

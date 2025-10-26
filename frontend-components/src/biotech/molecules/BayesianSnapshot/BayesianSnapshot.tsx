@@ -30,12 +30,12 @@ export interface BayesianSnapshotProps {
 
 /**
  * Bayesian Snapshot Component
- * 
+ *
  * Displays plain-English Bayesian analysis for catalyst predictions:
  * - Prior: Class/base rates from historical data
  * - Likelihood: Trial design quality assessment
  * - Posterior: Specific Win/Meh/Kill thresholds
- * 
+ *
  * Example:
  * ```tsx
  * <BayesianSnapshot
@@ -102,7 +102,7 @@ export const BayesianSnapshot: React.FC<BayesianSnapshotProps> = ({
           <span className="bayesian-snapshot__icon">🎯</span>
           <strong>POSTERIOR (Decision Thresholds)</strong>
         </div>
-        
+
         <div className="bayesian-snapshot__thresholds">
           <div className="bayesian-snapshot__threshold bayesian-snapshot__threshold--win">
             <div className="bayesian-snapshot__threshold-label">

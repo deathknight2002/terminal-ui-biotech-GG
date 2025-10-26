@@ -346,7 +346,7 @@ Optional token-based authentication for write operations (POST, PUT, DELETE, PAT
 - **Protected Methods**: POST, PUT, DELETE, PATCH
 - **Public Methods**: GET, HEAD, OPTIONS
 - **Public Paths**: `/health`, `/docs`, `/redoc`, `/metrics`
-- **Token Formats**: 
+- **Token Formats**:
   - Bearer token: `Authorization: Bearer <token>`
   - API Key header: `X-API-Key: <token>`
 

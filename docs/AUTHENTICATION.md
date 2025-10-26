@@ -198,11 +198,11 @@ async function createNode(nodeData) {
     },
     body: JSON.stringify(nodeData)
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
+
   return await response.json();
 }
 
@@ -216,7 +216,7 @@ async function updateNode(nodeId, updates) {
     },
     body: JSON.stringify(updates)
   });
-  
+
   return await response.json();
 }
 ```
@@ -362,15 +362,15 @@ class CustomAuthMiddleware(APITokenAuthMiddleware):
     async def dispatch(self, request, call_next):
         # Add custom validation logic
         token = self._extract_token(request)
-        
+
         if token and self._is_revoked(token):
             return JSONResponse(
                 status_code=403,
                 content={"detail": "Token has been revoked"}
             )
-        
+
         return await super().dispatch(request, call_next)
-    
+
     def _is_revoked(self, token: str) -> bool:
         # Check against revocation list
         return token in self.revoked_tokens
@@ -385,20 +385,20 @@ class MultiTokenAuthMiddleware(APITokenAuthMiddleware):
     def __init__(self, app, enabled: bool = None, api_tokens: list[str] = None):
         super().__init__(app, enabled, None)
         self.api_tokens = api_tokens or []
-    
+
     async def dispatch(self, request, call_next):
         if not self.enabled:
             return await call_next(request)
-        
+
         # ... other checks ...
-        
+
         # Validate against multiple tokens
         if token not in self.api_tokens:
             return JSONResponse(
                 status_code=403,
                 content={"detail": "Invalid API token"}
             )
-        
+
         return await call_next(request)
 ```
 

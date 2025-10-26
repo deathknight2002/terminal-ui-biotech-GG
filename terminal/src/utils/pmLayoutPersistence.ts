@@ -14,13 +14,13 @@ export class PMLayoutPersistence {
     try {
       const views = this.getAllViews();
       const existingIndex = views.findIndex(v => v.id === view.id);
-      
+
       if (existingIndex >= 0) {
         views[existingIndex] = view;
       } else {
         views.push(view);
       }
-      
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(views));
     } catch (error) {
       console.error('Failed to save view:', error);
@@ -100,7 +100,7 @@ export class PMLayoutPersistence {
       openNodes: view.openNodes,
       layout: view.layout,
     });
-    
+
     // Simple base64 encoding for sharing (in production, use a proper URL shortener)
     return btoa(stateString);
   }

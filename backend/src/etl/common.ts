@@ -34,23 +34,23 @@ export async function retryWithBackoff<T>(
   } = options;
 
   let lastError: Error | null = null;
-  
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
-      
+
       if (attempt === maxAttempts) {
         break;
       }
-      
+
       const delay = Math.min(initialDelay * Math.pow(factor, attempt - 1), maxDelay);
       logger.warn(`Attempt ${attempt} failed, retrying in ${delay}ms...`, { error: lastError.message });
       await sleep(delay);
     }
   }
-  
+
   throw lastError || new Error('Max retry attempts reached');
 }
 
@@ -72,17 +72,17 @@ export async function processBatches<T, R>(
 ): Promise<R[]> {
   const results: R[] = [];
   const total = items.length;
-  
+
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
     const batchResults = await processor(batch);
     results.push(...batchResults);
-    
+
     if (onProgress) {
       onProgress(Math.min(i + batchSize, total), total);
     }
   }
-  
+
   return results;
 }
 
@@ -97,7 +97,7 @@ export function normalizeRegionCode(region: string): string {
     'United Kingdom': 'GBR',
     // Add more mappings as needed
   };
-  
+
   return regionMap[region] || region.toUpperCase();
 }
 
@@ -107,14 +107,14 @@ export function normalizeRegionCode(region: string): string {
 export function normalizeAgeGroup(ageGroup: string): string {
   // Standardize age group formats
   const normalized = ageGroup.trim().replace(/\s+/g, '');
-  
+
   // Common patterns
   if (normalized.match(/^0-18$/i)) return '0-18';
   if (normalized.match(/^19-44$/i)) return '19-44';
   if (normalized.match(/^45-64$/i)) return '45-64';
   if (normalized.match(/^65\+$/i)) return '65+';
   if (normalized.match(/^all$/i)) return 'All';
-  
+
   return normalized;
 }
 
@@ -134,12 +134,12 @@ export function normalizeSex(sex: string): string {
  */
 export function validateMetricValue(value: any): number | null {
   if (value === null || value === undefined) return null;
-  
+
   const num = typeof value === 'number' ? value : parseFloat(value);
-  
+
   if (isNaN(num) || !isFinite(num)) return null;
   if (num < 0) return null; // Negative values don't make sense for most epidemiological metrics
-  
+
   return num;
 }
 
@@ -183,7 +183,7 @@ export function createProvenanceData(
 /**
  * Standard metric types
  */
-export type MetricType = 
+export type MetricType =
   | 'incidence'
   | 'mortality'
   | 'prevalence'

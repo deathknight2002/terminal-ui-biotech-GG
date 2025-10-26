@@ -1,6 +1,6 @@
 /**
  * RxDB Database Service
- * 
+ *
  * Local-first database using RxDB with IndexedDB storage.
  * Provides offline-first data access with automatic replication.
  */
@@ -126,7 +126,7 @@ class RxDBService {
 
     for (const collectionName of collections) {
       const collection = this.db[collectionName];
-      
+
       // HTTP Pull/Push replication
       const replicationState = replicateRxCollection({
         collection,
@@ -153,7 +153,7 @@ class RxDBService {
         push: {
           async handler(rows) {
             const documents = rows.map((row) => row.newDocumentState);
-            
+
             const response = await fetch(`http://localhost:3001/api/rxdb/${collectionName}/push`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -174,7 +174,7 @@ class RxDBService {
       // Handle replication errors with exponential backoff
       replicationState.error$.subscribe((error: any) => {
         logger.error(`[RxDB] Replication error in ${collectionName}:`, error);
-        
+
         // Exponential backoff: retry after increasing delays
         const retryCount = error.retryCount || 0;
         setTimeout(() => {

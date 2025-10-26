@@ -207,13 +207,13 @@ interface DataConnector {
   name: string;
   source: string;
   version: string;
-  
+
   // Fetch data with provenance
   fetch(query: QueryParams): Promise<RawDataRecord[]>;
-  
+
   // Transform to canonical schema
   transform(raw: RawDataRecord[]): Promise<CanonicalRecord[]>;
-  
+
   // Health check
   healthCheck(): Promise<HealthStatus>;
 }
@@ -354,13 +354,13 @@ class CatalystEvent(Base):
 
 **Database**: PostgreSQL (existing) with JSONB for flexible schema evolution
 
-**Raw Data**: 
+**Raw Data**:
 - Local: `data/lake/raw/{source}/{date}/` (parquet or JSON)
 - Production: S3/Cloud Storage with Iceberg table format
 
 **Canonical Data**: Postgres tables (see schemas above)
 
-**Feature Store**: 
+**Feature Store**:
 - Postgres with materialized views for fast queries
 - DuckDB for analytics (existing in repository)
 
@@ -510,9 +510,9 @@ scoring:
     commercial_potential:
       weight: 0.05
       min_threshold: 10
-  
+
   aggregation: "weighted_average"  # or "geometric_mean"
-  
+
   risk_flags:
     - dimension: safety_profile
       threshold: 30
@@ -565,7 +565,7 @@ scoring:
 }
 ```
 
-**UI Display**: 
+**UI Display**:
 - Spider-web chart with dimension scores
 - Drill-down table showing contributing factors
 - Data provenance links (clickable to source)
@@ -831,7 +831,7 @@ Create these labels in GitHub Issues:
 
 **Name**: NIH Open-Data Integration MVP
 
-**Description**: 
+**Description**:
 > Ingest open-source NIH and public domain datasets to build spider-web catalyst scoring system for trade signal generation. Strictly open/free data only.
 
 **Due Date**: 5 months from start
@@ -983,7 +983,7 @@ async function fetchWithProvenance(url: string) {
   const response = await fetch(url);
   const rawPayload = await response.json();
   const contentHash = sha256(JSON.stringify(rawPayload));
-  
+
   const provenance: ProvenanceMetadata = {
     sourceUrl: url,
     sourceType: 'ClinicalTrials.gov',
@@ -993,13 +993,13 @@ async function fetchWithProvenance(url: string) {
     connectorVersion: '1.0.0',
     rawPayloadLocation: `s3://bucket/raw/${contentHash}.json`
   };
-  
+
   // Store raw payload
   await storeRawPayload(contentHash, rawPayload);
-  
+
   // Store provenance
   await storeProvenance(provenance);
-  
+
   return { rawPayload, provenance };
 }
 ```
@@ -1042,7 +1042,7 @@ dimensions:
         weight: 0.3
         source: Trial.endpoint_rigor_score
         transform: "multiply_100"
-  
+
   scientific_momentum:
     weight: 0.15
     enabled: true
@@ -1064,9 +1064,9 @@ dimensions:
         weight: 0.2
         source: "COUNT(Publication WHERE journal IN high_impact_list)"
         transform: "normalize"
-  
+
   # ... other dimensions
-  
+
 aggregation:
   method: "weighted_average"  # or "geometric_mean", "harmonic_mean"
   normalize: true  # Scale final score to 0-100
@@ -1116,37 +1116,37 @@ const config = loadScoringConfig('config/scoring/catalyst-scoring.yaml');
 ```typescript
 class CatalystScoringEngine {
   constructor(private config: ScoringConfig) {}
-  
+
   async calculateScore(catalystId: string): Promise<ScoringResult> {
     const dimensionScores: Record<string, DimensionScore> = {};
-    
+
     // Calculate each dimension
     for (const [dimName, dimConfig] of Object.entries(this.config.dimensions)) {
       if (!dimConfig.enabled) continue;
-      
+
       const factors = await this.calculateFactors(catalystId, dimConfig.factors);
       const score = this.aggregateFactors(factors, dimConfig);
-      
+
       dimensionScores[dimName] = {
         score,
         factors,
         threshold: dimConfig.thresholds
       };
     }
-    
+
     // Aggregate dimensions
     const finalScore = this.aggregateDimensions(dimensionScores, this.config);
-    
+
     // Check risk flags
     const riskFlags = this.checkRiskFlags(dimensionScores, this.config.risk_flags);
-    
+
     // Build explainability
     const explainability = this.buildExplainability(
       dimensionScores,
       finalScore,
       riskFlags
     );
-    
+
     return {
       catalystId,
       finalScore,
@@ -1292,9 +1292,9 @@ curl "https://pubchem.ncbi.nlm.nih.gov/rest/pug/assay/target/geneid/12345/aids/J
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2024-01-15  
-**Maintained By**: Data Platform Team  
+**Document Version**: 1.0
+**Last Updated**: 2024-01-15
+**Maintained By**: Data Platform Team
 **Review Frequency**: Quarterly
 
 ---

@@ -1,6 +1,6 @@
 /**
  * CloudEvents - Vendor-neutral event specification
- * 
+ *
  * Implements CloudEvents v1.0 spec for portable, versionable event contracts
  * https://cloudevents.io/
  */

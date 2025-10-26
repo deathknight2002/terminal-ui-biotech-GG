@@ -30,7 +30,7 @@ export class AdaptiveRateLimiter {
   private adaptiveThreshold: number;
   private recoveryFactor: number;
   private backoffFactor: number;
-  
+
   private requestTimestamps: number[] = [];
   private successCount: number = 0;
   private errorCount: number = 0;
@@ -54,7 +54,7 @@ export class AdaptiveRateLimiter {
    */
   async checkLimit(): Promise<RateLimitResult> {
     const now = Date.now();
-    
+
     // Clean up old timestamps outside the window
     this.requestTimestamps = this.requestTimestamps.filter(
       timestamp => now - timestamp < this.window
@@ -66,7 +66,7 @@ export class AdaptiveRateLimiter {
     if (!allowed) {
       const oldestRequest = this.requestTimestamps[0] || now;
       const waitTime = this.window - (now - oldestRequest);
-      
+
       return {
         allowed: false,
         waitTime: Math.max(0, waitTime),
@@ -106,7 +106,7 @@ export class AdaptiveRateLimiter {
    */
   private adaptRate(): void {
     const now = Date.now();
-    
+
     // Only adapt at specified intervals
     if (now - this.lastAdaptation < this.adaptationInterval) {
       return;
@@ -123,7 +123,7 @@ export class AdaptiveRateLimiter {
         this.minRate,
         Math.floor(this.currentRate * this.backoffFactor)
       );
-      
+
       if (newRate !== this.currentRate) {
         logger.warn(
           `📉 Rate limiting: Reducing rate from ${this.currentRate} to ${newRate} req/s (error rate: ${(errorRate * 100).toFixed(2)}%)`
@@ -136,7 +136,7 @@ export class AdaptiveRateLimiter {
         this.maxRate,
         Math.floor(this.currentRate * this.recoveryFactor)
       );
-      
+
       if (newRate !== this.currentRate) {
         logger.info(
           `📈 Rate limiting: Increasing rate from ${this.currentRate} to ${newRate} req/s (error rate: ${(errorRate * 100).toFixed(2)}%)`
@@ -156,7 +156,7 @@ export class AdaptiveRateLimiter {
    */
   async waitForLimit(): Promise<void> {
     const result = await this.checkLimit();
-    
+
     if (!result.allowed && result.waitTime > 0) {
       logger.debug(`⏳ Rate limit reached, waiting ${result.waitTime}ms`);
       await this.delay(result.waitTime);

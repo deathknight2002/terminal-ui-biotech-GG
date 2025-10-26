@@ -56,8 +56,8 @@ import { io } from 'socket.io-client';
 const socket = io('http://localhost:3001');
 
 // Subscribe to all monitoring channels
-socket.emit('monitoring:subscribe', { 
-  channels: ['changes', 'alerts', 'news', 'portfolio'] 
+socket.emit('monitoring:subscribe', {
+  channels: ['changes', 'alerts', 'news', 'portfolio']
 });
 
 // Listen for portfolio alerts
@@ -180,7 +180,7 @@ curl http://localhost:3001/api/monitoring/news/stats | jq '.stats.topKeywords'
 
 Default intervals (can be customized):
 - Company websites: 5 minutes
-- Press releases: 10 minutes  
+- Press releases: 10 minutes
 - Clinical trials: 1 hour
 - FDA updates: 1 hour
 - Fierce Biotech: 10 minutes

@@ -1,6 +1,6 @@
 /**
  * Feature Flag Service (Backend)
- * 
+ *
  * Provides a simple feature flag proxy service using in-memory storage.
  * In production, this should be replaced with Unleash Server or similar.
  */
@@ -142,16 +142,16 @@ class FeatureFlagService {
    */
   loadFromEnvironment(): void {
     const prefix = 'FEATURE_FLAG_';
-    
+
     Object.keys(process.env).forEach((key) => {
       if (key.startsWith(prefix)) {
         const flagName = key
           .substring(prefix.length)
           .toLowerCase()
           .replace(/_/g, '.') as FeatureFlagKey;
-        
+
         const value = process.env[key]?.toLowerCase() === 'true';
-        
+
         if (this.flags.has(flagName)) {
           this.updateFlag(flagName, value);
         }

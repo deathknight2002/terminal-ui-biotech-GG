@@ -1,6 +1,6 @@
 /**
  * Timeline Scrubber Component
- * 
+ *
  * Interactive timeline visualization for thesis updates.
  * Shows cumulative changes in PoS and sentiment over time.
  */

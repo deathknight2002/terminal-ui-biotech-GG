@@ -390,7 +390,7 @@ function MLMonitoringPage() {
         modelNames={['tfidf', 'finbert', 'biobert']}
         refreshInterval={5000}
       />
-      
+
       <ABTestingDashboard
         refreshInterval={10000}
       />

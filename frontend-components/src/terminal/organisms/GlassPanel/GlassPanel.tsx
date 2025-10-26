@@ -5,35 +5,35 @@ import '../../../../src/styles/glass-ui-enhanced.css';
 export interface GlassPanelProps {
   /** Panel content */
   children: ReactNode;
-  
+
   /** Urgency level affects transparency and visual prominence */
   urgency?: 'critical' | 'high' | 'medium' | 'low';
-  
+
   /** Surface texture style */
   texture?: 'neural' | 'molecular' | 'crystalline';
-  
+
   /** Enable real-time data update ripple effect */
   showDataUpdate?: boolean;
-  
+
   /** Additional CSS classes */
   className?: string;
-  
+
   /** Custom styles */
   style?: React.CSSProperties;
-  
+
   /** Click handler */
   onClick?: () => void;
 }
 
 /**
  * GlassPanel - Adaptive glass panel with data-driven transparency
- * 
+ *
  * Features:
  * - Multi-level urgency styling (critical to low)
  * - Neural, molecular, and crystalline surface textures
  * - Real-time data update animations
  * - Responsive blur and transparency
- * 
+ *
  * @example
  * ```tsx
  * <GlassPanel urgency="high" texture="neural">

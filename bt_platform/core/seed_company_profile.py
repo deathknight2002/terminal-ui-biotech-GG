@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session
 import logging
 
 from bt_platform.core.database import (
-    Company, 
-    Drug, 
+    Company,
+    Drug,
     Catalyst,
     CompanySource,
     CompanyArticle,
@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 
 def seed_company_profile_data(db: Session):
     """Seed sample company profile data"""
-    
+
     logger.info("Seeding company profile data...")
-    
+
     # Comprehensive XBI companies list
     companies_data = [
         # Large Cap Biotech
@@ -119,7 +119,7 @@ def seed_company_profile_data(db: Session):
             "xbi_added_date": datetime(2017, 1, 1),
             "therapeutic_areas": "Genomics,Sequencing,Diagnostics"
         },
-        
+
         # Mid Cap Biotech
         {
             "ticker": "BMRN",
@@ -346,7 +346,7 @@ def seed_company_profile_data(db: Session):
             "xbi_added_date": datetime(2020, 9, 1),
             "therapeutic_areas": "Neuroscience,Depression,CNS Disorders"
         },
-        
+
         # Small to Mid Cap
         {
             "ticker": "BBIO",
@@ -424,7 +424,7 @@ def seed_company_profile_data(db: Session):
             "therapeutic_areas": "Rare Diseases,Pulmonary,NTM"
         }
     ]
-    
+
     created_companies = []
     for company_data in companies_data:
         # Check if company already exists
@@ -438,7 +438,7 @@ def seed_company_profile_data(db: Session):
         else:
             created_companies.append(existing)
             logger.info(f"Company already exists: {existing.ticker}")
-    
+
     # Add sources for each company
     for company in created_companies:
         # Investor presentations
@@ -473,7 +473,7 @@ def seed_company_profile_data(db: Session):
                 "accession_number": f"0001234567-24-{company.id:06d}"
             }
         ]
-        
+
         for source_data in sources:
             existing_source = db.query(CompanySource).filter(
                 CompanySource.company_id == company.id,
@@ -482,7 +482,7 @@ def seed_company_profile_data(db: Session):
             if not existing_source:
                 source = CompanySource(**source_data)
                 db.add(source)
-    
+
     # Add articles for each company
     for company in created_companies:
         articles = [
@@ -520,7 +520,7 @@ def seed_company_profile_data(db: Session):
                 "sentiment_score": -0.4
             }
         ]
-        
+
         for article_data in articles:
             existing_article = db.query(CompanyArticle).filter(
                 CompanyArticle.company_id == company.id,
@@ -529,7 +529,7 @@ def seed_company_profile_data(db: Session):
             if not existing_article:
                 article = CompanyArticle(**article_data)
                 db.add(article)
-    
+
     # Add ownership data for each company
     institutions = [
         {"name": "Vanguard Group Inc", "percent": 8.5},
@@ -543,14 +543,14 @@ def seed_company_profile_data(db: Session):
         {"name": "Northern Trust Corporation", "percent": 1.5},
         {"name": "Morgan Stanley", "percent": 1.3},
     ]
-    
+
     reporting_date = datetime(2024, 3, 31)
-    
+
     for company in created_companies:
         # Assume company has 100M shares outstanding for calculation
         total_shares = 100_000_000
         share_price = company.market_cap / total_shares if company.market_cap else 100.0
-        
+
         for inst in institutions:
             ownership_data = {
                 "company_id": company.id,
@@ -564,7 +564,7 @@ def seed_company_profile_data(db: Session):
                 "shares_change": int(total_shares * inst["percent"] / 100 * 0.05),  # 5% increase
                 "percent_change": 5.0
             }
-            
+
             existing_ownership = db.query(CompanyOwnership).filter(
                 CompanyOwnership.company_id == company.id,
                 CompanyOwnership.institution_name == inst["name"],
@@ -573,11 +573,11 @@ def seed_company_profile_data(db: Session):
             if not existing_ownership:
                 ownership = CompanyOwnership(**ownership_data)
                 db.add(ownership)
-    
+
     # Add some market data for stock charts
     for company in created_companies:
         base_price = company.market_cap / 100_000_000 if company.market_cap else 100.0
-        
+
         # Generate 90 days of price data
         for i in range(90):
             date = datetime.utcnow() - timedelta(days=90-i)
@@ -585,7 +585,7 @@ def seed_company_profile_data(db: Session):
             import random
             daily_change = random.uniform(-0.03, 0.03)
             price = base_price * (1 + daily_change * (i/90))
-            
+
             market_data = {
                 "ticker": company.ticker,
                 "timestamp": date,
@@ -596,7 +596,7 @@ def seed_company_profile_data(db: Session):
                 "volume": random.randint(1_000_000, 5_000_000),
                 "market_cap": company.market_cap
             }
-            
+
             # Only add if doesn't exist (avoid duplicates on re-run)
             existing_data = db.query(MarketData).filter(
                 MarketData.ticker == company.ticker,
@@ -605,7 +605,7 @@ def seed_company_profile_data(db: Session):
             if not existing_data:
                 data = MarketData(**market_data)
                 db.add(data)
-    
+
     # Add some drugs for pipeline
     drugs_data = [
         {
@@ -649,13 +649,13 @@ def seed_company_profile_data(db: Session):
             "status": "Active"
         }
     ]
-    
+
     for drug_data in drugs_data:
         existing_drug = db.query(Drug).filter(Drug.name == drug_data["name"]).first()
         if not existing_drug:
             drug = Drug(**drug_data)
             db.add(drug)
-    
+
     # Add some catalysts
     catalysts_data = [
         {
@@ -681,7 +681,7 @@ def seed_company_profile_data(db: Session):
             "description": "Expected filing of Biologics License Application for gene therapy in Hemophilia A"
         }
     ]
-    
+
     for catalyst_data in catalysts_data:
         existing_catalyst = db.query(Catalyst).filter(
             Catalyst.title == catalyst_data["title"]
@@ -689,14 +689,14 @@ def seed_company_profile_data(db: Session):
         if not existing_catalyst:
             catalyst = Catalyst(**catalyst_data)
             db.add(catalyst)
-    
+
     db.commit()
     logger.info("Company profile data seeded successfully!")
 
 
 if __name__ == "__main__":
     from bt_platform.core.database import SessionLocal
-    
+
     db = SessionLocal()
     try:
         seed_company_profile_data(db)

@@ -1,6 +1,6 @@
 /**
  * Catalyst Scoring Radar Chart
- * 
+ *
  * Beautiful glass-morphic radar chart for displaying "Ionis-style" catalyst scores.
  * Shows 5 dimensions: Event Leverage, Timing Clarity, Surprise Factor, Downside Contained, Market Depth
  */
@@ -99,14 +99,14 @@ export const CatalystScoringRadar: React.FC<CatalystScoringRadarProps> = ({
 }) => {
   const radarData = scoreToRadarData(score);
   const totalScore = score.total ?? (
-    score.eventLeverage + score.timingClarity + score.surpriseFactor + 
+    score.eventLeverage + score.timingClarity + score.surpriseFactor +
     score.downsideContained + score.marketDepth
   );
-  
+
   const tier = score.tier ?? (
     totalScore > 8 ? 'High-Torque' : totalScore >= 6 ? 'Tradable' : 'Watch'
   );
-  
+
   const tierColor = getTierColor(tier);
   const tierLabel = getTierLabel(tier);
 
@@ -117,7 +117,7 @@ export const CatalystScoringRadar: React.FC<CatalystScoringRadarProps> = ({
           <h3 className={styles.title}>{title}</h3>
         </div>
       )}
-      
+
       <div className={styles.radarWrapper}>
         <RadarChart
           data={radarData}
@@ -127,7 +127,7 @@ export const CatalystScoringRadar: React.FC<CatalystScoringRadarProps> = ({
           color={tierColor}
         />
       </div>
-      
+
       <div className={styles.scoreInfo}>
         <div className={styles.tierBadge} style={{ borderColor: tierColor, color: tierColor }}>
           {tierLabel}
@@ -139,7 +139,7 @@ export const CatalystScoringRadar: React.FC<CatalystScoringRadarProps> = ({
           </span>
         </div>
       </div>
-      
+
       {showLegend && (
         <div className={styles.legend}>
           <div className={styles.legendItem}>
@@ -169,7 +169,7 @@ export const CatalystScoringRadar: React.FC<CatalystScoringRadarProps> = ({
           </div>
         </div>
       )}
-      
+
       <div className={styles.footer}>
         <p className={styles.description}>
           {tier === 'High-Torque' && 'High asymmetric upside potential with contained downside.'}

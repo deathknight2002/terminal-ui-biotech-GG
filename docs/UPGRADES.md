@@ -171,7 +171,7 @@ All flags default to `false` and fall back to defaults when:
 
 ```typescript
 // Safe fallback behavior
-const isEnabled = useFeatureFlag('search.meilisearch'); 
+const isEnabled = useFeatureFlag('search.meilisearch');
 // Returns false if backend is down, no error thrown
 ```
 

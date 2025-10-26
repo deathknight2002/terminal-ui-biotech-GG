@@ -468,7 +468,7 @@ router.post('/news/keywords/:source', (req, res) => {
   try {
     const source = req.params.source as any;
     const { keywords } = req.body;
-    
+
     if (!keywords || !Array.isArray(keywords)) {
       return res.status(400).json({ error: 'Keywords array is required' });
     }
@@ -491,7 +491,7 @@ router.delete('/news/keywords/:source', (req, res) => {
   try {
     const source = req.params.source as any;
     const { keywords } = req.body;
-    
+
     if (!keywords || !Array.isArray(keywords)) {
       return res.status(400).json({ error: 'Keywords array is required' });
     }

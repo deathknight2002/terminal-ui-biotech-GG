@@ -1,6 +1,6 @@
 /**
  * Service Worker for Mobile App - Offline Support
- * 
+ *
  * Provides offline functionality with:
  * - Static asset caching (app shell)
  * - Dynamic API response caching
@@ -66,7 +66,7 @@ self.addEventListener('fetch', (event) => {
 
   // Check if this is an API request
   const isApiRequest = url.pathname.startsWith('/api/');
-  const isCacheableApi = CACHEABLE_API_ROUTES.some(route => 
+  const isCacheableApi = CACHEABLE_API_ROUTES.some(route =>
     url.pathname.startsWith(route)
   );
 
@@ -77,14 +77,14 @@ self.addEventListener('fetch', (event) => {
         .then((response) => {
           // Clone the response before caching
           const responseClone = response.clone();
-          
+
           // Cache the successful response
           if (response.ok) {
             caches.open(DYNAMIC_CACHE).then((cache) => {
               cache.put(request, responseClone);
             });
           }
-          
+
           return response;
         })
         .catch(() => {
@@ -95,7 +95,7 @@ self.addEventListener('fetch', (event) => {
                 console.log('[SW Mobile] Serving API from cache:', url.pathname);
                 return cached;
               }
-              
+
               // Return offline response
               return new Response(
                 JSON.stringify({
@@ -122,7 +122,7 @@ self.addEventListener('fetch', (event) => {
             console.log('[SW Mobile] Serving from cache:', request.url);
             return cached;
           }
-          
+
           // Not in cache, fetch from network
           return fetch(request)
             .then((response) => {
@@ -149,7 +149,7 @@ self.addEventListener('fetch', (event) => {
 // Background sync for offline actions
 self.addEventListener('sync', (event) => {
   console.log('[SW Mobile] Background sync triggered:', event.tag);
-  
+
   if (event.tag === 'sync-offline-actions') {
     event.waitUntil(syncOfflineActions());
   }
@@ -159,11 +159,11 @@ self.addEventListener('sync', (event) => {
 async function syncOfflineActions() {
   try {
     console.log('[SW Mobile] Syncing offline actions...');
-    
+
     // Open IndexedDB to get pending actions
     const db = await openDatabase();
     const actions = await getPendingActions(db);
-    
+
     // Process each action
     for (const action of actions) {
       try {
@@ -172,7 +172,7 @@ async function syncOfflineActions() {
           headers: action.headers,
           body: action.body,
         });
-        
+
         // Remove action from IndexedDB after successful sync
         await removeAction(db, action.id);
         console.log('[SW Mobile] Synced action:', action.id);
@@ -180,7 +180,7 @@ async function syncOfflineActions() {
         console.error('[SW Mobile] Failed to sync action:', action.id, error);
       }
     }
-    
+
     console.log('[SW Mobile] Offline actions synced');
   } catch (error) {
     console.error('[SW Mobile] Sync failed:', error);
@@ -191,18 +191,18 @@ async function syncOfflineActions() {
 function openDatabase() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('biotech-mobile-db', 1);
-    
+
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
-    
+
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      
+
       // Create object stores
       if (!db.objectStoreNames.contains('offline-actions')) {
         db.createObjectStore('offline-actions', { keyPath: 'id', autoIncrement: true });
       }
-      
+
       if (!db.objectStoreNames.contains('cached-data')) {
         db.createObjectStore('cached-data', { keyPath: 'key' });
       }
@@ -215,7 +215,7 @@ function getPendingActions(db) {
     const transaction = db.transaction(['offline-actions'], 'readonly');
     const store = transaction.objectStore('offline-actions');
     const request = store.getAll();
-    
+
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
   });
@@ -226,7 +226,7 @@ function removeAction(db, id) {
     const transaction = db.transaction(['offline-actions'], 'readwrite');
     const store = transaction.objectStore('offline-actions');
     const request = store.delete(id);
-    
+
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve();
   });
@@ -237,7 +237,7 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  
+
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     event.waitUntil(
       caches.keys().then((cacheNames) => {

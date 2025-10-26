@@ -56,11 +56,11 @@ check_poetry() {
 # Install pre-commit
 install_precommit() {
     print_header "Installing Pre-commit"
-    
+
     if ! check_poetry; then
         return 1
     fi
-    
+
     echo_info "Installing pre-commit via Poetry..."
     poetry install --with dev
     echo_success "Pre-commit installed"
@@ -69,7 +69,7 @@ install_precommit() {
 # Install git hooks
 install_hooks() {
     print_header "Installing Git Hooks"
-    
+
     echo_info "Installing pre-commit hooks..."
     poetry run pre-commit install
     echo_success "Git hooks installed"
@@ -78,7 +78,7 @@ install_hooks() {
 # Run hooks on all files
 run_all() {
     print_header "Running Pre-commit Hooks on All Files"
-    
+
     echo_info "This may take a few minutes on first run..."
     if poetry run pre-commit run --all-files; then
         echo_success "All hooks passed!"
@@ -92,7 +92,7 @@ run_all() {
 # Run hooks on staged files
 run_staged() {
     print_header "Running Pre-commit Hooks on Staged Files"
-    
+
     if poetry run pre-commit run; then
         echo_success "All hooks passed!"
     else
@@ -106,7 +106,7 @@ run_staged() {
 run_hook() {
     local hook_name=$1
     print_header "Running Hook: $hook_name"
-    
+
     if poetry run pre-commit run "$hook_name" --all-files; then
         echo_success "Hook $hook_name passed!"
     else
@@ -118,11 +118,11 @@ run_hook() {
 # Update hooks to latest versions
 update_hooks() {
     print_header "Updating Pre-commit Hooks"
-    
+
     echo_info "Checking for hook updates..."
     poetry run pre-commit autoupdate
     echo_success "Hooks updated"
-    
+
     echo_info "Testing updated hooks..."
     poetry run pre-commit run --all-files
 }
@@ -130,9 +130,9 @@ update_hooks() {
 # Show hook status
 show_status() {
     print_header "Pre-commit Status"
-    
+
     echo_info "Checking installation..."
-    
+
     # Check if pre-commit is installed
     if poetry run pre-commit --version &> /dev/null; then
         VERSION=$(poetry run pre-commit --version)
@@ -141,14 +141,14 @@ show_status() {
         echo_error "Pre-commit not installed"
         return 1
     fi
-    
+
     # Check if hooks are installed
     if [ -f ".git/hooks/pre-commit" ]; then
         echo_success "Git hooks are installed"
     else
         echo_warning "Git hooks not installed (run: ./scripts/setup_precommit.sh install)"
     fi
-    
+
     # List configured hooks
     echo ""
     echo_info "Configured hooks:"
@@ -158,7 +158,7 @@ show_status() {
 # Clean pre-commit cache
 clean_cache() {
     print_header "Cleaning Pre-commit Cache"
-    
+
     echo_info "Cleaning hook cache..."
     poetry run pre-commit clean
     echo_success "Cache cleaned"
@@ -167,19 +167,19 @@ clean_cache() {
 # Test specific tools
 test_tools() {
     print_header "Testing Individual Tools"
-    
+
     echo_info "Testing Black..."
     poetry run black --check bt_platform/ || echo_warning "Black would make changes"
-    
+
     echo_info "Testing isort..."
     poetry run isort --check-only bt_platform/ || echo_warning "isort would make changes"
-    
+
     echo_info "Testing Ruff..."
     poetry run ruff check bt_platform/ || echo_warning "Ruff found issues"
-    
+
     echo_info "Testing Flake8..."
     poetry run flake8 bt_platform/ || echo_warning "Flake8 found issues"
-    
+
     echo_success "Tool testing complete"
 }
 
@@ -200,7 +200,7 @@ show_menu() {
     echo "0. Exit"
     echo ""
     read -p "Select an option: " choice
-    
+
     case $choice in
         1) install_precommit ;;
         2) install_hooks ;;

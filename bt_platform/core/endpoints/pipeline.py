@@ -56,7 +56,7 @@ class PipelineAssetResponse(BaseModel):
     source_url: Optional[str]
     scraped_at: datetime
     last_verified: Optional[datetime]
-    
+
     class Config:
         from_attributes = True
 
@@ -81,10 +81,10 @@ async def scrape_pipelines(
 ):
     """
     Scrape pipeline data from company websites.
-    
+
     This endpoint initiates scraping of drug pipeline data from specified companies.
     The data includes asset names, development phases, indications, and other relevant information.
-    
+
     **Example Request:**
     ```json
     {
@@ -92,7 +92,7 @@ async def scrape_pipelines(
         "limit": 100
     }
     ```
-    
+
     **Response:**
     - started_at: ISO timestamp of when scraping started
     - completed_at: ISO timestamp of when scraping completed
@@ -113,11 +113,11 @@ async def scrape_pipelines(
             companies=request.companies,
             limit=request.limit
         )
-        
+
         logger.info(f"Pipeline scraping completed: {result.get('companies_successful', 0)}/{result.get('companies_scraped', 0)} successful")
-        
+
         return result
-    
+
     except Exception as e:
         logger.error(f"Pipeline scraping failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -134,16 +134,16 @@ async def get_pipeline_assets(
 ):
     """
     Get pipeline assets from database.
-    
+
     Retrieve scraped pipeline data with optional filtering by company, phase, or therapeutic area.
-    
+
     **Query Parameters:**
     - company: Filter by company name (e.g., "Biogen")
     - phase: Filter by development phase (e.g., "Phase II")
     - therapeutic_area: Filter by therapeutic area (e.g., "Oncology")
     - limit: Maximum number of results (1-500, default: 100)
     - offset: Offset for pagination (default: 0)
-    
+
     **Example:**
     ```
     GET /api/v1/pipeline/assets?company=Biogen&phase=Phase%20II&limit=50
@@ -151,25 +151,25 @@ async def get_pipeline_assets(
     """
     try:
         query = db.query(PipelineAsset)
-        
+
         # Apply filters
         if company:
             query = query.filter(PipelineAsset.company_name.ilike(f"%{company}%"))
-        
+
         if phase:
             query = query.filter(PipelineAsset.phase == phase)
-        
+
         if therapeutic_area:
             query = query.filter(PipelineAsset.therapeutic_area.ilike(f"%{therapeutic_area}%"))
-        
+
         # Order by most recently scraped
         query = query.order_by(PipelineAsset.scraped_at.desc())
-        
+
         # Apply pagination
         assets = query.offset(offset).limit(limit).all()
-        
+
         return assets
-    
+
     except Exception as e:
         logger.error(f"Failed to retrieve pipeline assets: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -182,10 +182,10 @@ async def get_pipeline_asset(
 ):
     """
     Get a specific pipeline asset by ID.
-    
+
     **Parameters:**
     - asset_id: The unique identifier of the pipeline asset
-    
+
     **Example:**
     ```
     GET /api/v1/pipeline/assets/123
@@ -193,12 +193,12 @@ async def get_pipeline_asset(
     """
     try:
         asset = db.query(PipelineAsset).filter(PipelineAsset.id == asset_id).first()
-        
+
         if not asset:
             raise HTTPException(status_code=404, detail=f"Pipeline asset {asset_id} not found")
-        
+
         return asset
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -212,14 +212,14 @@ async def get_pipeline_stats(
 ):
     """
     Get pipeline statistics.
-    
+
     Returns aggregate statistics about scraped pipeline data including:
     - Total number of assets
     - Assets grouped by company
     - Assets grouped by development phase
     - Timestamp of most recent scrape
     - List of available companies for scraping
-    
+
     **Example:**
     ```
     GET /api/v1/pipeline/stats
@@ -228,9 +228,9 @@ async def get_pipeline_stats(
     try:
         manager = get_pipeline_manager()
         stats = manager.get_pipeline_stats(db)
-        
+
         return stats
-    
+
     except Exception as e:
         logger.error(f"Failed to retrieve pipeline stats: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -240,10 +240,10 @@ async def get_pipeline_stats(
 async def get_available_companies():
     """
     Get list of companies with available pipeline scrapers.
-    
+
     Returns a list of company names for which pipeline scrapers are implemented
     and ready to use.
-    
+
     **Example Response:**
     ```json
     {
@@ -259,12 +259,12 @@ async def get_available_companies():
     try:
         manager = get_pipeline_manager()
         companies = manager.get_available_companies()
-        
+
         return {
             "companies": companies,
             "count": len(companies)
         }
-    
+
     except Exception as e:
         logger.error(f"Failed to retrieve available companies: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -277,12 +277,12 @@ async def get_company_pipeline(
 ):
     """
     Get complete pipeline for a specific company.
-    
+
     Returns all pipeline assets for the specified company along with metadata.
-    
+
     **Parameters:**
     - company_name: Name of the company (case-insensitive)
-    
+
     **Example:**
     ```
     GET /api/v1/pipeline/company/Biogen
@@ -296,13 +296,13 @@ async def get_company_pipeline(
             PipelineAsset.phase,
             PipelineAsset.asset_name
         ).all()
-        
+
         if not assets:
             raise HTTPException(
                 status_code=404,
                 detail=f"No pipeline data found for {company_name}"
             )
-        
+
         # Group assets by phase
         assets_by_phase = {}
         for asset in assets:
@@ -320,10 +320,10 @@ async def get_company_pipeline(
                 "logo_url": asset.logo_url,
                 "scraped_at": asset.scraped_at.isoformat() if asset.scraped_at else None
             })
-        
+
         # Get most recent scrape time
         latest_asset = max(assets, key=lambda a: a.scraped_at)
-        
+
         return {
             "company_name": company_name,
             "total_assets": len(assets),
@@ -331,7 +331,7 @@ async def get_company_pipeline(
             "source_url": latest_asset.source_url if assets else None,
             "assets_by_phase": assets_by_phase
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -346,10 +346,10 @@ async def delete_pipeline_asset(
 ):
     """
     Delete a pipeline asset.
-    
+
     **Parameters:**
     - asset_id: The unique identifier of the pipeline asset to delete
-    
+
     **Example:**
     ```
     DELETE /api/v1/pipeline/assets/123
@@ -357,20 +357,20 @@ async def delete_pipeline_asset(
     """
     try:
         asset = db.query(PipelineAsset).filter(PipelineAsset.id == asset_id).first()
-        
+
         if not asset:
             raise HTTPException(status_code=404, detail=f"Pipeline asset {asset_id} not found")
-        
+
         db.delete(asset)
         db.commit()
-        
+
         logger.info(f"Deleted pipeline asset {asset_id}: {asset.asset_name}")
-        
+
         return {
             "status": "success",
             "message": f"Pipeline asset {asset_id} deleted successfully"
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -383,13 +383,13 @@ async def delete_pipeline_asset(
 async def pipeline_health():
     """
     Health check endpoint for pipeline scraper service.
-    
+
     Returns the operational status of the pipeline scraping system.
     """
     try:
         manager = get_pipeline_manager()
         companies = manager.get_available_companies()
-        
+
         return {
             "status": "healthy",
             "service": "pipeline_scraper",
@@ -397,7 +397,7 @@ async def pipeline_health():
             "companies": companies,
             "timestamp": datetime.utcnow().isoformat()
         }
-    
+
     except Exception as e:
         logger.error(f"Pipeline health check failed: {e}")
         return {

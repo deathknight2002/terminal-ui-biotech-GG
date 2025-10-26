@@ -1,6 +1,6 @@
 /**
  * Advanced Intelligence Dashboard
- * 
+ *
  * Comprehensive drug intelligence dashboard that integrates multiple data sources:
  * - FDA approvals and safety signals
  * - PubMed literature sentiment

@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
-  
+
   tags = {
     Name        = "${var.project_name}-vpc-${var.environment}"
     Environment = var.environment
@@ -14,7 +14,7 @@ resource "aws_vpc" "main" {
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
-  
+
   tags = {
     Name        = "${var.project_name}-igw-${var.environment}"
     Environment = var.environment
@@ -28,7 +28,7 @@ resource "aws_subnet" "public" {
   cidr_block              = cidrsubnet(var.vpc_cidr, 8, count.index)
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
-  
+
   tags = {
     Name        = "${var.project_name}-public-${var.availability_zones[count.index]}-${var.environment}"
     Environment = var.environment
@@ -42,7 +42,7 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index + 10)
   availability_zone = var.availability_zones[count.index]
-  
+
   tags = {
     Name        = "${var.project_name}-private-${var.availability_zones[count.index]}-${var.environment}"
     Environment = var.environment
@@ -56,7 +56,7 @@ resource "aws_subnet" "database" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index + 20)
   availability_zone = var.availability_zones[count.index]
-  
+
   tags = {
     Name        = "${var.project_name}-database-${var.availability_zones[count.index]}-${var.environment}"
     Environment = var.environment
@@ -68,7 +68,7 @@ resource "aws_subnet" "database" {
 resource "aws_eip" "nat" {
   count  = var.environment == "prod" ? length(var.availability_zones) : 1
   domain = "vpc"
-  
+
   tags = {
     Name        = "${var.project_name}-nat-eip-${count.index}-${var.environment}"
     Environment = var.environment
@@ -79,7 +79,7 @@ resource "aws_nat_gateway" "main" {
   count         = var.environment == "prod" ? length(var.availability_zones) : 1
   allocation_id = aws_eip.nat[count.index].id
   subnet_id     = aws_subnet.public[count.index].id
-  
+
   tags = {
     Name        = "${var.project_name}-nat-${count.index}-${var.environment}"
     Environment = var.environment
@@ -89,12 +89,12 @@ resource "aws_nat_gateway" "main" {
 # Route Tables
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-  
+
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main.id
   }
-  
+
   tags = {
     Name        = "${var.project_name}-public-rt-${var.environment}"
     Environment = var.environment
@@ -104,12 +104,12 @@ resource "aws_route_table" "public" {
 resource "aws_route_table" "private" {
   count  = var.environment == "prod" ? length(var.availability_zones) : 1
   vpc_id = aws_vpc.main.id
-  
+
   route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.main[count.index].id
   }
-  
+
   tags = {
     Name        = "${var.project_name}-private-rt-${count.index}-${var.environment}"
     Environment = var.environment

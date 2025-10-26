@@ -367,7 +367,7 @@ import time
 def rate_limit(calls_per_second):
     min_interval = 1.0 / calls_per_second
     last_called = [0.0]
-    
+
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):

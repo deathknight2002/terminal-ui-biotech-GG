@@ -255,8 +255,8 @@ import { BayesianSnapshot } from '@biotech-terminal/frontend-components/biotech'
 import { CredenceBadge, CredenceBadgeGroup } from '@biotech-terminal/frontend-components/biotech';
 
 // Single badge
-<CredenceBadge 
-  type="db-lock" 
+<CredenceBadge
+  type="db-lock"
   sourceUrl="https://clinicaltrials.gov/study/NCT12345678"
   date="2026-03-15"
 />
@@ -297,9 +297,9 @@ import { SourceChip } from '@biotech-terminal/frontend-components/terminal';
 }} />
 
 // Hard fail mode (production)
-<SourceChip 
-  citation={data.citation} 
-  hardFail={true} 
+<SourceChip
+  citation={data.citation}
+  hardFail={true}
 />
 // If citation missing → shows error badge "⚠ NO SOURCE - DATA BLOCKED"
 ```
@@ -524,5 +524,5 @@ Cache strategy:
 
 ---
 
-**Last Updated**: October 10, 2025  
+**Last Updated**: October 10, 2025
 **Implementation Status**: Sprint A & B (Core Features Complete)

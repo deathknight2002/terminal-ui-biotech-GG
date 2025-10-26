@@ -1,6 +1,6 @@
 /**
  * SEC EDGAR Connector for 8-K Filings
- * 
+ *
  * Surfaces 8-K filings that mention clinical endpoints or regulatory updates
  * Uses SEC EDGAR JSON API for efficient retrieval
  */
@@ -49,7 +49,7 @@ export class SECEdgarConnector {
     'Accept-Encoding': 'gzip, deflate',
     'Host': 'www.sec.gov',
   };
-  
+
   // Clinical endpoint keywords to filter relevant 8-Ks
   private clinicalKeywords = [
     'phase i', 'phase ii', 'phase iii', 'phase 1', 'phase 2', 'phase 3',
@@ -63,17 +63,17 @@ export class SECEdgarConnector {
     'pivotal trial', 'pivotal study',
     'regulatory submission', 'regulatory approval',
   ];
-  
+
   /**
    * Get recent 8-K filings for a company by CIK
    */
   async getFilingsByCIK(cik: string, count = 10): Promise<SEC8KFilingContract[]> {
     const pulledAt = new Date().toISOString();
-    
+
     // In production, query SEC EDGAR API:
     // https://data.sec.gov/submissions/CIK{cik}.json
     // Then parse recent 8-K filings
-    
+
     // Mock data for demonstration
     return [
       {
@@ -99,7 +99,7 @@ export class SECEdgarConnector {
       },
     ];
   }
-  
+
   /**
    * Get recent 8-K filings for a ticker symbol
    */
@@ -107,20 +107,20 @@ export class SECEdgarConnector {
     // In production, first resolve ticker to CIK via SEC ticker lookup
     // https://www.sec.gov/files/company_tickers.json
     // Then call getFilingsByCIK
-    
+
     return this.getFilingsByCIK('0001234567', count);
   }
-  
+
   /**
    * Search recent 8-Ks mentioning clinical endpoints
    */
   async searchClinicalEndpointFilings(daysBack = 30): Promise<SEC8KFilingContract[]> {
     const pulledAt = new Date().toISOString();
-    
+
     // In production, use SEC Full-Text Search API:
     // https://www.sec.gov/cgi-bin/srch-edgar
     // Filter by form type "8-K" and keywords
-    
+
     // Mock data showing multiple companies
     return [
       {
@@ -165,16 +165,16 @@ export class SECEdgarConnector {
       },
     ];
   }
-  
+
   /**
    * Check if filing text contains clinical keywords
    */
   private containsClinicalKeywords(text: string): { matches: boolean; keywords: string[] } {
     const lowerText = text.toLowerCase();
-    const foundKeywords = this.clinicalKeywords.filter(keyword => 
+    const foundKeywords = this.clinicalKeywords.filter(keyword =>
       lowerText.includes(keyword)
     );
-    
+
     return {
       matches: foundKeywords.length > 0,
       keywords: foundKeywords,

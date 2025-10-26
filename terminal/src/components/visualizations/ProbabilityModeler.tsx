@@ -55,18 +55,18 @@ export const ProbabilityModeler: React.FC<ProbabilityModelerProps> = ({
   // Calculate adjusted probabilities
   const getAdjustedProbability = (fromPhase: string, toPhase: string): number => {
     const key = `${fromPhase}->${toPhase}`;
-    
+
     // Use custom probability if set
     if (customProbabilities[key] !== undefined) {
       return customProbabilities[key];
     }
-    
+
     // Use provided transition data
     const transition = transitions.find(t => t.fromPhase === fromPhase && t.toPhase === toPhase);
     if (transition) {
       return transition.probability;
     }
-    
+
     // Use historical rate with indication multiplier
     const baseRate = DEFAULT_TRANSITION_RATES[key] || 0.5;
     return Math.min(1, baseRate * indicationMultiplier);
@@ -79,7 +79,7 @@ export const ProbabilityModeler: React.FC<ProbabilityModelerProps> = ({
   const cumulativeProbabilities = useMemo(() => {
     const probs: Record<string, number> = {};
     let cumProb = 1.0;
-    
+
     for (let i = currentPhaseIndex; i < phases.length - 1; i++) {
       const fromPhase = phases[i];
       const toPhase = phases[i + 1];
@@ -87,7 +87,7 @@ export const ProbabilityModeler: React.FC<ProbabilityModelerProps> = ({
       cumProb *= transitionProb;
       probs[toPhase] = cumProb;
     }
-    
+
     return probs;
   }, [currentPhase, customProbabilities, transitions, indicationMultiplier]);
 
@@ -108,7 +108,7 @@ export const ProbabilityModeler: React.FC<ProbabilityModelerProps> = ({
         const fromPhase = phases[currentSimIndex];
         const toPhase = phases[currentSimIndex + 1];
         const prob = getAdjustedProbability(fromPhase, toPhase);
-        
+
         // Random success/failure
         if (Math.random() <= prob) {
           currentSimPhase = toPhase;
@@ -167,7 +167,7 @@ export const ProbabilityModeler: React.FC<ProbabilityModelerProps> = ({
       }),
       type: 'funnel',
       marker: {
-        color: phases.slice(currentPhaseIndex).map((_, idx) => 
+        color: phases.slice(currentPhaseIndex).map((_, idx) =>
           `rgba(0, 255, 255, ${1 - idx * 0.15})`
         ),
       },
@@ -200,7 +200,7 @@ export const ProbabilityModeler: React.FC<ProbabilityModelerProps> = ({
           <div className="transition-list">
             {phases.slice(currentPhaseIndex).map((phase, idx) => {
               if (idx === phases.slice(currentPhaseIndex).length - 1) return null;
-              
+
               const nextPhase = phases[currentPhaseIndex + idx + 1];
               const prob = getAdjustedProbability(phase, nextPhase) * 100;
               const historicalRate = DEFAULT_TRANSITION_RATES[`${phase}->${nextPhase}`] * 100;

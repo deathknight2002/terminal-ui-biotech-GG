@@ -16,16 +16,16 @@ export function NewsPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Use enhanced news aggregation endpoint
       const response = await fetch('http://localhost:3001/api/news/aggregate?maxResults=100');
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (data.success && data.articles) {
         setArticles(data.articles);
       } else {
@@ -34,7 +34,7 @@ export function NewsPage() {
     } catch (err) {
       console.error('Failed to load news:', err);
       setError(err instanceof Error ? err.message : 'Failed to load news');
-      
+
       // Load mock data as fallback
       setArticles(getMockNews());
     } finally {

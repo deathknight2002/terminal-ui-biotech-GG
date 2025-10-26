@@ -20527,7 +20527,7 @@ Public Sub InstallGGetsBranding(Optional ByVal pngPath As String = "")
     On Error Resume Next
     Dim ws As Worksheet: Set ws = ThisWorkbook.Worksheets("Control")
     If ws Is Nothing Then Exit Sub
-    
+
     ' Create or refresh the logo on Control
     Dim lg As Shape
     Set lg = Nothing
@@ -20538,7 +20538,7 @@ Public Sub InstallGGetsBranding(Optional ByVal pngPath As String = "")
             Exit For
         End If
     Next i
-    
+
     Dim usePath As String
     If Len(pngPath) > 0 Then
         usePath = pngPath
@@ -20547,7 +20547,7 @@ Public Sub InstallGGetsBranding(Optional ByVal pngPath As String = "")
     Else
         usePath = WriteLogoTemp()
     End If
-    
+
     If Len(usePath) > 0 Then
         If lg Is Nothing Then
             Set lg = ws.Shapes.AddPicture(usePath, msoFalse, msoTrue, 16, 8, 180, 70)
@@ -20566,7 +20566,7 @@ Public Sub InstallGGetsBranding(Optional ByVal pngPath As String = "")
             .Shadow.OffsetY = 3
         End With
     End If
-    
+
     ApplyAuroraTheme ' set colors on the glass UI if present
 End Sub
 
@@ -20577,7 +20577,7 @@ Public Sub ApplyAuroraTheme()
     Dim btn As Shape: Set btn = ws.Shapes("ui_btn_refresh")
     Dim overlay As Shape: Set overlay = ws.Shapes("ui_loading_overlay")
     Dim spinner As Shape: Set spinner = ws.Shapes("ui_spinner")
-    
+
     If Not btn Is Nothing Then
         With btn
             .TextFrame2.TextRange.Text = "GGets Refresh"
@@ -20590,12 +20590,12 @@ Public Sub ApplyAuroraTheme()
             .Glow.Radius = 8
         End With
     End If
-    
+
     If Not overlay Is Nothing Then
         overlay.Fill.ForeColor.RGB = RGB(6, 7, 25) ' deep eclipse
         overlay.Fill.Transparency = 0.25
     End If
-    
+
     If Not spinner Is Nothing Then
         spinner.Fill.ForeColor.RGB = RGB(139, 92, 246) ' purple
         spinner.Fill.Transparency = 0#

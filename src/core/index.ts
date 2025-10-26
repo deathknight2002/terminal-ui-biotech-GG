@@ -1,6 +1,6 @@
 /**
  * Core Architecture - Modular Neural Network for Biotech Terminal
- * 
+ *
  * Central export point for all core infrastructure components.
  * This forms the nervous system of the terminal ecosystem.
  */

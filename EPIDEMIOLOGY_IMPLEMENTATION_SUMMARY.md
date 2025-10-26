@@ -248,7 +248,7 @@ import { SurvivalCurveChart } from '@biotech-terminal/frontend-components/epidem
 <Route path="/epidemiology" element={<EpidemiologyPage />} />
 
 // Or use components directly
-<SurvivalCurveChart 
+<SurvivalCurveChart
   curves={DMD_SURVIVAL_CURVES}
   title="DMD Survival Analysis"
   showConfidenceIntervals={true}

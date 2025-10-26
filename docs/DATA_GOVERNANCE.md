@@ -47,11 +47,11 @@ This document outlines the data governance framework for the Epidemiology Intell
 
 **Citation Format:**
 ```
-Surveillance, Epidemiology, and End Results (SEER) Program 
-(www.seer.cancer.gov) SEER*Stat Database: Incidence - SEER Research 
-Data, 21 Registries, Nov 2023 Sub (2000-2021) - Linked To County 
-Attributes - Time Dependent (1990-2022) Income/Rurality, 1969-2022 
-Counties, National Cancer Institute, DCCPS, Surveillance Research 
+Surveillance, Epidemiology, and End Results (SEER) Program
+(www.seer.cancer.gov) SEER*Stat Database: Incidence - SEER Research
+Data, 21 Registries, Nov 2023 Sub (2000-2021) - Linked To County
+Attributes - Time Dependent (1990-2022) Income/Rurality, 1969-2022
+Counties, National Cancer Institute, DCCPS, Surveillance Research
 Program, released April 2024, based on the November 2023 submission.
 ```
 
@@ -76,8 +76,8 @@ Program, released April 2024, based on the November 2023 submission.
 
 **Citation Format:**
 ```
-World Health Organization. Global Health Observatory data repository. 
-[Indicator Name]. Geneva: World Health Organization; [Year]. 
+World Health Organization. Global Health Observatory data repository.
+[Indicator Name]. Geneva: World Health Organization; [Year].
 Available from: https://www.who.int/data/gho/data/indicators/indicator-details/GHO/[indicator-code]
 ```
 
@@ -108,8 +108,8 @@ Available from: https://www.who.int/data/gho/data/indicators/indicator-details/G
 
 **Citation Format:**
 ```
-Centers for Disease Control and Prevention. [Dataset Name]. 
-Data accessed from: https://data.cdc.gov/[dataset-id]. 
+Centers for Disease Control and Prevention. [Dataset Name].
+Data accessed from: https://data.cdc.gov/[dataset-id].
 Retrieved: [Date].
 ```
 
@@ -134,9 +134,9 @@ Retrieved: [Date].
 
 **Citation Format:**
 ```
-Global Burden of Disease Collaborative Network. Global Burden of 
-Disease Study 2019 (GBD 2019) Results. Seattle, United States: 
-Institute for Health Metrics and Evaluation (IHME), 2020. 
+Global Burden of Disease Collaborative Network. Global Burden of
+Disease Study 2019 (GBD 2019) Results. Seattle, United States:
+Institute for Health Metrics and Evaluation (IHME), 2020.
 Available from http://ghdx.healthdata.org/gbd-results-tool.
 ```
 
@@ -200,7 +200,7 @@ Every data record maintains:
   last_sync: "2024-01-15T10:30:00Z",
   source_hash: "a1b2c3d4...",  // SHA-256 of source data
   data_sources: ["SEER", "CDC"],
-  
+
   source_metadata: {
     seer: {
       collection_date: "2023-04-01",
@@ -414,6 +414,6 @@ Administrators can trigger:
 
 ---
 
-**Last Updated:** January 15, 2024  
-**Review Frequency:** Quarterly  
+**Last Updated:** January 15, 2024
+**Review Frequency:** Quarterly
 **Next Review:** April 15, 2024

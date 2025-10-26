@@ -62,13 +62,13 @@ Enter these drug names to see the magic:
 
 1. **Keytruda** (pembrolizumab)
    - Expect: Moderate-high risk, many adverse events, positive sentiment
-   
+
 2. **Ozempic** (semaglutide)
    - Expect: Moderate risk, GI adverse events, very positive sentiment
-   
+
 3. **Opdivo** (nivolumab)
    - Expect: Similar to Keytruda (PD-1 inhibitor class)
-   
+
 4. **Wegovy** (semaglutide)
    - Expect: Weight loss indication, similar safety to Ozempic
 

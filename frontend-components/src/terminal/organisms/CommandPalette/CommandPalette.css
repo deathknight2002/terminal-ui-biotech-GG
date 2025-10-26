@@ -22,7 +22,7 @@
   background: var(--bg-terminal, #000000);
   border: 2px solid var(--accent-primary, #00ff00);
   border-radius: 0;
-  box-shadow: 
+  box-shadow:
     0 0 40px rgba(var(--accent-primary-rgb, 0, 255, 0), 0.3),
     0 20px 60px rgba(0, 0, 0, 0.5);
   animation: slideIn 0.2s ease-out;

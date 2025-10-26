@@ -120,17 +120,17 @@
 Time (seconds)  Network Activity         User Action
 ────────────────────────────────────────────────────────────────
 0               ████████████████         Page load
-5               (none)                   
-10              (none)                   
-15              (none)                   
+5               (none)
+10              (none)
+15              (none)
 ...             (none)                   User navigates
 300             (none)                   5 min elapsed
 305             ████                     ← USER CLICKS REFRESH
 310             (none)                   Refresh complete
-315             (none)                   
-...             (none)                   
+315             (none)
+...             (none)
 610             (none)                   5 min elapsed
-                                         
+
 Legend:
 ████ = Network requests
 (none) = Zero network activity ✅
@@ -258,6 +258,6 @@ Legend:
 
 ---
 
-**Test Methodology**: [MANUAL_NETWORK_TEST.md](./MANUAL_NETWORK_TEST.md)  
-**Test Results**: [MANUAL_NETWORK_TEST_RESULTS.md](./MANUAL_NETWORK_TEST_RESULTS.md)  
+**Test Methodology**: [MANUAL_NETWORK_TEST.md](./MANUAL_NETWORK_TEST.md)
+**Test Results**: [MANUAL_NETWORK_TEST_RESULTS.md](./MANUAL_NETWORK_TEST_RESULTS.md)
 **Test Summary**: [MANUAL_NETWORK_TEST_SUMMARY.md](./MANUAL_NETWORK_TEST_SUMMARY.md)

@@ -17,20 +17,20 @@ const ICD10_TO_ICD11_MAP: Record<string, string> = {
   'C18-C20': '2B90-2B93', // Colorectal cancer
   'C61': '2C82', // Prostate cancer
   'C25': '2C10', // Pancreatic cancer
-  
+
   // Infectious diseases
   'U07.1': '1D6Y', // COVID-19
   'A15-A19': 'CA40', // Tuberculosis
   'B50-B54': '1F40', // Malaria
   'B20-B24': '1C60', // HIV/AIDS
-  
+
   // Chronic diseases
   'E11': '5A11', // Type 2 diabetes
   'I25': 'BA80', // Coronary heart disease
   'J44': 'CA22', // COPD
   'G30': '8A20', // Alzheimer's disease
   'I64': '8B20', // Stroke
-  
+
   // Other diseases
   'D57': '3A51', // Sickle cell disease
   'G71.0': '8C70.0', // Duchenne muscular dystrophy
@@ -81,7 +81,7 @@ export async function upsertCrosswalk(
   }
 
   const prisma = getPrismaClient();
-  
+
   try {
     // Check if mapping exists
     const existing = await prisma.crosswalk.findFirst({
@@ -129,7 +129,7 @@ export async function upsertCrosswalk(
  */
 export async function initializeCrosswalks(): Promise<void> {
   logger.info('Initializing ICD crosswalk mappings...');
-  
+
   const mappings = Object.entries(ICD10_TO_ICD11_MAP).map(([icd10, icd11]) => ({
     icd10,
     icd11,

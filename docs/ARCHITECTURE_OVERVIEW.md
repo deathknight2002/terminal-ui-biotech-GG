@@ -159,13 +159,13 @@ interface EpidemiologyDisease {
   id: number;
   disease_id: string;
   name: string;
-  
+
   // Classification
   icd10_code: string;
   icd11_code: string;
   snomed_ct_code: string;
   category: string;
-  
+
   // Metrics
   prevalence: number;
   incidence: number;
@@ -173,7 +173,7 @@ interface EpidemiologyDisease {
   dalys: number;
   ylls: number;
   ylds: number;
-  
+
   // Provenance
   data_sources: string[];
   last_sync: Date;

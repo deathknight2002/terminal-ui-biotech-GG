@@ -15,7 +15,7 @@ The Aurora Terminal features a comprehensive menu system with 15 top-level categ
   - Key metrics and KPIs
   - Recent activity feed
   - Quick access tiles
-  
+
 - **Recents** (`/recents`)
   - Recently viewed items across all categories
   - Time-based organization

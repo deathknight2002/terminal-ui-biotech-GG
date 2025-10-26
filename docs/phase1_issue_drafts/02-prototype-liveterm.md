@@ -4,9 +4,9 @@
 
 Create a proof-of-concept terminal component using LiveTerm patterns and xterm.js to validate the technical approach for the GlassTerminal component. This prototype will help us understand integration challenges, performance characteristics, and UX considerations before building the production component in Phase 2.
 
-**Related**: [Phase Implementation Plan](../PHASE_IMPLEMENTATION_PLAN.md#12-prototype-liveterm-integration)  
-**Milestone**: Phase1-QuickWins  
-**Priority**: P1 (High)  
+**Related**: [Phase Implementation Plan](../PHASE_IMPLEMENTATION_PLAN.md#12-prototype-liveterm-integration)
+**Milestone**: Phase1-QuickWins
+**Priority**: P1 (High)
 **Effort**: 3-5 days
 
 ## Description
@@ -165,10 +165,10 @@ export const TerminalPrototype: React.FC<TerminalPrototypeProps> = ({
     // Add addons
     const fitAddon = new FitAddon();
     const webLinksAddon = new WebLinksAddon();
-    
+
     term.loadAddon(fitAddon);
     term.loadAddon(webLinksAddon);
-    
+
     term.open(terminalRef.current);
     fitAddon.fit();
 
@@ -182,7 +182,7 @@ export const TerminalPrototype: React.FC<TerminalPrototypeProps> = ({
 
     // Handle input
     let currentInput = '';
-    
+
     term.onData((data) => {
       const code = data.charCodeAt(0);
 
@@ -190,13 +190,13 @@ export const TerminalPrototype: React.FC<TerminalPrototypeProps> = ({
       if (code === 13) { // Enter
         term.writeln('');
         executeCommand(term, currentInput.trim());
-        
+
         // Add to history
         if (currentInput.trim()) {
           setCommandHistory((prev) => [...prev, currentInput.trim()]);
           setHistoryIndex(-1);
         }
-        
+
         currentInput = '';
         term.write(prompt);
       } else if (code === 127) { // Backspace
@@ -211,7 +211,7 @@ export const TerminalPrototype: React.FC<TerminalPrototypeProps> = ({
         currentInput += data;
         term.write(data);
       }
-      
+
       setCurrentLine(currentInput);
     });
 
@@ -319,8 +319,8 @@ const TerminalPrototypeDemo: React.FC = () => {
           <li><code>echo Hello World</code> - Echo text</li>
           <li><code>clear</code> - Clear the terminal</li>
         </ul>
-        
-        <TerminalPrototype 
+
+        <TerminalPrototype
           welcomeMessage={`
 ╔═══════════════════════════════════════════════════════════╗
 ║  Biotech Terminal UI - Phase 1 Prototype                ║
@@ -393,7 +393,7 @@ Create `frontend-components/src/terminal/organisms/TerminalPrototype/README.md`:
 ```markdown
 # Terminal Prototype
 
-**Status**: Proof of Concept (Phase 1)  
+**Status**: Proof of Concept (Phase 1)
 **Purpose**: Validate xterm.js integration and terminal UX
 
 ## Overview
@@ -409,7 +409,7 @@ This is a prototype terminal component to explore:
 ```tsx
 import { TerminalPrototype } from '@biotech-terminal/frontend-components/terminal';
 
-<TerminalPrototype 
+<TerminalPrototype
   welcomeMessage="Welcome to terminal!"
   prompt="$ "
 />
@@ -501,25 +501,25 @@ const drugCommand = (args: string[]) => {
   if (args.length === 0) {
     return 'Usage: drug <ticker>\nExample: drug VRTX';
   }
-  
+
   const ticker = args[0].toUpperCase();
-  
+
   // Mock data
   const drugData = {
     VRTX: { name: 'Vertex Pharmaceuticals', phase: 'Approved', indication: 'CF' },
     BGNE: { name: 'BeiGene', phase: 'Phase III', indication: 'Oncology' },
     BMRN: { name: 'BioMarin', phase: 'Phase II', indication: 'Rare Disease' },
   };
-  
-  const drug = drugData[ticker as keyof typeof drugData] || { 
-    name: 'Unknown', 
-    phase: 'N/A', 
-    indication: 'N/A' 
+
+  const drug = drugData[ticker as keyof typeof drugData] || {
+    name: 'Unknown',
+    phase: 'N/A',
+    indication: 'N/A'
   };
-  
+
   return `
 ╔════════════════════════════════════════════════════╗
-║ Drug Information: ${ticker}                           
+║ Drug Information: ${ticker}
 ╠════════════════════════════════════════════════════╣
   Company:     ${drug.name}
   Phase:       ${drug.phase}
@@ -592,6 +592,6 @@ Upload to GitHub issue for stakeholder review.
 
 ---
 
-**Created**: 2025-10-14  
-**Updated**: 2025-10-14  
+**Created**: 2025-10-14
+**Updated**: 2025-10-14
 **Status**: Ready for implementation

@@ -349,7 +349,7 @@ export interface NewsItem {
   impact?: ImpactLevel;
   tags?: string[];
   url?: string;
-  
+
   // Enhanced fields for robust news feed
   therapeuticAreas?: TherapeuticArea[];
   companies?: string[];
@@ -436,7 +436,7 @@ export interface ApiError {
 }
 
 // Epidemiology Types
-export type DiseaseAreaType = 
+export type DiseaseAreaType =
   | "DMD" // Duchenne Muscular Dystrophy
   | "nSCLC" // Non-Small Cell Lung Cancer
   | "T2D" // Type 2 Diabetes
@@ -447,7 +447,7 @@ export type DiseaseAreaType =
   | "Infectious Disease"
   | "Other";
 
-export type GeographicRegion = 
+export type GeographicRegion =
   | "North America"
   | "Europe"
   | "Asia Pacific"
@@ -455,7 +455,7 @@ export type GeographicRegion =
   | "Middle East & Africa"
   | "Global";
 
-export type CohortStratification = 
+export type CohortStratification =
   | "Age"
   | "Gender"
   | "Ethnicity"

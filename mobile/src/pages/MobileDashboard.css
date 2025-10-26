@@ -246,7 +246,7 @@
   .mobile-actions-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .mobile-page-title {
     font-size: 28px;
   }

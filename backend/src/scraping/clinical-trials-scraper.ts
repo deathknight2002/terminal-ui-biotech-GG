@@ -57,7 +57,7 @@ export class ClinicalTrialsScraper {
   private rateLimiter: AdaptiveRateLimiter;
   private cache: LRUCache<ClinicalTrial[]>;
   private readonly baseUrl: string = 'https://clinicaltrials.gov/api/v2';
-  
+
   constructor() {
     this.client = axios.create({
       baseURL: this.baseUrl,
@@ -92,7 +92,7 @@ export class ClinicalTrialsScraper {
    */
   async search(params: TrialSearchParams): Promise<ClinicalTrial[]> {
     const cacheKey = JSON.stringify(params);
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('🧪 Clinical trials cache hit');
@@ -125,7 +125,7 @@ export class ClinicalTrialsScraper {
     const result = await retryWithBackoff(
       async () => {
         const queryParams = this.buildQueryParams(params);
-        
+
         const response = await this.client.get('/studies', {
           params: queryParams,
         });
@@ -243,7 +243,7 @@ export class ClinicalTrialsScraper {
    */
   async getTrial(nctId: string): Promise<ClinicalTrial | null> {
     const cacheKey = `trial:${nctId}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached && cached.length > 0) {
       return cached[0];
@@ -324,7 +324,7 @@ export class ClinicalTrialsScraper {
   async getRecentUpdates(days: number = 30, maxResults: number = 100): Promise<ClinicalTrial[]> {
     const date = new Date();
     date.setDate(date.getDate() - days);
-    
+
     return this.search({
       pageSize: maxResults,
       // Note: ClinicalTrials.gov API v2 doesn't directly support date filtering in simple queries

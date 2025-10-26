@@ -81,10 +81,10 @@
 }
 
 @keyframes pulse {
-  0%, 100% { 
+  0%, 100% {
     box-shadow: 0 0 0 0 currentColor;
   }
-  50% { 
+  50% {
     box-shadow: 0 0 0 8px transparent;
   }
 }

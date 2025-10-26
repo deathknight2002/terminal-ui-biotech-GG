@@ -7,24 +7,24 @@ export type PhaseType = 'preclinical' | 'phase-1' | 'phase-2' | 'phase-3' | 'fil
 export interface TrialPhase {
   /** Phase identifier */
   phase: PhaseType;
-  
+
   /** Phase name/label */
   name: string;
-  
+
   /** Completion percentage (0-100) */
   completion: number;
-  
+
   /** Phase status */
   status: 'active' | 'completed' | 'upcoming';
-  
+
   /** FDA milestone data */
   milestone?: {
     /** Milestone name */
     name: string;
-    
+
     /** Approval probability (0-1) */
     probability: number;
-    
+
     /** Expected date */
     date?: string;
   };
@@ -33,39 +33,39 @@ export interface TrialPhase {
 export interface ClinicalTrialGlassTimelineProps {
   /** Trial phases data */
   phases: TrialPhase[];
-  
+
   /** Enable liquid flow animation */
   enableFlowAnimation?: boolean;
-  
+
   /** Show FDA milestone markers */
   showMilestones?: boolean;
-  
+
   /** Phase selection handler */
   onPhaseSelect?: (phase: TrialPhase) => void;
-  
+
   /** Additional CSS classes */
   className?: string;
-  
+
   /** Custom styles */
   style?: React.CSSProperties;
 }
 
 /**
  * ClinicalTrialGlassTimeline - Interactive timeline with glass tube visualization
- * 
+ *
  * Features:
  * - Phase progression glass tubes with liquid-like data flow
  * - FDA milestone markers with approval probability halos
  * - Interactive phase selection
  * - Completion percentage visualization
  * - Risk assessment gradients
- * 
+ *
  * @example
  * ```tsx
  * <ClinicalTrialGlassTimeline
  *   phases={[
  *     { phase: 'phase-1', name: 'Phase I', completion: 100, status: 'completed' },
- *     { phase: 'phase-2', name: 'Phase II', completion: 65, status: 'active', 
+ *     { phase: 'phase-2', name: 'Phase II', completion: 65, status: 'active',
  *       milestone: { name: 'FDA Review', probability: 0.75, date: '2025-Q3' } }
  *   ]}
  *   showMilestones
@@ -107,9 +107,9 @@ export const ClinicalTrialGlassTimeline: React.FC<ClinicalTrialGlassTimelineProp
               <div className="phase-status-badge">In Progress</div>
             )}
           </div>
-          
+
           {showMilestones && phase.milestone && (
-            <div 
+            <div
               className="fda-milestone-marker"
               title={`${phase.milestone.name} - ${Math.round(phase.milestone.probability * 100)}% probability`}
             >

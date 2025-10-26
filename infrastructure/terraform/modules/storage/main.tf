@@ -3,7 +3,7 @@
 
 resource "aws_s3_bucket" "lakehouse" {
   bucket = "${var.project_name}-lakehouse-${var.environment}"
-  
+
   tags = {
     Name        = "${var.project_name}-lakehouse"
     Environment = var.environment
@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "lakehouse" {
 
 resource "aws_s3_bucket_versioning" "lakehouse" {
   bucket = aws_s3_bucket.lakehouse.id
-  
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -21,7 +21,7 @@ resource "aws_s3_bucket_versioning" "lakehouse" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "lakehouse" {
   bucket = aws_s3_bucket.lakehouse.id
-  
+
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -31,26 +31,26 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "lakehouse" {
 
 resource "aws_s3_bucket_lifecycle_configuration" "lakehouse" {
   bucket = aws_s3_bucket.lakehouse.id
-  
+
   rule {
     id     = "transition-to-ia"
     status = "Enabled"
-    
+
     transition {
       days          = 90
       storage_class = "STANDARD_IA"
     }
-    
+
     transition {
       days          = 365
       storage_class = "GLACIER"
     }
   }
-  
+
   rule {
     id     = "expire-old-versions"
     status = "Enabled"
-    
+
     noncurrent_version_expiration {
       noncurrent_days = 90
     }
@@ -59,7 +59,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "lakehouse" {
 
 resource "aws_s3_bucket_public_access_block" "lakehouse" {
   bucket = aws_s3_bucket.lakehouse.id
-  
+
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
@@ -69,7 +69,7 @@ resource "aws_s3_bucket_public_access_block" "lakehouse" {
 # Artifacts bucket for model artifacts
 resource "aws_s3_bucket" "artifacts" {
   bucket = "${var.project_name}-artifacts-${var.environment}"
-  
+
   tags = {
     Name        = "${var.project_name}-artifacts"
     Environment = var.environment
@@ -79,7 +79,7 @@ resource "aws_s3_bucket" "artifacts" {
 
 resource "aws_s3_bucket_versioning" "artifacts" {
   bucket = aws_s3_bucket.artifacts.id
-  
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -87,7 +87,7 @@ resource "aws_s3_bucket_versioning" "artifacts" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "artifacts" {
   bucket = aws_s3_bucket.artifacts.id
-  
+
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -97,7 +97,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "artifacts" {
 
 resource "aws_s3_bucket_public_access_block" "artifacts" {
   bucket = aws_s3_bucket.artifacts.id
-  
+
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true

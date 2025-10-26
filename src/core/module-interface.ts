@@ -1,6 +1,6 @@
 /**
  * Module Interface - Base abstraction for all system modules
- * 
+ *
  * Provides a unified interface for module lifecycle, capabilities,
  * and self-description. Every module implements this interface.
  */

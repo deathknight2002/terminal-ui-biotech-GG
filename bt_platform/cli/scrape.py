@@ -56,7 +56,7 @@ async def run_scraper(
 ):
     """
     Run a scraper with the given parameters.
-    
+
     Args:
         source: Source key (e.g., 'fierce', 'fda')
         since: Only scrape content after this date
@@ -67,20 +67,20 @@ async def run_scraper(
     """
     # Load registry
     registry = ScraperRegistry()
-    
+
     # Handle company: prefix
     if source.startswith('company:'):
         company_slug = source.split(':', 1)[1]
         print(f"Company-specific scraper not yet implemented: {company_slug}")
         return
-    
+
     # Get scraper class
     scraper_class = SCRAPER_MAP.get(source.lower())
     if not scraper_class:
         print(f"Unknown source: {source}")
         print(f"Available sources: {', '.join(SCRAPER_MAP.keys())}")
         return
-    
+
     # Get config from registry
     config = registry.get_scraper(source.lower())
     if not config:
@@ -95,16 +95,16 @@ async def run_scraper(
             'max_concurrent': config.max_concurrent,
             'user_agent': config.user_agent,
         }
-    
+
     # Create scraper instance
     scraper = scraper_class(config_dict)
-    
+
     print(f"🔍 Running {config_dict.get('name', source)} scraper...")
     print(f"   Since: {since or 'all time'}")
     print(f"   Limit: {limit or 'no limit'}")
     print(f"   Dry run: {dry_run}")
     print(f"   Save fixtures: {save_fixture}")
-    
+
     if url:
         print(f"   URL: {url}")
         # Scrape specific URL
@@ -122,9 +122,9 @@ async def run_scraper(
             dry_run=dry_run,
             save_fixture=save_fixture,
         )
-    
+
     print(f"\n✅ Completed: {len(results)} items processed")
-    
+
     # Print summary
     if results:
         print("\nSummary:")
@@ -132,7 +132,7 @@ async def run_scraper(
             print(f"  {i}. {result.data.get('title', 'No title')}")
             if result.fixture_path:
                 print(f"     Fixture: {result.fixture_path}")
-        
+
         if len(results) > 5:
             print(f"  ... and {len(results) - 5} more")
 
@@ -146,16 +146,16 @@ def main():
 Examples:
   # Scrape FierceBiotech (last 7 days, max 20 articles)
   python -m bt_platform.cli.scrape --source fierce --since 7d --limit 20
-  
+
   # Scrape FDA with fixtures for testing
   python -m bt_platform.cli.scrape --source fda --save-fixture --limit 10
-  
+
   # Dry run BusinessWire
   python -m bt_platform.cli.scrape --source businesswire --dry-run
-  
+
   # Scrape specific URL
   python -m bt_platform.cli.scrape --source fierce --url https://www.fiercebiotech.com/...
-  
+
 Available sources:
   fierce, fiercebiotech, fiercepharma
   businesswire, globenewswire, prnewswire
@@ -164,43 +164,43 @@ Available sources:
   company:<slug> (company IR pages)
         """
     )
-    
+
     parser.add_argument(
         '--source',
         required=True,
         help='Source to scrape (fierce, fda, businesswire, etc.)'
     )
-    
+
     parser.add_argument(
         '--since',
         help='Only scrape content after this date (e.g., "7d", "2024-01-01", "2 weeks ago")'
     )
-    
+
     parser.add_argument(
         '--limit',
         type=int,
         help='Maximum number of items to scrape'
     )
-    
+
     parser.add_argument(
         '--dry-run',
         action='store_true',
         help="Don't write to database"
     )
-    
+
     parser.add_argument(
         '--save-fixture',
         action='store_true',
         help='Save raw HTML and parsed JSON to tmp/fixtures/'
     )
-    
+
     parser.add_argument(
         '--url',
         help='Scrape a specific URL'
     )
-    
+
     args = parser.parse_args()
-    
+
     # Parse since parameter
     since_date = None
     if args.since:
@@ -219,7 +219,7 @@ Available sources:
             except ValueError:
                 print(f"Invalid date format: {args.since}")
                 sys.exit(1)
-    
+
     # Run scraper
     asyncio.run(run_scraper(
         source=args.source,

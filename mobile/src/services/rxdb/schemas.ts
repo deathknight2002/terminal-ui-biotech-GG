@@ -1,6 +1,6 @@
 /**
  * RxDB Schemas
- * 
+ *
  * Database schemas for local-first storage.
  * Uses RxDB with IndexedDB storage and encryption.
  */

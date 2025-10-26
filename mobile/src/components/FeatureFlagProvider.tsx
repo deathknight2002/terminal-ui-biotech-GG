@@ -1,6 +1,6 @@
 /**
  * Feature Flag Provider
- * 
+ *
  * React context provider for feature flags.
  * Initializes the feature flag service and provides flags to the app.
  */
@@ -29,9 +29,9 @@ export interface FeatureFlagProviderProps {
 
 /**
  * Feature Flag Provider Component
- * 
+ *
  * Initializes the feature flag service and provides flags to the app.
- * 
+ *
  * @example
  * ```tsx
  * <FeatureFlagProvider
@@ -69,7 +69,7 @@ export function FeatureFlagProvider({
         const error = err instanceof Error ? err : new Error('Failed to initialize feature flags');
         setError(error);
         logger.error('[FeatureFlagProvider] Initialization failed:', error);
-        
+
         // Still mark as initialized to allow fallback to defaults
         setIsInitialized(true);
       }

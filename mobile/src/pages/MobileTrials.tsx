@@ -32,9 +32,9 @@ export const MobileTrials: FC = () => {
       </div>
 
       {/* Search Bar */}
-      <input 
-        type="search" 
-        className="mobile-search-bar" 
+      <input
+        type="search"
+        className="mobile-search-bar"
         placeholder="Search trials..."
       />
 
@@ -50,7 +50,7 @@ export const MobileTrials: FC = () => {
                 {trial.status}
               </span>
             </div>
-            
+
             <div className="mobile-trial-name">{trial.name}</div>
             <div className="mobile-trial-phase">{trial.phase}</div>
 
@@ -59,7 +59,7 @@ export const MobileTrials: FC = () => {
                 Enrollment: {trial.enrolled} / {trial.target}
               </div>
               <div className="mobile-trial-enrollment-bar">
-                <div 
+                <div
                   className="mobile-trial-enrollment-fill"
                   style={{ width: `${(trial.enrolled / trial.target) * 100}%` }}
                 />

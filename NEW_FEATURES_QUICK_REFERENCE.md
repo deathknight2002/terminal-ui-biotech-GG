@@ -141,8 +141,8 @@ curl -X POST http://localhost:8000/api/v1/evidence-graph/nodes \
   -d '{"id": "test", "type": "thesis"}'
 ```
 
-**Protected Methods:** POST, PUT, DELETE, PATCH  
-**Public Methods:** GET, HEAD, OPTIONS  
+**Protected Methods:** POST, PUT, DELETE, PATCH
+**Public Methods:** GET, HEAD, OPTIONS
 **Always Public:** `/health`, `/docs`, `/metrics`
 
 ## 💾 SQLite Migration

@@ -124,7 +124,7 @@ function DayCell({ date, isToday, events, motionEnabled }) {
       style={{ translateY: lift }}
       whileHover={motionEnabled ? { translateY: -8 } : {}}
       transition={motionEnabled ? { type: 'spring', stiffness: 170, damping: 18 } : { duration: 0 }}
-      className='relative rounded-[14px] p-2' 
+      className='relative rounded-[14px] p-2'
       aria-label={`Day ${fmt(date)}`}
     >
       <div style={{ boxShadow: neoShadow, borderRadius: 12, background: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))', border: '1px solid rgba(255,255,255,0.04)' }}>
@@ -136,7 +136,7 @@ function DayCell({ date, isToday, events, motionEnabled }) {
                 initial={{ opacity: 0.6, scale: 0.99 }}
                 animate={{ opacity: [0.6, 0.95, 0.6], scale: [0.99, 1.03, 0.99] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px]' 
+                className='inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px]'
                 style={{ background: 'linear-gradient(90deg, rgba(108,99,255,0.12), rgba(139,92,246,0.08))', color: 'white' }}
               >
                 <Calendar className='h-3 w-3' /> Today

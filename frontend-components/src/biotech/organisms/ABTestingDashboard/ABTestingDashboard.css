@@ -350,12 +350,12 @@
   .ab-tests-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .ab-models-comparison {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .ab-vs-divider {
     padding: 0.5rem 0;
   }
@@ -367,12 +367,12 @@
     align-items: flex-start;
     gap: 1rem;
   }
-  
+
   .ab-header-stats {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .ab-tests-grid-inner {
     grid-template-columns: 1fr;
   }

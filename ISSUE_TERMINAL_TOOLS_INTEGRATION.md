@@ -1,8 +1,8 @@
 # Issue: Evaluate and Integrate Modern Front-End Terminal Tools
 
-**Issue Type**: Enhancement / Feature Request  
-**Priority**: Medium  
-**Status**: Open  
+**Issue Type**: Enhancement / Feature Request
+**Priority**: Medium
+**Status**: Open
 **Created**: October 2025
 
 ---
@@ -12,7 +12,7 @@
 Evaluate modern front-end terminal tools (Tabby, Hyper, LiveTerm, and Consola) for integration into the Biotech Terminal Platform. The evaluation should focus on:
 
 1. **Best Performance** - Low latency, efficient rendering
-2. **Quickest Implementation** - Minimal integration effort, clear migration path  
+2. **Quickest Implementation** - Minimal integration effort, clear migration path
 3. **Most Elegant Design** - Modern aesthetics compatible with our glass-themed UI
 
 **Special Requirement**: Must support dynamic glass-themed UI with adaptive transparency, texture overlays, and Aurora effects.
@@ -87,7 +87,7 @@ The terminal must integrate seamlessly with our existing glass-themed components
 ### Core Glass Features
 ```typescript
 // Example: GlassTerminal component requirements
-<GlassTerminal 
+<GlassTerminal
   urgency="high"              // critical | high | medium | low
   texture="neural"             // neural | molecular | crystalline
   blur={20}                    // Backdrop blur intensity
@@ -272,6 +272,6 @@ The terminal must integrate seamlessly with our existing glass-themed components
 
 ---
 
-**Created by**: Biotech Terminal Development Team  
-**Last Updated**: October 2025  
+**Created by**: Biotech Terminal Development Team
+**Last Updated**: October 2025
 **Issue Number**: TBD (to be assigned when filed)

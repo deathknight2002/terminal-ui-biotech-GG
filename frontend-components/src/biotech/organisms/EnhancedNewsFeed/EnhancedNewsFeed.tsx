@@ -83,10 +83,10 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
     if (showOnlyPortfolio) {
       filtered = filtered.filter((item) => {
         if (item.isPortfolioRelevant) return true;
-        
+
         // Also check against watchlist manually
         if (item.tickers) {
-          return item.tickers.some((ticker) => 
+          return item.tickers.some((ticker) =>
             portfolioWatchlist.some((w) => w.toUpperCase() === ticker.toUpperCase())
           );
         }
@@ -173,7 +173,7 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
               className={styles.searchInput}
             />
           </div>
-          
+
           <div className={styles.filterRow}>
             <Button
               variant={showOnlyTradable ? 'primary' : 'ghost'}
@@ -201,7 +201,7 @@ export const EnhancedNewsFeed: React.FC<EnhancedNewsFeedProps> = ({
             {categories.map((cat) => {
               const count = getCategoryCount(cat.id);
               const isActive = selectedCategory === cat.id;
-              
+
               return (
                 <button
                   key={cat.id}

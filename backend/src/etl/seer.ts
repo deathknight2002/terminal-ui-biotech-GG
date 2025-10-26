@@ -171,7 +171,7 @@ export async function runSEERETL(): Promise<ETLResult> {
   logger.info('Starting SEER ETL pipeline...');
   const startTime = Date.now();
   const prisma = getPrismaClient();
-  
+
   const counts = {
     diseases: 0,
     created: 0,
@@ -187,7 +187,7 @@ export async function runSEERETL(): Promise<ETLResult> {
       parseInt(process.env.ETL_BATCH_SIZE || '10'),
       async (batch) => {
         const results = [];
-        
+
         for (const cancer of batch) {
           try {
             await processSEERCancer(cancer, prisma, counts);
@@ -198,7 +198,7 @@ export async function runSEERETL(): Promise<ETLResult> {
             errors.push(errorMsg);
           }
         }
-        
+
         return results;
       },
       (processed, total) => {
@@ -262,7 +262,7 @@ async function createSEERMetrics(
 ): Promise<void> {
   const sourceName = 'SEER';
   const sourceUrl = 'https://seer.cancer.gov/';
-  
+
   // Incidence rate (overall)
   await upsertMetric(
     diseaseId,

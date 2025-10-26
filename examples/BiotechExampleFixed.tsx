@@ -8,8 +8,8 @@ import {
   Badge,
   Text
 } from '../src';
-import type { 
-  Asset, 
+import type {
+  Asset,
   FinancialProjection,
   PipelineStage,
   Catalyst
@@ -94,7 +94,7 @@ const sampleCatalysts: Catalyst[] = [
     category: 'Clinical'
   },
   {
-    id: '2', 
+    id: '2',
     label: 'FDA Approval',
     date: '2025-Q2',
     risk: 'Medium',
@@ -129,7 +129,7 @@ const BiotechExample: React.FC = () => {
       label: 'Financial Dashboard',
       content: (
         <div style={{ padding: '24px' }}>
-          <BiotechFinancialDashboard 
+          <BiotechFinancialDashboard
             projections={sampleProjections}
           />
         </div>
@@ -179,10 +179,10 @@ const BiotechExample: React.FC = () => {
           <Panel title="Upcoming Clinical Milestones">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {sampleCatalysts.map((catalyst) => (
-                <div 
-                  key={catalyst.id} 
-                  style={{ 
-                    display: 'flex', 
+                <div
+                  key={catalyst.id}
+                  style={{
+                    display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '12px 16px',
@@ -218,10 +218,10 @@ const BiotechExample: React.FC = () => {
         intensity="high"
         className="aurora-backdrop"
       />
-      
-      <div style={{ 
-        position: 'relative', 
-        zIndex: 2, 
+
+      <div style={{
+        position: 'relative',
+        zIndex: 2,
         padding: '40px',
         maxWidth: '1400px',
         margin: '0 auto'

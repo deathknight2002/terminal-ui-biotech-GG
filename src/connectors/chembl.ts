@@ -1,6 +1,6 @@
 /**
  * ChEMBL Connector
- * 
+ *
  * Queries ChEMBL database for drug potency, selectivity, and assay data
  * Provides translational evidence for mechanism validation
  */
@@ -63,7 +63,7 @@ export class ChEMBLConnector {
   private baseUrl = 'https://www.ebi.ac.uk/chembl/api/data';
   private webUrl = 'https://www.ebi.ac.uk/chembl';
   private chemblVersion = 'chembl_33'; // Update as needed
-  
+
   /**
    * Get activities for a molecule by ChEMBL ID
    */
@@ -71,10 +71,10 @@ export class ChEMBLConnector {
     moleculeChemblId: string
   ): Promise<ChEMBLActivityContract[]> {
     const pulledAt = new Date().toISOString();
-    
+
     // In production, query ChEMBL REST API:
     // GET /api/data/activity?molecule_chembl_id={moleculeChemblId}&format=json
-    
+
     // Mock data for demonstration
     return [
       {
@@ -127,7 +127,7 @@ export class ChEMBLConnector {
       },
     ];
   }
-  
+
   /**
    * Get activities for a target by ChEMBL ID
    */
@@ -136,13 +136,13 @@ export class ChEMBLConnector {
     maxActivities = 100
   ): Promise<ChEMBLActivityContract[]> {
     const pulledAt = new Date().toISOString();
-    
+
     // In production, query ChEMBL REST API:
     // GET /api/data/activity?target_chembl_id={targetChemblId}&limit={maxActivities}
-    
+
     return [];
   }
-  
+
   /**
    * Calculate target selectivity for a molecule
    */
@@ -151,22 +151,22 @@ export class ChEMBLConnector {
     primaryTarget: string
   ): Promise<TargetSelectivity> {
     const activities = await this.getActivitiesByMolecule(moleculeChemblId);
-    
+
     // Find primary target IC50
     const primaryActivity = activities.find(
       a => a.data.targetName === primaryTarget && a.data.activityType === 'IC50'
     );
-    
+
     if (!primaryActivity) {
       throw new Error(`No IC50 data found for primary target: ${primaryTarget}`);
     }
-    
+
     const primaryIC50 = primaryActivity.data.activityValue;
-    
+
     // Calculate selectivity vs off-targets
     const offTargets = activities
-      .filter(a => 
-        a.data.targetName !== primaryTarget && 
+      .filter(a =>
+        a.data.targetName !== primaryTarget &&
         a.data.activityType === 'IC50'
       )
       .map(a => ({
@@ -175,11 +175,11 @@ export class ChEMBLConnector {
         selectivityFold: a.data.activityValue / primaryIC50,
       }))
       .sort((a, b) => a.selectivityFold - b.selectivityFold);
-    
-    const overallSelectivity = offTargets.length > 0 
-      ? offTargets[0].selectivityFold 
+
+    const overallSelectivity = offTargets.length > 0
+      ? offTargets[0].selectivityFold
       : Infinity;
-    
+
     return {
       primaryTarget,
       primaryIC50,
@@ -187,7 +187,7 @@ export class ChEMBLConnector {
       overallSelectivity,
     };
   }
-  
+
   /**
    * Search molecules by name
    */
@@ -198,7 +198,7 @@ export class ChEMBLConnector {
   }>> {
     // In production, use ChEMBL search API
     // GET /api/data/molecule/search?q={query}
-    
+
     return [
       {
         chemblId: 'CHEMBL1234',
@@ -207,7 +207,7 @@ export class ChEMBLConnector {
       },
     ];
   }
-  
+
   /**
    * Get mechanism of action for a molecule
    */
@@ -219,7 +219,7 @@ export class ChEMBLConnector {
   }>> {
     // In production, query ChEMBL mechanism API
     // GET /api/data/mechanism?molecule_chembl_id={moleculeChemblId}
-    
+
     return [
       {
         targetName: 'Coagulation factor XI',
@@ -229,7 +229,7 @@ export class ChEMBLConnector {
       },
     ];
   }
-  
+
   /**
    * Format IC50 value with appropriate units
    */

@@ -76,7 +76,7 @@ class AdvancedBiotechScraper {
    */
   async scrapeClinicalTrials(limit = 50): Promise<ClinicalTrial[]> {
     logger.info('🧬 Scraping LIVE clinical trials from ClinicalTrials.gov...');
-    
+
     try {
       const searchTerms = [
         'cancer immunotherapy',
@@ -88,7 +88,7 @@ class AdvancedBiotechScraper {
       ];
 
       const trials: ClinicalTrial[] = [];
-      
+
       for (const term of searchTerms.slice(0, 3)) { // Limit to avoid rate limiting
         const url = `https://clinicaltrials.gov/api/query/study_fields`;
         const params = {
@@ -141,19 +141,19 @@ class AdvancedBiotechScraper {
    */
   async getMarketData(): Promise<MarketData[]> {
     logger.info('📈 Fetching REAL-TIME market data from Yahoo Finance...');
-    
+
     const marketData: MarketData[] = [];
-    
+
     try {
       // Process in batches to avoid rate limiting
       const batchSize = 5;
       for (let i = 0; i < this.biotechTickers.length; i += batchSize) {
         const batch = this.biotechTickers.slice(i, i + batchSize);
-        
+
         const promises = batch.map(async (symbol) => {
           try {
             const quote = await yahooFinance.quote(symbol);
-            
+
             if (quote) {
               return {
                 symbol: symbol,
@@ -201,11 +201,11 @@ class AdvancedBiotechScraper {
    */
   async scrapeFDAData(): Promise<FDAApproval[]> {
     logger.info('🏛️ Scraping REAL FDA drug approvals...');
-    
+
     try {
       // FDA Orange Book data - using a more accessible endpoint
       const approvals: FDAApproval[] = [];
-      
+
       // Recent major biotech approvals (would be scraped from live sources in production)
       const recentApprovals = [
         {
@@ -238,7 +238,7 @@ class AdvancedBiotechScraper {
       ];
 
       approvals.push(...recentApprovals);
-      
+
       logger.info(`✅ Found ${approvals.length} recent FDA approvals`);
       return approvals;
 
@@ -253,7 +253,7 @@ class AdvancedBiotechScraper {
    */
   async scrapeCatalysts(): Promise<BioCatalyst[]> {
     logger.info('📅 Collecting REAL biotech catalysts...');
-    
+
     try {
       const catalysts: BioCatalyst[] = [];
 
@@ -310,7 +310,7 @@ class AdvancedBiotechScraper {
       ];
 
       catalysts.push(...knownCatalysts);
-      
+
       logger.info(`✅ Found ${catalysts.length} upcoming biotech catalysts`);
       return catalysts;
 
@@ -325,7 +325,7 @@ class AdvancedBiotechScraper {
    */
   async getBiotechSectorData() {
     logger.info('🔬 Analyzing LIVE biotech sector performance...');
-    
+
     try {
       // Get biotech ETF data
       const etfs = ['XBI', 'IBB', 'ARKG'];
@@ -361,7 +361,7 @@ class AdvancedBiotechScraper {
    */
   async collectAllData() {
     logger.info('🚀 Starting COMPREHENSIVE LIVE biotech data collection...');
-    
+
     const startTime = Date.now();
 
     try {
@@ -376,8 +376,8 @@ class AdvancedBiotechScraper {
 
       // Calculate aggregated metrics
       const totalMarketCap = marketData.reduce((sum, stock) => sum + (stock.marketCap || 0), 0);
-      const avgChange = marketData.length > 0 
-        ? marketData.reduce((sum, stock) => sum + stock.changePercent, 0) / marketData.length 
+      const avgChange = marketData.length > 0
+        ? marketData.reduce((sum, stock) => sum + stock.changePercent, 0) / marketData.length
         : 0;
 
       // Phase distribution
@@ -423,7 +423,7 @@ class AdvancedBiotechScraper {
 
       logger.info(`✅ LIVE data collection completed in ${collectionTime}ms`);
       logger.info(`📊 Collected: ${trials.length} trials, ${marketData.length} companies, ${catalysts.length} catalysts`);
-      
+
       return completeData;
 
     } catch (error) {

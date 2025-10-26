@@ -14,7 +14,7 @@ export interface StatusBannerProps {
 
 /**
  * StatusBanner - Dismissible banner for API status messages
- * 
+ *
  * Used for 429/5xx errors to inform users that cached data is being shown
  * while the service is busy. Implements WCAG accessibility with role="status"
  * and aria-live="polite".

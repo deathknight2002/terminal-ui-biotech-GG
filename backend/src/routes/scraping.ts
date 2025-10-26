@@ -157,7 +157,7 @@ router.get('/pubmed/drug/:name', async (req, res) => {
   try {
     const { name } = req.params;
     const maxResults = parseInt(req.query.maxResults as string) || 50;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getPubMedScraper();
 
@@ -250,7 +250,7 @@ router.get('/fda/adverse-events/:drug', async (req, res) => {
   try {
     const { drug } = req.params;
     const limit = parseInt(req.query.limit as string) || 100;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFDAScraper();
 
@@ -349,7 +349,7 @@ router.get('/clinical-trials/drug/:name', async (req, res) => {
   try {
     const { name } = req.params;
     const maxResults = parseInt(req.query.maxResults as string) || 50;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getClinicalTrialsScraper();
 
@@ -378,7 +378,7 @@ router.get('/clinical-trials/drug/:name', async (req, res) => {
 router.get('/clinical-trials/oncology/active', async (req, res) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 100;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getClinicalTrialsScraper();
 
@@ -406,7 +406,7 @@ router.get('/clinical-trials/oncology/active', async (req, res) => {
 router.get('/clinical-trials/multi-source', async (req, res) => {
   try {
     const targetCount = parseInt(req.query.targetCount as string) || 500;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getMultiSourceTrialsScraper();
 
@@ -483,9 +483,9 @@ router.get('/metrics', async (req, res) => {
   try {
     const { getPerformanceMonitor } = await import('../scraping/performance-monitor.js');
     const monitor = getPerformanceMonitor();
-    
+
     const metrics = monitor.exportPrometheusMetrics();
-    
+
     res.set('Content-Type', 'text/plain; version=0.0.4');
     res.send(metrics);
   } catch (error) {

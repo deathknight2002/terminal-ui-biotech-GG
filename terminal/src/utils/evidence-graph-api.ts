@@ -1,6 +1,6 @@
 /**
  * Evidence Graph API Client
- * 
+ *
  * Client functions for interacting with the evidence graph API.
  */
 
@@ -81,7 +81,7 @@ export const evidenceGraphApi = {
     if (filters.days !== undefined) {
       params.append('days', filters.days.toString());
     }
-    
+
     const url = `${API_ENDPOINTS.EVIDENCE_GRAPH.SCREEN}?${params.toString()}`;
     return apiFetch<Edge[]>(url);
   },

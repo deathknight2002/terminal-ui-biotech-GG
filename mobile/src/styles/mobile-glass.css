@@ -336,7 +336,7 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
-  
+
   .mobile-metric-card {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -349,12 +349,12 @@
     padding: 12px;
     padding-bottom: calc(60px + var(--ios-safe-area-bottom, 0px));
   }
-  
+
   .mobile-glass-panel {
     padding: 16px;
     margin-bottom: 12px;
   }
-  
+
   .mobile-section-header {
     font-size: 20px;
     margin: 16px 0 8px 0;

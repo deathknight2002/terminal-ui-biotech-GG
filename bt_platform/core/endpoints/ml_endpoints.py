@@ -27,7 +27,7 @@ ml_router = APIRouter(prefix="/ml", tags=["ml"])
 class SentimentRequest(BaseModel):
     """Request model for sentiment analysis."""
     texts: List[str] = Field(..., description="List of texts to analyze", min_items=1, max_items=100)
-    
+
 
 class SentimentScore(BaseModel):
     """Sentiment score for a single text."""
@@ -93,11 +93,11 @@ _ensemble_analyzer = None
 def get_sentiment_model():
     """Get or create sentiment model instance."""
     global _sentiment_model
-    
+
     if _sentiment_model is None:
         try:
             from ml.sentiment.trainer import SentimentTrainer, create_sample_training_data
-            
+
             # Try to load pre-trained model
             try:
                 _sentiment_model = SentimentTrainer.load('/tmp/sentiment_model.joblib')
@@ -113,14 +113,14 @@ def get_sentiment_model():
         except Exception as e:
             logger.error(f"Failed to initialize sentiment model: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize model: {str(e)}")
-    
+
     return _sentiment_model
 
 
 def get_backtest_engine():
     """Get or create backtest engine instance."""
     global _backtest_engine
-    
+
     if _backtest_engine is None:
         try:
             from ml.backtesting.engine import BacktestEngine
@@ -129,14 +129,14 @@ def get_backtest_engine():
         except Exception as e:
             logger.error(f"Failed to initialize backtest engine: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize engine: {str(e)}")
-    
+
     return _backtest_engine
 
 
 def get_finbert_analyzer():
     """Get or create FinBERT analyzer instance."""
     global _finbert_analyzer
-    
+
     if _finbert_analyzer is None:
         try:
             from ml.sentiment import FinBERTAnalyzer
@@ -151,14 +151,14 @@ def get_finbert_analyzer():
         except Exception as e:
             logger.error(f"Failed to initialize FinBERT: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize FinBERT: {str(e)}")
-    
+
     return _finbert_analyzer
 
 
 def get_biobert_analyzer():
     """Get or create BioBERT analyzer instance."""
     global _biobert_analyzer
-    
+
     if _biobert_analyzer is None:
         try:
             from ml.sentiment import BioBERTAnalyzer
@@ -173,14 +173,14 @@ def get_biobert_analyzer():
         except Exception as e:
             logger.error(f"Failed to initialize BioBERT: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize BioBERT: {str(e)}")
-    
+
     return _biobert_analyzer
 
 
 def get_ensemble_analyzer():
     """Get or create ensemble analyzer instance."""
     global _ensemble_analyzer
-    
+
     if _ensemble_analyzer is None:
         try:
             from ml.sentiment import create_default_ensemble
@@ -189,7 +189,7 @@ def get_ensemble_analyzer():
         except Exception as e:
             logger.error(f"Failed to initialize ensemble: {e}")
             raise HTTPException(status_code=500, detail=f"Failed to initialize ensemble: {str(e)}")
-    
+
     return _ensemble_analyzer
 
 
@@ -201,12 +201,12 @@ def get_ensemble_analyzer():
 async def predict_sentiment(request: SentimentRequest):
     """
     Predict sentiment for input texts.
-    
+
     Returns sentiment scores for each text:
     - Prediction: -1 (bearish), 0 (neutral), 1 (bullish)
     - Confidence: Model confidence (max probability)
     - Probabilities: Full probability distribution
-    
+
     Example:
     ```
     POST /api/v1/ml/sentiment/predict
@@ -221,16 +221,16 @@ async def predict_sentiment(request: SentimentRequest):
     """
     try:
         model = get_sentiment_model()
-        
+
         # Get predictions
         scores = model.get_sentiment_scores(request.texts)
-        
+
         return SentimentResponse(
             results=[SentimentScore(**score) for score in scores],
             model_version="1.0.0",
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except Exception as e:
         logger.error(f"Sentiment prediction failed: {e}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
@@ -240,12 +240,12 @@ async def predict_sentiment(request: SentimentRequest):
 async def get_sentiment_model_info():
     """
     Get information about the sentiment model.
-    
+
     Returns model type, version, training status, and metrics.
     """
     try:
         model = get_sentiment_model()
-        
+
         return ModelInfo(
             model_type="sentiment_classifier",
             version="1.0.0",
@@ -253,7 +253,7 @@ async def get_sentiment_model_info():
             metrics=model.metrics if model.is_fitted else None,
             last_trained=datetime.utcnow().isoformat() if model.is_fitted else None
         )
-    
+
     except Exception as e:
         logger.error(f"Failed to get model info: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get info: {str(e)}")
@@ -263,27 +263,27 @@ async def get_sentiment_model_info():
 async def get_top_features(n: int = Query(20, ge=5, le=100)):
     """
     Get top features (words/ngrams) for each sentiment class.
-    
+
     Returns the most important features learned by the model
     for predicting each sentiment category.
-    
+
     Query Parameters:
     - n: Number of top features per class (default: 20)
     """
     try:
         model = get_sentiment_model()
-        
+
         if not model.is_fitted:
             raise HTTPException(status_code=400, detail="Model is not trained")
-        
+
         features = model.get_top_features(n=n)
-        
+
         return {
             "top_features": features,
             "n_features": n,
             "model_version": "1.0.0"
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -299,15 +299,15 @@ async def get_top_features(n: int = Query(20, ge=5, le=100)):
 async def predict_sentiment_finbert(request: SentimentRequest):
     """
     Predict sentiment using FinBERT (Financial BERT) model.
-    
+
     FinBERT is fine-tuned on financial text and provides state-of-the-art
     sentiment analysis for financial/pharmaceutical news and reports.
-    
+
     Returns sentiment scores for each text:
     - Prediction: -1 (negative), 0 (neutral), 1 (positive)
     - Confidence: Model confidence (max probability)
     - Probabilities: Full probability distribution
-    
+
     Example:
     ```
     POST /api/v1/ml/sentiment/finbert
@@ -322,30 +322,30 @@ async def predict_sentiment_finbert(request: SentimentRequest):
     """
     try:
         analyzer = get_finbert_analyzer()
-        
+
         # Get predictions
         predictions = analyzer.predict(request.texts)
         probs = analyzer.predict_proba(request.texts)
         confidences = [max(p) for p in probs]
-        
+
         results = []
         for text, pred, prob, conf in zip(request.texts, predictions, probs, confidences):
             # Map probabilities to dict
             prob_dict = {-1: prob[0], 0: prob[1], 1: prob[2]}
-            
+
             results.append(SentimentScore(
                 text=text[:100],  # Truncate for response
                 prediction=int(pred),
                 confidence=float(conf),
                 probabilities=prob_dict
             ))
-        
+
         return SentimentResponse(
             results=results,
             model_version="finbert-1.0.0",
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -357,15 +357,15 @@ async def predict_sentiment_finbert(request: SentimentRequest):
 async def predict_sentiment_biobert(request: SentimentRequest):
     """
     Predict sentiment using BioBERT (Biomedical BERT) model.
-    
+
     BioBERT is pre-trained on biomedical literature (PubMed, PMC) and
     fine-tuned for sentiment analysis on pharmaceutical/biomedical text.
-    
+
     Returns sentiment scores for each text:
     - Prediction: -1 (negative), 0 (neutral), 1 (positive)
     - Confidence: Model confidence (max probability)
     - Probabilities: Full probability distribution
-    
+
     Example:
     ```
     POST /api/v1/ml/sentiment/biobert
@@ -380,30 +380,30 @@ async def predict_sentiment_biobert(request: SentimentRequest):
     """
     try:
         analyzer = get_biobert_analyzer()
-        
+
         # Get predictions
         predictions = analyzer.predict(request.texts)
         probs = analyzer.predict_proba(request.texts)
         confidences = [max(p) for p in probs]
-        
+
         results = []
         for text, pred, prob, conf in zip(request.texts, predictions, probs, confidences):
             # Map probabilities to dict
             prob_dict = {-1: prob[0], 0: prob[1], 1: prob[2]}
-            
+
             results.append(SentimentScore(
                 text=text[:100],  # Truncate for response
                 prediction=int(pred),
                 confidence=float(conf),
                 probabilities=prob_dict
             ))
-        
+
         return SentimentResponse(
             results=results,
             model_version="biobert-1.0.0",
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -415,15 +415,15 @@ async def predict_sentiment_biobert(request: SentimentRequest):
 async def predict_sentiment_ensemble(request: SentimentRequest):
     """
     Predict sentiment using ensemble of multiple models.
-    
+
     Combines predictions from TF-IDF, FinBERT, and BioBERT models
     using voting or averaging for improved accuracy and robustness.
-    
+
     Returns sentiment scores for each text:
     - Prediction: -1 (negative), 0 (neutral), 1 (positive)
     - Confidence: Ensemble confidence (averaged)
     - Probabilities: Averaged probability distribution
-    
+
     Example:
     ```
     POST /api/v1/ml/sentiment/ensemble
@@ -438,30 +438,30 @@ async def predict_sentiment_ensemble(request: SentimentRequest):
     """
     try:
         analyzer = get_ensemble_analyzer()
-        
+
         # Get predictions
         predictions = analyzer.predict(request.texts)
         probs = analyzer.predict_proba(request.texts)
         confidences = [max(p) for p in probs]
-        
+
         results = []
         for text, pred, prob, conf in zip(request.texts, predictions, probs, confidences):
             # Map probabilities to dict
             prob_dict = {-1: prob[0], 0: prob[1], 1: prob[2]}
-            
+
             results.append(SentimentScore(
                 text=text[:100],  # Truncate for response
                 prediction=int(pred),
                 confidence=float(conf),
                 probabilities=prob_dict
             ))
-        
+
         return SentimentResponse(
             results=results,
             model_version="ensemble-1.0.0",
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -473,7 +473,7 @@ async def predict_sentiment_ensemble(request: SentimentRequest):
 async def list_available_models():
     """
     List all available sentiment analysis models.
-    
+
     Returns information about each model including:
     - Model name and type
     - Availability status
@@ -522,7 +522,7 @@ async def list_available_models():
             "requires": ["scikit-learn"]
         }
     ]
-    
+
     return {
         "models": models,
         "total_models": len(models),
@@ -549,17 +549,17 @@ def check_transformers_available() -> bool:
 async def run_backtest(request: BacktestRequest):
     """
     Run expanding-window backtest on catalyst predictions.
-    
+
     Evaluates model performance on historical data using proper
     time-based train/test splits to avoid lookahead bias.
-    
+
     Metrics:
     - AUC-PR: Precision-recall curve area (higher is better)
     - Brier Score: Probability calibration (lower is better)
     - Spearman IC: Rank correlation with actual moves
     - Top-Decile Hit Rate: Accuracy on highest-conviction predictions
     - Long/Short IR: Information ratio for portfolio strategy
-    
+
     Example:
     ```
     POST /api/v1/ml/backtest/run
@@ -574,10 +574,10 @@ async def run_backtest(request: BacktestRequest):
     """
     try:
         engine = get_backtest_engine()
-        
+
         # Update engine parameters
         engine.move_threshold = request.move_threshold
-        
+
         # Run backtest
         results = engine.run_expanding_window_backtest(
             events_df=None,  # Uses synthetic data
@@ -586,7 +586,7 @@ async def run_backtest(request: BacktestRequest):
             min_train_days=request.min_train_days,
             step_days=request.step_days
         )
-        
+
         return BacktestResponse(
             num_windows=results['num_windows'],
             total_train_events=results['total_train_events'],
@@ -602,7 +602,7 @@ async def run_backtest(request: BacktestRequest):
             long_short_ir_std=results['long_short_ir_std'],
             timestamp=datetime.utcnow().isoformat()
         )
-    
+
     except Exception as e:
         logger.error(f"Backtest failed: {e}")
         raise HTTPException(status_code=500, detail=f"Backtest failed: {str(e)}")
@@ -612,24 +612,24 @@ async def run_backtest(request: BacktestRequest):
 async def get_backtest_summary():
     """
     Get summary of last backtest run.
-    
+
     Returns formatted text report with performance metrics
     and validation results.
     """
     try:
         engine = get_backtest_engine()
-        
+
         if not engine.results:
             raise HTTPException(status_code=404, detail="No backtest results available. Run backtest first.")
-        
+
         summary = engine.get_summary_report()
-        
+
         return {
             "summary": summary,
             "results": engine.results,
             "timestamp": datetime.utcnow().isoformat()
         }
-    
+
     except HTTPException:
         raise
     except Exception as e:
@@ -645,14 +645,14 @@ async def get_backtest_summary():
 async def ml_health_check():
     """
     Check health of ML services.
-    
+
     Returns status of sentiment model and backtest engine.
     """
     status = {
         "status": "healthy",
         "services": {}
     }
-    
+
     # Check sentiment model
     try:
         model = get_sentiment_model()
@@ -666,7 +666,7 @@ async def ml_health_check():
             "error": str(e)
         }
         status["status"] = "degraded"
-    
+
     # Check backtest engine
     try:
         engine = get_backtest_engine()
@@ -680,7 +680,7 @@ async def ml_health_check():
             "error": str(e)
         }
         status["status"] = "degraded"
-    
+
     return status
 
 

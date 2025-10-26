@@ -66,7 +66,7 @@ export class ChangeDetectionService extends EventEmitter {
 
   constructor() {
     super();
-    
+
     this.client = axios.create({
       timeout: 30000,
       headers: {
@@ -89,7 +89,7 @@ export class ChangeDetectionService extends EventEmitter {
    */
   addMonitor(config: Omit<MonitoredUrl, 'id' | 'changeCount' | 'enabled'>): string {
     const id = this.generateId(config.url);
-    
+
     const monitor: MonitoredUrl = {
       id,
       ...config,
@@ -117,7 +117,7 @@ export class ChangeDetectionService extends EventEmitter {
 
     this.stopMonitoring(id);
     this.monitoredUrls.delete(id);
-    
+
     logger.info(`🗑️ Removed monitor: ${monitor.name}`);
     this.emit('monitor:removed', { id, monitor });
 
@@ -220,7 +220,7 @@ export class ChangeDetectionService extends EventEmitter {
         };
 
         this.changeHistory.push(change);
-        
+
         // Keep only last 1000 changes
         if (this.changeHistory.length > 1000) {
           this.changeHistory.shift();
@@ -231,7 +231,7 @@ export class ChangeDetectionService extends EventEmitter {
       } else if (!previousHash) {
         // First check - just store the hash
         logger.debug(`📝 Initial content stored for: ${monitor.name}`);
-        
+
         const change: ChangeDetection = {
           id: this.generateId(`${id}:${Date.now()}`),
           urlId: id,
@@ -265,7 +265,7 @@ export class ChangeDetectionService extends EventEmitter {
    */
   getStats(): MonitoringStats {
     const activeMonitors = Array.from(this.monitoredUrls.values()).filter(m => m.enabled).length;
-    
+
     return {
       totalMonitored: this.monitoredUrls.size,
       activeMonitors,
@@ -340,7 +340,7 @@ export class ChangeDetectionService extends EventEmitter {
     }
 
     Object.assign(monitor, updates);
-    
+
     // Restart monitoring if interval changed
     if (updates.checkInterval && monitor.enabled) {
       this.startMonitoring(id);
@@ -376,7 +376,7 @@ export class ChangeDetectionService extends EventEmitter {
     const lastChecks = Array.from(this.monitoredUrls.values())
       .map(m => m.lastCheck)
       .filter(Boolean) as Date[];
-    
+
     if (lastChecks.length === 0) {
       return undefined;
     }
@@ -419,11 +419,11 @@ export class ChangeDetectionService extends EventEmitter {
     ).length;
 
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-    
+
     if (stats.activeMonitors === 0) {
       status = 'degraded';
     }
-    
+
     if (recentErrors > 10) {
       status = 'unhealthy';
     }

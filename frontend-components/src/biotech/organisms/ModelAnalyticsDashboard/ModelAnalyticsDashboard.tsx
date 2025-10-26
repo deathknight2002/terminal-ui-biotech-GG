@@ -47,7 +47,7 @@ export interface ModelAnalyticsDashboardProps {
 
 /**
  * Advanced Analytics Dashboard for ML Models
- * 
+ *
  * Real-time monitoring with:
  * - Performance metrics tracking
  * - Drift detection visualization
@@ -78,7 +78,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
   const fetchAnalytics = async () => {
     try {
       setError(null);
-      
+
       // Fetch metrics for each model
       const metricsPromises = modelNames.map(async (model) => {
         const response = await fetch(`${apiEndpoint}/${model}/metrics`);
@@ -88,7 +88,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
         }
         return null;
       });
-      
+
       const results = await Promise.all(metricsPromises);
       const newMetrics: Record<string, ModelMetrics> = {};
       results.forEach(result => {
@@ -97,14 +97,14 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
         }
       });
       setMetrics(newMetrics);
-      
+
       // Fetch alerts
       const alertsResponse = await fetch(`${apiEndpoint}/alerts?limit=${maxAlerts}`);
       if (alertsResponse.ok) {
         const alertsData = await alertsResponse.json();
         setAlerts(alertsData.alerts || []);
       }
-      
+
       // Fetch historical data for selected model
       const historyResponse = await fetch(`${apiEndpoint}/${selectedModel}/history?limit=50`);
       if (historyResponse.ok) {
@@ -114,7 +114,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
           [selectedModel]: historyData.history || []
         }));
       }
-      
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch analytics');
       console.error('Error fetching analytics:', err);
@@ -212,8 +212,8 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
             <div className="metrics-grid">
               <div className="metric-card">
                 <div className="metric-label">ACCURACY</div>
-                <div 
-                  className="metric-value" 
+                <div
+                  className="metric-value"
                   style={{ color: getMetricColor(currentMetrics.accuracy) }}
                 >
                   {formatMetric(currentMetrics.accuracy)}
@@ -221,7 +221,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
               </div>
               <div className="metric-card">
                 <div className="metric-label">PRECISION</div>
-                <div 
+                <div
                   className="metric-value"
                   style={{ color: getMetricColor(currentMetrics.precision) }}
                 >
@@ -230,7 +230,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
               </div>
               <div className="metric-card">
                 <div className="metric-label">RECALL</div>
-                <div 
+                <div
                   className="metric-value"
                   style={{ color: getMetricColor(currentMetrics.recall) }}
                 >
@@ -239,7 +239,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
               </div>
               <div className="metric-card">
                 <div className="metric-label">F1 SCORE</div>
-                <div 
+                <div
                   className="metric-value"
                   style={{ color: getMetricColor(currentMetrics.f1_score) }}
                 >
@@ -270,23 +270,23 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
             <h3 className="section-title">DRIFT DETECTION</h3>
             <div className="drift-display">
               <div className="drift-gauge">
-                <div 
+                <div
                   className="drift-bar"
                   style={{
                     width: `${Math.min(currentMetrics.drift_score * 100, 100)}%`,
-                    background: currentMetrics.drift_score > 0.05 
-                      ? 'var(--status-error, #ff4444)' 
+                    background: currentMetrics.drift_score > 0.05
+                      ? 'var(--status-error, #ff4444)'
                       : 'var(--status-success, #00ff88)'
                   }}
                 />
               </div>
               <div className="drift-value">
                 <span className="drift-label">CURRENT DRIFT:</span>
-                <span 
+                <span
                   className="drift-score"
-                  style={{ 
-                    color: currentMetrics.drift_score > 0.05 
-                      ? 'var(--status-error, #ff4444)' 
+                  style={{
+                    color: currentMetrics.drift_score > 0.05
+                      ? 'var(--status-error, #ff4444)'
                       : 'var(--status-success, #00ff88)'
                   }}
                 >
@@ -303,13 +303,13 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
           {alerts.length > 0 ? (
             <div className="alerts-list">
               {alerts.slice(0, maxAlerts).map((alert, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="alert-item"
                   style={{ borderLeftColor: getSeverityColor(alert.severity) }}
                 >
                   <div className="alert-header">
-                    <span 
+                    <span
                       className="alert-severity"
                       style={{ color: getSeverityColor(alert.severity) }}
                     >
@@ -339,7 +339,7 @@ export const ModelAnalyticsDashboard: React.FC<ModelAnalyticsDashboardProps> = (
             <div className="trend-chart">
               {history[selectedModel].slice(-20).map((point, idx) => (
                 <div key={idx} className="trend-bar-container">
-                  <div 
+                  <div
                     className="trend-bar"
                     style={{
                       height: `${point.accuracy * 100}%`,

@@ -24,7 +24,7 @@ export const MobileLayout: FC<MobileLayoutProps> = ({ children }) => {
         },
         body: JSON.stringify({ source: 'all' }),
       });
-      
+
       if (response.ok) {
         // Success feedback
         console.log('Refresh successful');
@@ -40,7 +40,7 @@ export const MobileLayout: FC<MobileLayoutProps> = ({ children }) => {
     <div className="mobile-app">
       {/* Aurora background effect */}
       <div className="mobile-aurora-bg" />
-      
+
       {/* Mobile Header */}
       <header className="mobile-header">
         <button className="mobile-menu-btn" onClick={() => setShowMenu(!showMenu)}>
@@ -50,7 +50,7 @@ export const MobileLayout: FC<MobileLayoutProps> = ({ children }) => {
           <span className="brand-icon">✦</span>
           <span>AURORA</span>
         </div>
-        <button 
+        <button
           className={`mobile-refresh-btn ${refreshing ? 'refreshing' : ''}`}
           onClick={handleRefresh}
           disabled={refreshing}
@@ -77,12 +77,12 @@ export const MobileLayout: FC<MobileLayoutProps> = ({ children }) => {
           </div>
         </div>
       )}
-      
+
       {/* Main content area */}
       <main className="mobile-content">
         {children}
       </main>
-      
+
       {/* Bottom navigation tab bar */}
       <MobileTabBar currentPath={location.pathname} />
     </div>

@@ -127,7 +127,7 @@ CREATE INDEX idx_article_importance ON articles(importance);
 INSERT INTO entities (kind, name, ticker) VALUES ('etf', 'SPDR S&P Biotech ETF', 'XBI');
 
 -- Create sample biotech companies
-INSERT INTO entities (kind, name, ticker, synonyms) VALUES 
+INSERT INTO entities (kind, name, ticker, synonyms) VALUES
     ('company', 'Scholar Rock Holding Corporation', 'SRRK', '["Scholar Rock"]'),
     ('company', 'Ionis Pharmaceuticals', 'IONS', '["Ionis"]'),
     ('company', 'Biogen Inc.', 'BIIB', '["Biogen"]'),

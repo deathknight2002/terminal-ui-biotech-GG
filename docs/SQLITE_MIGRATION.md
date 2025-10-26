@@ -209,35 +209,35 @@ from bt_platform.core.config import settings
 
 def migrate(dry_run: bool = False):
     """Migrate data from JSON to SQLite"""
-    
+
     print("Starting migration from JSON to SQLite...")
     print(f"Dry run: {dry_run}")
-    
+
     # Initialize storages
     json_storage = JSONStorage()
     sqlite_storage = SQLiteEvidenceGraphStorage(
         database_url=settings.EVIDENCE_GRAPH_DB_URL
     )
-    
+
     # Get data from JSON storage
     print("\n1. Reading from JSON storage...")
     nodes, _ = json_storage.get_nodes_with_etag()
     edges, _ = json_storage.get_edges_with_etag()
-    
+
     print(f"   Found {len(nodes)} nodes and {len(edges)} edges")
-    
+
     if dry_run:
         print("\n   Dry run - no data will be written")
         print("\n   Sample nodes:")
         for node in nodes[:3]:
             print(f"   - {node.id} ({node.type})")
         return
-    
+
     # Import nodes
     print("\n2. Importing nodes to SQLite...")
     nodes_imported = 0
     nodes_failed = 0
-    
+
     for node in nodes:
         try:
             sqlite_storage.upsert_node(node)
@@ -247,14 +247,14 @@ def migrate(dry_run: bool = False):
         except Exception as e:
             print(f"   Error importing node {node.id}: {e}")
             nodes_failed += 1
-    
+
     print(f"   Imported {nodes_imported} nodes ({nodes_failed} failed)")
-    
+
     # Import edges
     print("\n3. Importing edges to SQLite...")
     edges_imported = 0
     edges_failed = 0
-    
+
     for edge in edges:
         try:
             sqlite_storage.create_edge(edge)
@@ -264,24 +264,24 @@ def migrate(dry_run: bool = False):
         except Exception as e:
             print(f"   Error importing edge: {e}")
             edges_failed += 1
-    
+
     print(f"   Imported {edges_imported} edges ({edges_failed} failed)")
-    
+
     # Verify
     print("\n4. Verifying migration...")
     sqlite_nodes, _ = sqlite_storage.get_nodes_with_etag()
     sqlite_edges, _ = sqlite_storage.get_edges_with_etag()
-    
+
     print(f"   SQLite storage now contains:")
     print(f"   - {len(sqlite_nodes)} nodes")
     print(f"   - {len(sqlite_edges)} edges")
-    
+
     # Summary
     print("\n✅ Migration complete!")
     print(f"\nSummary:")
     print(f"  Nodes: {nodes_imported} imported, {nodes_failed} failed")
     print(f"  Edges: {edges_imported} imported, {edges_failed} failed")
-    
+
     print(f"\nNext steps:")
     print(f"  1. Update .env: EVIDENCE_GRAPH_STORAGE=sqlite")
     print(f"  2. Restart the application")
@@ -293,7 +293,7 @@ def main():
     parser = argparse.ArgumentParser(description="Migrate Evidence Graph to SQLite")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be migrated without making changes")
     args = parser.parse_args()
-    
+
     try:
         migrate(dry_run=args.dry_run)
     except Exception as e:

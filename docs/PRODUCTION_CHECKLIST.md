@@ -211,15 +211,15 @@ DATABASE_URL=sqlite:///data/evidence_graph.db
    # Run all tests
    pytest tests/ -v
    npm run test
-   
+
    # Type check
    mypy bt_platform/
    npm run typecheck
-   
+
    # Lint
    ruff check bt_platform/
    npm run lint
-   
+
    # Security audit
    pip-audit
    npm audit
@@ -229,7 +229,7 @@ DATABASE_URL=sqlite:///data/evidence_graph.db
    ```bash
    # Backend (Docker)
    docker build -t evidence-graph-api:latest -f Dockerfile.api .
-   
+
    # Frontend
    cd terminal && npm run build
    ```
@@ -271,5 +271,5 @@ Before going to production, ensure all items are checked:
 - [ ] Stakeholder approval obtained
 - [ ] Rollback plan documented and tested
 
-**Approved by:** ___________________  
+**Approved by:** ___________________
 **Date:** ___________________

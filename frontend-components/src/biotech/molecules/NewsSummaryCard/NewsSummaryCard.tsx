@@ -20,10 +20,10 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', 
-      day: 'numeric', 
-      year: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
@@ -125,7 +125,7 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
           <div className={styles.summary}>
             {news.summary}
           </div>
-          
+
           {/* Display therapeutic areas */}
           {news.therapeuticAreas && news.therapeuticAreas.length > 0 && (
             <div className={styles.tags}>
@@ -137,7 +137,7 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
               ))}
             </div>
           )}
-          
+
           {/* Display companies/tickers */}
           {news.companies && news.companies.length > 0 && (
             <div className={styles.tags}>
@@ -150,7 +150,7 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
               ))}
             </div>
           )}
-          
+
           {news.tags && news.tags.length > 0 && (
             <div className={styles.tags}>
               {news.tags.map((tag, index) => (
@@ -160,20 +160,20 @@ export const NewsSummaryCard: React.FC<NewsSummaryCardProps> = ({
               ))}
             </div>
           )}
-          
+
           {/* Display sentiment if available */}
           {news.sentiment && (
             <div className={styles.sentiment}>
               <strong>Sentiment:</strong>{' '}
               <Badge variant={
-                news.sentiment.label === 'Positive' ? 'success' : 
+                news.sentiment.label === 'Positive' ? 'success' :
                 news.sentiment.label === 'Negative' ? 'error' : 'default'
               }>
                 {news.sentiment.label}
               </Badge>
             </div>
           )}
-          
+
           {news.url && (
             <div className={styles.actions}>
               <Button

@@ -35,9 +35,9 @@ async function loadLiveBiotechData(): Promise<any> {
 router.get('/quote/:symbol', async (req, res) => {
   try {
     const { symbol } = req.params;
-    const validation = getMarketDataSchema.safeParse({ 
+    const validation = getMarketDataSchema.safeParse({
       symbol: symbol.toUpperCase(),
-      ...req.query 
+      ...req.query
     });
 
     if (!validation.success) {
@@ -51,13 +51,13 @@ router.get('/quote/:symbol', async (req, res) => {
 
     // Load live data from Python scraper output
     const liveData = await loadLiveBiotechData();
-    
+
     if (liveData && liveData.market_data && liveData.market_data.positions) {
       // Find the symbol in live data
       const symbolData = liveData.market_data.positions.find(
         (pos: any) => pos.symbol === validSymbol
       );
-      
+
       if (symbolData) {
         // Return real market data with simulated historical data
         const historicalData = Array.from({ length: limit }, (_, i) => ({
@@ -98,7 +98,7 @@ router.get('/quote/:symbol', async (req, res) => {
         return;
       }
     }
-    
+
     // If not found in live data, return error
     return res.status(404).json({
       error: 'Symbol not found',
@@ -134,14 +134,14 @@ router.get('/quotes', async (req, res) => {
 
     // Load live data from Python scraper
     const liveData = await loadLiveBiotechData();
-    
+
     if (liveData && liveData.market_data && liveData.market_data.positions) {
       const quotes = symbols.map(symbol => {
         const upperSymbol = symbol.toUpperCase();
         const data = liveData.market_data.positions.find(
           (pos: any) => pos.symbol === upperSymbol
         );
-        
+
         return {
           symbol: upperSymbol,
           found: !!data,
@@ -178,7 +178,7 @@ router.get('/biotech/screener', async (req, res) => {
   try {
     // Load live data from Python scraper
     const liveData = await loadLiveBiotechData();
-    
+
     if (liveData && liveData.market_data && liveData.market_data.positions) {
       // Transform data for screener view
       const screenerData = liveData.market_data.positions.map((pos: any) => ({
@@ -268,7 +268,7 @@ router.get('/health', async (req, res) => {
     }
 
     const overallStatus = Object.values(health.services).every(Boolean) ? 'healthy' : 'degraded';
-    
+
     res.json({
       ...health,
       status: overallStatus
@@ -292,7 +292,7 @@ router.get('/openbb/chart', async (req, res) => {
     // Load live data to get actual price for the symbol
     const liveData = await loadLiveBiotechData();
     let basePrice = 100;
-    
+
     if (liveData && liveData.market_data) {
       const symbolData = liveData.market_data.positions?.find((pos: any) => pos.symbol === symbol) ||
                         liveData.market_data.indices?.[symbol];
@@ -303,10 +303,10 @@ router.get('/openbb/chart', async (req, res) => {
 
     // Generate realistic price chart data based on actual price
     const dataPoints = 100;
-    const dates = Array.from({length: dataPoints}, (_, i) => 
+    const dates = Array.from({length: dataPoints}, (_, i) =>
       new Date(Date.now() - (dataPoints - i) * 24 * 60 * 60 * 1000).toISOString()
     );
-    
+
     // Generate realistic price movement
     const prices = [];
     let currentPrice = basePrice * 0.9; // Start 10% lower

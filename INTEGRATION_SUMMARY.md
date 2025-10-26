@@ -98,15 +98,15 @@ import { createCloudEventBus } from './src/core/cloudevent-bus';
 import { FAERSConnector, DrugsAtFDAConnector, CatalystEngine } from './src/connectors';
 
 // Register connectors
-container.registerSingleton(ServiceTokens.FAERSConnector, () => 
+container.registerSingleton(ServiceTokens.FAERSConnector, () =>
   new FAERSConnector(process.env.OPENFDA_API_KEY)
 );
 
-container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () => 
+container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () =>
   new DrugsAtFDAConnector(process.env.OPENFDA_API_KEY)
 );
 
-container.registerSingleton(ServiceTokens.CatalystEngine, (c) => 
+container.registerSingleton(ServiceTokens.CatalystEngine, (c) =>
   new CatalystEngine({
     faersConnector: c.resolve(ServiceTokens.FAERSConnector),
     drugsAtFDAConnector: c.resolve(ServiceTokens.DrugsAtFDAConnector),
@@ -224,22 +224,22 @@ Add to `terminal/src/main.tsx`:
 
 ```typescript
 import { container, ServiceTokens } from '@biotech-terminal/frontend-components/core';
-import { 
-  FAERSConnector, 
-  DrugsAtFDAConnector, 
-  CatalystEngine 
+import {
+  FAERSConnector,
+  DrugsAtFDAConnector,
+  CatalystEngine
 } from '@biotech-terminal/frontend-components/connectors';
 
 // Initialize DI container
-container.registerSingleton(ServiceTokens.FAERSConnector, () => 
+container.registerSingleton(ServiceTokens.FAERSConnector, () =>
   new FAERSConnector(import.meta.env.VITE_OPENFDA_API_KEY)
 );
 
-container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () => 
+container.registerSingleton(ServiceTokens.DrugsAtFDAConnector, () =>
   new DrugsAtFDAConnector(import.meta.env.VITE_OPENFDA_API_KEY)
 );
 
-container.registerSingleton(ServiceTokens.CatalystEngine, (c) => 
+container.registerSingleton(ServiceTokens.CatalystEngine, (c) =>
   new CatalystEngine({
     faersConnector: c.resolve(ServiceTokens.FAERSConnector),
     drugsAtFDAConnector: c.resolve(ServiceTokens.DrugsAtFDAConnector),

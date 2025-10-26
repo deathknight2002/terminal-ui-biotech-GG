@@ -1,6 +1,6 @@
 /**
  * Metrics - Prometheus-compatible metrics collection
- * 
+ *
  * Provides counters, histograms, and gauges for monitoring
  * system performance and behavior
  */
@@ -9,7 +9,7 @@ import { Registry, Counter, Histogram, Gauge, collectDefaultMetrics } from 'prom
 
 class MetricsImpl {
   public readonly registry: Registry;
-  
+
   // Core metrics
   public readonly eventLatency: Histogram;
   public readonly cacheHits: Counter;

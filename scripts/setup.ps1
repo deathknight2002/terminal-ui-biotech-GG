@@ -13,7 +13,7 @@ Write-Host "🚀 Setting up Biotech Terminal Platform..." -ForegroundColor Green
 
 function Test-Prerequisites {
     Write-Host "📋 Checking prerequisites..." -ForegroundColor Yellow
-    
+
     # Check Python
     try {
         $pythonVersion = python --version 2>$null
@@ -27,7 +27,7 @@ function Test-Prerequisites {
         Write-Host "❌ Python is not installed or not in PATH." -ForegroundColor Red
         exit 1
     }
-    
+
     # Check Node.js
     try {
         $nodeVersion = node --version 2>$null
@@ -41,7 +41,7 @@ function Test-Prerequisites {
         Write-Host "❌ Node.js is not installed or not in PATH." -ForegroundColor Red
         exit 1
     }
-    
+
     # Check npm
     try {
         $npmVersion = npm --version 2>$null
@@ -55,13 +55,13 @@ function Test-Prerequisites {
         Write-Host "❌ npm is not installed or not in PATH." -ForegroundColor Red
         exit 1
     }
-    
+
     Write-Host "✅ Prerequisites check passed" -ForegroundColor Green
 }
 
 function Install-PythonEnvironment {
     Write-Host "🐍 Setting up Python environment..." -ForegroundColor Yellow
-    
+
     # Install Poetry if not available
     try {
         poetry --version 2>$null | Out-Null
@@ -70,15 +70,15 @@ function Install-PythonEnvironment {
     catch {
         Write-Host "📦 Installing Poetry..." -ForegroundColor Yellow
         (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
-        
+
         # Add Poetry to PATH for current session
         $env:PATH += ";$env:USERPROFILE\.local\bin"
     }
-    
+
     # Install Python dependencies
     Write-Host "📦 Installing Python dependencies..." -ForegroundColor Yellow
     poetry install
-    
+
     # Initialize database
     Write-Host "🗄️ Initializing database..." -ForegroundColor Yellow
     $env:PYTHONPATH = (Get-Location).Path
@@ -87,17 +87,17 @@ import asyncio
 from platform.core.database import init_db
 asyncio.run(init_db())
 "@
-    
+
     Write-Host "✅ Python setup complete" -ForegroundColor Green
 }
 
 function Install-NodeEnvironment {
     Write-Host "📦 Setting up Node.js environment..." -ForegroundColor Yellow
-    
+
     # Install root dependencies
     Write-Host "📦 Installing root dependencies..." -ForegroundColor Yellow
     npm install
-    
+
     # Setup frontend components
     if (Test-Path "frontend-components") {
         Write-Host "🎨 Setting up frontend components..." -ForegroundColor Yellow
@@ -106,7 +106,7 @@ function Install-NodeEnvironment {
         npm run build
         Set-Location ..
     }
-    
+
     # Setup terminal application
     if (Test-Path "terminal") {
         Write-Host "🖥️ Setting up terminal application..." -ForegroundColor Yellow
@@ -114,7 +114,7 @@ function Install-NodeEnvironment {
         npm install
         Set-Location ..
     }
-    
+
     # Setup examples
     if (Test-Path "examples") {
         Write-Host "📚 Setting up examples..." -ForegroundColor Yellow
@@ -122,13 +122,13 @@ function Install-NodeEnvironment {
         npm install
         Set-Location ..
     }
-    
+
     Write-Host "✅ Node.js setup complete" -ForegroundColor Green
 }
 
 function New-EnvironmentFile {
     Write-Host "⚙️ Creating environment configuration..." -ForegroundColor Yellow
-    
+
     if (-not (Test-Path ".env")) {
         $envContent = @"
 # Biotech Terminal Platform Configuration
@@ -169,7 +169,7 @@ LOG_LEVEL=INFO
 
 function Start-DevServices {
     Write-Host "🚀 Starting services..." -ForegroundColor Green
-    
+
     # Start backend in background
     Write-Host "🔧 Starting backend platform..." -ForegroundColor Yellow
     $backendJob = Start-Job -ScriptBlock {
@@ -177,9 +177,9 @@ function Start-DevServices {
         $env:PYTHONPATH = $using:PWD
         poetry run uvicorn platform.core.app:app --reload --port 8000
     }
-    
+
     Start-Sleep -Seconds 3
-    
+
     # Check if backend started successfully
     try {
         $response = Invoke-WebRequest -Uri "http://localhost:8000/health" -UseBasicParsing -TimeoutSec 5
@@ -194,7 +194,7 @@ function Start-DevServices {
         Remove-Job $backendJob -Force
         exit 1
     }
-    
+
     # Start frontend
     if (Test-Path "terminal") {
         Write-Host "🎨 Starting terminal application..." -ForegroundColor Yellow
@@ -202,11 +202,11 @@ function Start-DevServices {
             Set-Location $using:PWD\terminal
             npm run dev
         }
-        
+
         Start-Sleep -Seconds 3
         Write-Host "✅ Terminal application will be available at http://localhost:3000" -ForegroundColor Green
     }
-    
+
     Write-Host ""
     Write-Host "🎉 Biotech Terminal Platform is running!" -ForegroundColor Green
     Write-Host ""
@@ -215,14 +215,14 @@ function Start-DevServices {
     Write-Host "🖥️ Terminal App: http://localhost:3000" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Press Ctrl+C to stop all services" -ForegroundColor Yellow
-    
+
     # Cleanup function
     $cleanup = {
         Write-Host "🔄 Shutting down services..." -ForegroundColor Yellow
         if ($backendJob) { Stop-Job $backendJob -Force; Remove-Job $backendJob -Force }
         if ($frontendJob) { Stop-Job $frontendJob -Force; Remove-Job $frontendJob -Force }
     }
-    
+
     # Handle Ctrl+C
     try {
         # Wait for user to stop
@@ -237,11 +237,11 @@ function Start-DevServices {
 
 function Build-Production {
     Write-Host "🏗️ Building for production..." -ForegroundColor Yellow
-    
+
     # Build Python package
     Write-Host "📦 Building Python package..." -ForegroundColor Yellow
     poetry build
-    
+
     # Build frontend components
     if (Test-Path "frontend-components") {
         Write-Host "🎨 Building frontend components..." -ForegroundColor Yellow
@@ -249,7 +249,7 @@ function Build-Production {
         npm run build
         Set-Location ..
     }
-    
+
     # Build terminal application
     if (Test-Path "terminal") {
         Write-Host "🖥️ Building terminal application..." -ForegroundColor Yellow
@@ -257,7 +257,7 @@ function Build-Production {
         npm run build
         Set-Location ..
     }
-    
+
     Write-Host "✅ Production build complete" -ForegroundColor Green
     Write-Host "📦 Artifacts:" -ForegroundColor Cyan
     Write-Host "  - Python wheel: dist/" -ForegroundColor White

@@ -1,6 +1,6 @@
 /**
  * Intelligent Router - Routes requests to appropriate modules
- * 
+ *
  * Analyzes requests and routes them to the best available module based on
  * capabilities, load, health status, and historical performance.
  */
@@ -69,7 +69,7 @@ class IntelligentRouterImpl {
         if (cached) {
           this.stats.successfulRequests++;
           this.updateCacheHitRate(true);
-          
+
           return {
             data: cached,
             source: 'cache',
@@ -123,7 +123,7 @@ class IntelligentRouterImpl {
       };
     } catch (error) {
       this.stats.failedRequests++;
-      
+
       // Try fallback if configured
       if (config.fallback) {
         try {
@@ -178,7 +178,7 @@ class IntelligentRouterImpl {
 
     for (const service of services) {
       const module = ServiceRegistry.get<DataProviderModule>(service.name);
-      
+
       if (!module.supportsQuery(queryType)) {
         continue;
       }
@@ -231,7 +231,7 @@ class IntelligentRouterImpl {
    */
   private async selectModule(query: QueryContract, config: RouteConfig): Promise<string | null> {
     const recommendations = await this.getModuleRecommendations(query.type);
-    
+
     if (recommendations.length === 0) {
       return null;
     }

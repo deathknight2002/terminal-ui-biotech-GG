@@ -44,7 +44,7 @@ export function setupWebSocket(io: SocketServer): void {
       try {
         // TODO: Implement JWT token verification
         const userId = 'user_123'; // Placeholder
-        
+
         const clientData = connectedClients.get(clientId);
         if (clientData) {
           clientData.userId = userId;
@@ -168,9 +168,9 @@ export function broadcastSystemAlert(io: SocketServer, alert: any): void {
 }
 
 // Export drift alerts functions
-export { 
-  broadcastDriftAlert, 
-  broadcastModelMetrics, 
+export {
+  broadcastDriftAlert,
+  broadcastModelMetrics,
   broadcastDriftAlertsBatch,
   broadcastRetrainingComplete,
   getDriftAlertStats
@@ -194,7 +194,7 @@ export function getConnectionStats(): {
     }
 
     for (const subscription of clientData.subscriptions) {
-      stats.subscriptionsByStream[subscription] = 
+      stats.subscriptionsByStream[subscription] =
         (stats.subscriptionsByStream[subscription] || 0) + 1;
     }
   }

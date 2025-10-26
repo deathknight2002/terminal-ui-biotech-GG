@@ -20,10 +20,10 @@ export class MyModule extends BaseModule {
   readonly name = 'my-module';
   readonly version = '1.0.0';
   readonly description = 'My module description';
-  
+
   protected async onInitialize() { /* setup */ }
   protected async onShutdown() { /* cleanup */ }
-  protected async onHealthCheck() { 
+  protected async onHealthCheck() {
     return { status: 'healthy' as const };
   }
   // ... implement other abstract methods

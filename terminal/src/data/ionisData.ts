@@ -45,16 +45,16 @@ export const generateIonisStockData = () => {
   for (let i = 0; i < 90; i++) {
     const date = new Date(startDate);
     date.setDate(date.getDate() + i);
-    
+
     const dailyChange = (Math.random() - 0.48) * 2;
     currentPrice += dailyChange;
-    
+
     const open = currentPrice;
     const high = currentPrice + Math.random() * 1.5;
     const low = currentPrice - Math.random() * 1.5;
     const close = currentPrice + (Math.random() - 0.5) * 0.5;
     const volume = Math.floor(800000 + Math.random() * 1000000);
-    
+
     data.push({
       date: date.toISOString().split('T')[0],
       open,
@@ -63,9 +63,9 @@ export const generateIonisStockData = () => {
       close,
       volume,
     });
-    
+
     currentPrice = close;
   }
-  
+
   return data;
 };

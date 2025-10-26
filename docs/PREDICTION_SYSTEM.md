@@ -146,7 +146,7 @@ Level 1: Hierarchical Bayesian Logistic Regression
   - Indication random effects (Oncology, Immunology, etc.)
   - Phase random effects (I, II, III)
   - Company type effects (Big Pharma vs Biotech)
-  
+
 Level 2: Gradient-Boosted Trees (XGBoost)
   - Stacked on Bayesian posterior samples
   - Captures non-linear interactions
@@ -167,7 +167,7 @@ Quantile GBM for conditional distributions:
 Isotonic Regression:
   - Monotonic mapping of raw probabilities to calibrated p
   - Trained on expanding windows
-  
+
 Conformal Prediction:
   - Honest confidence intervals via split conformal
   - Coverage guarantee: 90% CI contains true outcome 90% of time
@@ -197,7 +197,7 @@ where:
   w1 = 0.40  (absolute opportunity)
   w2 = 0.35  (vs market expectations)
   w3 = 0.25  (endpoint quality)
-  
+
 Weights learned via walk-forward optimization
 ```
 
@@ -371,11 +371,11 @@ jobs:
   test:
     - poetry run pytest
     - npm run test
-  
+
   build:
     - docker build -t catalyst-api:${{ github.sha }}
     - docker push
-  
+
   deploy:
     - terraform apply
     - dagster deploy

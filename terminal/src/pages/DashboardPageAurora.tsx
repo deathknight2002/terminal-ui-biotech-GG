@@ -25,10 +25,10 @@ export function DashboardPage() {
   // Show loading state
   if (isLoading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         color: '#00d4ff',
         fontFamily: 'var(--font-mono, monospace)',

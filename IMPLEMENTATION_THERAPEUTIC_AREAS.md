@@ -51,8 +51,8 @@ const mockMarketData = {
   SRPT: { symbol: 'SRPT', price: 115.42, marketCap: 11200000000, ... },
   BMRN: { symbol: 'BMRN', price: 78.34, marketCap: 15800000000, ... },
   ARWR: { symbol: 'ARWR', price: 28.67, marketCap: 4100000000, ... },
-  
-  // Cardiology Companies  
+
+  // Cardiology Companies
   AMGN: { symbol: 'AMGN', price: 295.12, marketCap: 148000000000, ... },
   CYTK: { symbol: 'CYTK', price: 52.18, marketCap: 3200000000, ... },
   LLY: { symbol: 'LLY', price: 825.43, marketCap: 750000000000, ... },
@@ -106,11 +106,11 @@ class YahooFinanceRateLimiter:
         self.max_tokens = max_tokens
         self.refill_rate = refill_rate
         self.min_delay_seconds = min_delay_seconds
-        
+
         # Request tracking
         self.request_timestamps = []
         self.max_requests_per_hour = max_requests_per_hour
-        
+
         # Caching (30-minute TTL)
         self._cache = {}
 ```
@@ -179,19 +179,19 @@ export const TherapeuticAreasPage: React.FC = () => {
   const [areas, setAreas] = useState<TherapeuticArea[]>([]);
   const [radarData, setRadarData] = useState<RadarChartData | null>(null);
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
-  
+
   // API integration
   const fetchTherapeuticAreas = async () => {
     const areasResponse = await fetch('http://localhost:8000/api/v1/therapeutic-areas/areas');
     const radarResponse = await fetch('http://localhost:8000/api/v1/therapeutic-areas/areas/compare/radar');
     // ...
   };
-  
+
   // Manual refresh (no auto-polling)
   const handleRefresh = () => {
     fetchTherapeuticAreas();
   };
-  
+
   return (
     <div className={styles.therapeuticAreasPage}>
       {/* Header with refresh button */}
@@ -240,7 +240,7 @@ export const TherapeuticAreasPage: React.FC = () => {
     auroraGradient={true}
     showLegend={true}
   />
-  
+
   <div className={styles.attributeGuide}>
     {/* Attribute definitions */}
   </div>
@@ -277,7 +277,7 @@ export const TherapeuticAreasPage: React.FC = () => {
 
 /* Aurora overlay (pulsing) */
 .therapeuticAreasPage::before {
-  background: 
+  background:
     radial-gradient(1200px at 10% -10%, rgba(125, 249, 255, 0.15), transparent),
     radial-gradient(900px at 90% 0%, rgba(192, 132, 252, 0.12), transparent);
   animation: auroraPulse 20s ease-in-out infinite;
@@ -288,7 +288,7 @@ export const TherapeuticAreasPage: React.FC = () => {
   background: rgba(15, 20, 32, 0.5);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(125, 249, 255, 0.12);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
@@ -344,12 +344,12 @@ export const TherapeuticAreasPage: React.FC = () => {
 ```typescript
 const getAuroraGradientColor = (value: number, baseColor: string): string => {
   const intensity = value / maxValue;  // 0-1 scale
-  
+
   // Brighter = higher value
   const adjustedR = Math.round(r + (255 - r) * (1 - intensity) * 0.3);
   const adjustedG = Math.round(g + (255 - g) * (1 - intensity) * 0.3);
   const adjustedB = Math.round(b + (255 - b) * (1 - intensity) * 0.3);
-  
+
   return `rgb(${adjustedR}, ${adjustedG}, ${adjustedB})`;
 };
 ```
@@ -375,7 +375,7 @@ import { TherapeuticAreasPage } from './pages/TherapeuticAreasPage';
   label: 'SCIENCE',
   items: [
     { label: 'Evidence Journal', path: '/science/evidence-journal', ... },
-    { label: 'Therapeutic Areas', path: '/science/therapeutic-areas', 
+    { label: 'Therapeutic Areas', path: '/science/therapeutic-areas',
       description: 'Spider web comparison of therapeutic areas' },  // NEW
     { label: 'Epidemiology Builder', path: '/science/epidemiology', ... },
     // ...

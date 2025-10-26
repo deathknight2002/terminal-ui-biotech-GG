@@ -8,28 +8,28 @@ const router = Router();
 // Search diseases with filters
 router.get('/search', (req, res) => {
   try {
-    const { 
-      query = '', 
-      category, 
+    const {
+      query = '',
+      category,
       dataSource,
       minPrevalence,
       maxPrevalence
     } = req.query;
 
     const filters: any = {};
-    
+
     if (category) {
       filters.category = Array.isArray(category) ? category : [category];
     }
-    
+
     if (dataSource) {
       filters.dataSource = Array.isArray(dataSource) ? dataSource : [dataSource];
     }
-    
+
     if (minPrevalence) {
       filters.minPrevalence = parseFloat(minPrevalence as string);
     }
-    
+
     if (maxPrevalence) {
       filters.maxPrevalence = parseFloat(maxPrevalence as string);
     }
@@ -58,7 +58,7 @@ router.get('/search', (req, res) => {
 router.get('/models', (req, res) => {
   try {
     const diseases = diseaseDataService.getAllDiseases();
-    
+
     res.json({
       success: true,
       data: diseases,
@@ -79,14 +79,14 @@ router.get('/models/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const disease = diseaseDataService.getDiseaseById(diseaseId);
-    
+
     if (!disease) {
       return res.status(404).json({
         success: false,
         message: 'Disease not found',
       });
     }
-    
+
     res.json({
       success: true,
       data: disease,
@@ -105,7 +105,7 @@ router.get('/categories/:category', (req, res) => {
   try {
     const { category } = req.params;
     const diseases = diseaseDataService.getDiseasesByCategory(category as DiseaseCategory);
-    
+
     res.json({
       success: true,
       data: diseases,
@@ -126,7 +126,7 @@ router.get('/sources/:source', (req, res) => {
   try {
     const { source } = req.params;
     const diseases = diseaseDataService.getDiseasesBySource(source as DataSource);
-    
+
     res.json({
       success: true,
       data: diseases,
@@ -146,7 +146,7 @@ router.get('/sources/:source', (req, res) => {
 router.get('/metadata/categories', (req, res) => {
   try {
     const categories = diseaseDataService.getCategories();
-    
+
     res.json({
       success: true,
       data: categories,
@@ -164,7 +164,7 @@ router.get('/metadata/categories', (req, res) => {
 router.get('/metadata/statistics', (req, res) => {
   try {
     const stats = diseaseDataService.getStatistics();
-    
+
     res.json({
       success: true,
       data: stats,
@@ -183,7 +183,7 @@ router.get('/survival/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const disease = diseaseDataService.getDiseaseById(diseaseId);
-    
+
     if (!disease) {
       return res.status(404).json({
         success: false,
@@ -215,17 +215,17 @@ router.get('/cohorts/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const disease = diseaseDataService.getDiseaseById(diseaseId);
-    
+
     if (!disease) {
       return res.status(404).json({
         success: false,
         message: 'Disease not found',
       });
     }
-    
+
     // Return demographic data from CDC/SEER if available
     const cohortData = disease.cdcData?.demographics || disease.seerData?.raceEthnicity;
-    
+
     res.json({
       success: true,
       data: {
@@ -248,7 +248,7 @@ router.get('/cohorts/:diseaseId', (req, res) => {
 router.post('/intervention/calculate', (req, res) => {
   try {
     const { diseaseId, interventionType, targetPopulation, effectivenessRate } = req.body;
-    
+
     const disease = diseaseDataService.getDiseaseById(diseaseId);
     if (!disease) {
       return res.status(404).json({
@@ -256,12 +256,12 @@ router.post('/intervention/calculate', (req, res) => {
         message: 'Disease not found',
       });
     }
-    
+
     // Calculation based on disease mortality and effectiveness
     const casesAvoided = Math.round(targetPopulation * effectivenessRate * 0.3);
     const deathsAvoided = Math.round(casesAvoided * disease.mortality);
     const qalysGained = casesAvoided * 2.5;
-    
+
     res.json({
       success: true,
       data: {
@@ -288,14 +288,14 @@ router.get('/geospatial/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const disease = diseaseDataService.getDiseaseById(diseaseId);
-    
+
     if (!disease) {
       return res.status(404).json({
         success: false,
         message: 'Disease not found',
       });
     }
-    
+
     // Return WHO regional data and CDC state data if available
     res.json({
       success: true,
@@ -321,14 +321,14 @@ router.get('/treatment-patterns/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const disease = diseaseDataService.getDiseaseById(diseaseId);
-    
+
     if (!disease) {
       return res.status(404).json({
         success: false,
         message: 'Disease not found',
       });
     }
-    
+
     res.json({
       success: true,
       data: {
@@ -351,7 +351,7 @@ router.get('/treatment-patterns/:diseaseId', (req, res) => {
 router.post('/simulation/population-impact', (req, res) => {
   try {
     const { diseaseId, timeHorizon, interventions } = req.body;
-    
+
     const disease = diseaseDataService.getDiseaseById(diseaseId);
     if (!disease) {
       return res.status(404).json({
@@ -359,7 +359,7 @@ router.post('/simulation/population-impact', (req, res) => {
         message: 'Disease not found',
       });
     }
-    
+
     // Simulation based on disease data
     const years = Array.from({ length: timeHorizon || 10 }, (_, i) => ({
       year: 2025 + i,
@@ -368,7 +368,7 @@ router.post('/simulation/population-impact', (req, res) => {
       deaths: Math.round(disease.targetPopulation * disease.mortality * (1 - i * 0.03)),
       healthcareCost: 5000000000 + i * 100000000,
     }));
-    
+
     res.json({
       success: true,
       data: {
@@ -390,7 +390,7 @@ router.post('/simulation/population-impact', (req, res) => {
 router.get('/burden/comparison', (req, res) => {
   try {
     const diseases = diseaseDataService.getAllDiseases();
-    
+
     const comparisons = diseases.map(disease => ({
       diseaseId: disease.id,
       diseaseName: disease.name,
@@ -403,10 +403,10 @@ router.get('/burden/comparison', (req, res) => {
       dalys: disease.whoData?.dalys || 0,
       dataSources: disease.dataSources,
     }));
-    
+
     // Sort by total burden
     comparisons.sort((a, b) => b.totalBurden - a.totalBurden);
-    
+
     res.json({
       success: true,
       data: comparisons,
@@ -430,7 +430,7 @@ router.get('/trends/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const { years = 10 } = req.query;
-    
+
     const disease = diseaseDataService.getDiseaseById(diseaseId);
     if (!disease) {
       return res.status(404).json({
@@ -438,10 +438,10 @@ router.get('/trends/:diseaseId', (req, res) => {
         message: 'Disease not found',
       });
     }
-    
+
     // Extract trend data from SEER/CDC if available
     const trends = disease.seerData?.trends || disease.cdcData?.trends || [];
-    
+
     // Calculate trend metrics
     const calculateTrend = (data: any[]) => {
       if (data.length < 2) return { direction: 'stable', percentage: 0 };
@@ -453,7 +453,7 @@ router.get('/trends/:diseaseId', (req, res) => {
         percentage: change.toFixed(2)
       };
     };
-    
+
     res.json({
       success: true,
       data: {
@@ -478,7 +478,7 @@ router.get('/projections/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const { years = 5 } = req.query;
-    
+
     const disease = diseaseDataService.getDiseaseById(diseaseId);
     if (!disease) {
       return res.status(404).json({
@@ -486,12 +486,12 @@ router.get('/projections/:diseaseId', (req, res) => {
         message: 'Disease not found',
       });
     }
-    
+
     // Simple projection based on current metrics
     // In production, this would use ARIMA or Prophet models
     const currentYear = new Date().getFullYear();
     const projections = [];
-    
+
     for (let i = 1; i <= Number(years); i++) {
       const growthFactor = 1 + (0.02 * i); // 2% annual growth assumption
       projections.push({
@@ -501,7 +501,7 @@ router.get('/projections/:diseaseId', (req, res) => {
         projectedCases: Math.round(disease.targetPopulation * disease.incidence * growthFactor / 100000),
       });
     }
-    
+
     res.json({
       success: true,
       data: {
@@ -531,7 +531,7 @@ router.get('/age-standardized/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
     const { standardPopulation = 'WHO' } = req.query;
-    
+
     const disease = diseaseDataService.getDiseaseById(diseaseId);
     if (!disease) {
       return res.status(404).json({
@@ -539,7 +539,7 @@ router.get('/age-standardized/:diseaseId', (req, res) => {
         message: 'Disease not found',
       });
     }
-    
+
     // In production, this would calculate actual age-standardized rates
     // using WHO or Segi standard populations
     res.json({
@@ -566,24 +566,24 @@ router.get('/age-standardized/:diseaseId', (req, res) => {
 router.post('/compare', (req, res) => {
   try {
     const { diseaseIds, metrics = ['incidence', 'prevalence', 'mortality'] } = req.body;
-    
+
     if (!diseaseIds || !Array.isArray(diseaseIds) || diseaseIds.length < 2) {
       return res.status(400).json({
         success: false,
         message: 'Please provide at least 2 disease IDs to compare',
       });
     }
-    
+
     const comparison = diseaseIds.map((id: string) => {
       const disease = diseaseDataService.getDiseaseById(id);
       if (!disease) return null;
-      
+
       const result: any = {
         diseaseId: disease.id,
         name: disease.name,
         category: disease.category,
       };
-      
+
       metrics.forEach((metric: string) => {
         switch (metric) {
           case 'incidence':
@@ -600,10 +600,10 @@ router.post('/compare', (req, res) => {
             break;
         }
       });
-      
+
       return result;
     }).filter(Boolean);
-    
+
     res.json({
       success: true,
       data: {
@@ -625,7 +625,7 @@ router.post('/compare', (req, res) => {
 router.get('/audit/:diseaseId', (req, res) => {
   try {
     const { diseaseId } = req.params;
-    
+
     const disease = diseaseDataService.getDiseaseById(diseaseId);
     if (!disease) {
       return res.status(404).json({
@@ -633,7 +633,7 @@ router.get('/audit/:diseaseId', (req, res) => {
         message: 'Disease not found',
       });
     }
-    
+
     // Provide data lineage and quality metrics
     const auditInfo = {
       diseaseId: disease.id,
@@ -656,7 +656,7 @@ router.get('/audit/:diseaseId', (req, res) => {
         modificationCount: 1,
       },
     };
-    
+
     res.json({
       success: true,
       data: auditInfo,
@@ -675,7 +675,7 @@ router.get('/ingestion/status', (req, res) => {
   try {
     const ingestionService = getDiseaseIngestionService();
     const status = ingestionService.getIngestionStatus();
-    
+
     res.json({
       success: true,
       data: {
@@ -697,7 +697,7 @@ router.post('/ingestion/trigger', async (req, res) => {
   try {
     const { source } = req.body;
     const ingestionService = getDiseaseIngestionService();
-    
+
     if (source && ['SEER', 'WHO', 'CDC', 'GBD'].includes(source)) {
       const result = await ingestionService.ingestFromSource(source as any);
       res.json({
@@ -727,19 +727,19 @@ router.post('/ingestion/trigger', async (req, res) => {
 function calculateCompleteness(disease: any): string {
   let filledFields = 0;
   let totalFields = 0;
-  
+
   const fields = [
-    'name', 'icd10Code', 'description', 'prevalence', 'incidence', 
+    'name', 'icd10Code', 'description', 'prevalence', 'incidence',
     'mortality', 'targetPopulation', 'averageAge', 'geographicDistribution'
   ];
-  
+
   fields.forEach(field => {
     totalFields++;
     if (disease[field] !== null && disease[field] !== undefined) {
       filledFields++;
     }
   });
-  
+
   const percentage = (filledFields / totalFields) * 100;
   return `${percentage.toFixed(0)}%`;
 }

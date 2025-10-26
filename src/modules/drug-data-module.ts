@@ -1,6 +1,6 @@
 /**
  * Example Drug Data Module - Reference implementation
- * 
+ *
  * Demonstrates how to implement a module using the new architecture.
  * This module provides drug development pipeline data with intelligent caching,
  * health monitoring, and self-documentation.

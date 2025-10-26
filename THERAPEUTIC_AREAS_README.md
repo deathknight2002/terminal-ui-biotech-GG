@@ -11,7 +11,7 @@ This implementation adds structured therapeutic area intelligence data and a sim
 #### `data/companies.yaml`
 28 companies across therapeutic areas:
 - **13 DMD/Neuromuscular companies**: SRPT, PTCT, DYN, TRDA, PEPG, EWTX, SLDB, SANN.SW, CPRX, 4516.T, NS Pharma, Italfarmaco, RHHBY
-- **13 Cardiology companies**: AMGN, LLY, MRK, AZN, BMY, IONS, CYTK, NVO, REGN, AMRN, ESPR, BBIO, ARWR  
+- **13 Cardiology companies**: AMGN, LLY, MRK, AZN, BMY, IONS, CYTK, NVO, REGN, AMRN, ESPR, BBIO, ARWR
 - **2 MedTech companies**: Moon Surgical, Distalmotion
 
 **Structure:**
@@ -182,7 +182,7 @@ Validate YAML files:
 # Check companies.yaml
 python3 -c "import yaml; d=yaml.safe_load(open('data/companies.yaml')); print(len(d),'companies OK')"
 
-# Check programs.yaml  
+# Check programs.yaml
 python3 -c "import yaml; d=yaml.safe_load(open('data/programs.yaml')); print(len(d),'programs OK')"
 ```
 
@@ -211,9 +211,9 @@ export default function AreasCompare() {
   useEffect(() => {
     getRadar(["DMD", "Cardiology"]).then(setData);
   }, []);
-  
+
   if (!data) return <div>Loading...</div>;
-  
+
   return (
     <TherapeuticAreaRadarChart
       series={data.series}
@@ -272,7 +272,7 @@ The data structure is ready for scrapers to populate:
      rate_limit:
        max_rps: 2.0
        max_concurrent: 4
-   
+
    - source_key: clinical_trials_gov
      base_url: https://clinicaltrials.gov/api/v2
      rate_limit:

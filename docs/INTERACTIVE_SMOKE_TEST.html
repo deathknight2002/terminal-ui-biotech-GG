@@ -10,7 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
@@ -18,7 +18,7 @@
             padding: 20px;
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -28,7 +28,7 @@
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 255, 136, 0.1);
         }
-        
+
         h1 {
             color: #00ff88;
             text-transform: uppercase;
@@ -37,14 +37,14 @@
             font-size: 2em;
             text-align: center;
         }
-        
+
         .subtitle {
             text-align: center;
             color: #888;
             margin-bottom: 30px;
             font-size: 0.9em;
         }
-        
+
         .platform-section {
             background: rgba(30, 30, 45, 0.8);
             border: 1px solid #444;
@@ -52,7 +52,7 @@
             padding: 20px;
             margin-bottom: 25px;
         }
-        
+
         .platform-header {
             display: flex;
             justify-content: space-between;
@@ -61,36 +61,36 @@
             padding-bottom: 15px;
             border-bottom: 1px solid #444;
         }
-        
+
         .platform-title {
             color: #00bbff;
             font-size: 1.4em;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        
+
         .platform-status {
             padding: 6px 15px;
             border-radius: 4px;
             font-size: 0.85em;
             font-weight: bold;
         }
-        
+
         .status-pending {
             background: #555;
             color: #fff;
         }
-        
+
         .status-pass {
             background: #00ff88;
             color: #000;
         }
-        
+
         .status-fail {
             background: #ff4444;
             color: #fff;
         }
-        
+
         .checklist-item {
             display: flex;
             align-items: center;
@@ -102,22 +102,22 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .checklist-item:hover {
             background: rgba(40, 40, 60, 0.8);
             transform: translateX(5px);
         }
-        
+
         .checklist-item.checked {
             border-left-color: #00ff88;
             background: rgba(0, 255, 136, 0.1);
         }
-        
+
         .checklist-item.failed {
             border-left-color: #ff4444;
             background: rgba(255, 68, 68, 0.1);
         }
-        
+
         .checkbox {
             width: 24px;
             height: 24px;
@@ -130,48 +130,48 @@
             background: #222;
             flex-shrink: 0;
         }
-        
+
         .checklist-item.checked .checkbox {
             background: #00ff88;
             border-color: #00ff88;
         }
-        
+
         .checklist-item.failed .checkbox {
             background: #ff4444;
             border-color: #ff4444;
         }
-        
+
         .checkbox::after {
             content: '';
             display: none;
         }
-        
+
         .checklist-item.checked .checkbox::after {
             content: '✓';
             color: #000;
             font-weight: bold;
             display: block;
         }
-        
+
         .checklist-item.failed .checkbox::after {
             content: '✗';
             color: #fff;
             font-weight: bold;
             display: block;
         }
-        
+
         .item-text {
             flex: 1;
             color: #e0e0e0;
         }
-        
+
         .item-route {
             color: #00bbff;
             font-size: 0.85em;
             margin-left: 10px;
             font-family: monospace;
         }
-        
+
         .timestamp {
             text-align: center;
             color: #666;
@@ -180,7 +180,7 @@
             padding-top: 20px;
             border-top: 1px solid #333;
         }
-        
+
         .summary {
             display: flex;
             justify-content: space-around;
@@ -189,11 +189,11 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
         }
-        
+
         .summary-item {
             text-align: center;
         }
-        
+
         .summary-label {
             color: #888;
             font-size: 0.85em;
@@ -201,31 +201,31 @@
             letter-spacing: 1px;
             margin-bottom: 5px;
         }
-        
+
         .summary-value {
             font-size: 2em;
             font-weight: bold;
         }
-        
+
         .summary-value.passed {
             color: #00ff88;
         }
-        
+
         .summary-value.failed {
             color: #ff4444;
         }
-        
+
         .summary-value.pending {
             color: #888;
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
             justify-content: center;
         }
-        
+
         .btn {
             padding: 12px 30px;
             border: none;
@@ -238,28 +238,28 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .btn-primary {
             background: #00ff88;
             color: #000;
         }
-        
+
         .btn-primary:hover {
             background: #00dd77;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
         }
-        
+
         .btn-secondary {
             background: #444;
             color: #fff;
         }
-        
+
         .btn-secondary:hover {
             background: #555;
             transform: translateY(-2px);
         }
-        
+
         .instructions {
             background: rgba(0, 187, 255, 0.1);
             border: 1px solid #00bbff;
@@ -269,11 +269,11 @@
             color: #ccc;
             line-height: 1.6;
         }
-        
+
         .instructions strong {
             color: #00bbff;
         }
-        
+
         .error-code {
             background: rgba(255, 68, 68, 0.2);
             border: 1px solid #ff4444;
@@ -283,35 +283,35 @@
             font-size: 0.9em;
             display: none;
         }
-        
+
         .checklist-item.failed .error-code {
             display: block;
         }
-        
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
             }
-            
+
             h1 {
                 font-size: 1.5em;
             }
-            
+
             .platform-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
-            
+
             .summary {
                 flex-direction: column;
                 gap: 15px;
             }
-            
+
             .action-buttons {
                 flex-direction: column;
             }
-            
+
             .btn {
                 width: 100%;
             }
@@ -322,31 +322,31 @@
     <div class="container">
         <h1>🔬 Biotech Terminal</h1>
         <div class="subtitle">Interactive Smoke Test Suite</div>
-        
+
         <div class="instructions">
             <strong>Instructions:</strong> Click on each item as you test it. Green checkmarks indicate passed tests, red X marks indicate failures. Use this alongside your running application to systematically verify all features.
         </div>
-        
+
         <!-- Desktop Platform -->
         <div class="platform-section" id="desktop-section">
             <div class="platform-header">
                 <div class="platform-title">🖥️ Desktop / Terminal App</div>
                 <div class="platform-status status-pending" id="desktop-status">PENDING</div>
             </div>
-            
+
             <div id="desktop-checklist"></div>
         </div>
-        
+
         <!-- Mobile Platform -->
         <div class="platform-section" id="mobile-section">
             <div class="platform-header">
                 <div class="platform-title">📱 Mobile App</div>
                 <div class="platform-status status-pending" id="mobile-status">PENDING</div>
             </div>
-            
+
             <div id="mobile-checklist"></div>
         </div>
-        
+
         <!-- Summary -->
         <div class="summary">
             <div class="summary-item">
@@ -362,15 +362,15 @@
                 <div class="summary-value pending" id="pending-count">0</div>
             </div>
         </div>
-        
+
         <div class="action-buttons">
             <button class="btn btn-primary" onclick="exportResults()">📊 Export Results</button>
             <button class="btn btn-secondary" onclick="resetTests()">🔄 Reset All</button>
         </div>
-        
+
         <div class="timestamp" id="timestamp"></div>
     </div>
-    
+
     <script>
         const desktopTests = [
             { text: 'Dashboard loads without errors', route: 'http://localhost:3000/', errorCode: 'E010' },
@@ -392,7 +392,7 @@
             { text: 'Responsive design works (1366x768)', route: 'DevTools responsive mode', errorCode: 'E008' },
             { text: 'Theme colors display correctly', route: 'Visual check', errorCode: 'E009' }
         ];
-        
+
         const mobileTests = [
             { text: 'Dashboard loads on mobile', route: 'http://localhost:3002/dashboard', errorCode: 'E007' },
             { text: 'Pipeline page displays on mobile', route: 'http://localhost:3002/pipeline', errorCode: 'E007' },
@@ -418,43 +418,43 @@
             { text: 'No horizontal scroll', route: 'Swipe test', errorCode: 'E007' },
             { text: 'Landscape mode works', route: 'Rotate device', errorCode: 'E007' }
         ];
-        
+
         let testStates = {
             desktop: {},
             mobile: {}
         };
-        
+
         function createChecklistItem(test, index, platform) {
             const item = document.createElement('div');
             item.className = 'checklist-item';
             item.dataset.platform = platform;
             item.dataset.index = index;
-            
+
             const state = testStates[platform][index] || 'pending';
             if (state === 'checked') {
                 item.classList.add('checked');
             } else if (state === 'failed') {
                 item.classList.add('failed');
             }
-            
+
             item.innerHTML = `
                 <div class="checkbox"></div>
                 <div class="item-text">${test.text}</div>
                 <div class="item-route">${test.route}</div>
                 <div class="error-code">Error ${test.errorCode}: ${test.text} failed. Time: ${new Date().toISOString()}</div>
             `;
-            
+
             item.addEventListener('click', function() {
                 cycleState(platform, index, item);
             });
-            
+
             return item;
         }
-        
+
         function cycleState(platform, index, element) {
             const currentState = testStates[platform][index] || 'pending';
             let newState;
-            
+
             if (currentState === 'pending') {
                 newState = 'checked';
                 element.classList.add('checked');
@@ -468,18 +468,18 @@
                 element.classList.remove('checked');
                 element.classList.remove('failed');
             }
-            
+
             testStates[platform][index] = newState;
             saveState();
             updateSummary();
             updatePlatformStatus(platform);
         }
-        
+
         function updateSummary() {
             let passed = 0;
             let failed = 0;
             let pending = 0;
-            
+
             for (const platform in testStates) {
                 for (const index in testStates[platform]) {
                     const state = testStates[platform][index];
@@ -488,28 +488,28 @@
                     else pending++;
                 }
             }
-            
+
             // Add untested items to pending
             pending += (desktopTests.length + mobileTests.length) - (passed + failed + pending);
-            
+
             document.getElementById('passed-count').textContent = passed;
             document.getElementById('failed-count').textContent = failed;
             document.getElementById('pending-count').textContent = pending;
         }
-        
+
         function updatePlatformStatus(platform) {
             const tests = platform === 'desktop' ? desktopTests : mobileTests;
             let passed = 0;
             let failed = 0;
-            
+
             for (let i = 0; i < tests.length; i++) {
                 const state = testStates[platform][i];
                 if (state === 'checked') passed++;
                 else if (state === 'failed') failed++;
             }
-            
+
             const statusElement = document.getElementById(`${platform}-status`);
-            
+
             if (failed > 0) {
                 statusElement.textContent = `FAILED (${failed} issues)`;
                 statusElement.className = 'platform-status status-fail';
@@ -521,18 +521,18 @@
                 statusElement.className = 'platform-status status-pending';
             }
         }
-        
+
         function saveState() {
             localStorage.setItem('smokeTestStates', JSON.stringify(testStates));
         }
-        
+
         function loadState() {
             const saved = localStorage.getItem('smokeTestStates');
             if (saved) {
                 testStates = JSON.parse(saved);
             }
         }
-        
+
         function resetTests() {
             if (confirm('Reset all test results?')) {
                 testStates = { desktop: {}, mobile: {} };
@@ -543,13 +543,13 @@
                 updatePlatformStatus('mobile');
             }
         }
-        
+
         function exportResults() {
             const timestamp = new Date().toISOString();
             let report = `Biotech Terminal Smoke Test Report\n`;
             report += `Generated: ${timestamp}\n`;
             report += `=${'='.repeat(60)}\n\n`;
-            
+
             report += `DESKTOP / TERMINAL APP\n`;
             report += `-${'='.repeat(60)}\n`;
             desktopTests.forEach((test, index) => {
@@ -562,7 +562,7 @@
                 }
                 report += `\n`;
             });
-            
+
             report += `\nMOBILE APP\n`;
             report += `-${'='.repeat(60)}\n`;
             mobileTests.forEach((test, index) => {
@@ -575,7 +575,7 @@
                 }
                 report += `\n`;
             });
-            
+
             // Calculate summary
             let passed = 0, failed = 0, pending = 0;
             for (const platform in testStates) {
@@ -587,14 +587,14 @@
                 }
             }
             pending += (desktopTests.length + mobileTests.length) - (passed + failed + pending);
-            
+
             report += `\nSUMMARY\n`;
             report += `=${'='.repeat(60)}\n`;
             report += `Total Tests: ${desktopTests.length + mobileTests.length}\n`;
             report += `Passed: ${passed}\n`;
             report += `Failed: ${failed}\n`;
             report += `Pending: ${pending}\n`;
-            
+
             // Download as file
             const blob = new Blob([report], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
@@ -604,29 +604,29 @@
             a.click();
             URL.revokeObjectURL(url);
         }
-        
+
         function initializeTests() {
             const desktopChecklist = document.getElementById('desktop-checklist');
             const mobileChecklist = document.getElementById('mobile-checklist');
-            
+
             desktopChecklist.innerHTML = '';
             mobileChecklist.innerHTML = '';
-            
+
             desktopTests.forEach((test, index) => {
                 desktopChecklist.appendChild(createChecklistItem(test, index, 'desktop'));
             });
-            
+
             mobileTests.forEach((test, index) => {
                 mobileChecklist.appendChild(createChecklistItem(test, index, 'mobile'));
             });
         }
-        
+
         function updateTimestamp() {
             const now = new Date();
-            document.getElementById('timestamp').textContent = 
+            document.getElementById('timestamp').textContent =
                 `Last updated: ${now.toLocaleString()} | Tests are saved automatically`;
         }
-        
+
         // Initialize
         loadState();
         initializeTests();
@@ -634,7 +634,7 @@
         updatePlatformStatus('desktop');
         updatePlatformStatus('mobile');
         updateTimestamp();
-        
+
         // Update timestamp every minute
         setInterval(updateTimestamp, 60000);
     </script>

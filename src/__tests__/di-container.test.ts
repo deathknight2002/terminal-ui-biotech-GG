@@ -202,7 +202,7 @@ describe('DIContainer', () => {
 
     it('should not share singleton instances created in scope', () => {
       container.registerSingleton('test-service', () => ({ value: 'test' }));
-      
+
       const scope1 = container.createScope();
       const scope2 = container.createScope();
 

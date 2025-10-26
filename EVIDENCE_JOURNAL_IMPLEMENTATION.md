@@ -17,7 +17,7 @@ The implementation addresses the request for:
 
 ### 1. Refresh Mode System ✅
 
-**Component**: `RefreshModeToggle` 
+**Component**: `RefreshModeToggle`
 - **Manual Mode** (DEFAULT): Zero background network, explicit refresh button (aligns with existing PWA model)
 - **Scheduled Mode** (UI ready): Auto-refresh every N minutes, pause on edit, countdown timer
 - **Live Mode** (UI ready): WebSocket streaming, change badges, diff preview before applying

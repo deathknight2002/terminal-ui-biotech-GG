@@ -79,7 +79,7 @@ export function setupScrapingWebSocket(io: SocketServer): void {
     // Subscribe to scraping updates
     socket.on('scraping:subscribe', (options: { channels?: string[] }) => {
       const channels = options.channels || ['updates', 'health', 'metrics'];
-      
+
       channels.forEach(channel => {
         const room = `scraping:${channel}`;
         socket.join(room);
@@ -95,7 +95,7 @@ export function setupScrapingWebSocket(io: SocketServer): void {
     // Unsubscribe from scraping updates
     socket.on('scraping:unsubscribe', (options: { channels?: string[] }) => {
       const channels = options.channels || ['updates', 'health', 'metrics'];
-      
+
       channels.forEach(channel => {
         const room = `scraping:${channel}`;
         socket.leave(room);

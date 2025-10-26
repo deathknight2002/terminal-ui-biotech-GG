@@ -19,7 +19,7 @@ describe('useFeatureFlag', () => {
   });
 
   it('should accept custom default value', () => {
-    const { result } = renderHook(() => 
+    const { result } = renderHook(() =>
       useFeatureFlag('search.meilisearch', { defaultValue: true })
     );
     expect(result.current).toBe(true);
@@ -27,7 +27,7 @@ describe('useFeatureFlag', () => {
 
   it('should handle all flag keys', () => {
     Object.keys(FEATURE_FLAG_DEFAULTS).forEach((key) => {
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useFeatureFlag(key as keyof typeof FEATURE_FLAG_DEFAULTS)
       );
       expect(typeof result.current).toBe('boolean');

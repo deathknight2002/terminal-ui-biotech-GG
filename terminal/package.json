@@ -1,6 +1,6 @@
 {
   "name": "biotech-terminal-app",
-  "version": "1.0.0", 
+  "version": "1.0.0",
   "description": "Biotech Terminal Application - Full-featured pharmaceutical intelligence platform",
   "type": "module",
   "private": true,
@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "e2e:install": "npx playwright install --with-deps",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed"
   },
   "dependencies": {
     "@biotech-terminal/frontend-components": "file:../frontend-components",

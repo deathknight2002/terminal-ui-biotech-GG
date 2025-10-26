@@ -1,6 +1,6 @@
 /**
  * CloudEvents EventBus Adapter
- * 
+ *
  * Wraps the EventBus with CloudEvents envelope for standardized event handling
  * Provides durable backend support and event contract validation
  */
@@ -162,7 +162,7 @@ export class CloudEventBus {
       async (busEvent: BusEvent) => {
         // Extract CloudEvent from BusEvent payload
         const cloudEvent = busEvent.payload as CloudEvent<T>;
-        
+
         // Validate CloudEvent structure
         if (!validateCloudEvent(cloudEvent)) {
           console.error(`Invalid CloudEvent structure for type: ${eventType}`);
@@ -241,7 +241,7 @@ export class CloudEventBus {
    */
   private async validateEventContract(event: CloudEvent): Promise<void> {
     // Extract schema name from dataschema or type
-    const schemaMatch = event.dataschema?.match(/\/schemas\/([^\/]+)\//) 
+    const schemaMatch = event.dataschema?.match(/\/schemas\/([^\/]+)\//)
       || event.type.match(/biotech\.([^.]+)\./);
 
     if (!schemaMatch) {

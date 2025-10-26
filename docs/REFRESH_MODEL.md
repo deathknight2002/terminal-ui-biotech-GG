@@ -48,10 +48,10 @@ const queryClient = new QueryClient({
 const handleRefresh = async () => {
   // Invalidate all cached queries
   await queryClient.invalidateQueries();
-  
+
   // Update timestamp
   setLastRefreshed(new Date().toISOString());
-  
+
   // Show toast notification
   showToast({ title: 'Refresh Complete', variant: 'success' });
 };
@@ -278,7 +278,7 @@ Terminal shows diff after refresh:
 ✅ Refresh complete (2 minutes ago)
    📰 FierceBiotech: +12 new, 3 updated
    🏛️  FDA: +2 new, 0 updated
-   
+
    [View Changes →]
 ```
 

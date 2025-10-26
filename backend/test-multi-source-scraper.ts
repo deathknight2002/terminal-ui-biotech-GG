@@ -63,22 +63,22 @@ async function testMultiSourceScraper() {
   // Test 3: Get statistics
   console.log('📋 Test 3: Generate Statistics');
   const stats = scraper.getStats(mockTrials);
-  
+
   console.log(`Total trials: ${stats.total}`);
   console.log();
-  
+
   console.log('By Source:');
   Object.entries(stats.bySource).forEach(([source, count]) => {
     console.log(`  ${source}: ${count}`);
   });
   console.log();
-  
+
   console.log('By Phase:');
   Object.entries(stats.byPhase).forEach(([phase, count]) => {
     console.log(`  ${phase}: ${count}`);
   });
   console.log();
-  
+
   console.log('By Status:');
   Object.entries(stats.byStatus).forEach(([status, count]) => {
     console.log(`  ${status}: ${count}`);
@@ -97,7 +97,7 @@ async function testMultiSourceScraper() {
   // Test 4: Validate trial structure
   console.log('📋 Test 4: Validate Trial Data Structure');
   const sampleTrial = mockTrials[0];
-  
+
   const requiredFields = [
     'nctId',
     'title',

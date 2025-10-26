@@ -31,10 +31,10 @@ export const EnhancedFeaturesDemo: React.FC = () => {
     { key: 'id', header: 'ID', width: 60, align: 'center', sortable: true },
     { key: 'drug', header: 'DRUG NAME', width: 200, sortable: true },
     { key: 'company', header: 'COMPANY', width: 150, sortable: true },
-    { 
-      key: 'phase', 
-      header: 'PHASE', 
-      width: 120, 
+    {
+      key: 'phase',
+      header: 'PHASE',
+      width: 120,
       sortable: true,
       render: (row) => {
         const colors: Record<string, string> = {
@@ -48,16 +48,16 @@ export const EnhancedFeaturesDemo: React.FC = () => {
     },
     { key: 'indication', header: 'INDICATION', width: 150, sortable: true },
     { key: 'targetDate', header: 'TARGET DATE', width: 120, align: 'center', sortable: true },
-    { 
-      key: 'probability', 
-      header: 'PROBABILITY', 
-      width: 120, 
-      align: 'right', 
+    {
+      key: 'probability',
+      header: 'PROBABILITY',
+      width: 120,
+      align: 'right',
       sortable: true,
       format: (value) => `${value}%`,
       render: (row) => {
-        const color = row.probability >= 80 ? 'var(--status-success, #00ff00)' : 
-                      row.probability >= 70 ? 'var(--status-warning, #ffaa00)' : 
+        const color = row.probability >= 80 ? 'var(--status-success, #00ff00)' :
+                      row.probability >= 70 ? 'var(--status-warning, #ffaa00)' :
                       'var(--text-secondary, #888)';
         return <span style={{ color }}>{row.probability}%</span>;
       }
@@ -84,7 +84,7 @@ export const EnhancedFeaturesDemo: React.FC = () => {
       </div>
 
       <div className="demo-controls">
-        <Button 
+        <Button
           onClick={() => setShowWorkspaceManager(true)}
           variant="primary"
         >
@@ -107,22 +107,22 @@ export const EnhancedFeaturesDemo: React.FC = () => {
             <li>✅ Right-click context menu (try it!)</li>
           </ul>
 
-          <div 
+          <div
             className="table-wrapper"
             onContextMenu={(e) => {
               e.preventDefault();
               const items = [
                 commonContextMenuItems.export(() => alert('Export all data')),
                 commonContextMenuItems.divider(),
-                { 
-                  label: 'Select All', 
-                  onClick: () => alert('Select all rows'), 
-                  icon: null 
+                {
+                  label: 'Select All',
+                  onClick: () => alert('Select all rows'),
+                  icon: null
                 },
-                { 
-                  label: 'Clear Filters', 
-                  onClick: () => alert('Clear all filters'), 
-                  icon: null 
+                {
+                  label: 'Clear Filters',
+                  onClick: () => alert('Clear all filters'),
+                  icon: null
                 }
               ];
               openContextMenu(e, items);

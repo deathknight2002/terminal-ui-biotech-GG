@@ -33,15 +33,15 @@ async def get_latest_news(
     """
     try:
         query = db.query(Article)
-        
+
         if valid_only:
             query = query.filter(Article.link_valid == True)
-        
+
         if source:
             query = query.filter(Article.source == source)
-        
+
         articles = query.order_by(desc(Article.published_at)).limit(limit).all()
-        
+
         result = []
         for article in articles:
             # Get sentiments
@@ -51,7 +51,7 @@ async def get_latest_news(
                     "score": sentiment.score,
                     "rationale": sentiment.rationale
                 }
-            
+
             result.append({
                 "id": article.id,
                 "title": article.title,
@@ -64,7 +64,7 @@ async def get_latest_news(
                 "sentiments": sentiments_data,
                 "ingested_at": article.ingested_at.isoformat() if article.ingested_at else None
             })
-        
+
         return {
             "articles": result,
             "count": len(result),
@@ -73,7 +73,7 @@ async def get_latest_news(
                 "valid_only": valid_only
             }
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching latest news: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -89,10 +89,10 @@ async def get_article(
     """
     try:
         article = db.query(Article).filter(Article.id == article_id).first()
-        
+
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
-        
+
         # Get sentiments
         sentiments_data = {}
         for sentiment in article.sentiments:
@@ -100,12 +100,12 @@ async def get_article(
                 "score": sentiment.score,
                 "rationale": sentiment.rationale
             }
-        
+
         # Get related diseases
         disease_links = db.query(ArticleDisease).filter(
             ArticleDisease.article_id == article_id
         ).all()
-        
+
         related_diseases = [
             {
                 "disease_id": link.disease_id,
@@ -113,12 +113,12 @@ async def get_article(
             }
             for link in disease_links
         ]
-        
+
         # Get related companies
         company_links = db.query(ArticleCompany).filter(
             ArticleCompany.article_id == article_id
         ).all()
-        
+
         related_companies = [
             {
                 "company_id": link.company_id,
@@ -126,12 +126,12 @@ async def get_article(
             }
             for link in company_links
         ]
-        
+
         # Get related catalysts
         catalyst_links = db.query(ArticleCatalyst).filter(
             ArticleCatalyst.article_id == article_id
         ).all()
-        
+
         related_catalysts = [
             {
                 "catalyst_id": link.catalyst_id,
@@ -139,7 +139,7 @@ async def get_article(
             }
             for link in catalyst_links
         ]
-        
+
         return {
             "id": article.id,
             "title": article.title,
@@ -157,7 +157,7 @@ async def get_article(
             "ingested_at": article.ingested_at.isoformat() if article.ingested_at else None,
             "created_at": article.created_at.isoformat() if article.created_at else None
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -172,14 +172,14 @@ async def get_news_sources(db: Session = Depends(get_db)):
     """
     try:
         from sqlalchemy import func
-        
+
         sources = db.query(
             Article.source,
             func.count(Article.id).label('count')
         ).filter(
             Article.link_valid == True
         ).group_by(Article.source).all()
-        
+
         return {
             "sources": [
                 {
@@ -189,7 +189,7 @@ async def get_news_sources(db: Session = Depends(get_db)):
                 for source, count in sources
             ]
         }
-        
+
     except Exception as e:
         logger.error(f"Error fetching news sources: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -225,22 +225,22 @@ async def get_news_diff(
         else:
             # Default to last hour
             since_dt = datetime.utcnow() - timedelta(hours=1)
-        
+
         # Get new articles
         new_articles = db.query(Article).filter(
             Article.created_at >= since_dt,
             Article.link_valid == True
         ).order_by(desc(Article.created_at)).all()
-        
+
         # Get updated articles (ingested_at > created_at means it was re-ingested/updated)
         updated_articles = db.query(Article).filter(
             Article.ingested_at >= since_dt,
             Article.created_at < since_dt,
             Article.link_valid == True
         ).order_by(desc(Article.ingested_at)).all()
-        
+
         highlights = []
-        
+
         # Add new articles to highlights
         for article in new_articles[:10]:  # Limit to 10 highlights
             highlights.append({
@@ -251,7 +251,7 @@ async def get_news_diff(
                 "article_id": article.id,
                 "url": article.url
             })
-        
+
         # Add updated articles to highlights
         for article in updated_articles[:5]:  # Limit to 5 highlights
             highlights.append({
@@ -262,7 +262,7 @@ async def get_news_diff(
                 "article_id": article.id,
                 "url": article.url
             })
-        
+
         return {
             "since": since_dt.isoformat(),
             "changes": {
@@ -273,7 +273,7 @@ async def get_news_diff(
             "highlights": highlights,
             "last_check": datetime.utcnow().isoformat()
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -288,27 +288,27 @@ async def refresh_news_now(
 ):
     """
     Manual news refresh pipeline - NO BACKGROUND DAEMONS
-    
+
     Fetches from configured sources, dedupes, tags entities, and saves snapshots.
     Returns statistics about the refresh operation.
     """
     try:
         logger.info(f"Starting manual news refresh (max_articles={max_articles})")
-        
+
         refresh_service = NewsRefreshService(db)
-        
+
         # For now, we don't have actual scrapers configured
         # This would normally fetch from real sources
         sources = []  # Would be actual scraper instances
-        
+
         stats = refresh_service.refresh_from_sources(sources, max_articles)
-        
+
         return {
             "success": True,
             "message": "News refresh completed",
             "stats": stats
         }
-        
+
     except Exception as e:
         logger.error(f"Error during news refresh: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -328,25 +328,25 @@ async def get_article_exposures(
         article = db.query(Article).filter(Article.id == article_id).first()
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
-        
+
         # Get all entity links
         entity_links = db.query(ArticleEntity).filter(
             ArticleEntity.article_id == article_id
         ).all()
-        
+
         exposures = {
             "direct": [],
             "competitor": [],
             "etf": []
         }
-        
+
         entity_service = EntityExtractionService(db)
-        
+
         for link in entity_links:
             entity = db.query(Entity).filter(Entity.id == link.entity_id).first()
             if not entity:
                 continue
-            
+
             exposure_data = {
                 "entity_id": entity.id,
                 "name": entity.name,
@@ -356,10 +356,10 @@ async def get_article_exposures(
                 "weight": link.weight,
                 "confidence": link.confidence
             }
-            
+
             if link.role == "primary":
                 exposures["direct"].append(exposure_data)
-                
+
                 # Get competitors for primary entities
                 if entity.kind == "company":
                     competitors = entity_service.get_competitors(entity.id, limit=5)
@@ -371,12 +371,12 @@ async def get_article_exposures(
                         }
                         for comp in competitors
                     ])
-                    
+
             elif link.role == "etf":
                 exposures["etf"].append(exposure_data)
             elif link.role == "competitor":
                 exposures["competitor"].append(exposure_data)
-        
+
         return {
             "article_id": article_id,
             "article_title": article.title,
@@ -388,7 +388,7 @@ async def get_article_exposures(
                 "etf": len(exposures["etf"])
             }
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -410,10 +410,10 @@ async def get_article_reactions(
         article = db.query(Article).filter(Article.id == article_id).first()
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
-        
+
         reaction_service = PriceReactionService(db)
         reactions = reaction_service.get_reactions(article_id)
-        
+
         return {
             "article_id": article_id,
             "article_title": article.title,
@@ -421,7 +421,7 @@ async def get_article_reactions(
             "reactions": reactions,
             "count": len(reactions)
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -442,22 +442,22 @@ async def recompute_article_reaction(
     """
     try:
         reaction_service = PriceReactionService(db)
-        
+
         result = reaction_service.recompute_reaction(
             article_id,
             entity_id,
             window,
             benchmark_ticker
         )
-        
+
         if not result:
             raise HTTPException(status_code=404, detail="Could not compute reaction")
-        
+
         return {
             "success": True,
             "reaction": result
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -478,16 +478,16 @@ async def get_etf_constituents(
     try:
         from ..database import ETFConstituent
         from sqlalchemy import and_
-        
+
         # Get ETF entity
         etf = db.query(Entity).filter(
             Entity.ticker == ticker.upper(),
             Entity.kind == "etf"
         ).first()
-        
+
         if not etf:
             raise HTTPException(status_code=404, detail=f"ETF {ticker} not found")
-        
+
         # Parse asof date
         if asof:
             try:
@@ -496,7 +496,7 @@ async def get_etf_constituents(
                 raise HTTPException(status_code=400, detail=f"Invalid date format: {asof}")
         else:
             asof_date = datetime.utcnow()
-        
+
         # Get constituents for the closest date on or before asof_date
         constituents = db.query(ETFConstituent).filter(
             and_(
@@ -504,13 +504,13 @@ async def get_etf_constituents(
                 ETFConstituent.asof_date <= asof_date
             )
         ).order_by(desc(ETFConstituent.asof_date)).limit(100).all()
-        
+
         # Group by member to get latest snapshot per member
         member_map = {}
         for constituent in constituents:
             if constituent.member_entity_id not in member_map:
                 member_map[constituent.member_entity_id] = constituent
-        
+
         # Build result
         result = []
         for member_id, constituent in member_map.items():
@@ -523,7 +523,7 @@ async def get_etf_constituents(
                     "weight": constituent.weight,
                     "asof_date": constituent.asof_date.isoformat() if constituent.asof_date else None
                 })
-        
+
         return {
             "etf_ticker": ticker,
             "etf_name": etf.name,
@@ -531,7 +531,7 @@ async def get_etf_constituents(
             "constituents": result,
             "count": len(result)
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:

@@ -1,8 +1,8 @@
 # Sprints 2-6 Implementation Guide
 ## Redmile Catalyst Intelligence System
 
-> **Duration:** Sprints 2-6 (11 weeks)  
-> **Prerequisites:** Sprint 1 (Portfolio Foundation) complete  
+> **Duration:** Sprints 2-6 (11 weeks)
+> **Prerequisites:** Sprint 1 (Portfolio Foundation) complete
 > **Goal:** Complete the Redmile Catalyst Intelligence System
 
 ---
@@ -60,7 +60,7 @@ class CatalystScore:
     """Enhanced catalyst score"""
     total: int  # 0-24
     tier: str   # Ultra-High, High-Torque, Tradable, Watch
-    
+
     # Individual dimensions
     event_leverage: int        # 0-4
     timing_clarity: int        # 0-3
@@ -70,7 +70,7 @@ class CatalystScore:
     street_differential: int   # 0-3
     volatility_potential: int  # 0-2
     execution_risk: int        # 0-2
-    
+
     # Metadata
     confidence: float  # 0-1
     rationale: str
@@ -78,7 +78,7 @@ class CatalystScore:
 
 class CatalystScorer:
     """Enhanced scoring algorithm"""
-    
+
     def score_catalyst(
         self,
         catalyst: Dict,
@@ -87,39 +87,39 @@ class CatalystScorer:
     ) -> CatalystScore:
         """
         Score a catalyst across 8 dimensions
-        
+
         Args:
             catalyst: Catalyst data (event_type, endpoint, company, etc.)
             street_consensus: Street PoS and expectations
             historical_outcomes: Historical analogue data
-            
+
         Returns:
             CatalystScore with breakdown
         """
         # Dimension 1: Event Leverage (0-4)
         event_leverage = self._score_event_leverage(catalyst)
-        
+
         # Dimension 2: Timing Clarity (0-3)
         timing_clarity = self._score_timing_clarity(catalyst)
-        
+
         # Dimension 3: Surprise Factor (0-3)
         surprise_factor = self._score_surprise_factor(catalyst, historical_outcomes)
-        
+
         # Dimension 4: Downside Contained (0-3)
         downside_contained = self._score_downside_contained(catalyst)
-        
+
         # Dimension 5: Market Depth (0-3)
         market_depth = self._score_market_depth(catalyst)
-        
+
         # Dimension 6: Street Differential (0-3)
         street_differential = self._score_street_differential(catalyst, street_consensus)
-        
+
         # Dimension 7: Volatility Potential (0-2)
         volatility_potential = self._score_volatility_potential(catalyst)
-        
+
         # Dimension 8: Execution Risk (0-2) - inverted
         execution_risk = self._score_execution_risk(catalyst)
-        
+
         # Calculate total
         total = (
             event_leverage +
@@ -131,16 +131,16 @@ class CatalystScorer:
             volatility_potential +
             execution_risk
         )
-        
+
         # Determine tier
         tier = self._determine_tier(total)
-        
+
         # Generate rationale
         rationale = self._generate_rationale(catalyst, total, tier)
-        
+
         # Confidence (based on data completeness)
         confidence = self._calculate_confidence(catalyst, street_consensus)
-        
+
         return CatalystScore(
             total=total,
             tier=tier,
@@ -155,15 +155,15 @@ class CatalystScorer:
             confidence=confidence,
             rationale=rationale
         )
-    
+
     def _score_event_leverage(self, catalyst: Dict) -> int:
         """
         Score event leverage (0-4)
-        
+
         Hard endpoints (MACE, mortality) > soft endpoints (biomarkers)
         """
         endpoint_type = catalyst.get('endpoint_type', '').lower()
-        
+
         if any(hard in endpoint_type for hard in ['mace', 'mortality', 'survival', 'hospitalization']):
             return 4  # Hard clinical endpoint
         elif 'phase 3' in catalyst.get('event_type', '').lower():
@@ -174,16 +174,16 @@ class CatalystScorer:
             return 2  # Phase 2 readout
         else:
             return 1  # Other events
-    
+
     def _score_timing_clarity(self, catalyst: Dict) -> int:
         """
         Score timing clarity (0-3)
-        
+
         Fixed PDUFA date > expected completion date > TBD
         """
         event_type = catalyst.get('event_type', '').lower()
         has_date = catalyst.get('event_date') is not None
-        
+
         if 'pdufa' in event_type and has_date:
             return 3  # Fixed PDUFA date
         elif has_date and 'primary completion' in event_type:
@@ -192,19 +192,19 @@ class CatalystScorer:
             return 1  # Date provided but uncertain
         else:
             return 0  # No date
-    
+
     def _score_surprise_factor(self, catalyst: Dict, historical_outcomes: Optional[Dict]) -> int:
         """
         Score surprise potential (0-3)
-        
+
         Based on historical analogues and Street underweighting
         """
         if not historical_outcomes:
             return 1  # Default
-        
+
         # Check if Street historically underweighted similar catalysts
         analogue_surprise_rate = historical_outcomes.get('surprise_rate', 0)
-        
+
         if analogue_surprise_rate > 0.6:
             return 3  # High surprise potential
         elif analogue_surprise_rate > 0.4:
@@ -213,15 +213,15 @@ class CatalystScorer:
             return 1  # Low surprise
         else:
             return 0  # No surprise expected
-    
+
     def _score_downside_contained(self, catalyst: Dict) -> int:
         """
         Score downside containment (0-3)
-        
+
         CRL resolution, class read-through, prior failed trials
         """
         catalyst_history = catalyst.get('history', [])
-        
+
         if 'crl_resolved' in catalyst_history:
             return 3  # CRL resolved, clear path
         elif 'class_positive' in catalyst_history:
@@ -230,15 +230,15 @@ class CatalystScorer:
             return 1  # No negative history
         else:
             return 0  # Prior failures
-    
+
     def _score_market_depth(self, catalyst: Dict) -> int:
         """
         Score market depth (0-3)
-        
+
         Peak sales potential + payer appetite
         """
         peak_sales = catalyst.get('peak_sales_estimate', 0)  # USD millions
-        
+
         if peak_sales > 5000:
             return 3  # Blockbuster ($5B+)
         elif peak_sales > 1000:
@@ -247,21 +247,21 @@ class CatalystScorer:
             return 1  # Moderate market
         else:
             return 0  # Small market
-    
+
     def _score_street_differential(self, catalyst: Dict, street_consensus: Optional[Dict]) -> int:
         """
         Score Street differential (0-3)
-        
+
         YOUR PoS vs Street consensus PoS
         """
         if not street_consensus:
             return 0  # No Street data
-        
+
         house_pos = catalyst.get('house_pos', 0.5)  # Your PoS
         street_pos = street_consensus.get('consensus_pos', 0.5)
-        
+
         differential = abs(house_pos - street_pos)
-        
+
         if differential > 0.3:
             return 3  # Large differential (>30%)
         elif differential > 0.2:
@@ -270,17 +270,17 @@ class CatalystScorer:
             return 1  # Small differential
         else:
             return 0  # Aligned with Street
-    
+
     def _score_volatility_potential(self, catalyst: Dict) -> int:
         """
         Score volatility potential (0-2)
-        
+
         Expected move magnitude based on options IV and binary nature
         """
         is_binary = catalyst.get('is_binary', False)  # FDA approval, Phase 3
         market_cap = catalyst.get('market_cap', 0)
         peak_sales = catalyst.get('peak_sales_estimate', 0)
-        
+
         # If peak sales >> market cap, high volatility potential
         if is_binary and peak_sales > market_cap * 2:
             return 2  # High volatility
@@ -288,24 +288,24 @@ class CatalystScorer:
             return 1  # Moderate volatility
         else:
             return 0  # Low volatility
-    
+
     def _score_execution_risk(self, catalyst: Dict) -> int:
         """
         Score execution risk (0-2) - INVERTED
-        
+
         Clear regulatory path = higher score
         """
         has_breakthrough = catalyst.get('breakthrough_designation', False)
         has_fast_track = catalyst.get('fast_track', False)
         manufacturing_ready = catalyst.get('manufacturing_ready', False)
-        
+
         if has_breakthrough and manufacturing_ready:
             return 2  # Low execution risk
         elif has_fast_track or manufacturing_ready:
             return 1  # Moderate risk
         else:
             return 0  # High execution risk
-    
+
     def _determine_tier(self, total_score: int) -> str:
         """Determine tier from total score"""
         if total_score >= 16:
@@ -316,15 +316,15 @@ class CatalystScorer:
             return "Tradable"  # 📊
         else:
             return "Watch"  # 👁️
-    
+
     def _generate_rationale(self, catalyst: Dict, total: int, tier: str) -> str:
         """Generate human-readable rationale"""
         company = catalyst.get('company', 'Unknown')
         drug = catalyst.get('drug', 'Unknown')
         event_type = catalyst.get('event_type', 'Unknown')
-        
+
         return f"{company} {drug} {event_type} - Score: {total}/24 ({tier})"
-    
+
     def _calculate_confidence(self, catalyst: Dict, street_consensus: Optional[Dict]) -> float:
         """Calculate confidence based on data completeness"""
         fields = [
@@ -334,7 +334,7 @@ class CatalystScorer:
             catalyst.get('market_cap'),
             street_consensus,
         ]
-        
+
         completeness = sum(1 for f in fields if f is not None) / len(fields)
         return completeness
 ```
@@ -357,16 +357,16 @@ from bs4 import BeautifulSoup
 
 class StreetConsensusScraper:
     """Scraper for Street consensus data"""
-    
+
     def scrape_analyst_reports(self, ticker: str) -> Dict:
         """
         Scrape analyst reports for consensus PoS
-        
+
         In production, integrate with:
         - Bloomberg Terminal API
         - FactSet API
         - Analyst report databases
-        
+
         For Sprint 2, use mock data
         """
         # Mock data for demonstration
@@ -375,7 +375,7 @@ class StreetConsensusScraper:
             'VRTX': {'consensus_pos': 0.75, 'analysts': 25, 'target_price': 450},
             'IONS': {'consensus_pos': 0.60, 'analysts': 15, 'target_price': 55},
         }
-        
+
         return mock_data.get(ticker, {'consensus_pos': 0.5, 'analysts': 0})
 ```
 
@@ -397,15 +397,15 @@ async def get_catalyst_score(
 ):
     """Get enhanced score for a catalyst"""
     catalyst = db.query(Catalyst).filter(Catalyst.id == id).first()
-    
+
     if not catalyst:
         raise HTTPException(status_code=404, detail="Catalyst not found")
-    
+
     # Get Street consensus
     from bt_platform.scrapers.sites.street_consensus_scraper import StreetConsensusScraper
     street_scraper = StreetConsensusScraper()
     street_consensus = street_scraper.scrape_analyst_reports(catalyst.ticker)
-    
+
     # Score catalyst
     score = scorer.score_catalyst(
         catalyst={
@@ -419,7 +419,7 @@ async def get_catalyst_score(
         },
         street_consensus=street_consensus
     )
-    
+
     result = {
         'catalyst_id': id,
         'total_score': score.total,
@@ -427,7 +427,7 @@ async def get_catalyst_score(
         'confidence': score.confidence,
         'rationale': score.rationale,
     }
-    
+
     if include_breakdown:
         result['breakdown'] = {
             'event_leverage': score.event_leverage,
@@ -439,7 +439,7 @@ async def get_catalyst_score(
             'volatility_potential': score.volatility_potential,
             'execution_risk': score.execution_risk,
         }
-    
+
     return result
 
 
@@ -450,14 +450,14 @@ async def batch_score_catalysts(
 ):
     """Batch score multiple catalysts"""
     results = []
-    
+
     for catalyst_id in catalyst_ids:
         try:
             score = await get_catalyst_score(catalyst_id, include_breakdown=False, db=db)
             results.append(score)
         except HTTPException:
             results.append({'catalyst_id': catalyst_id, 'error': 'Not found'})
-    
+
     return results
 ```
 
@@ -469,7 +469,7 @@ async def batch_score_catalysts(
 def test_score_ultra_high_catalyst():
     """Test scoring of ultra-high tier catalyst"""
     scorer = CatalystScorer()
-    
+
     catalyst = {
         'event_type': 'FDA PDUFA Approval',
         'endpoint_type': 'MACE reduction',
@@ -482,14 +482,14 @@ def test_score_ultra_high_catalyst():
         'manufacturing_ready': True,
         'house_pos': 0.85,
     }
-    
+
     street_consensus = {
         'consensus_pos': 0.50,  # Street at 50%, House at 85%
         'analysts': 20
     }
-    
+
     score = scorer.score_catalyst(catalyst, street_consensus)
-    
+
     assert score.total >= 16  # Ultra-High tier
     assert score.tier == "Ultra-High"
     assert score.street_differential >= 2  # Large differential
@@ -541,24 +541,24 @@ from typing import List, Dict
 
 class FDAPDUFAScraper:
     """Scraper for FDA PDUFA dates"""
-    
+
     BASE_URL = "https://www.fda.gov/drugs/nda-and-bla-approvals"
-    
+
     async def scrape_pdufa_dates(self) -> List[Dict]:
         """
         Scrape PDUFA dates from FDA
-        
+
         Returns list of upcoming PDUFA actions
         """
         async with aiohttp.ClientSession() as session:
             async with session.get(self.BASE_URL) as response:
                 html = await response.text()
-        
+
         soup = BeautifulSoup(html, 'html.parser')
-        
+
         # Parse FDA table for PDUFA dates
         # Implementation details...
-        
+
         return []
 ```
 
@@ -577,13 +577,13 @@ from typing import List, Dict
 
 class EnhancedCTGovScraper:
     """Scraper for ClinicalTrials.gov"""
-    
+
     API_URL = "https://clinicaltrials.gov/api/v2/studies"
-    
+
     async def scrape_phase3_trials(self, therapeutic_area: str = None) -> List[Dict]:
         """
         Scrape Phase 3 trials
-        
+
         Filters by:
         - Phase 3
         - Active, not recruiting
@@ -595,11 +595,11 @@ class EnhancedCTGovScraper:
             'filter.overallStatus': 'ACTIVE_NOT_RECRUITING',
             'pageSize': 100
         }
-        
+
         async with aiohttp.ClientSession() as session:
             async with session.get(self.API_URL, params=params) as response:
                 data = await response.json()
-        
+
         # Parse and return trials
         return []
 ```
@@ -620,13 +620,13 @@ from typing import List, Dict
 
 class SEC8KScraper:
     """Scraper for SEC 8-K filings"""
-    
+
     BASE_URL = "https://www.sec.gov"
-    
+
     async def scrape_recent_8k_filings(self, cik: str = None) -> List[Dict]:
         """
         Scrape recent 8-K filings
-        
+
         Detects catalyst events:
         - Item 8.01: Other Events (trial results, data presentations)
         - Item 1.01: Material Agreements (partnerships)
@@ -650,13 +650,13 @@ from typing import List, Dict
 
 class ConferenceScraper:
     """Scraper for medical conference schedules"""
-    
+
     CONFERENCES = {
         'ASCO': 'https://meetings.asco.org',
         'ASH': 'https://www.hematology.org/meetings',
         'AHA': 'https://professional.heart.org/en/meetings',
     }
-    
+
     async def scrape_conference_schedule(self, conference: str) -> List[Dict]:
         """Scrape conference presentation schedule"""
         # Implementation details...
@@ -677,11 +677,11 @@ from typing import List, Dict
 
 class InsiderTracker:
     """Scraper for SEC Form 4 filings"""
-    
+
     async def scrape_insider_transactions(self, ticker: str) -> List[Dict]:
         """
         Scrape insider transactions
-        
+
         Focuses on:
         - Director/officer buys (bullish signal)
         - Large purchases (>$100k)
@@ -709,14 +709,14 @@ import asyncio
 
 class CatalystPipeline:
     """Orchestrates catalyst aggregation"""
-    
+
     def __init__(self):
         self.scrapers = []
-    
+
     async def run_daily_refresh(self):
         """
         Daily refresh of all sources
-        
+
         Steps:
         1. Run all scrapers in parallel
         2. Deduplicate catalysts
@@ -733,41 +733,41 @@ class CatalystPipeline:
             self._scrape_conferences(),
             self._scrape_insiders(),
         )
-        
+
         # Flatten results
         catalysts = []
         for result in results:
             catalysts.extend(result)
-        
+
         # Deduplicate
         unique_catalysts = self._deduplicate(catalysts)
-        
+
         # Enrich and score
         scored_catalysts = []
         for catalyst in unique_catalysts:
             enriched = self._enrich_catalyst(catalyst)
             scored = self._score_catalyst(enriched)
             scored_catalysts.append(scored)
-        
+
         # Save to database
         self._save_catalysts(scored_catalysts)
-        
+
         return scored_catalysts
-    
+
     def _deduplicate(self, catalysts: List[Dict]) -> List[Dict]:
         """
         Deduplicate catalysts
-        
+
         Logic:
         - Same company + drug + event date = duplicate
         - Keep the one with most complete data
         """
         seen = {}
         unique = []
-        
+
         for catalyst in catalysts:
             key = f"{catalyst['company']}_{catalyst['drug']}_{catalyst['event_date']}"
-            
+
             if key not in seen:
                 seen[key] = catalyst
                 unique.append(catalyst)
@@ -778,9 +778,9 @@ class CatalystPipeline:
                     unique.remove(existing)
                     unique.append(catalyst)
                     seen[key] = catalyst
-        
+
         return unique
-    
+
     def _completeness(self, catalyst: Dict) -> float:
         """Calculate data completeness"""
         fields = ['company', 'drug', 'event_type', 'event_date', 'endpoint_type']
@@ -939,23 +939,23 @@ Final polish, documentation, and production deployment.
 
 async def test_complete_catalyst_flow():
     """Test complete catalyst flow from scraping to scoring"""
-    
+
     # 1. Sync Redmile holdings
     response = await client.post("/api/v1/portfolio/redmile/sync")
     assert response.status_code == 200
-    
+
     # 2. Run catalyst pipeline
     from bt_platform.ingestion.catalyst_pipeline import CatalystPipeline
     pipeline = CatalystPipeline()
     catalysts = await pipeline.run_daily_refresh()
     assert len(catalysts) > 0
-    
+
     # 3. Get catalyst calendar
     response = await client.get("/api/v1/catalysts/calendar?portfolio=redmile&days=90")
     assert response.status_code == 200
     data = response.json()
     assert len(data['catalysts']) > 0
-    
+
     # 4. Score catalyst
     catalyst_id = data['catalysts'][0]['id']
     response = await client.get(f"/api/v1/catalysts/{catalyst_id}/score")
@@ -1022,6 +1022,6 @@ This guide provides detailed implementation steps for Sprints 2-6, building on t
 
 ---
 
-*Last Updated: 2025-10-14*  
-*Version: 1.0*  
+*Last Updated: 2025-10-14*
+*Version: 1.0*
 *Status: Implementation Ready*

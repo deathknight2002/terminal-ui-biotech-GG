@@ -14,7 +14,7 @@ if [ $? -eq 0 ]; then
     echo "📊 Running scrapers..."
     OUTPUT_FILE="${1:-kol_signals_output.json}"
     java -jar target/kol-scrapers-1.0.0.jar "$OUTPUT_FILE"
-    
+
     if [ -f "$OUTPUT_FILE" ]; then
         echo ""
         echo "✅ Results saved to: $OUTPUT_FILE"

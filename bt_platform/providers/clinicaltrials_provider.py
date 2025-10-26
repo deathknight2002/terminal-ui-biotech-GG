@@ -16,16 +16,16 @@ from .base import Provider
 
 class ClinicalTrialsProvider(Provider):
     """Provider for ClinicalTrials.gov data"""
-    
+
     BASE_URL = "https://clinicaltrials.gov/api/v2"
-    
+
     def __init__(self):
         super().__init__("clinicaltrials")
         self._cache = {}
         self._cache_ttl = 3600  # 1 hour cache
         self._rate_limit_delay = 0.1  # 100ms between requests
         self._last_request_time = 0.0
-    
+
     async def _rate_limit(self):
         """Implement rate limiting"""
         now = asyncio.get_event_loop().time()
@@ -33,13 +33,13 @@ class ClinicalTrialsProvider(Provider):
         if time_since_last < self._rate_limit_delay:
             await asyncio.sleep(self._rate_limit_delay - time_since_last)
         self._last_request_time = asyncio.get_event_loop().time()
-    
+
     async def _make_request(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Make HTTP request to ClinicalTrials.gov API"""
         await self._rate_limit()
-        
+
         url = f"{self.BASE_URL}{endpoint}"
-        
+
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
                 response = await client.get(url, params=params)
@@ -51,10 +51,10 @@ class ClinicalTrialsProvider(Provider):
         except Exception as e:
             self.logger.error(f"Unexpected error in ClinicalTrials.gov request: {e}")
             return {"studies": []}
-    
+
     async def fetch_data(self, data_type: str = "studies", **kwargs) -> Dict[str, Any]:
         """Fetch clinical trial data by type"""
-        
+
         if data_type == "studies":
             return await self.search_studies(**kwargs)
         elif data_type == "study":
@@ -63,7 +63,7 @@ class ClinicalTrialsProvider(Provider):
             return await self.get_statistics(**kwargs)
         else:
             raise ValueError(f"Unknown data type: {data_type}")
-    
+
     async def search_studies(
         self,
         query: Optional[str] = None,
@@ -78,7 +78,7 @@ class ClinicalTrialsProvider(Provider):
     ) -> Dict[str, Any]:
         """
         Search clinical trials
-        
+
         Args:
             query: General search query
             condition: Condition/disease (e.g., "Cancer", "Diabetes")
@@ -95,35 +95,35 @@ class ClinicalTrialsProvider(Provider):
             "pageSize": min(limit, 1000),
             "pageToken": str(page)
         }
-        
+
         # Build query string
         query_parts = []
         if query:
             query_parts.append(query)
-        
+
         if condition:
             query_parts.append(f"AREA[Condition]{condition}")
-        
+
         if intervention:
             query_parts.append(f"AREA[InterventionName]{intervention}")
-        
+
         if sponsor:
             query_parts.append(f"AREA[LeadSponsorName]{sponsor}")
-        
+
         if phase:
             query_parts.append(f"AREA[Phase]{phase}")
-        
+
         if status:
             query_parts.append(f"AREA[OverallStatus]{status}")
-        
+
         if country:
             query_parts.append(f"AREA[LocationCountry]{country}")
-        
+
         if query_parts:
             params["query.term"] = " AND ".join(query_parts)
-        
+
         result = await self._make_request("/studies", params)
-        
+
         studies = []
         for study_data in result.get("studies", []):
             protocol = study_data.get("protocolSection", {})
@@ -132,7 +132,7 @@ class ClinicalTrialsProvider(Provider):
             design_module = protocol.get("designModule", {})
             eligibility_module = protocol.get("eligibilityModule", {})
             sponsor_module = protocol.get("sponsorCollaboratorsModule", {})
-            
+
             study = {
                 "nct_id": id_module.get("nctId"),
                 "title": id_module.get("briefTitle"),
@@ -176,9 +176,9 @@ class ClinicalTrialsProvider(Provider):
                 "maximum_age": eligibility_module.get("maximumAge"),
                 "healthy_volunteers": eligibility_module.get("healthyVolunteers"),
             }
-            
+
             studies.append(study)
-        
+
         return {
             "data": studies,
             "count": len(studies),
@@ -187,11 +187,11 @@ class ClinicalTrialsProvider(Provider):
             "source": "clinicaltrials.gov",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def get_study_details(self, nct_id: str) -> Dict[str, Any]:
         """
         Get detailed information for a specific study
-        
+
         Args:
             nct_id: NCT identifier (e.g., "NCT04280705")
         """
@@ -199,20 +199,20 @@ class ClinicalTrialsProvider(Provider):
             "format": "json",
             "query.id": nct_id
         }
-        
+
         result = await self._make_request("/studies", params)
-        
+
         if not result.get("studies"):
             return {
                 "error": f"Study {nct_id} not found",
                 "data": None,
                 "source": "clinicaltrials.gov"
             }
-        
+
         study_data = result["studies"][0]
         protocol = study_data.get("protocolSection", {})
         results_section = study_data.get("resultsSection", {})
-        
+
         # Extract comprehensive details
         id_module = protocol.get("identificationModule", {})
         status_module = protocol.get("statusModule", {})
@@ -222,7 +222,7 @@ class ClinicalTrialsProvider(Provider):
         eligibility_module = protocol.get("eligibilityModule", {})
         contacts_module = protocol.get("contactsLocationsModule", {})
         references_module = protocol.get("referencesModule", {})
-        
+
         study = {
             "nct_id": id_module.get("nctId"),
             "title": id_module.get("briefTitle"),
@@ -231,7 +231,7 @@ class ClinicalTrialsProvider(Provider):
             "organization": id_module.get("organization", {}).get("fullName"),
             "brief_summary": protocol.get("descriptionModule", {}).get("briefSummary"),
             "detailed_description": protocol.get("descriptionModule", {}).get("detailedDescription"),
-            
+
             # Status information
             "overall_status": status_module.get("overallStatus"),
             "why_stopped": status_module.get("whyStopped"),
@@ -241,7 +241,7 @@ class ClinicalTrialsProvider(Provider):
             "study_first_post": status_module.get("studyFirstPostDateStruct", {}).get("date"),
             "results_first_post": status_module.get("resultsFirstPostDateStruct", {}).get("date"),
             "last_update": status_module.get("lastUpdatePostDateStruct", {}).get("date"),
-            
+
             # Design information
             "study_type": design_module.get("studyType"),
             "phases": design_module.get("phases", []),
@@ -250,7 +250,7 @@ class ClinicalTrialsProvider(Provider):
             "intervention_model": design_module.get("designInfo", {}).get("interventionModel"),
             "primary_purpose": design_module.get("designInfo", {}).get("primaryPurpose"),
             "masking": design_module.get("designInfo", {}).get("maskingInfo", {}).get("masking"),
-            
+
             # Study arms
             "arms": [
                 {
@@ -261,7 +261,7 @@ class ClinicalTrialsProvider(Provider):
                 }
                 for arm in arms_module.get("armGroups", [])
             ],
-            
+
             # Interventions
             "interventions": [
                 {
@@ -273,7 +273,7 @@ class ClinicalTrialsProvider(Provider):
                 }
                 for i in arms_module.get("interventions", [])
             ],
-            
+
             # Outcomes
             "primary_outcomes": [
                 {
@@ -291,14 +291,14 @@ class ClinicalTrialsProvider(Provider):
                 }
                 for o in outcomes_module.get("secondaryOutcomes", [])
             ],
-            
+
             # Eligibility
             "eligibility_criteria": eligibility_module.get("eligibilityCriteria"),
             "sex": eligibility_module.get("sex"),
             "minimum_age": eligibility_module.get("minimumAge"),
             "maximum_age": eligibility_module.get("maximumAge"),
             "healthy_volunteers": eligibility_module.get("healthyVolunteers"),
-            
+
             # Locations
             "locations": [
                 {
@@ -310,7 +310,7 @@ class ClinicalTrialsProvider(Provider):
                 }
                 for loc in contacts_module.get("locations", [])
             ],
-            
+
             # References
             "references": [
                 {
@@ -320,17 +320,17 @@ class ClinicalTrialsProvider(Provider):
                 }
                 for ref in references_module.get("references", [])
             ],
-            
+
             # Results if available
             "has_results": results_section is not None and len(results_section) > 0,
         }
-        
+
         return {
             "data": study,
             "source": "clinicaltrials.gov",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def get_statistics(
         self,
         group_by: str = "phase",
@@ -339,7 +339,7 @@ class ClinicalTrialsProvider(Provider):
     ) -> Dict[str, Any]:
         """
         Get aggregated statistics about clinical trials
-        
+
         Args:
             group_by: Field to group by (phase, status, sponsor, country)
             condition: Filter by condition
@@ -347,19 +347,19 @@ class ClinicalTrialsProvider(Provider):
         """
         # Note: ClinicalTrials.gov API v2 doesn't have direct aggregation
         # We'll need to fetch and aggregate client-side
-        
+
         # Fetch studies with filters
         studies_result = await self.search_studies(
             condition=condition,
             sponsor=sponsor,
             limit=1000
         )
-        
+
         studies = studies_result.get("data", [])
-        
+
         # Aggregate by requested field
         aggregation = {}
-        
+
         for study in studies:
             if group_by == "phase":
                 phases = study.get("phases", [])
@@ -374,13 +374,13 @@ class ClinicalTrialsProvider(Provider):
             elif group_by == "country":
                 # Would need to aggregate from locations
                 pass
-        
+
         # Convert to list format
         stats = [
             {"category": key, "count": value}
             for key, value in sorted(aggregation.items(), key=lambda x: x[1], reverse=True)
         ]
-        
+
         return {
             "data": stats,
             "group_by": group_by,
@@ -388,7 +388,7 @@ class ClinicalTrialsProvider(Provider):
             "source": "clinicaltrials.gov",
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def get_recruiting_trials(
         self,
         condition: Optional[str] = None,
@@ -404,7 +404,7 @@ class ClinicalTrialsProvider(Provider):
             status="RECRUITING",
             limit=limit
         )
-    
+
     async def get_completed_trials_with_results(
         self,
         condition: Optional[str] = None,
@@ -416,7 +416,7 @@ class ClinicalTrialsProvider(Provider):
             status="COMPLETED",
             limit=limit
         )
-    
+
     def get_schema(self) -> Dict[str, Any]:
         """Get data schema for ClinicalTrials provider"""
         return {
@@ -430,7 +430,7 @@ class ClinicalTrialsProvider(Provider):
             "study_details": {
                 "required": ["nct_id", "title", "brief_summary"],
                 "optional": [
-                    "detailed_description", "arms", "outcomes", 
+                    "detailed_description", "arms", "outcomes",
                     "eligibility_criteria", "locations", "references"
                 ]
             }

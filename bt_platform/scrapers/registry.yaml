@@ -23,7 +23,7 @@ scrapers:
         user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
       extra:
         timezone: "America/New_York"
-        
+
     - source_key: fierce_pharma
       name: FiercePharma
       base_url: https://www.fiercepharma.com
@@ -41,7 +41,7 @@ scrapers:
         user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
       extra:
         timezone: "America/New_York"
-    
+
     - source_key: businesswire
       name: Business Wire
       base_url: https://www.businesswire.com
@@ -59,7 +59,7 @@ scrapers:
         user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
       extra:
         categories: ["healthcare", "pharmaceutical", "biotech"]
-        
+
     - source_key: globenewswire
       name: GlobeNewswire
       base_url: https://www.globenewswire.com
@@ -77,7 +77,7 @@ scrapers:
         user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
       extra:
         sectors: ["healthcare", "biotechnology"]
-        
+
     - source_key: prnewswire
       name: PR Newswire
       base_url: https://www.prnewswire.com
@@ -115,7 +115,7 @@ scrapers:
       extra:
         sections: ["approvals", "safety-alerts", "news"]
         timezone: "America/New_York"
-        
+
     - source_key: ema
       name: EMA (European Medicines Agency)
       base_url: https://www.ema.europa.eu
@@ -133,7 +133,7 @@ scrapers:
         user_agent: "BiotechTerminal/1.0 (contact@bioterminal.dev)"
       extra:
         timezone: "Europe/London"
-        
+
     - source_key: mhra
       name: MHRA (UK)
       base_url: https://www.gov.uk/government/organisations/medicines-and-healthcare-products-regulatory-agency

@@ -32,7 +32,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
       data: change,
       timestamp: Date.now(),
     });
-    
+
     logger.debug(`📡 Broadcast change: ${change.name}`);
   });
 
@@ -83,7 +83,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
       data: alert,
       timestamp: Date.now(),
     });
-    
+
     logger.debug(`📡 Broadcast alert: ${alert.title} (${alert.severity})`);
   });
 
@@ -118,7 +118,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
       data: alert,
       timestamp: Date.now(),
     });
-    
+
     logger.debug(`📡 Broadcast news alert: ${alert.article.title}`);
   });
 
@@ -145,7 +145,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
     // Subscribe to monitoring updates
     socket.on('monitoring:subscribe', (options: { channels?: string[] }) => {
       const channels = options.channels || ['changes', 'alerts', 'monitors', 'portfolio', 'news', 'errors'];
-      
+
       channels.forEach(channel => {
         const room = `monitoring:${channel}`;
         socket.join(room);
@@ -161,7 +161,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
     // Unsubscribe from monitoring updates
     socket.on('monitoring:unsubscribe', (options: { channels?: string[] }) => {
       const channels = options.channels || ['changes', 'alerts', 'monitors', 'portfolio', 'news', 'errors'];
-      
+
       channels.forEach(channel => {
         const room = `monitoring:${channel}`;
         socket.leave(room);
@@ -180,7 +180,7 @@ export function setupMonitoringWebSocket(io: SocketServer): void {
         const changeStats = changeDetection.getStats();
         const portfolioStats = portfolioMonitor.getStats();
         const newsStats = newsMonitor.getStats();
-        
+
         socket.emit('monitoring:stats', {
           type: 'monitoring:stats',
           data: {

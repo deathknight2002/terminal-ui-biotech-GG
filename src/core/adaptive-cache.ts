@@ -1,6 +1,6 @@
 /**
  * Adaptive Cache - Intelligent caching with TTL management and predictive pre-fetching
- * 
+ *
  * Monitors access patterns and adapts cache behavior to optimize performance.
  * Implements LRU eviction, TTL management, and access frequency tracking.
  */

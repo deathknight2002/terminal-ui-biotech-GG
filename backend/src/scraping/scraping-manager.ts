@@ -103,10 +103,10 @@ export class ScrapingManager extends EventEmitter {
   private bioPharmaDigestScraper: BioPharmaDigestScraper;
   private fdaNewsTrackerScraper: FDANewsTrackerScraper;
   private bioSpaceJobsScraper: BioSpaceJobsScraper;
-  
+
   private healthCheckInterval?: NodeJS.Timeout;
   private readonly healthCheckIntervalMs: number = 60000; // 1 minute
-  
+
   private isInitialized: boolean = false;
 
   constructor(config?: {
@@ -165,7 +165,7 @@ export class ScrapingManager extends EventEmitter {
 
     this.isInitialized = true;
     this.emit('initialized');
-    
+
     logger.info('✅ Scraping Manager ready');
   }
 
@@ -315,7 +315,7 @@ export class ScrapingManager extends EventEmitter {
   private async performHealthCheck(): Promise<void> {
     try {
       const health = await this.getHealth();
-      
+
       // Emit health update event
       this.emit('health:update', health);
 
@@ -507,7 +507,7 @@ export class ScrapingManager extends EventEmitter {
     this.bioPharmaDigestScraper.clearCache();
     this.fdaNewsTrackerScraper.clearCache();
     this.bioSpaceJobsScraper.clearCache();
-    
+
     logger.info('🗑️ All scraper caches cleared');
   }
 

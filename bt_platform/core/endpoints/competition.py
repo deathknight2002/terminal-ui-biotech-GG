@@ -25,7 +25,7 @@ async def get_spiderweb_data(
 ):
     """
     Get competitive spiderweb/radar chart data with 6-axis comparison.
-    
+
     Returns series data for radar chart visualization with metrics:
     - Safety
     - Efficacy
@@ -36,22 +36,22 @@ async def get_spiderweb_data(
     """
     try:
         series = []
-        
+
         if scope == "THERAPEUTIC":
             # Get therapeutics for the disease
             query = db.query(Therapeutic)
             if disease_id:
                 query = query.filter(Therapeutic.disease_id == disease_id)
-            
+
             therapeutics = query.limit(limit).all()
-            
+
             for therapeutic in therapeutics:
                 # Get competition edge data
                 edges = db.query(CompetitionEdge).filter(
                     CompetitionEdge.from_id == therapeutic.id,
                     CompetitionEdge.scope == "THERAPEUTIC"
                 ).all()
-                
+
                 if edges:
                     # Average metrics from all competition edges
                     metrics = {
@@ -80,7 +80,7 @@ async def get_spiderweb_data(
                         "clinical_maturity": phase_maturity.get(therapeutic.phase, 50),
                         "differentiation": 50
                     }
-                
+
                 series.append({
                     "name": therapeutic.name,
                     "type": "therapeutic",
@@ -98,18 +98,18 @@ async def get_spiderweb_data(
                     ],
                     "metrics": metrics
                 })
-        
+
         elif scope == "COMPANY":
             # Get companies
             companies = db.query(Company).limit(limit).all()
-            
+
             for company in companies:
                 # Get competition edge data
                 edges = db.query(CompetitionEdge).filter(
                     CompetitionEdge.from_id == company.id,
                     CompetitionEdge.scope == "COMPANY"
                 ).all()
-                
+
                 if edges:
                     metrics = {
                         "safety": sum(e.safety or 50 for e in edges) / len(edges),
@@ -129,7 +129,7 @@ async def get_spiderweb_data(
                         "clinical_maturity": 50,
                         "differentiation": 50
                     }
-                
+
                 series.append({
                     "name": company.name,
                     "type": "company",
@@ -146,7 +146,7 @@ async def get_spiderweb_data(
                     ],
                     "metrics": metrics
                 })
-        
+
         return {
             "series": series,
             "axes": [
@@ -160,7 +160,7 @@ async def get_spiderweb_data(
             "scope": scope,
             "disease_id": disease_id
         }
-        
+
     except Exception as e:
         logger.error(f"Error generating spiderweb data: {e}")
         return {
@@ -182,22 +182,22 @@ async def compare_companies(
     try:
         company_names = [c.strip() for c in companies.split(',')]
         comparisons = []
-        
+
         for company_name in company_names:
             # Try to find company in database
             company = db.query(Company).filter(
                 Company.name.ilike(f"%{company_name}%")
             ).first()
-            
+
             if company:
                 # Real company - calculate metrics from database
                 therapeutics_count = db.query(Therapeutic).filter(
                     Therapeutic.company_id == company.id
                 ).count()
-                
+
                 # Calculate metrics based on pipeline
                 pipeline_strength = min(100, therapeutics_count * 10)
-                
+
                 comparison = {
                     "company": company.name,
                     "metrics": {
@@ -239,14 +239,14 @@ async def compare_companies(
                         "partnerships": "Established partnerships for development and commercialization"
                     }
                 }
-            
+
             comparisons.append(comparison)
-        
+
         return {
             "comparisons": comparisons,
             "count": len(comparisons)
         }
-        
+
     except Exception as e:
         logger.error(f"Error comparing companies: {e}")
         return {

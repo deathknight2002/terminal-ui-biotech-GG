@@ -18,27 +18,27 @@ from bt_platform.scrapers.utils.deduplication import canonical_url, content_hash
 class PressReleaseScraper(ScraperInterface):
     """
     Base class for press release scrapers.
-    
+
     Handles common press release scraping patterns.
     """
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         super().__init__(config)
-        
+
         self.base_url = config.get('base_url', '')
         self.rss_url = config.get('rss_url', '')
-        
+
         self.http_client = AsyncHTTPClient(
             user_agent=config.get('user_agent', 'BiotechTerminal/1.0'),
             timeout=30.0,
         )
-        
+
         max_rps = config.get('max_rps', 2.0)
         self.rate_limiter = TokenBucketRateLimiter(
             default_rate=max_rps,
             default_capacity=int(max_rps * 10),
         )
-    
+
     async def discover(
         self,
         method: str = "rss",
@@ -50,12 +50,12 @@ class PressReleaseScraper(ScraperInterface):
         """Discover URLs from RSS or direct URLs"""
         if method == "url" and urls:
             return urls
-        
+
         if not self.rss_url:
             return []
-        
+
         feed = feedparser.parse(self.rss_url)
-        
+
         discovered_urls = []
         for entry in feed.entries:
             if since:
@@ -65,16 +65,16 @@ class PressReleaseScraper(ScraperInterface):
                         continue
                 except (AttributeError, TypeError):
                     pass
-            
+
             url = entry.get('link', '')
             if url:
                 discovered_urls.append(canonical_url(url))
-            
+
             if limit and len(discovered_urls) >= limit:
                 break
-        
+
         return discovered_urls
-    
+
     async def fetch(
         self,
         urls: List[str],
@@ -82,27 +82,27 @@ class PressReleaseScraper(ScraperInterface):
     ) -> List[Dict[str, Any]]:
         """Fetch with rate limiting"""
         results = []
-        
+
         for url in urls:
             await self.rate_limiter.acquire(url)
-            
+
             try:
                 response = await self.http_client.get(url)
                 results.append(response)
             except Exception as e:
                 print(f"Error fetching {url}: {e}")
                 continue
-        
+
         return results
-    
+
     async def parse(self, raw_content: Dict[str, Any]) -> Dict[str, Any]:
         """Parse press release HTML"""
         html = raw_content.get('html', '')
         url = raw_content.get('url', '')
-        
+
         metadata = extract_article_metadata(html)
         content = extract_text_content(html)
-        
+
         return {
             'url': url,
             'title': metadata.get('title', ''),
@@ -111,15 +111,15 @@ class PressReleaseScraper(ScraperInterface):
             'content': content,
             'metadata': metadata,
         }
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """Normalize to press release format"""
         url = canonical_url(parsed_data['url'])
         content = parsed_data.get('content', '')
-        
+
         content_hash_value = content_hash(content)
         fingerprint = content_fingerprint(content)
-        
+
         result = ScraperResult(
             content_type=ContentType.PRESS_RELEASE,
             data={
@@ -137,24 +137,24 @@ class PressReleaseScraper(ScraperInterface):
             fingerprint=fingerprint,
             published_at=parsed_data.get('published_at'),
         )
-        
+
         return result
-    
+
     async def link(self, result: ScraperResult) -> ScraperResult:
         """Link entities (placeholder)"""
         # TODO: Implement entity linking
         return result
-    
+
     async def __aenter__(self):
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.http_client.close()
 
 
 class BusinessWireScraper(PressReleaseScraper):
     """BusinessWire scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.businesswire.com')
@@ -164,7 +164,7 @@ class BusinessWireScraper(PressReleaseScraper):
 
 class GlobeNewswireScraper(PressReleaseScraper):
     """GlobeNewswire scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.globenewswire.com')
@@ -174,7 +174,7 @@ class GlobeNewswireScraper(PressReleaseScraper):
 
 class PRNewswireScraper(PressReleaseScraper):
     """PR Newswire scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.prnewswire.com')

@@ -34,7 +34,7 @@ This implementation successfully delivers all requested features:
 ```
 ml/sentiment/
 ├── finbert_analyzer.py      (336 lines) - FinBERT implementation
-├── biobert_analyzer.py      (458 lines) - BioBERT implementation  
+├── biobert_analyzer.py      (458 lines) - BioBERT implementation
 ├── ensemble_analyzer.py     (437 lines) - Ensemble models
 └── catalyst_integration.py  (384 lines) - Catalyst scoring integration
 
@@ -119,10 +119,10 @@ scorer = create_catalyst_sentiment_scorer(model_type="tfidf")
 async def get_catalysts(include_sentiment: bool = False):
     catalysts = db.query(Catalyst).all()
     catalyst_dicts = [to_dict(c) for c in catalysts]
-    
+
     if include_sentiment:
         catalyst_dicts = scorer.batch_score_catalysts(catalyst_dicts)
-    
+
     return {"data": catalyst_dicts}
 ```
 

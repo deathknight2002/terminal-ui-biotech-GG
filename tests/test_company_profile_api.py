@@ -69,10 +69,10 @@ def sample_company(test_db):
 def test_get_company_profile_success(sample_company):
     """Test successful company profile retrieval"""
     response = client.get(f"/api/v1/companies/{sample_company.ticker}/profile")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["ticker"] == sample_company.ticker
     assert data["name"] == sample_company.name
     assert data["company_type"] == sample_company.company_type
@@ -84,7 +84,7 @@ def test_get_company_profile_success(sample_company):
 def test_get_company_profile_not_found(test_db):
     """Test company profile retrieval for non-existent company"""
     response = client.get("/api/v1/companies/NOTFOUND/profile")
-    
+
     assert response.status_code == 404
     assert "not found" in response.json()["detail"].lower()
 
@@ -102,12 +102,12 @@ def test_get_company_sources(sample_company, test_db):
     )
     test_db.add(source)
     test_db.commit()
-    
+
     response = client.get(f"/api/v1/companies/{sample_company.ticker}/sources")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["ticker"] == sample_company.ticker
     assert len(data["sources"]) == 1
     assert data["sources"][0]["title"] == "Q1 2024 Investor Presentation"
@@ -138,12 +138,12 @@ def test_get_company_sources_with_filter(sample_company, test_db):
     for source in sources:
         test_db.add(source)
     test_db.commit()
-    
+
     response = client.get(f"/api/v1/companies/{sample_company.ticker}/sources?source_type=FILING")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert len(data["sources"]) == 1
     assert data["sources"][0]["type"] == "FILING"
 
@@ -164,12 +164,12 @@ def test_get_company_articles(sample_company, test_db):
     )
     test_db.add(article)
     test_db.commit()
-    
+
     response = client.get(f"/api/v1/companies/{sample_company.ticker}/articles")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["ticker"] == sample_company.ticker
     assert len(data["articles"]) == 1
     assert data["articles"][0]["title"] == "Test Company Announces Positive Data"
@@ -204,17 +204,17 @@ def test_get_company_pipeline(sample_company, test_db):
     for drug in drugs:
         test_db.add(drug)
     test_db.commit()
-    
+
     response = client.get(f"/api/v1/companies/{sample_company.ticker}/pipeline")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["ticker"] == sample_company.ticker
     assert data["company"] == sample_company.name
     assert data["total_programs"] == 2
     assert len(data["pipeline"]) == 2  # Two therapeutic areas
-    
+
     # Check that programs are grouped by TA
     tas = [item["therapeutic_area"] for item in data["pipeline"]]
     assert "Oncology" in tas
@@ -234,12 +234,12 @@ def test_get_xbi_constituents_with_search(sample_company, test_db):
     )
     test_db.add(company2)
     test_db.commit()
-    
+
     # Search by name
     response = client.get("/api/v1/companies/xbi/constituents?search=BioMarin")
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["count"] >= 1
     assert any("BioMarin" in c["name"] for c in data["constituents"])
 
@@ -261,12 +261,12 @@ def test_get_xbi_constituents_with_market_cap_filter(sample_company, test_db):
     for c in companies:
         test_db.add(c)
     test_db.commit()
-    
+
     # Filter for mid to large cap
     response = client.get("/api/v1/companies/xbi/constituents?min_market_cap=5000000000&max_market_cap=60000000000")
     assert response.status_code == 200
     data = response.json()
-    
+
     # Should include MID and LARGE, but not SMALL
     tickers = [c["ticker"] for c in data["constituents"]]
     assert "MID" in tickers or "LARGE" in tickers
@@ -287,22 +287,22 @@ def test_get_xbi_constituents_pagination(sample_company, test_db):
         )
         test_db.add(company)
     test_db.commit()
-    
+
     # First page
     response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=0", headers={"Accept-Encoding": "identity"})
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["count"] == 5
     assert data["limit"] == 5
     assert data["offset"] == 0
     assert data["total"] >= 15
-    
+
     # Second page
     response = client.get("/api/v1/companies/xbi/constituents?limit=5&offset=5", headers={"Accept-Encoding": "identity"})
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["count"] == 5
     assert data["offset"] == 5
 
@@ -310,10 +310,10 @@ def test_get_xbi_constituents_pagination(sample_company, test_db):
 def test_get_xbi_constituents(sample_company):
     """Test XBI constituents listing"""
     response = client.get("/api/v1/companies/xbi/constituents?active_only=true")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["count"] >= 1
     assert any(c["ticker"] == sample_company.ticker for c in data["constituents"])
     assert data["active_only"] is True
@@ -322,9 +322,9 @@ def test_get_xbi_constituents(sample_company):
 def test_get_xbi_constituents_all(sample_company):
     """Test XBI constituents listing including historical"""
     response = client.get("/api/v1/companies/xbi/constituents?active_only=false")
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["active_only"] is False
     assert data["count"] >= 1

@@ -4,7 +4,7 @@ Standalone Evidence Graph API Server
 Simple FastAPI server for testing the evidence graph endpoints.
 Enhanced with production-ready features:
 - Rate limiting
-- Security headers  
+- Security headers
 - CORS configuration
 - Request logging
 
@@ -33,7 +33,7 @@ app = FastAPI(
 async def add_security_headers(request: Request, call_next):
     """Add security headers to all responses."""
     response = await call_next(request)
-    
+
     # Security headers
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
@@ -47,11 +47,11 @@ async def add_security_headers(request: Request, call_next):
         "font-src 'self' data:; "
         "connect-src 'self'"
     )
-    
+
     # Request ID for tracing
     request_id = request.headers.get("X-Request-ID", f"req-{int(time.time() * 1000)}")
     response.headers["X-Request-ID"] = request_id
-    
+
     return response
 
 # Add rate limiting (60 requests per minute per IP)
@@ -77,7 +77,7 @@ app.add_middleware(
 async def health_check():
     """
     Health check endpoint.
-    
+
     Returns service status and version information.
     """
     return {

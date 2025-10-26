@@ -45,10 +45,10 @@ export interface ExportResult {
  */
 export async function exportToCSV(filters: ExportFilters): Promise<ExportResult> {
   const prisma = getPrismaClient();
-  
+
   try {
     const where = buildWhereClause(filters);
-    
+
     const metrics = await prisma.metric.findMany({
       where,
       include: {
@@ -63,7 +63,7 @@ export async function exportToCSV(filters: ExportFilters): Promise<ExportResult>
     });
 
     const sources = new Set<string>();
-    
+
     // Build CSV header
     const headers = [
       'Disease Name',
@@ -88,7 +88,7 @@ export async function exportToCSV(filters: ExportFilters): Promise<ExportResult>
 
     const rows = metrics.map(m => {
       sources.add(m.source);
-      
+
       return [
         escapeCSV(m.disease.name),
         escapeCSV(m.disease.icd10),
@@ -114,7 +114,7 @@ export async function exportToCSV(filters: ExportFilters): Promise<ExportResult>
     // Build CSV content
     let csvContent = headers.join(',') + '\n';
     csvContent += rows.map(row => row.join(',')).join('\n');
-    
+
     // Add footer with metadata
     csvContent += '\n\n';
     csvContent += `"Export Date","${new Date().toISOString()}"\n`;
@@ -146,10 +146,10 @@ export async function exportToCSV(filters: ExportFilters): Promise<ExportResult>
  */
 export async function exportToJSON(filters: ExportFilters): Promise<ExportResult> {
   const prisma = getPrismaClient();
-  
+
   try {
     const where = buildWhereClause(filters);
-    
+
     const metrics = await prisma.metric.findMany({
       where,
       include: {
@@ -303,12 +303,12 @@ function buildWhereClause(filters: ExportFilters): any {
  */
 function escapeCSV(value: string): string {
   if (!value) return '';
-  
+
   // If value contains comma, quote, or newline, wrap in quotes and escape quotes
   if (value.includes(',') || value.includes('"') || value.includes('\n')) {
     return `"${value.replace(/"/g, '""')}"`;
   }
-  
+
   return value;
 }
 
@@ -325,10 +325,10 @@ export async function getExportSummary(filters: ExportFilters): Promise<{
   };
 }> {
   const prisma = getPrismaClient();
-  
+
   try {
     const where = buildWhereClause(filters);
-    
+
     const [count, metrics] = await Promise.all([
       prisma.metric.count({ where }),
       prisma.metric.findMany({

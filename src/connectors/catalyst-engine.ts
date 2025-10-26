@@ -1,6 +1,6 @@
 /**
  * Catalyst Timeline Engine
- * 
+ *
  * Aggregates and analyzes pharmaceutical catalysts from multiple sources
  * Provides timeline visualization and impact analysis
  */
@@ -119,7 +119,7 @@ export class CatalystEngine {
     }
 
     // Sort by event date (most recent first)
-    return catalysts.sort((a, b) => 
+    return catalysts.sort((a, b) =>
       b.data.eventDate.localeCompare(a.data.eventDate)
     );
   }
@@ -282,7 +282,7 @@ export class CatalystEngine {
     let count = 0;
 
     // Group by serious events only
-    const seriousEvents = events.filter(e => 
+    const seriousEvents = events.filter(e =>
       e.data.seriousnessCode && e.data.seriousnessCode !== 'Not Serious'
     );
 
@@ -362,7 +362,7 @@ export class CatalystEngine {
    */
   private inferImpactFromPhase(phase?: string): CatalystContract['data']['impact'] {
     if (!phase) return undefined;
-    
+
     if (phase.includes('III')) return 'positive';
     if (phase.includes('II')) return 'neutral';
     return undefined;

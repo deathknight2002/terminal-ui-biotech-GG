@@ -84,7 +84,7 @@ curl "http://localhost:8000/api/v1/companies/xbi/constituents?limit=40&offset=80
 ```
 
 ### 5. Terminal UI Page
-**Files**: 
+**Files**:
 - `terminal/src/pages/XBICompaniesPage.tsx` (330 lines)
 - `terminal/src/pages/XBICompaniesPage.css` (250 lines)
 

@@ -13,7 +13,7 @@ from bt_platform.scrapers.base.interface import ContentType, ScraperResult
 
 class RegulatorScraper(PressReleaseScraper):
     """Base class for regulatory authority scrapers"""
-    
+
     async def normalize(self, parsed_data: Dict[str, Any]) -> ScraperResult:
         """Normalize to regulatory format"""
         result = await super().normalize(parsed_data)
@@ -24,7 +24,7 @@ class RegulatorScraper(PressReleaseScraper):
 
 class FDAScraper(RegulatorScraper):
     """FDA news and approvals scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.fda.gov')
@@ -36,7 +36,7 @@ class FDAScraper(RegulatorScraper):
 
 class EMAScraper(RegulatorScraper):
     """EMA (European Medicines Agency) scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.ema.europa.eu')
@@ -48,7 +48,7 @@ class EMAScraper(RegulatorScraper):
 
 class MHRAScraper(RegulatorScraper):
     """MHRA (UK) scraper"""
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         config = config or {}
         config.setdefault('base_url', 'https://www.gov.uk')

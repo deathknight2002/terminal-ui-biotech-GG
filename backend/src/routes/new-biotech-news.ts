@@ -18,12 +18,12 @@ const router = express.Router();
 router.get('/pharmanewswire/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getPharmaNewsWireScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'PharmaNewsWire',
@@ -48,10 +48,10 @@ router.get('/pharmanewswire/latest', async (req: Request, res: Response) => {
 router.post('/pharmanewswire/search', async (req: Request, res: Response) => {
   try {
     const { query, category, maxResults, dateFrom, dateTo } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getPharmaNewsWireScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
@@ -59,7 +59,7 @@ router.post('/pharmanewswire/search', async (req: Request, res: Response) => {
       dateFrom,
       dateTo,
     });
-    
+
     res.json({
       success: true,
       source: 'PharmaNewsWire',
@@ -86,12 +86,12 @@ router.get('/pharmanewswire/category/:category', async (req: Request, res: Respo
   try {
     const category = req.params.category as 'market-analysis' | 'mergers-acquisitions' | 'regulatory' | 'clinical-data';
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getPharmaNewsWireScraper();
-    
+
     const articles = await scraper.getNewsByCategory(category, maxResults);
-    
+
     res.json({
       success: true,
       source: 'PharmaNewsWire',
@@ -119,12 +119,12 @@ router.get('/pharmanewswire/category/:category', async (req: Request, res: Respo
 router.get('/genengnews/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getGenEngNewsScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'GEN News',
@@ -150,12 +150,12 @@ router.get('/genengnews/research', async (req: Request, res: Response) => {
   try {
     const topic = req.query.topic as string || 'biotechnology';
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getGenEngNewsScraper();
-    
+
     const articles = await scraper.getResearchNews(topic, maxResults);
-    
+
     res.json({
       success: true,
       source: 'GEN News',
@@ -181,17 +181,17 @@ router.get('/genengnews/research', async (req: Request, res: Response) => {
 router.post('/genengnews/search', async (req: Request, res: Response) => {
   try {
     const { query, category, researchArea, maxResults } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getGenEngNewsScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
       researchArea,
       maxResults: maxResults || 20,
     });
-    
+
     res.json({
       success: true,
       source: 'GEN News',
@@ -219,12 +219,12 @@ router.post('/genengnews/search', async (req: Request, res: Response) => {
 router.get('/biopharmadive/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioPharmaDigestScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'BioPharma Dive',
@@ -249,12 +249,12 @@ router.get('/biopharmadive/latest', async (req: Request, res: Response) => {
 router.get('/biopharmadive/pipeline', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioPharmaDigestScraper();
-    
+
     const articles = await scraper.getPipelineUpdates(maxResults);
-    
+
     res.json({
       success: true,
       source: 'BioPharma Dive',
@@ -280,10 +280,10 @@ router.get('/biopharmadive/pipeline', async (req: Request, res: Response) => {
 router.post('/biopharmadive/search', async (req: Request, res: Response) => {
   try {
     const { query, category, company, therapeuticArea, maxResults } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioPharmaDigestScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
@@ -291,7 +291,7 @@ router.post('/biopharmadive/search', async (req: Request, res: Response) => {
       therapeuticArea,
       maxResults: maxResults || 20,
     });
-    
+
     res.json({
       success: true,
       source: 'BioPharma Dive',
@@ -319,12 +319,12 @@ router.post('/biopharmadive/search', async (req: Request, res: Response) => {
 router.get('/fda-news/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFDANewsTrackerScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'FDA News Tracker',
@@ -349,12 +349,12 @@ router.get('/fda-news/latest', async (req: Request, res: Response) => {
 router.get('/fda-news/approvals', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFDANewsTrackerScraper();
-    
+
     const articles = await scraper.getRecentApprovals(maxResults);
-    
+
     res.json({
       success: true,
       source: 'FDA News Tracker',
@@ -380,10 +380,10 @@ router.get('/fda-news/approvals', async (req: Request, res: Response) => {
 router.post('/fda-news/search', async (req: Request, res: Response) => {
   try {
     const { query, category, drugName, company, dateFrom, dateTo, maxResults } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFDANewsTrackerScraper();
-    
+
     const articles = await scraper.searchNews({
       query,
       category,
@@ -393,7 +393,7 @@ router.post('/fda-news/search', async (req: Request, res: Response) => {
       dateTo,
       maxResults: maxResults || 20,
     });
-    
+
     res.json({
       success: true,
       source: 'FDA News Tracker',
@@ -421,12 +421,12 @@ router.post('/fda-news/search', async (req: Request, res: Response) => {
 router.get('/biospace-jobs/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioSpaceJobsScraper();
-    
+
     const jobs = await scraper.getLatestJobs(maxResults);
-    
+
     res.json({
       success: true,
       source: 'BioSpace Jobs',
@@ -451,10 +451,10 @@ router.get('/biospace-jobs/latest', async (req: Request, res: Response) => {
 router.post('/biospace-jobs/search', async (req: Request, res: Response) => {
   try {
     const { query, location, company, jobType, experienceLevel, therapeuticArea, maxResults } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioSpaceJobsScraper();
-    
+
     const jobs = await scraper.searchJobs({
       query,
       location,
@@ -464,7 +464,7 @@ router.post('/biospace-jobs/search', async (req: Request, res: Response) => {
       therapeuticArea,
       maxResults: maxResults || 20,
     });
-    
+
     res.json({
       success: true,
       source: 'BioSpace Jobs',

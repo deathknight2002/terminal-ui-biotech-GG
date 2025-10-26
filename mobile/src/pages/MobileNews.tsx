@@ -77,18 +77,18 @@ export const MobileNews: FC = () => {
                 <h3 className="news-card-title">{article.title}</h3>
                 <span className="news-card-source">{article.source}</span>
               </div>
-              
+
               {article.summary && (
                 <p className="news-card-summary">{article.summary}</p>
               )}
-              
+
               <div className="news-card-meta">
                 <span className="news-card-date">
                   {article.published_at
                     ? new Date(article.published_at).toLocaleDateString()
                     : 'No date'}
                 </span>
-                
+
                 {article.sentiments && (
                   <div className="news-card-sentiments">
                     {article.sentiments.regulatory && (

@@ -536,8 +536,8 @@ export const BioAuroraDashboard: React.FC<BioAuroraDashboardProps> = ({
 
           {news && news.length > 0 && (
             <div className={styles.newsSection}>
-              <NewsFeed 
-                news={news} 
+              <NewsFeed
+                news={news}
                 onRefresh={onRefreshNews}
                 cornerBrackets
               />

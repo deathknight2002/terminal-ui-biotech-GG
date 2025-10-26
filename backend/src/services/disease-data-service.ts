@@ -1,6 +1,6 @@
 /**
  * Disease Data Service
- * 
+ *
  * Integrates epidemiological data from multiple authoritative sources:
  * - SEER (Surveillance, Epidemiology, and End Results) - Cancer statistics
  * - WHO (World Health Organization) - Global disease burden
@@ -19,7 +19,7 @@ export enum DataSource {
 }
 
 // Disease category types
-export type DiseaseCategory = 
+export type DiseaseCategory =
   | 'Cancer'
   | 'Infectious Disease'
   | 'Chronic Disease'
@@ -145,7 +145,7 @@ export class DiseaseDataService {
     cdcDiseases.forEach(disease => {
       this.diseaseDatabase.set(disease.id, disease);
     });
-    
+
     // Extended Disease Dataset (30+ additional diseases)
     const extendedDiseases = getExtendedDiseaseData();
     extendedDiseases.forEach(disease => {
@@ -675,7 +675,7 @@ export class DiseaseDataService {
     // Apply text search
     if (query && query.trim()) {
       const searchTerm = query.toLowerCase();
-      results = results.filter(disease => 
+      results = results.filter(disease =>
         disease.name.toLowerCase().includes(searchTerm) ||
         disease.description.toLowerCase().includes(searchTerm) ||
         disease.category.toLowerCase().includes(searchTerm) ||
@@ -686,7 +686,7 @@ export class DiseaseDataService {
     // Apply filters
     if (filters) {
       if (filters.category && filters.category.length > 0) {
-        results = results.filter(disease => 
+        results = results.filter(disease =>
           filters.category!.includes(disease.category)
         );
       }

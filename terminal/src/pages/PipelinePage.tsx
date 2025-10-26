@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { 
+import {
   BioMetricGrid,
   CatalystTicker,
 } from '../../../frontend-components/src/biotech';
@@ -115,7 +115,7 @@ const fetchPipelineData = async () => {
 };
 
 export function PipelinePage() {
-  const { 
+  const {
     data: pipelineData = { metrics: PIPELINE_METRICS, catalysts: PIPELINE_CATALYSTS },
   } = useQuery({
     queryKey: ['pipeline-data'],
@@ -134,7 +134,7 @@ export function PipelinePage() {
 
       <div className="glass-panel">
         <div className="panel-title">🧬 PIPELINE OVERVIEW METRICS</div>
-        <BioMetricGrid 
+        <BioMetricGrid
           metrics={pipelineData.metrics}
           columns={3}
         />

@@ -54,13 +54,13 @@ export class PerformanceMonitor extends EventEmitter {
   private latencies: number[] = [];
   private readonly maxMetricsPerKey: number = 1000;
   private readonly metricsWindow: number = 3600000; // 1 hour
-  
+
   private totalRequests: number = 0;
   private successfulRequests: number = 0;
   private failedRequests: number = 0;
   private cacheHits: number = 0;
   private cacheMisses: number = 0;
-  
+
   private startTime: number = Date.now();
   private lastSnapshot?: PerformanceSnapshot;
   private snapshotInterval?: NodeJS.Timeout;
@@ -89,7 +89,7 @@ export class PerformanceMonitor extends EventEmitter {
     // Keep only recent metrics
     const cutoff = Date.now() - this.metricsWindow;
     const filtered = existing.filter(m => m.timestamp > cutoff).slice(-this.maxMetricsPerKey);
-    
+
     this.metrics.set(name, filtered);
 
     this.emit('metric', metric);
@@ -100,7 +100,7 @@ export class PerformanceMonitor extends EventEmitter {
    */
   recordRequestTiming(endpoint: string, duration: number, success: boolean): void {
     this.totalRequests++;
-    
+
     if (success) {
       this.successfulRequests++;
     } else {
@@ -108,7 +108,7 @@ export class PerformanceMonitor extends EventEmitter {
     }
 
     this.latencies.push(duration);
-    
+
     // Keep only recent latencies (last 1000)
     if (this.latencies.length > 1000) {
       this.latencies = this.latencies.slice(-1000);
@@ -129,7 +129,7 @@ export class PerformanceMonitor extends EventEmitter {
 
     endpointMetric.totalRequests++;
     endpointMetric.lastCheck = Date.now();
-    
+
     if (success) {
       endpointMetric.successfulRequests++;
     } else {
@@ -198,8 +198,8 @@ export class PerformanceMonitor extends EventEmitter {
         p50Latency: this.calculatePercentile(sortedLatencies, 50),
         p95Latency: this.calculatePercentile(sortedLatencies, 95),
         p99Latency: this.calculatePercentile(sortedLatencies, 99),
-        errorRate: this.totalRequests > 0 
-          ? (this.failedRequests / this.totalRequests) * 100 
+        errorRate: this.totalRequests > 0
+          ? (this.failedRequests / this.totalRequests) * 100
           : 0,
         cacheHitRate: (this.cacheHits + this.cacheMisses) > 0
           ? (this.cacheHits / (this.cacheHits + this.cacheMisses)) * 100
@@ -238,7 +238,7 @@ export class PerformanceMonitor extends EventEmitter {
    */
   private calculatePercentile(sortedValues: number[], percentile: number): number {
     if (sortedValues.length === 0) return 0;
-    
+
     const index = Math.ceil((percentile / 100) * sortedValues.length) - 1;
     return sortedValues[Math.max(0, index)] || 0;
   }
@@ -250,7 +250,7 @@ export class PerformanceMonitor extends EventEmitter {
     this.snapshotInterval = setInterval(() => {
       const snapshot = this.getSnapshot();
       this.emit('snapshot', snapshot);
-      
+
       // Log summary
       logger.info('📊 Performance Snapshot:', {
         throughput: snapshot.metrics.throughput.toFixed(2) + ' req/s',
@@ -266,13 +266,13 @@ export class PerformanceMonitor extends EventEmitter {
    */
   getStats() {
     const snapshot = this.getSnapshot();
-    
+
     return {
       totalRequests: this.totalRequests,
       successfulRequests: this.successfulRequests,
       failedRequests: this.failedRequests,
-      successRate: this.totalRequests > 0 
-        ? (this.successfulRequests / this.totalRequests) * 100 
+      successRate: this.totalRequests > 0
+        ? (this.successfulRequests / this.totalRequests) * 100
         : 0,
       cacheHits: this.cacheHits,
       cacheMisses: this.cacheMisses,
@@ -296,7 +296,7 @@ export class PerformanceMonitor extends EventEmitter {
     this.cacheHits = 0;
     this.cacheMisses = 0;
     this.startTime = Date.now();
-    
+
     logger.info('📊 Performance metrics reset');
   }
 
@@ -332,7 +332,7 @@ export class PerformanceMonitor extends EventEmitter {
 
     // Latency metrics
     const snapshot = this.lastSnapshot || this.getSnapshot();
-    
+
     lines.push('# HELP scraping_latency_avg_ms Average request latency in milliseconds');
     lines.push('# TYPE scraping_latency_avg_ms gauge');
     lines.push(`scraping_latency_avg_ms ${snapshot.metrics.avgLatency.toFixed(2)}`);
@@ -361,7 +361,7 @@ export class PerformanceMonitor extends EventEmitter {
     if (this.snapshotInterval) {
       clearInterval(this.snapshotInterval);
     }
-    
+
     logger.info('📊 Performance Monitor shutdown');
   }
 }

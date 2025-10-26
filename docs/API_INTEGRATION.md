@@ -821,7 +821,7 @@ def fetch_historical_data(ticker: str, period: str):
     def _fetch():
         # Your API call here
         return requests.get(f"https://query1.finance.yahoo.com/v7/finance/download/{ticker}?period1=...")
-    
+
     return limiter.get_cached_or_fetch(
         endpoint=f"historical_{ticker}",
         fetch_func=_fetch,

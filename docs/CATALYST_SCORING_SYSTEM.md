@@ -68,7 +68,7 @@ The catalyst scoring system uses a 5-dimensional framework totaling 0-16 points:
 ```python
 class Catalyst(Base):
     __tablename__ = "catalysts"
-    
+
     # Existing fields
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
@@ -80,7 +80,7 @@ class Catalyst(Base):
     impact = Column(String)
     description = Column(Text)
     status = Column(String, default="Upcoming")
-    
+
     # NEW: Ionis-style scoring fields
     event_leverage = Column(Integer)      # 0-4
     timing_clarity = Column(Integer)      # 0-3
@@ -100,7 +100,7 @@ export interface Catalyst {
   description?: string;
   expectedImpact?: ImpactLevel;
   category?: "Clinical" | "Regulatory" | "Commercial" | "Corporate";
-  
+
   // Scoring fields
   eventLeverage?: number;      // 0-4
   timingClarity?: number;       // 0-3
@@ -141,7 +141,7 @@ Returns upcoming catalysts with scoring data.
       "description": "FCS already approved as Tryngolza...",
       "status": "Upcoming",
       "days_until": 119,
-      
+
       // Scoring fields
       "event_leverage": 4,
       "timing_clarity": 2,
@@ -364,10 +364,10 @@ db = SessionLocal()
 
 # Get high-torque catalysts
 high_torque = db.query(Catalyst).filter(
-    (Catalyst.event_leverage or 0) + 
-    (Catalyst.timing_clarity or 0) + 
-    (Catalyst.surprise_factor or 0) + 
-    (Catalyst.downside_contained or 0) + 
+    (Catalyst.event_leverage or 0) +
+    (Catalyst.timing_clarity or 0) +
+    (Catalyst.surprise_factor or 0) +
+    (Catalyst.downside_contained or 0) +
     (Catalyst.market_depth or 0) > 8
 ).all()
 ```
@@ -381,7 +381,7 @@ import { computeCatalystScore } from '../utils/catalystScoring';
 
 function CatalystDashboard() {
   const [catalysts, setCatalysts] = useState([]);
-  
+
   useEffect(() => {
     fetch('/api/v1/biotech/catalysts?upcoming_days=365')
       .then(res => res.json())
@@ -391,7 +391,7 @@ function CatalystDashboard() {
         setCatalysts(highTorque);
       });
   }, []);
-  
+
   return (
     <div>
       {catalysts.map(catalyst => (

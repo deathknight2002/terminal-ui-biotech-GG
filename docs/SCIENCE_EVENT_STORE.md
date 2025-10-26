@@ -19,7 +19,7 @@ Previously, science-relevant updates were surfaced as ephemeral "reports" shown 
 The Science Event Store provides:
 
 1. **Discrete, versioned records** with timestamps, source metadata, and relationships
-2. **Queryable storage** for historical data, filtering, and aggregation  
+2. **Queryable storage** for historical data, filtering, and aggregation
 3. **Evidence timelines** and science dashboards over time
 4. **Reusable data** across TUI and Web UI layers
 5. **Knowledge graph** capabilities through event relationships
@@ -36,7 +36,7 @@ The core model for storing science events:
 class ScienceEvent(Base):
     """Persistent science event store"""
     __tablename__ = "science_events"
-    
+
     # Identity
     id: int (primary key)
     event_type: str  # CLINICAL_READOUT, MECHANISM_INSIGHT, etc.
@@ -44,38 +44,38 @@ class ScienceEvent(Base):
     title: str
     description: text
     summary: text
-    
+
     # Temporal
     event_date: datetime (indexed)
     published_date: date
-    
+
     # Entity associations
     entity_type: str  # DRUG, COMPANY, TARGET, INDICATION, TRIAL
     entity_id: str
     entity_name: str
     related_entities: JSON  # Array of related entities
-    
+
     # Source and provenance
     source_type: str  # FDA, CT.gov, EMA, SEC, PUBMED
     source_url: str
     source_metadata: JSON
-    
+
     # Content
     content: text
     key_findings: JSON
     impact_assessment: text  # "So what?" explanation
-    
+
     # Classification
     evidence_class: str  # GENETIC, PRECLINICAL, CLINICAL, RWE, REGULATORY
     confidence_score: float (0-1)
     impact_score: float (0-1)
-    
+
     # Versioning
     version: int (default 1)
     parent_version_id: int (self-referential FK)
     is_current: bool (indexed)
     change_summary: text
-    
+
     # Metadata
     tags: JSON  # Array for filtering
     metadata: JSON  # Flexible additional data
@@ -89,10 +89,10 @@ Extended to support standalone evidence (not tied to catalyst events):
 class Evidence(Base):
     """Supporting evidence - can be standalone or linked to events"""
     __tablename__ = "evidence"
-    
+
     # Link to catalyst (now optional)
     catalyst_event_id: int (nullable)
-    
+
     # New fields for standalone evidence
     event_date: datetime (indexed)
     entity_type: str  # DRUG, COMPANY, TARGET, INDICATION
@@ -101,7 +101,7 @@ class Evidence(Base):
     strength_score: float (0-1)
     citations: JSON
     linkage_verified: bool
-    
+
     # Versioning
     version: int
     parent_version_id: int
@@ -116,7 +116,7 @@ Captures explicit relationships between events:
 class EventRelationship(Base):
     """Relationships between science events"""
     __tablename__ = "event_relationships"
-    
+
     source_event_id: int
     target_event_id: int
     relationship_type: str  # FOLLOWS, PRECEDES, CAUSES, SUPPORTS, etc.
@@ -313,7 +313,7 @@ function EvidenceTimeline({ drugId }: { drugId: string }) {
       `/api/v1/science/science-events/timeline/DRUG/${drugId}`
     ).then(res => res.json())
   });
-  
+
   return (
     <div>
       {data?.timeline.map(event => (

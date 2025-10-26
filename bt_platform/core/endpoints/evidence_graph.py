@@ -51,7 +51,7 @@ async def get_nodes(
     """
     Get all nodes in the evidence graph.
     Supports ETag caching, HEAD requests, and filtering.
-    
+
     Query Parameters:
     - type: Filter by node type (thesis, trial, catalyst, kol, doc)
     - company: Filter by company name (case-insensitive partial match)
@@ -60,22 +60,22 @@ async def get_nodes(
     """
     try:
         nodes, etag = storage.get_nodes_with_etag()
-        
+
         # Apply filters
         if type:
             nodes = [n for n in nodes if n.type == type]
-        
+
         if company:
             company_lower = company.lower()
             nodes = [n for n in nodes if n.company and company_lower in n.company.lower()]
-        
+
         # Apply pagination
         total_count = len(nodes)
         if offset:
             nodes = nodes[offset:]
         if limit:
             nodes = nodes[:limit]
-        
+
         # Check If-None-Match header for cache validation
         if_none_match = request.headers.get("if-none-match")
         if if_none_match and if_none_match == etag:
@@ -84,7 +84,7 @@ async def get_nodes(
                 status_code=304,
                 headers={"ETag": etag}
             )
-        
+
         # For HEAD requests, return headers only
         if request.method == "HEAD":
             return Response(
@@ -96,7 +96,7 @@ async def get_nodes(
                     "X-Total-Count": str(total_count)
                 }
             )
-        
+
         # Return nodes with ETag header
         return Response(
             content=f'[{",".join(node.model_dump_json() for node in nodes)}]',
@@ -138,7 +138,7 @@ async def get_edges(request: Request):
     """
     try:
         edges, etag = storage.get_edges_with_etag()
-        
+
         # Check If-None-Match header for cache validation
         if_none_match = request.headers.get("if-none-match")
         if if_none_match and if_none_match == etag:
@@ -147,7 +147,7 @@ async def get_edges(request: Request):
                 status_code=304,
                 headers={"ETag": etag}
             )
-        
+
         # For HEAD requests, return headers only
         if request.method == "HEAD":
             return Response(
@@ -158,7 +158,7 @@ async def get_edges(request: Request):
                     "Cache-Control": "no-store"
                 }
             )
-        
+
         # Return edges with ETag header
         return Response(
             content=f'[{",".join(edge.model_dump_json() for edge in edges)}]',
@@ -185,7 +185,7 @@ async def add_edge(edge: Edge):
 async def get_thesis_timeline(thesis_id: str):
     """
     Get timeline of updates for a thesis.
-    
+
     Returns edges that update the thesis, sorted by time.
     This endpoint supports the timeline scrubber feature.
     """
@@ -194,32 +194,32 @@ async def get_thesis_timeline(thesis_id: str):
         thesis_node = storage.get_node(thesis_id)
         if thesis_node is None:
             raise HTTPException(status_code=404, detail=f"Thesis not found: {thesis_id}")
-        
+
         if thesis_node.type != "thesis":
             raise HTTPException(status_code=400, detail=f"Node {thesis_id} is not a thesis")
-        
+
         timeline = storage.get_thesis_timeline(thesis_id)
-        
+
         # Calculate cumulative changes
         cumulative_pos = thesis_node.pos_estimate or 0.0
         cumulative_sentiment = thesis_node.sentiment or 0.0
-        
+
         for i, entry in enumerate(timeline):
             edge_data = entry["edge"]
             delta = edge_data.get("delta", {})
-            
+
             # Add cumulative values
             if delta:
                 if delta.get("pos") is not None:
                     cumulative_pos += delta["pos"]
                 if delta.get("sentiment") is not None:
                     cumulative_sentiment += delta["sentiment"]
-            
+
             entry["cumulative"] = {
                 "pos": cumulative_pos,
                 "sentiment": cumulative_sentiment
             }
-        
+
         return {
             "thesis_id": thesis_id,
             "thesis": thesis_node.model_dump(mode='json'),
@@ -243,7 +243,7 @@ async def screen_edges(
 ):
     """
     Screen/filter edges by criteria.
-    
+
     Examples:
     - /screen?pos_delta_abs_gt=0.02 - Get edges with |ΔPoS| > 0.02
     - /screen?days=30 - Get edges from last 30 days

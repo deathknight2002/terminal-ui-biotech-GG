@@ -10,10 +10,10 @@ const API_URL = `${API_CONFIG.BASE_URL}/api`;
 
 // Fetch disease data from backend
 const fetchDiseaseData = async (diseaseId?: string) => {
-  const endpoint = diseaseId 
+  const endpoint = diseaseId
     ? `${API_URL}/epidemiology/models/${diseaseId}`
     : `${API_URL}/epidemiology/models`;
-    
+
   const response = await fetch(endpoint);
   if (!response.ok) {
     throw new Error('Failed to fetch disease data');
@@ -32,7 +32,7 @@ const searchDiseases = async (query: string, filters?: any) => {
   if (filters?.dataSource) {
     filters.dataSource.forEach((src: string) => params.append('dataSource', src));
   }
-  
+
   const response = await fetch(`${API_URL}/epidemiology/search?${params}`);
   if (!response.ok) {
     throw new Error('Failed to search diseases');
@@ -82,15 +82,15 @@ export function EpidemiologyPage() {
   }, [searchResults]);
 
   const handleCategoryToggle = (category: string) => {
-    setCategoryFilter(prev => 
-      prev.includes(category) 
+    setCategoryFilter(prev =>
+      prev.includes(category)
         ? prev.filter(c => c !== category)
         : [...prev, category]
     );
   };
 
   const handleDataSourceToggle = (source: string) => {
-    setDataSourceFilter(prev => 
+    setDataSourceFilter(prev =>
       prev.includes(source)
         ? prev.filter(s => s !== source)
         : [...prev, source]
@@ -121,7 +121,7 @@ export function EpidemiologyPage() {
               className={styles.searchInput}
             />
             {searchQuery && (
-              <button 
+              <button
                 onClick={() => setSearchQuery('')}
                 className={styles.clearButton}
                 aria-label="Clear search"
@@ -260,7 +260,7 @@ export function EpidemiologyPage() {
           {/* Disease Description */}
           <Panel title="Disease Overview" variant="glass" cornerBrackets>
             <p className={styles.description}>{selectedDisease.description}</p>
-            
+
             {selectedDisease.geographicDistribution && (
               <div className={styles.geographicDistribution}>
                 <h4>Geographic Distribution</h4>

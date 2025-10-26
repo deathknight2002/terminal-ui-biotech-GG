@@ -145,7 +145,7 @@ git checkout conflict-resolve/pr-72
 cd platform && poetry install && poetry run pytest
 cd ../terminal && npm install && npm run build && npm test
 
-# Test PR #73  
+# Test PR #73
 git checkout conflict-resolve/pr-73
 cd backend/java-scrapers && mvn clean install && mvn test
 

@@ -61,7 +61,7 @@ export class FDAScraper {
 
   constructor(apiKey?: string) {
     this.apiKey = apiKey;
-    
+
     this.client = axios.create({
       baseURL: this.baseUrl,
       timeout: 30000,
@@ -95,7 +95,7 @@ export class FDAScraper {
    */
   async searchDrugApprovals(params: FDASearchParams): Promise<FDADrugApproval[]> {
     const cacheKey = `approvals:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('🏛️ FDA approvals cache hit');
@@ -180,7 +180,7 @@ export class FDAScraper {
    */
   async searchAdverseEvents(drugName: string, params: FDASearchParams = {}): Promise<FDAAdverseEvent[]> {
     const cacheKey = `adverse:${drugName}:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('🏛️ FDA adverse events cache hit');
@@ -213,7 +213,7 @@ export class FDAScraper {
     const result = await retryWithBackoff(
       async () => {
         const search = `patient.drug.medicinalproduct:"${drugName}"`;
-        
+
         const queryParams: any = {
           search,
           limit: params.limit || 100,
@@ -258,7 +258,7 @@ export class FDAScraper {
    */
   async searchRecalls(params: FDASearchParams = {}): Promise<FDARecall[]> {
     const cacheKey = `recalls:${JSON.stringify(params)}`;
-    
+
     const cached = this.cache.get(cacheKey);
     if (cached) {
       logger.debug('🏛️ FDA recalls cache hit');
@@ -351,7 +351,7 @@ export class FDAScraper {
    */
   private determineApplicationType(appNumber: string): 'NDA' | 'BLA' | 'ANDA' {
     if (!appNumber) return 'NDA';
-    
+
     if (appNumber.startsWith('BLA')) return 'BLA';
     if (appNumber.startsWith('ANDA')) return 'ANDA';
     return 'NDA';

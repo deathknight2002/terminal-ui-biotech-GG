@@ -16,12 +16,12 @@ const router = express.Router();
 router.get('/fierce-biotech/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFierceBiotechScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Fierce Biotech',
@@ -46,17 +46,17 @@ router.get('/fierce-biotech/latest', async (req: Request, res: Response) => {
 router.post('/fierce-biotech/search', async (req: Request, res: Response) => {
   try {
     const { query, category, maxResults, sortBy } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFierceBiotechScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
       maxResults: maxResults || 20,
       sortBy,
     });
-    
+
     res.json({
       success: true,
       source: 'Fierce Biotech',
@@ -83,12 +83,12 @@ router.get('/fierce-biotech/category/:category', async (req: Request, res: Respo
   try {
     const { category } = req.params;
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getFierceBiotechScraper();
-    
+
     const articles = await scraper.getArticlesByCategory(category, maxResults);
-    
+
     res.json({
       success: true,
       source: 'Fierce Biotech',
@@ -114,12 +114,12 @@ router.get('/fierce-biotech/category/:category', async (req: Request, res: Respo
 router.get('/science-daily/top', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 10;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getScienceDailyScraper();
-    
+
     const articles = await scraper.getTopStories(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Science Daily',
@@ -144,12 +144,12 @@ router.get('/science-daily/top', async (req: Request, res: Response) => {
 router.get('/science-daily/health', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getScienceDailyScraper();
-    
+
     const articles = await scraper.getHealthNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Science Daily',
@@ -175,12 +175,12 @@ router.get('/science-daily/health', async (req: Request, res: Response) => {
 router.get('/science-daily/biotech', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getScienceDailyScraper();
-    
+
     const articles = await scraper.getBiotechNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Science Daily',
@@ -206,17 +206,17 @@ router.get('/science-daily/biotech', async (req: Request, res: Response) => {
 router.post('/science-daily/search', async (req: Request, res: Response) => {
   try {
     const { query, category, maxResults, dateFrom } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getScienceDailyScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
       maxResults: maxResults || 20,
       dateFrom,
     });
-    
+
     res.json({
       success: true,
       source: 'Science Daily',
@@ -242,12 +242,12 @@ router.post('/science-daily/search', async (req: Request, res: Response) => {
 router.get('/biospace/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioSpaceScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'BioSpace',
@@ -273,12 +273,12 @@ router.get('/biospace/company/:company', async (req: Request, res: Response) => 
   try {
     const { company } = req.params;
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioSpaceScraper();
-    
+
     const articles = await scraper.getCompanyNews(company, maxResults);
-    
+
     res.json({
       success: true,
       source: 'BioSpace',
@@ -304,16 +304,16 @@ router.get('/biospace/company/:company', async (req: Request, res: Response) => 
 router.post('/biospace/search', async (req: Request, res: Response) => {
   try {
     const { query, category, maxResults } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getBioSpaceScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
       maxResults: maxResults || 20,
     });
-    
+
     res.json({
       success: true,
       source: 'BioSpace',
@@ -339,12 +339,12 @@ router.post('/biospace/search', async (req: Request, res: Response) => {
 router.get('/endpoints/latest', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getEndpointsNewsScraper();
-    
+
     const articles = await scraper.getLatestNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Endpoints News',
@@ -369,12 +369,12 @@ router.get('/endpoints/latest', async (req: Request, res: Response) => {
 router.get('/endpoints/dealmaking', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getEndpointsNewsScraper();
-    
+
     const articles = await scraper.getDealMakingNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Endpoints News',
@@ -400,12 +400,12 @@ router.get('/endpoints/dealmaking', async (req: Request, res: Response) => {
 router.get('/endpoints/r-d', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getEndpointsNewsScraper();
-    
+
     const articles = await scraper.getRAndDNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Endpoints News',
@@ -431,12 +431,12 @@ router.get('/endpoints/r-d', async (req: Request, res: Response) => {
 router.get('/endpoints/regulation', async (req: Request, res: Response) => {
   try {
     const maxResults = parseInt(req.query.maxResults as string) || 20;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getEndpointsNewsScraper();
-    
+
     const articles = await scraper.getRegulatoryNews(maxResults);
-    
+
     res.json({
       success: true,
       source: 'Endpoints News',
@@ -462,16 +462,16 @@ router.get('/endpoints/regulation', async (req: Request, res: Response) => {
 router.post('/endpoints/search', async (req: Request, res: Response) => {
   try {
     const { query, category, maxResults } = req.body;
-    
+
     const manager = getScrapingManager();
     const scraper = manager.getEndpointsNewsScraper();
-    
+
     const articles = await scraper.searchArticles({
       query,
       category,
       maxResults: maxResults || 20,
     });
-    
+
     res.json({
       success: true,
       source: 'Endpoints News',
@@ -497,9 +497,9 @@ router.post('/endpoints/search', async (req: Request, res: Response) => {
 router.get('/all', async (req: Request, res: Response) => {
   try {
     const maxResultsPerSource = parseInt(req.query.maxResults as string) || 10;
-    
+
     const manager = getScrapingManager();
-    
+
     // Fetch from all sources in parallel
     const [fierceBiotech, scienceDaily, bioSpace, endpoints] = await Promise.allSettled([
       manager.getFierceBiotechScraper().getLatestNews(maxResultsPerSource),
@@ -507,20 +507,20 @@ router.get('/all', async (req: Request, res: Response) => {
       manager.getBioSpaceScraper().getLatestNews(maxResultsPerSource),
       manager.getEndpointsNewsScraper().getLatestNews(maxResultsPerSource),
     ]);
-    
+
     const aggregated = {
       fierceBiotech: fierceBiotech.status === 'fulfilled' ? fierceBiotech.value : [],
       scienceDaily: scienceDaily.status === 'fulfilled' ? scienceDaily.value : [],
       bioSpace: bioSpace.status === 'fulfilled' ? bioSpace.value : [],
       endpoints: endpoints.status === 'fulfilled' ? endpoints.value : [],
     };
-    
-    const totalCount = 
+
+    const totalCount =
       aggregated.fierceBiotech.length +
       aggregated.scienceDaily.length +
       aggregated.bioSpace.length +
       aggregated.endpoints.length;
-    
+
     res.json({
       success: true,
       count: totalCount,
@@ -549,7 +549,7 @@ router.get('/all', async (req: Request, res: Response) => {
 router.get('/health', async (req: Request, res: Response) => {
   try {
     const manager = getScrapingManager();
-    
+
     const health = {
       fierceBiotech: manager.getFierceBiotechScraper().getHealth(),
       scienceDaily: manager.getScienceDailyScraper().getHealth(),
@@ -557,7 +557,7 @@ router.get('/health', async (req: Request, res: Response) => {
       endpoints: manager.getEndpointsNewsScraper().getHealth(),
       timestamp: new Date().toISOString(),
     };
-    
+
     res.json({
       success: true,
       health,

@@ -1,6 +1,6 @@
 /**
  * Feature Flag Service
- * 
+ *
  * Manages feature flags using Unleash Proxy Client.
  * Provides safe defaults when proxy is unreachable.
  */
@@ -61,11 +61,11 @@ class FeatureFlagService {
       this.isInitialized = true;
       console.log('[FeatureFlags] Initialized successfully');
     } catch (error) {
-      this.initializationError = error instanceof Error 
-        ? error 
+      this.initializationError = error instanceof Error
+        ? error
         : new Error('Failed to initialize feature flags');
       console.error('[FeatureFlags] Initialization error:', this.initializationError);
-      
+
       // Still mark as initialized to allow fallback to defaults
       this.isInitialized = true;
     }
@@ -122,7 +122,7 @@ class FeatureFlagService {
    */
   getAllFlags(): Record<string, boolean> {
     const flags: Record<string, boolean> = {};
-    
+
     Object.keys(FEATURE_FLAG_DEFAULTS).forEach((key) => {
       flags[key] = this.isEnabled(key as FeatureFlagKey);
     });

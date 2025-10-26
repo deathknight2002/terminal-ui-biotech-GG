@@ -246,12 +246,12 @@ App now connects to production backend over HTTPS!
 
 ```
 1. Create app icon (1024x1024 PNG)
-   
+
 2. In Xcode:
    - Click App → App → Assets.xcassets → AppIcon
    - Drag your icon to the 1024x1024 slot
    - Xcode generates all sizes automatically
-   
+
 3. Clean and rebuild:
    - Product → Clean Build Folder
    - Product → Run

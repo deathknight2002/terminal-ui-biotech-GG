@@ -56,7 +56,7 @@ export class PortfolioMonitorService extends EventEmitter {
 
   constructor() {
     super();
-    
+
     // Listen to change detection events
     this.changeDetection.on('change:detected', (change) => {
       this.handleChangeDetected(change);
@@ -70,7 +70,7 @@ export class PortfolioMonitorService extends EventEmitter {
    */
   addCompany(company: PortfolioCompany): void {
     this.companies.set(company.symbol, company);
-    
+
     if (company.monitoringEnabled) {
       this.setupCompanyMonitoring(company);
     }
@@ -95,7 +95,7 @@ export class PortfolioMonitorService extends EventEmitter {
       .forEach(m => this.changeDetection.removeMonitor(m.id));
 
     this.companies.delete(symbol);
-    
+
     logger.info(`🗑️ Removed company from portfolio: ${company.name}`);
     this.emit('company:removed', { symbol, company });
 
@@ -247,7 +247,7 @@ export class PortfolioMonitorService extends EventEmitter {
     };
 
     this.alerts.push(alert);
-    
+
     // Keep only last 500 alerts
     if (this.alerts.length > 500) {
       this.alerts.shift();

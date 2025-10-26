@@ -202,7 +202,7 @@ Visual:
    ```bash
    # macOS/Linux
    ifconfig | grep "inet "
-   
+
    # Windows
    ipconfig
    ```

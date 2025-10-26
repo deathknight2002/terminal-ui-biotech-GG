@@ -344,12 +344,12 @@
   .news-page {
     padding: 1rem;
   }
-  
+
   .article-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .article-meta {
     flex-direction: column;
     align-items: flex-start;

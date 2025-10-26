@@ -9,12 +9,12 @@ const OPENBB_API_BASE = 'https://api.openbb.co/v1';
  * - ClinicalTrials.gov API
  * - FDA.gov public data
  * - SEC EDGAR filings
- * 
+ *
  * To use real data:
  * 1. Run: cd backend/python-scrapers && python biotech_scraper.py
  * 2. This generates live_biotech_data.json with real market data
  * 3. Backend APIs in backend/src/routes/ serve this live data
- * 
+ *
  * Mock data below is kept for development fallback only.
  */
 
@@ -433,13 +433,13 @@ export const handlers = [
   http.get(`${OPENBB_API_BASE}/equity/quote`, ({ request }) => {
     const url = new URL(request.url);
     const symbol = url.searchParams.get('symbol');
-    
+
     if (symbol && mockMarketData[symbol as keyof typeof mockMarketData]) {
       return HttpResponse.json({
         results: [mockMarketData[symbol as keyof typeof mockMarketData]]
       });
     }
-    
+
     return HttpResponse.json({ error: 'Symbol not found' }, { status: 404 });
   }),
 
@@ -452,7 +452,7 @@ export const handlers = [
   http.get(`${OPENBB_API_BASE}/equity/fundamental/metrics`, ({ request }) => {
     const url = new URL(request.url);
     const symbol = url.searchParams.get('symbol');
-    
+
     if (symbol && mockMarketData[symbol as keyof typeof mockMarketData]) {
       const data = mockMarketData[symbol as keyof typeof mockMarketData];
       return HttpResponse.json({
@@ -466,7 +466,7 @@ export const handlers = [
         }]
       });
     }
-    
+
     return HttpResponse.json({ error: 'Symbol not found' }, { status: 404 });
   }),
 
@@ -475,16 +475,16 @@ export const handlers = [
     const url = new URL(request.url);
     const query = url.searchParams.get('query.term') || '';
     const symbol = url.searchParams.get('query.spons') || '';
-    
+
     // Extract symbol from sponsor or query
     const searchSymbol = symbol || query.match(/[A-Z]{2,5}/)?.[0] || '';
-    
+
     if (searchSymbol && mockClinicalTrials[searchSymbol as keyof typeof mockClinicalTrials]) {
       return HttpResponse.json({
         studies: mockClinicalTrials[searchSymbol as keyof typeof mockClinicalTrials]
       });
     }
-    
+
     return HttpResponse.json({ studies: [] });
   }),
 
@@ -515,7 +515,7 @@ export const handlers = [
 
   http.get('*/pharmaceutical/*', () => {
     return HttpResponse.json({
-      message: 'Pharmaceutical API endpoint mocked', 
+      message: 'Pharmaceutical API endpoint mocked',
       timestamp: new Date().toISOString(),
       data: []
     });

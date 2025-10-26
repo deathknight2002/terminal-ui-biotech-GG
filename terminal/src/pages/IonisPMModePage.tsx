@@ -30,7 +30,7 @@ export const IonisPMModePage: React.FC = () => {
     // Load all views for future use (display in dropdown, etc.)
     const views = PMLayoutPersistence.getAllViews();
     console.log('Available saved views:', views.length);
-    
+
     // Check if we have a shared view in URL
     const shareHash = searchParams.get('view');
     if (shareHash) {
@@ -66,14 +66,14 @@ export const IonisPMModePage: React.FC = () => {
 
   const handleSaveView = () => {
     if (!viewName.trim()) return;
-    
+
     const newView: SavedView = {
       id: `view-${Date.now()}`,
       name: viewName,
       filters: {}, // Would contain actual filter state
       layout: 'pmMode',
     };
-    
+
     PMLayoutPersistence.saveView(newView);
     // Refresh the available views count
     const views = PMLayoutPersistence.getAllViews();
@@ -89,10 +89,10 @@ export const IonisPMModePage: React.FC = () => {
       filters: {},
       layout: 'pmMode',
     };
-    
+
     const hash = PMLayoutPersistence.generateShareHash(currentView);
     const shareUrl = `${window.location.origin}${window.location.pathname}?view=${hash}`;
-    
+
     // Copy to clipboard
     navigator.clipboard.writeText(shareUrl).then(() => {
       alert('Share link copied to clipboard!');

@@ -348,6 +348,6 @@ Enriched Catalyst Ready for Display
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: 2024-10-13  
+**Version**: 1.0
+**Last Updated**: 2024-10-13
 **Status**: Reference Architecture

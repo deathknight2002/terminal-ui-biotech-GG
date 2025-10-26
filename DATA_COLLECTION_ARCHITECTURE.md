@@ -153,18 +153,18 @@ Backend APIs will serve data from `live_biotech_data.json`:
 ## 📈 Data Quality
 
 ### Advantages
-✅ **No API Keys** - All sources are public  
-✅ **No Rate Limits** - Respectful scraping with delays  
-✅ **No Costs** - 100% free data  
-✅ **Real-Time** - Yahoo Finance data is live  
-✅ **Comprehensive** - 40+ stocks, trials, FDA events  
-✅ **Reliable** - Government and established sources  
+✅ **No API Keys** - All sources are public
+✅ **No Rate Limits** - Respectful scraping with delays
+✅ **No Costs** - 100% free data
+✅ **Real-Time** - Yahoo Finance data is live
+✅ **Comprehensive** - 40+ stocks, trials, FDA events
+✅ **Reliable** - Government and established sources
 
 ### Limitations
-⚠️ **Manual Updates** - Requires running scraper script  
-⚠️ **No Intraday** - Prices update when scraper runs  
-⚠️ **Network Required** - Scraper needs internet access  
-⚠️ **Parsing Risk** - Web scraping can break if sites change  
+⚠️ **Manual Updates** - Requires running scraper script
+⚠️ **No Intraday** - Prices update when scraper runs
+⚠️ **Network Required** - Scraper needs internet access
+⚠️ **Parsing Risk** - Web scraping can break if sites change
 
 ### Mitigations
 - **Fallback to Mock Data**: If scraper fails, backend serves sample data

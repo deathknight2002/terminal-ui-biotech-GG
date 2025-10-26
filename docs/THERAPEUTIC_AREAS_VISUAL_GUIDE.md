@@ -173,13 +173,13 @@ Accent:        #00d4ff  ████████ (Cyan - matches DMD)
 ### Aurora Gradient Overlay
 ```css
 radial-gradient(
-  1200px 600px at 10% -10%, 
+  1200px 600px at 10% -10%,
   rgba(125, 249, 255, 0.15),  /* Cyan glow */
   transparent 50%
 )
 +
 radial-gradient(
-  900px 500px at 90% 0%, 
+  900px 500px at 90% 0%,
   rgba(192, 132, 252, 0.12),  /* Purple glow */
   transparent 50%
 )
@@ -265,7 +265,7 @@ Attributes:        11px, monospace (on chart)
 background: rgba(15, 20, 32, 0.5);
 backdrop-filter: blur(16px);
 border: 1px solid rgba(125, 249, 255, 0.12);
-box-shadow: 
+box-shadow:
   0 8px 32px rgba(0, 0, 0, 0.2),
   inset 0 1px 0 rgba(255, 255, 255, 0.03);
 ```
@@ -368,7 +368,7 @@ Bundle Size:             ~150KB (gzipped)
 
 ---
 
-**Built with**: React 19 + TypeScript + Canvas API  
-**Theme**: Aurora Glass Design System  
-**Responsive**: Mobile-first with 3 breakpoints  
+**Built with**: React 19 + TypeScript + Canvas API
+**Theme**: Aurora Glass Design System
+**Responsive**: Mobile-first with 3 breakpoints
 **Accessible**: WCAG AAA compliant

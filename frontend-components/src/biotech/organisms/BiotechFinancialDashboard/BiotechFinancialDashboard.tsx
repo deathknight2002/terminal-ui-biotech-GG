@@ -112,7 +112,7 @@ export function BiotechFinancialDashboard({
     'Net Income': proj.netIncome / 1_000_000,
     Patients: proj.patients?.total || 0
   }));
-  
+
   const developmentMilestones = projection.milestones.filter(m => m.type === 'regulatory'); // Assuming regulatory are development
   const salesMilestones = projection.milestones.filter(m => m.type === 'sales'); // Assuming sales type for sales milestones
 
@@ -152,19 +152,19 @@ export function BiotechFinancialDashboard({
 
       {/* Navigation Tabs */}
       <div className="dashboard-tabs">
-        <button 
+        <button
           className={clsx('tab-button', { active: activeTab === 'overview' })}
           onClick={() => setActiveTab('overview')}
         >
           Overview
         </button>
-        <button 
+        <button
           className={clsx('tab-button', { active: activeTab === 'projections' })}
           onClick={() => setActiveTab('projections')}
         >
           Projections
         </button>
-        <button 
+        <button
           className={clsx('tab-button', { active: activeTab === 'milestones' })}
           onClick={() => setActiveTab('milestones')}
         >
@@ -183,7 +183,7 @@ export function BiotechFinancialDashboard({
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="year" stroke="rgba(255,255,255,0.7)" />
                     <YAxis stroke="rgba(255,255,255,0.7)" />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{
                         backgroundColor: 'var(--eclipse-void)',
                         border: '1px solid var(--eclipse-aurora)',
@@ -191,17 +191,17 @@ export function BiotechFinancialDashboard({
                       }}
                     />
                     <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="Revenue" 
-                      stroke="var(--biotech-emerald)" 
+                    <Line
+                      type="monotone"
+                      dataKey="Revenue"
+                      stroke="var(--biotech-emerald)"
                       strokeWidth={3}
                       dot={{ fill: 'var(--biotech-emerald)', strokeWidth: 2, r: 4 }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="Net Income" 
-                      stroke="var(--biotech-cyan)" 
+                    <Line
+                      type="monotone"
+                      dataKey="Net Income"
+                      stroke="var(--biotech-cyan)"
                       strokeWidth={3}
                       dot={{ fill: 'var(--biotech-cyan)', strokeWidth: 2, r: 4 }}
                     />
@@ -221,17 +221,17 @@ export function BiotechFinancialDashboard({
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis dataKey="year" stroke="rgba(255,255,255,0.7)" />
                     <YAxis stroke="rgba(255,255,255,0.7)" />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{
                         backgroundColor: 'var(--eclipse-void)',
                         border: '1px solid var(--eclipse-aurora)',
                         borderRadius: '8px'
                       }}
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="Patients" 
-                      stroke="var(--biotech-teal)" 
+                    <Area
+                      type="monotone"
+                      dataKey="Patients"
+                      stroke="var(--biotech-teal)"
                       fill="var(--biotech-teal)"
                       fillOpacity={0.3}
                     />

@@ -107,10 +107,10 @@ This document provides a visual representation of the October 2025 Glass UI enha
          ○────────○─────○────────○
 
     🔬 BTK Inhibitor - Compound Analysis
-    
+
     MW: 450.5 g/mol    LogP: 3.2
     H-Donors: 2        H-Acceptors: 6
-    
+
     [Animated molecular nodes • Chemical bond connections]
 ```
 **Features:**
@@ -273,7 +273,7 @@ Radial gradient pattern:
     ○   ●   ○
       ○   ○
         ○
-  
+
   Cyan center → Purple mid → Green edge
   Concentric circles
   Simulates molecular orbitals
@@ -370,7 +370,7 @@ t = 0s (Empty)          t = 2s (Filling)         t = 4s (Full)
   ╲  │  ╱     Enhanced colors
    ╲ │ ╱      Increased opacity
     ╲│╱
-  
+
   filter: brightness(1.2)
 ```
 
@@ -383,7 +383,7 @@ t = 0s (Empty)          t = 2s (Filling)         t = 4s (Full)
   ╲  │  ╱     Normal colors
    ╲ │ ╱      Base opacity
     ╲│╱
-  
+
   filter: brightness(1.0)
 ```
 
@@ -396,7 +396,7 @@ t = 0s (Empty)          t = 2s (Filling)         t = 4s (Full)
   ╲  │  ╱     Reduced colors
    ╲ │ ╱      Lower opacity
     ╲│╱
-  
+
   filter: brightness(0.7)
 ```
 

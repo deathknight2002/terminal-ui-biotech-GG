@@ -37,16 +37,16 @@ import type { Column } from '@biotech-terminal/frontend-components/terminal';
 const columns: Column[] = [
   { key: 'id', header: 'ID', width: 60, align: 'center', sortable: true },
   { key: 'drug', header: 'DRUG NAME', width: 200, sortable: true },
-  { 
-    key: 'phase', 
-    header: 'PHASE', 
-    width: 120, 
+  {
+    key: 'phase',
+    header: 'PHASE',
+    width: 120,
     render: (row) => <span style={{ color: getPhaseColor(row.phase) }}>{row.phase}</span>
   },
-  { 
-    key: 'probability', 
-    header: 'PROBABILITY', 
-    width: 120, 
+  {
+    key: 'probability',
+    header: 'PROBABILITY',
+    width: 120,
     align: 'right',
     format: (value) => `${value}%`
   }
@@ -105,26 +105,26 @@ Bloomberg Launchpad-style system for saving, loading, and sharing custom termina
 
 ```typescript
 import { WorkspaceManager } from '@biotech-terminal/frontend-components/terminal';
-import { 
-  getAllWorkspaces, 
+import {
+  getAllWorkspaces,
   setActiveWorkspace,
-  getActiveWorkspaceId 
+  getActiveWorkspaceId
 } from '../../../src/utils/workspaceUtils';
 
 function MyApp() {
   const [showManager, setShowManager] = useState(false);
-  
+
   const handleLoadWorkspace = (workspace) => {
     // Apply the workspace layout
     applyPanelLayout(workspace.panels);
   };
-  
+
   return (
     <>
       <button onClick={() => setShowManager(true)}>
         MANAGE WORKSPACES
       </button>
-      
+
       {showManager && (
         <WorkspaceManager
           isOpen={showManager}
@@ -199,7 +199,7 @@ import { ContextMenu, useContextMenu, commonContextMenuItems } from '@biotech-te
 
 function MyComponent() {
   const { contextMenu, openContextMenu, closeContextMenu } = useContextMenu();
-  
+
   const handleRowRightClick = (e, row) => {
     const items = [
       commonContextMenuItems.copy(() => copyToClipboard(row)),
@@ -216,16 +216,16 @@ function MyComponent() {
         danger: true
       }
     ];
-    
+
     openContextMenu(e, items);
   };
-  
+
   return (
     <>
       <div onContextMenu={(e) => handleRowRightClick(e, data)}>
         Right-click me!
       </div>
-      
+
       {contextMenu && (
         <ContextMenu
           items={contextMenu.items}
@@ -273,14 +273,14 @@ Comprehensive data export system supporting multiple formats.
 ### Usage Example
 
 ```typescript
-import { 
-  exportToCSV, 
-  exportToJSON, 
+import {
+  exportToCSV,
+  exportToJSON,
   exportToTSV,
   copyToClipboard,
   formatNumber,
   formatCurrency,
-  formatDate 
+  formatDate
 } from '../../../src/utils/exportUtils';
 
 // Export to CSV
@@ -434,6 +434,6 @@ For issues or questions:
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: October 2025  
+**Version**: 1.0
+**Last Updated**: October 2025
 **Author**: Biotech Terminal Team

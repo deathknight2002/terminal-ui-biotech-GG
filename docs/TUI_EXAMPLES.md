@@ -178,7 +178,7 @@ To refresh data from all sources:
    Status: ✗ Refresh failed
    ✗ Data refresh failed:
    Connection refused
-   
+
    Please check your connection and try again.
    ```
 

@@ -51,7 +51,7 @@ export function CatalystCalendarPage() {
   const exportToICS = () => {
     // ICS export format
     let icsContent = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Biotech Terminal//Catalyst Calendar//EN\r\n';
-    
+
     events.forEach((event) => {
       const dateStr = event.date ? event.date.replace(/[-:]/g, '').split('.')[0] + 'Z' : '';
       icsContent += 'BEGIN:VEVENT\r\n';
@@ -63,9 +63,9 @@ export function CatalystCalendarPage() {
       icsContent += `LOCATION:${event.company}\r\n`;
       icsContent += 'END:VEVENT\r\n';
     });
-    
+
     icsContent += 'END:VCALENDAR';
-    
+
     // Download
     const blob = new Blob([icsContent], { type: 'text/calendar' });
     const url = URL.createObjectURL(blob);

@@ -1,6 +1,6 @@
 /**
  * FDA Advisory Committee Calendar Connector
- * 
+ *
  * Scrapes FDA Advisory Committee meetings to upgrade catalyst confidence
  * (estimated → likely → confirmed based on Federal Register postings)
  */
@@ -43,17 +43,17 @@ export interface AdCommMeetingContract {
  */
 export class FDAAdCommConnector {
   private baseUrl = 'https://www.fda.gov/advisory-committees/advisory-committee-calendar';
-  
+
   /**
    * Get upcoming AdComm meetings
    */
   async getUpcomingMeetings(daysAhead = 180): Promise<AdCommMeetingContract[]> {
     // In production, this would scrape the FDA Advisory Committee Calendar
     // For now, return mock data with proper structure
-    
+
     const now = new Date();
     const pulledAt = now.toISOString();
-    
+
     return [
       {
         version: '1.0',
@@ -95,7 +95,7 @@ export class FDAAdCommConnector {
       },
     ];
   }
-  
+
   /**
    * Check if meeting has Federal Register posting (upgrades confidence to 'confirmed')
    */
@@ -104,7 +104,7 @@ export class FDAAdCommConnector {
     // https://www.federalregister.gov/api/v1/documents.json?conditions[docket_id]={docketNumber}
     return false;
   }
-  
+
   /**
    * Get meeting details by docket number
    */
