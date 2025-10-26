@@ -2,6 +2,18 @@
 
 End-to-end tests for the Biotech Terminal Platform using Playwright.
 
+## Manual Refresh Only Contract ⭐
+
+The Evidence Graph implements a **"manual refresh only"** model - critical tests validate:
+
+✅ **No background polling** - Data refreshes only on explicit user action  
+✅ **No WebSocket connections** - No real-time push updates  
+✅ **No automatic intervals** - No setTimeout/setInterval for data fetching  
+✅ **Explicit refresh button** - User must click to update data  
+✅ **Timestamp updates** - Last-updated stamp changes only after manual refresh
+
+See `evidence-graph-manual-refresh.spec.ts` for the contract test.
+
 ## Installation
 
 ```bash
