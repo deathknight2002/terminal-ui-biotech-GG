@@ -104,6 +104,53 @@ echo -e "${GREEN}✅ Screen endpoint working${NC}"
 echo "   Found $SCREEN_COUNT edges with |ΔPoS| > 0.01"
 echo ""
 
+# Test seed endpoint
+echo "🌱 Testing /api/v1/evidence-graph/seed endpoint (POST)..."
+SEED_RESPONSE=$(curl -s -X POST "${API_URL}/api/v1/evidence-graph/seed")
+if echo "$SEED_RESPONSE" | grep -q "status"; then
+    echo -e "${GREEN}✅ Seed endpoint working${NC}"
+    echo "   Response: $SEED_RESPONSE"
+else
+    echo -e "${RED}❌ Seed endpoint failed${NC}"
+    exit 1
+fi
+echo ""
+
+# Test create node endpoint
+echo "📝 Testing /api/v1/evidence-graph/node endpoint (POST)..."
+NODE_PAYLOAD='{"id":"test:smoke-test-node","type":"thesis","notes":"Smoke test node"}'
+NODE_CREATE=$(curl -s -X POST -H "Content-Type: application/json" -d "$NODE_PAYLOAD" "${API_URL}/api/v1/evidence-graph/node")
+if echo "$NODE_CREATE" | grep -q "test:smoke-test-node"; then
+    echo -e "${GREEN}✅ Node creation endpoint working${NC}"
+else
+    echo -e "${RED}❌ Node creation endpoint failed${NC}"
+    exit 1
+fi
+echo ""
+
+# Test create edge endpoint
+echo "🔗 Testing /api/v1/evidence-graph/edge endpoint (POST)..."
+EDGE_PAYLOAD='{"from":"test:smoke-test-node","to":"test:smoke-test-node","relation":"updates","delta":{"pos":0.01},"confidence":0.5,"reason":"Smoke test edge","created_at":"'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"}'
+EDGE_CREATE=$(curl -s -X POST -H "Content-Type: application/json" -d "$EDGE_PAYLOAD" "${API_URL}/api/v1/evidence-graph/edge")
+if echo "$EDGE_CREATE" | grep -q "test:smoke-test-node"; then
+    echo -e "${GREEN}✅ Edge creation endpoint working${NC}"
+else
+    echo -e "${RED}❌ Edge creation endpoint failed${NC}"
+    exit 1
+fi
+echo ""
+
+# Test OpenAPI endpoint
+echo "📚 Testing /openapi.json endpoint..."
+OPENAPI=$(curl -s "${API_URL}/openapi.json")
+if echo "$OPENAPI" | grep -q "openapi"; then
+    echo -e "${GREEN}✅ OpenAPI endpoint working${NC}"
+else
+    echo -e "${RED}❌ OpenAPI endpoint failed${NC}"
+    exit 1
+fi
+echo ""
+
 # Check for real-time features (should not exist)
 echo "🔒 Verifying no real-time features..."
 NO_WEBSOCKET=true
@@ -126,12 +173,16 @@ echo ""
 echo "=============================="
 echo "📊 Test Summary"
 echo "=============================="
-echo -e "${GREEN}✅ All API endpoints working${NC}"
+echo -e "${GREEN}✅ All 9 API endpoints working${NC}"
 echo -e "   - Health check: OK"
-echo -e "   - Nodes: $NODE_COUNT loaded"
-echo -e "   - Edges: $EDGE_COUNT loaded"
-echo -e "   - Timeline: Working"
-echo -e "   - Screen: Working"
+echo -e "   - OpenAPI: OK"
+echo -e "   - Nodes (GET): $NODE_COUNT loaded"
+echo -e "   - Node (POST): OK"
+echo -e "   - Edges (GET): $EDGE_COUNT loaded"
+echo -e "   - Edge (POST): OK"
+echo -e "   - Timeline: OK"
+echo -e "   - Screen: OK"
+echo -e "   - Seed (POST): OK"
 if [ "$NO_WEBSOCKET" = true ]; then
     echo -e "${GREEN}✅ Manual-refresh architecture verified${NC}"
     echo -e "   - No WebSocket connections"
