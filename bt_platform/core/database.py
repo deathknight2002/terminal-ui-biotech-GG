@@ -358,8 +358,8 @@ class PipelineAsset(Base):
     last_verified = Column(DateTime(timezone=True), onupdate=func.now())
     data_hash = Column(String, index=True)  # Hash for deduplication
 
-    # Additional metadata
-    metadata = Column(JSON)  # Flexible field for additional scraped data
+    # Additional metadata (renamed from 'metadata' to avoid SQLAlchemy conflict)
+    extra_data = Column(JSON)  # Flexible field for additional scraped data
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

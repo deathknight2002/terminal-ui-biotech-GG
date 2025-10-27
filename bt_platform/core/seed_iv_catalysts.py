@@ -6,6 +6,7 @@ Loads sample XBI companies and upcoming catalysts for IV tracking.
 
 import logging
 from datetime import datetime, timedelta
+from typing import Optional
 from sqlalchemy.orm import Session
 
 from .database import SessionLocal, Company, Catalyst, PriceData, OptionsIV
@@ -108,7 +109,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Clinical",
         "event_type": "Data Readout",
         "days_ahead": 14,
-        "risk": "Medium",
+        "impact": "Medium",
         "description": "Top-line results from Phase 3 trial of Dupixent in COPD patients"
     },
     {
@@ -118,7 +119,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Regulatory",
         "event_type": "NDA Filing",
         "days_ahead": 21,
-        "risk": "Low",
+        "impact": "Low",
         "description": "Filing of NDA for VX-548 non-opioid pain therapy"
     },
     {
@@ -128,7 +129,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Clinical",
         "event_type": "Interim Analysis",
         "days_ahead": 28,
-        "risk": "High",
+        "impact": "High",
         "description": "Interim efficacy analysis for melanoma vaccine trial"
     },
     {
@@ -138,7 +139,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Clinical",
         "event_type": "Data Readout",
         "days_ahead": 35,
-        "risk": "High",
+        "impact": "High",
         "description": "Phase 2 data for NSCLC vaccine candidate"
     },
     {
@@ -148,7 +149,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Regulatory",
         "event_type": "MAA Filing",
         "days_ahead": 18,
-        "risk": "Low",
+        "impact": "Low",
         "description": "European Marketing Authorization Application for CIDP indication"
     },
     {
@@ -158,7 +159,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Regulatory",
         "event_type": "PDUFA Date",
         "days_ahead": 42,
-        "risk": "Medium",
+        "impact": "Medium",
         "description": "FDA decision on expanded age range for Elevidys in DMD"
     },
     {
@@ -168,7 +169,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Regulatory",
         "event_type": "AdCom Meeting",
         "days_ahead": 25,
-        "risk": "Medium",
+        "impact": "Medium",
         "description": "FDA Advisory Committee meeting for ATTR-CM therapy"
     },
     {
@@ -178,7 +179,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Clinical",
         "event_type": "Enrollment Complete",
         "days_ahead": 50,
-        "risk": "Low",
+        "impact": "Low",
         "description": "Completion of Phase 3 enrollment for ATTR amyloidosis"
     },
     {
@@ -188,7 +189,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Clinical",
         "event_type": "Data Readout",
         "days_ahead": 45,
-        "risk": "High",
+        "impact": "High",
         "description": "Phase 2b top-line results for MDD treatment"
     },
     {
@@ -198,7 +199,7 @@ SAMPLE_CATALYSTS = [
         "kind": "Clinical",
         "event_type": "Data Readout",
         "days_ahead": 38,
-        "risk": "Medium",
+        "impact": "Medium",
         "description": "Phase 3 efficacy data for hypertension RNAi therapy"
     }
 ]
