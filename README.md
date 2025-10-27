@@ -19,6 +19,7 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 🏛️ **FDA Calendar** - PDUFA dates, drug approvals, regulatory events
 - 💼 **Insider Trading** - SEC Form 4 filings from EDGAR database
 - 📈 **Analyst Ratings** - Institutional ownership, price targets, recommendations
+- 📉 **IV Catalyst Tracker** - Implied volatility signals for asymmetric biotech setups ⭐ NEW!
 - 🎨 **Bloomberg-style UI** - Professional terminal aesthetics
 - 📱 **Progressive Web App** - Install on iOS/Android like a native app
 - 🔒 **100% Free** - No paid APIs, all data from public sources
@@ -75,6 +76,54 @@ bash test_evidence_graph.sh
 # Access UI
 # Navigate to: http://localhost:3000/evidence-graph
 ```
+
+## 📉 IV Catalyst Tracker - Asymmetric Biotech Setups
+
+**NEW FEATURE**: Identify high-conviction trading opportunities using implied volatility spikes ahead of biotech catalysts.
+
+The IV Catalyst system monitors options market data to detect early accumulation of optionality before known events (PDUFAs, readouts, AdComms), surfacing setups where IV expansion precedes price movement.
+
+### Key Capabilities
+- 🎯 **Signal Generation**: 4-flag system (backwardation, IV/RV ratio, skew shift, OI spike)
+- 📊 **Quality Scoring**: High/Medium/Low tiers based on signal strength and IV percentile
+- 📅 **Catalyst Calendar**: Timeline view with IV heatmap (D-30 → D+5)
+- 🔍 **Peer Comparison**: Compare IV metrics across same MOA/therapeutic area
+- ⚡ **Spark Tiles**: Compact price + IV visualization
+- 📈 **Term Structure**: Detect backwardation (7D > 30D IV inversion)
+
+### Signal Rules (Any 2 = Alert)
+1. **Backwardation**: 7D IV ↑ >20% w/w AND 7D-30D term structure inverts
+2. **IV/RV Elevated**: IV/20D RV >1.4 while 5D return between -2% and +2%
+3. **Skew Shift**: 30D call-skew ↑ >10 delta-points vs 20D median
+4. **OI Spike**: New OI at event-relevant strikes >2× 30D average
+
+### Quick Access
+```bash
+# Seed sample IV data (demo mode)
+poetry run python -m bt_platform.core.etl.seed_iv_data --quick
+
+# Compute signals
+curl -X POST http://localhost:8000/api/v1/iv/compute-signals
+
+# Access UI
+# Navigate to: http://localhost:3000/catalysts/iv
+```
+
+### Documentation
+- 📖 **[IV Catalyst Playbook](./docs/IV_CATALYST_PLAYBOOK.md)** - Entry/exit strategies, position sizing, risk management
+- 📝 **[Implementation Guide](./docs/IV_CATALYST_IMPLEMENTATION.md)** - Technical architecture, API reference, setup
+- 🎯 **API Endpoints**: `/api/v1/iv/signals`, `/api/v1/iv/calendar`, `/api/v1/iv/stats/{ticker}`
+
+### Architecture
+- **Backend**: Python FastAPI with SQLAlchemy ORM
+- **Data Models**: OptionsIV (term structure), PriceData (realized vol), IVCatalystSignal (pre-computed)
+- **ETL Pipeline**: Synthetic IV generation for demo (production: integrate real options provider)
+- **Frontend**: React components (IVCatalystPage, IVCatalystHeatmap, IVPeerComparison, IVSparkTile)
+
+### Risk-Reward Framework
+- **Pre-Event**: Debit call spreads or calendar spreads if IV <85th percentile
+- **Avoid**: Naked premium when IV >90th percentile (already priced in)
+- **Post-Event**: IV collapses - favor delta expressions (stock) or fade pops with put spreads
 
 ## 📊 Proprietary Data Collection
 
