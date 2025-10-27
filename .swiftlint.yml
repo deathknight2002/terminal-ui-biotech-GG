@@ -1,0 +1,152 @@
+# SwiftLint Configuration for iOS Glass UI
+# Ensures code quality and consistency across Glass UI components
+
+# Paths to include/exclude
+included:
+  - mobile/ios/App/App/GlassUI
+
+excluded:
+  - mobile/ios/App/Pods
+  - mobile/ios/App/App.xcodeproj
+  - mobile/ios/App/App.xcworkspace
+
+# Rule Configuration
+opt_in_rules:
+  - array_init
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - enum_case_associated_values_count
+  - explicit_init
+  - extension_access_modifier
+  - fallthrough
+  - fatal_error_message
+  - file_header
+  - first_where
+  - flatmap_over_map_reduce
+  - identical_operands
+  - joined_default_parameter
+  - last_where
+  - legacy_random
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - modifier_order
+  - nimble_operator
+  - nslocalizedstring_key
+  - number_separator
+  - operator_usage_whitespace
+  - overridden_super_call
+  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+  - private_action
+  - private_outlet
+  - prohibited_super_call
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - reduce_into
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - single_test_class
+  - sorted_first_last
+  - static_operator
+  - strong_iboutlet
+  - toggle_bool
+  - unavailable_function
+  - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
+  - vertical_parameter_alignment_on_call
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - yoda_condition
+
+disabled_rules:
+  - todo
+  - trailing_whitespace
+
+# Line Length
+line_length:
+  warning: 120
+  error: 150
+  ignores_comments: true
+  ignores_urls: true
+  ignores_function_declarations: false
+
+# File Length
+file_length:
+  warning: 500
+  error: 1000
+  ignore_comment_only_lines: true
+
+# Function Length
+function_body_length:
+  warning: 50
+  error: 100
+
+# Type Body Length
+type_body_length:
+  warning: 300
+  error: 500
+
+# Identifier Name
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 40
+    error: 50
+  excluded:
+    - id
+    - x
+    - y
+    - z
+
+# Nesting
+nesting:
+  type_level:
+    warning: 2
+    error: 3
+
+# Custom Rules
+custom_rules:
+  # Enforce glass style prefix
+  glass_component_naming:
+    name: "Glass Component Naming"
+    regex: '(struct|class|enum)\s+(?!Glass)[A-Z][a-zA-Z]*View'
+    match_kinds:
+      - typeidentifier
+    message: "Glass UI components should be prefixed with 'Glass'"
+    severity: warning
+
+  # Ensure accessibility labels
+  accessibility_labels:
+    name: "Accessibility Labels"
+    regex: '(Button|Image)\s*\{[\s\S]*?\}'
+    match_kinds: keyword
+    message: "Consider adding .accessibilityLabel() for better VoiceOver support"
+    severity: warning
+
+  # Encourage reduce motion support
+  reduce_motion_check:
+    name: "Reduce Motion Support"
+    regex: '\.animation\('
+    message: "Consider checking @Environment(\\.accessibilityReduceMotion) before adding animations"
+    severity: warning
+
+# Reporter
+reporter: "xcode"
+
+# Analyzer Rules
+analyzer_rules:
+  - unused_declaration
+  - unused_import
