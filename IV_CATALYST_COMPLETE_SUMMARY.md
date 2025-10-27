@@ -362,12 +362,18 @@ Replace synthetic IV generation with real data:
 
 ```python
 # Example: TD Ameritrade API integration
+# NOTE: Always use environment variables for API keys, never hardcode them
 def fetch_real_iv_data(ticker: str, date: datetime):
+    # Get API key from environment variable
+    api_key = os.getenv("TD_API_KEY")
+    if not api_key:
+        raise ValueError("TD_API_KEY environment variable not set")
+    
     response = requests.get(
         f"https://api.tdameritrade.com/v1/marketdata/chains",
         params={
             "symbol": ticker,
-            "apikey": TD_API_KEY
+            "apikey": api_key
         }
     )
     data = response.json()
@@ -385,7 +391,8 @@ Set up cron job for nightly IV data refresh:
 
 ```bash
 # /etc/cron.d/iv-etl
-0 18 * * 1-5 cd /app && poetry run python -m bt_platform.core.etl.iv_data_etl
+# Run Mon-Fri at 6 PM ET with error logging and notification
+0 18 * * 1-5 cd /app && poetry run python -m bt_platform.core.etl.iv_data_etl >> /var/log/iv-etl.log 2>&1 || echo "IV ETL failed on $(date)" | mail -s "IV ETL Error" admin@example.com
 ```
 
 ### 3. Monitoring
@@ -469,7 +476,7 @@ The system is **demo-ready** with synthetic data generation. For production use,
 ## Contact
 
 For questions or issues:
-- GitHub: https://github.com/deathknight2002/terminal-ui-biotech-GG
+- GitHub: See repository issues page
 - Documentation: See `docs/` directory
 - Playbook: `docs/IV_CATALYST_PLAYBOOK.md`
 - Implementation: `docs/IV_CATALYST_IMPLEMENTATION.md`
