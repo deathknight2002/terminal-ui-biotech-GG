@@ -26,6 +26,29 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+def _calculate_oi_30d_average(db: Session, ticker: str, tenor_days: int = 7) -> float:
+    """Calculate 30-day average OI for spike detection"""
+    cutoff_date = datetime.utcnow() - timedelta(days=30)
+    
+    historical = db.query(OptionsIV.total_oi).filter(
+        and_(
+            OptionsIV.ticker == ticker,
+            OptionsIV.tenor_days == tenor_days,
+            OptionsIV.date >= cutoff_date,
+            OptionsIV.total_oi.isnot(None)
+        )
+    ).all()
+    
+    if not historical:
+        return 0
+    
+    oi_values = [h[0] for h in historical if h[0] is not None]
+    if not oi_values:
+        return 0
+    
+    return sum(oi_values) / len(oi_values)
+
+
 @router.get("/signals")
 async def get_iv_catalyst_signals(
     min_score: int = Query(2, description="Minimum signal score (0-4)"),
@@ -485,8 +508,9 @@ async def compute_iv_signals(
             skew_change = abs(iv7.skew_25d - iv7.skew_25d_20d_median) if (iv7.skew_25d and iv7.skew_25d_20d_median) else 0
             skew_flag = 1 if skew_change > min_skew_change else 0
             
-            # Simple OI flag (would need historical OI data for proper calculation)
-            oi_flag = 0
+            # OI flag: Current OI > 2× 30D average
+            oi_30d_avg = _calculate_oi_30d_average(db, ticker, 7)
+            oi_flag = 1 if (oi_30d_avg > 0 and iv7.total_oi > oi_30d_avg * 2.0) else 0
             
             signal_score = backw_flag + ivrv_flag + skew_flag + oi_flag
             

@@ -4,9 +4,10 @@ IV Data ETL Pipeline
 Nightly job to pull options chains and compute IV metrics:
 - 7D, 14D, 30D, 60D implied volatility
 - 25-delta skew (put-call spread)
-- Open interest and volume tracking
+- Open interest and volume tracking with OI spike detection
 - IV percentiles (1Y and 6M lookback)
 - Term structure analysis
+- Sanity checks (earnings, FDA actions, macro vol)
 """
 
 import logging
@@ -29,6 +30,9 @@ logger = logging.getLogger(__name__)
 TENORS = [7, 14, 30, 60, 90]  # Days to expiration
 PERCENTILE_LOOKBACK_DAYS = 365  # 1 year for percentile calculation
 SKEW_MEDIAN_DAYS = 20  # 20-day median for skew comparison
+OI_LOOKBACK_DAYS = 30  # 30-day average for OI spike detection
+MIN_OI_THRESHOLD = 1000  # Minimum OI for liquidity
+MAX_OI_FLOAT_RATIO = 0.05  # Max OI/float to avoid manipulation
 
 
 class IVETLPipeline:
@@ -141,6 +145,11 @@ class IVETLPipeline:
         # Calculate skew median
         skew_25d_median = self._calculate_skew_median(ticker, tenor_days)
         
+        # Generate OI data
+        total_oi = random.randint(1000, 50000)
+        call_oi = random.randint(500, total_oi // 2)
+        put_oi = total_oi - call_oi
+        
         # Detect backwardation
         if tenor_days == 7:
             # Check if 7D > 30D
@@ -164,11 +173,11 @@ class IVETLPipeline:
             iv_ask=iv_mid + 0.5,
             skew_25d=random.gauss(5, 2),  # Typical put skew
             skew_10d=random.gauss(8, 3),  # Higher for deeper OTM
-            total_oi=random.randint(1000, 50000),
+            total_oi=total_oi,
             total_volume=random.randint(500, 20000),
-            call_oi=random.randint(500, 25000),
-            put_oi=random.randint(500, 25000),
-            put_call_ratio=random.uniform(0.8, 1.5),
+            call_oi=call_oi,
+            put_oi=put_oi,
+            put_call_ratio=put_oi / max(call_oi, 1),
             iv_pctile_1y=iv_pctile_1y,
             iv_pctile_6m=iv_pctile_6m,
             skew_25d_20d_median=skew_25d_median,
@@ -236,6 +245,102 @@ class IVETLPipeline:
             median = values[mid]
         
         return round(median, 2)
+    
+    def _calculate_oi_30d_average(self, ticker: str, tenor_days: int) -> float:
+        """Calculate 30-day average OI for spike detection"""
+        cutoff_date = datetime.utcnow() - timedelta(days=OI_LOOKBACK_DAYS)
+        
+        historical = self.db.query(OptionsIV.total_oi).filter(
+            and_(
+                OptionsIV.ticker == ticker,
+                OptionsIV.tenor_days == tenor_days,
+                OptionsIV.date >= cutoff_date,
+                OptionsIV.total_oi.isnot(None)
+            )
+        ).all()
+        
+        if not historical:
+            return 0
+        
+        oi_values = [h[0] for h in historical if h[0] is not None]
+        if not oi_values:
+            return 0
+        
+        return sum(oi_values) / len(oi_values)
+    
+    def check_oi_spike(self, ticker: str, current_oi: int, tenor_days: int = 7) -> bool:
+        """
+        Detect OI spike (current OI > 2× 30-day average)
+        
+        Returns:
+            True if OI spike detected, False otherwise
+        """
+        avg_oi = self._calculate_oi_30d_average(ticker, tenor_days)
+        
+        if avg_oi == 0:
+            return False
+        
+        return current_oi > (avg_oi * 2.0)
+    
+    def check_liquidity_threshold(self, ticker: str, total_oi: int, float_shares: Optional[int] = None) -> Dict:
+        """
+        Sanity check for micro-cap illiquidity
+        
+        Returns:
+            Dict with warnings if liquidity issues detected
+        """
+        warnings = []
+        
+        # Check minimum OI
+        if total_oi < MIN_OI_THRESHOLD:
+            warnings.append(f"Insufficient OI ({total_oi} < {MIN_OI_THRESHOLD}) - illiquid options")
+        
+        # Check OI/Float ratio if float available
+        if float_shares and total_oi / float_shares > MAX_OI_FLOAT_RATIO:
+            warnings.append(f"OI/Float ratio too high ({total_oi/float_shares:.2%} > {MAX_OI_FLOAT_RATIO:.1%}) - potential manipulation")
+        
+        return {
+            "passed": len(warnings) == 0,
+            "warnings": warnings
+        }
+    
+    def check_earnings_week(self, ticker: str, event_date: datetime) -> bool:
+        """
+        Check if event date falls during earnings week
+        
+        Returns:
+            True if earnings week detected, False otherwise
+        """
+        # In production, this would query earnings calendar
+        # For now, return False (placeholder)
+        return False
+    
+    def check_fda_class_action(self, therapeutic_area: str, date_range_days: int = 7) -> bool:
+        """
+        Check if FDA issued class-wide warning/action in therapeutic area
+        
+        Returns:
+            True if FDA class action detected, False otherwise
+        """
+        # In production, this would query FDA API or database
+        # For now, return False (placeholder)
+        return False
+    
+    def check_macro_vol_spike(self, vix_threshold: float = 20.0) -> Dict:
+        """
+        Check if VIX spiked (macro volatility contamination)
+        
+        Returns:
+            Dict with VIX data and warnings
+        """
+        # In production, this would fetch VIX data
+        # For now, return mock data
+        return {
+            "vix_current": 18.5,
+            "vix_7d_change": 12.3,
+            "is_spike": False,
+            "warning": None
+        }
 
 
 def run_nightly_iv_etl(tickers: Optional[List[str]] = None):
