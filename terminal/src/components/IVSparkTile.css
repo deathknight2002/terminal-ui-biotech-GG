@@ -1,0 +1,120 @@
+.iv-spark-tile {
+  background: var(--bg-card, #1a1a1a);
+  border: 1px solid var(--border-subtle, #333);
+  border-radius: 4px;
+  padding: 8px;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  color: var(--text-primary, #e0e0e0);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.iv-spark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.iv-spark-ticker {
+  font-weight: 700;
+  color: var(--color-accent, #00d4ff);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.iv-spark-price {
+  font-weight: 600;
+  color: var(--text-primary, #e0e0e0);
+}
+
+.iv-spark-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.iv-spark-price-line {
+  stroke: var(--color-price-line, #00d4ff);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-width 0.2s ease;
+}
+
+.iv-spark-tile:hover .iv-spark-price-line {
+  stroke-width: 2.5;
+}
+
+.iv-spark-iv-area {
+  fill: var(--color-iv-fill, #ffaa00);
+  opacity: 0.25;
+  transition: opacity 0.2s ease;
+}
+
+.iv-spark-tile:hover .iv-spark-iv-area {
+  opacity: 0.35;
+}
+
+.iv-spark-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.iv-spark-label {
+  color: var(--text-muted, #888);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.iv-spark-value {
+  color: var(--text-primary, #e0e0e0);
+  font-weight: 700;
+}
+
+.iv-spark-separator {
+  color: var(--text-muted, #555);
+  margin: 0 4px;
+}
+
+.iv-spark-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted, #888);
+  font-size: 11px;
+}
+
+/* Color variants */
+:root {
+  --color-price-line: #00d4ff;
+  --color-iv-fill: #ffaa00;
+  --color-warning: #ff6b6b;
+  --color-info: #4ecdc4;
+}
+
+/* Theme support */
+[data-theme="amber"] .iv-spark-tile {
+  --color-price-line: #ffa500;
+  --color-iv-fill: #ffcc00;
+}
+
+[data-theme="green"] .iv-spark-tile {
+  --color-price-line: #00ff88;
+  --color-iv-fill: #88ff88;
+}
+
+[data-theme="cyan"] .iv-spark-tile {
+  --color-price-line: #00d4ff;
+  --color-iv-fill: #66ddff;
+}
+
+[data-theme="purple"] .iv-spark-tile {
+  --color-price-line: #b388ff;
+  --color-iv-fill: #d4aaff;
+}
