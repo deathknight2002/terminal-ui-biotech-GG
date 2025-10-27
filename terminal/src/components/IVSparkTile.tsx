@@ -5,9 +5,10 @@
  * - Price line chart (mini)
  * - IV7 overlay (filled area)
  * - IV/RV ratio band
+ * - Tooltips with IV drift, skew change, OI spikes
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import './IVSparkTile.css';
 
 export interface IVSparkData {
@@ -15,6 +16,9 @@ export interface IVSparkData {
   price: number;
   iv7: number;
   iv_rv_ratio?: number;
+  skew_25d?: number;
+  skew_change?: number;
+  oi_spike?: boolean;
 }
 
 export interface IVSparkTileProps {
@@ -23,6 +27,9 @@ export interface IVSparkTileProps {
   width?: number;
   height?: number;
   showIVRV?: boolean;
+  ivDrift?: number;  // IV7 change over last 7 days
+  skewChange?: number;  // Skew change vs 20D median
+  oiSpike?: boolean;  // OI spike detected
   className?: string;
 }
 
@@ -32,8 +39,13 @@ export const IVSparkTile: React.FC<IVSparkTileProps> = ({
   width = 200,
   height = 80,
   showIVRV = true,
+  ivDrift,
+  skewChange,
+  oiSpike,
   className = ''
 }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   if (!data || data.length === 0) {
     return (
       <div className={`iv-spark-tile ${className}`} style={{ width, height }}>
@@ -93,11 +105,61 @@ export const IVSparkTile: React.FC<IVSparkTileProps> = ({
   const latestIVRV = latest.iv_rv_ratio || 0;
   const ivrvColor = latestIVRV > 1.4 ? 'var(--color-warning)' : 'var(--color-info)';
   
+  // Calculate IV drift if not provided
+  const calculatedIVDrift = ivDrift !== undefined ? ivDrift : 
+    data.length > 7 ? latest.iv7 - data[data.length - 8].iv7 : 0;
+  
+  // Build tooltip content
+  const tooltipContent = () => (
+    <div className="iv-spark-tooltip">
+      <div className="tooltip-header">{ticker} IV METRICS</div>
+      <div className="tooltip-row">
+        <span className="tooltip-label">IV Drift (7D):</span>
+        <span className={`tooltip-value ${calculatedIVDrift > 0 ? 'positive' : 'negative'}`}>
+          {calculatedIVDrift > 0 ? '+' : ''}{calculatedIVDrift.toFixed(1)}%
+        </span>
+      </div>
+      {skewChange !== undefined && (
+        <div className="tooltip-row">
+          <span className="tooltip-label">Skew Change:</span>
+          <span className={`tooltip-value ${skewChange > 10 ? 'warning' : ''}`}>
+            {skewChange > 0 ? '+' : ''}{skewChange.toFixed(1)} pts
+          </span>
+        </div>
+      )}
+      {oiSpike !== undefined && (
+        <div className="tooltip-row">
+          <span className="tooltip-label">OI Spike:</span>
+          <span className={`tooltip-value ${oiSpike ? 'warning' : ''}`}>
+            {oiSpike ? 'YES ⚠️' : 'No'}
+          </span>
+        </div>
+      )}
+      <div className="tooltip-row">
+        <span className="tooltip-label">Current IV7:</span>
+        <span className="tooltip-value">{latest.iv7.toFixed(1)}%</span>
+      </div>
+      <div className="tooltip-row">
+        <span className="tooltip-label">IV/RV Ratio:</span>
+        <span className={`tooltip-value ${latestIVRV > 1.4 ? 'warning' : ''}`}>
+          {latestIVRV.toFixed(2)}
+        </span>
+      </div>
+    </div>
+  );
+  
   return (
-    <div className={`iv-spark-tile ${className}`}>
+    <div 
+      className={`iv-spark-tile ${className}`}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+    >
       <div className="iv-spark-header">
         <span className="iv-spark-ticker">{ticker}</span>
         <span className="iv-spark-price">${latest.price.toFixed(2)}</span>
+        {(oiSpike || (skewChange && skewChange > 10)) && (
+          <span className="iv-spark-alert" title="Signal Alert">⚠️</span>
+        )}
       </div>
       
       <svg
@@ -138,6 +200,13 @@ export const IVSparkTile: React.FC<IVSparkTileProps> = ({
           </>
         )}
       </div>
+      
+      {/* Tooltip overlay */}
+      {showTooltip && (
+        <div className="iv-spark-tooltip-overlay">
+          {tooltipContent()}
+        </div>
+      )}
     </div>
   );
 };

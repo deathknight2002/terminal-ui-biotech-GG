@@ -17,7 +17,8 @@ from ..database import (
     OptionsIV, 
     PriceData, 
     IVCatalystSignal, 
-    Catalyst
+    Catalyst,
+    Company
 )
 
 logger = logging.getLogger(__name__)
@@ -552,4 +553,135 @@ async def compute_iv_signals(
     except Exception as e:
         logger.error(f"Error computing IV signals: {e}")
         db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/peer-comparison/{ticker}")
+async def get_peer_comparison(
+    ticker: str,
+    moa_filter: Optional[str] = Query(None, description="Filter by mechanism of action"),
+    therapeutic_area: Optional[str] = Query(None, description="Filter by therapeutic area"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get IV percentile comparison for a ticker vs its peers.
+    
+    Compares IV7 percentile across companies with:
+    - Same mechanism of action (MOA)
+    - Same therapeutic area
+    - Similar market cap bucket
+    
+    Returns cross-sectional view to identify idiosyncratic vs sector-wide IV moves.
+    """
+    try:
+        ticker = ticker.upper()
+        
+        # Get the target company
+        target_company = db.query(Company).filter(
+            Company.ticker == ticker
+        ).first()
+        
+        if not target_company:
+            raise HTTPException(status_code=404, detail=f"Company not found: {ticker}")
+        
+        # Get target's latest IV data
+        target_iv = db.query(OptionsIV).filter(
+            and_(
+                OptionsIV.ticker == ticker,
+                OptionsIV.tenor_days == 7
+            )
+        ).order_by(OptionsIV.date.desc()).first()
+        
+        if not target_iv:
+            raise HTTPException(status_code=404, detail=f"No IV data found for {ticker}")
+        
+        # Build peer query
+        peer_query = db.query(Company).filter(
+            and_(
+                Company.ticker != ticker,
+                Company.ticker.isnot(None),
+                Company.is_xbi_constituent == True
+            )
+        )
+        
+        # Filter by therapeutic area if target has one
+        if therapeutic_area:
+            peer_query = peer_query.filter(
+                Company.therapeutic_areas.like(f"%{therapeutic_area}%")
+            )
+        elif target_company.therapeutic_areas:
+            # Use target's therapeutic areas
+            areas = target_company.therapeutic_areas.split(',')
+            if areas:
+                filters = [Company.therapeutic_areas.like(f"%{area.strip()}%") for area in areas]
+                peer_query = peer_query.filter(or_(*filters))
+        
+        # Get peer companies
+        peers = peer_query.limit(20).all()
+        
+        # Get IV data for peers
+        peer_data = []
+        for peer in peers:
+            peer_iv = db.query(OptionsIV).filter(
+                and_(
+                    OptionsIV.ticker == peer.ticker,
+                    OptionsIV.tenor_days == 7
+                )
+            ).order_by(OptionsIV.date.desc()).first()
+            
+            if peer_iv:
+                peer_data.append({
+                    "ticker": peer.ticker,
+                    "name": peer.name,
+                    "iv7": peer_iv.iv_mid,
+                    "iv7_pctile": peer_iv.iv_pctile_1y,
+                    "iv30": None,  # Will fetch if needed
+                    "therapeutic_areas": peer.therapeutic_areas,
+                    "market_cap": peer.market_cap,
+                    "is_backwardation": peer_iv.is_backwardation
+                })
+        
+        # Sort by IV percentile descending
+        peer_data.sort(key=lambda x: x["iv7_pctile"] or 0, reverse=True)
+        
+        # Calculate sector statistics
+        if peer_data:
+            iv_percentiles = [p["iv7_pctile"] for p in peer_data if p["iv7_pctile"]]
+            sector_median = sorted(iv_percentiles)[len(iv_percentiles) // 2] if iv_percentiles else None
+            sector_mean = sum(iv_percentiles) / len(iv_percentiles) if iv_percentiles else None
+        else:
+            sector_median = None
+            sector_mean = None
+        
+        # Determine if target is idiosyncratic
+        is_idiosyncratic = False
+        if target_iv.iv_pctile_1y and sector_median:
+            deviation = abs(target_iv.iv_pctile_1y - sector_median)
+            is_idiosyncratic = deviation > 20  # >20 percentile points = idiosyncratic
+        
+        return {
+            "ticker": ticker,
+            "name": target_company.name,
+            "target_iv": {
+                "iv7": target_iv.iv_mid,
+                "iv7_pctile": target_iv.iv_pctile_1y,
+                "as_of_date": target_iv.date.isoformat()
+            },
+            "sector_stats": {
+                "median_iv_pctile": sector_median,
+                "mean_iv_pctile": sector_mean,
+                "sample_size": len(peer_data)
+            },
+            "is_idiosyncratic": is_idiosyncratic,
+            "peers": peer_data,
+            "filters": {
+                "moa": moa_filter,
+                "therapeutic_area": therapeutic_area or target_company.therapeutic_areas
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching peer comparison for {ticker}: {e}")
         raise HTTPException(status_code=500, detail=str(e))

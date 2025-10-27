@@ -7,6 +7,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import IVCatalystHeatmap from '../components/IVCatalystHeatmap';
+import { IVPeerComparison } from '../components/IVPeerComparison';
+// import IVSparkTile from '../components/IVSparkTile';  // Reserved for future use
 import './IVCatalystPage.css';
 
 interface IVSignal {
@@ -248,6 +250,14 @@ export const IVCatalystPage: React.FC = () => {
                     <span className="confidence-label">
                       Confidence: {(signal.confidence * 100).toFixed(0)}%
                     </span>
+                  </div>
+                  
+                  {/* Peer Comparison Section */}
+                  <div className="signal-peer-section">
+                    <IVPeerComparison 
+                      ticker={signal.ticker}
+                      className="peer-comparison-compact"
+                    />
                   </div>
                 </div>
               ))}

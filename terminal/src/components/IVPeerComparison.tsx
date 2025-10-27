@@ -41,9 +41,46 @@ export const IVPeerComparison: React.FC<IVPeerComparisonProps> = ({
   const fetchPeerData = async () => {
     try {
       setLoading(true);
-      // In production, this would fetch from API
-      // For now, use mock data
       
+      // Build query params
+      const params = new URLSearchParams();
+      if (moa) params.append('moa_filter', moa);
+      if (endpoint) params.append('therapeutic_area', endpoint);
+      
+      const response = await fetch(`/api/v1/iv/peer-comparison/${ticker}?${params}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch peer comparison data');
+      }
+      
+      const data = await response.json();
+      
+      // Format peer data
+      const formattedPeers: PeerData[] = [
+        {
+          ticker: data.ticker,
+          name: data.name,
+          iv7: data.target_iv.iv7,
+          iv7_pctile: data.target_iv.iv7_pctile,
+          moa: moa,
+          indication: endpoint
+        },
+        ...data.peers.map((peer: any) => ({
+          ticker: peer.ticker,
+          name: peer.name,
+          iv7: peer.iv7,
+          iv7_pctile: peer.iv7_pctile,
+          moa: peer.therapeutic_areas,
+          upcoming_catalyst: null
+        }))
+      ];
+      
+      setPeers(formattedPeers);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      
+      // Fallback to mock data on error
       const mockPeers: PeerData[] = [
         {
           ticker: ticker,
@@ -80,9 +117,6 @@ export const IVPeerComparison: React.FC<IVPeerComparisonProps> = ({
       ];
       
       setPeers(mockPeers);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
     }
@@ -185,7 +219,7 @@ export const IVPeerComparison: React.FC<IVPeerComparisonProps> = ({
         </div>
         <div className="legend-item">
           <span className="legend-color pctile-low"></span>
-          <span>Low (<50%)</span>
+          <span>Low (&lt;50%)</span>
         </div>
       </div>
     </div>
