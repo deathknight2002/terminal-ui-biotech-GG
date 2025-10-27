@@ -219,7 +219,7 @@ export const IVPeerComparison: React.FC<IVPeerComparisonProps> = ({
         </div>
         <div className="legend-item">
           <span className="legend-color pctile-low"></span>
-          <span>Low (<50%)</span>
+          <span>Low (&lt;50%)</span>
         </div>
       </div>
     </div>

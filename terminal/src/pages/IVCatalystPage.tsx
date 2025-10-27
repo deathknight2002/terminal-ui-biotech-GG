@@ -8,7 +8,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import IVCatalystHeatmap from '../components/IVCatalystHeatmap';
 import { IVPeerComparison } from '../components/IVPeerComparison';
-import IVSparkTile from '../components/IVSparkTile';
+// import IVSparkTile from '../components/IVSparkTile';  // Reserved for future use
 import './IVCatalystPage.css';
 
 interface IVSignal {
