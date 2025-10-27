@@ -1,0 +1,329 @@
+/**
+ * IV Catalyst Heatmap Next.js - Styles
+ * 
+ * Styling for the comprehensive catalyst calendar with IV overlay
+ */
+
+.iv-heatmap-container {
+  font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  color: #e0e0e0;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 149, 0, 0.3);
+  min-height: 500px;
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(255, 149, 0, 0.5);
+}
+
+.heatmap-header h2 {
+  font-size: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ff9500;
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ticker-filter {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 149, 0, 0.3);
+  color: #e0e0e0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  min-width: 250px;
+}
+
+.ticker-filter::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.ticker-filter:focus {
+  outline: none;
+  border-color: #ff9500;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.refresh-btn {
+  background: rgba(255, 149, 0, 0.2);
+  border: 1px solid #ff9500;
+  color: #ff9500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+  background: rgba(255, 149, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.legend {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  font-size: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.calendar-table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.calendar-table thead {
+  position: sticky;
+  top: 0;
+  background: rgba(10, 14, 39, 0.95);
+  z-index: 10;
+}
+
+.calendar-table th {
+  text-align: left;
+  padding: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #ff9500;
+  color: #ff9500;
+  font-size: 11px;
+}
+
+.calendar-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
+}
+
+.calendar-row:hover {
+  background: rgba(255, 149, 0, 0.05);
+}
+
+.ticker-cell {
+  padding: 12px;
+  font-weight: bold;
+  color: #ff9500;
+  font-size: 14px;
+  min-width: 80px;
+}
+
+.iv-cell {
+  padding: 12px;
+  min-width: 200px;
+  position: relative;
+}
+
+.iv-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.marker-badge {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.iv-bar {
+  height: 24px;
+  background: linear-gradient(90deg, rgba(255, 149, 0, 0.3), rgba(255, 149, 0, 0.6));
+  border-radius: 3px;
+  transition: width 0.3s;
+  border: 1px solid rgba(255, 149, 0, 0.5);
+}
+
+/* IV level colors */
+.iv-low {
+  background: rgba(0, 255, 0, 0.05);
+}
+
+.iv-low .iv-bar {
+  background: linear-gradient(90deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4));
+  border-color: rgba(0, 255, 0, 0.5);
+}
+
+.iv-medium {
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.iv-medium .iv-bar {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.5));
+  border-color: rgba(255, 215, 0, 0.6);
+}
+
+.iv-high {
+  background: rgba(255, 69, 0, 0.05);
+}
+
+.iv-high .iv-bar {
+  background: linear-gradient(90deg, rgba(255, 69, 0, 0.4), rgba(255, 69, 0, 0.7));
+  border-color: rgba(255, 69, 0, 0.8);
+}
+
+.event-cell {
+  padding: 12px;
+  min-width: 180px;
+}
+
+.event-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-type {
+  font-weight: bold;
+  color: #e0e0e0;
+  font-size: 13px;
+}
+
+.event-date {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.days-to-event {
+  color: rgba(255, 149, 0, 0.8);
+  font-size: 11px;
+  font-style: italic;
+}
+
+.metrics-cell {
+  padding: 12px;
+  min-width: 200px;
+}
+
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.metric .label {
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 8px;
+}
+
+.metric .value {
+  color: #e0e0e0;
+  font-weight: bold;
+}
+
+.metric.flag .warning {
+  color: #ff9500;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.summary {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 149, 0, 0.3);
+}
+
+.summary-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.summary-stat .label {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: normal;
+}
+
+.summary-stat .value {
+  color: #ff9500;
+  font-weight: bold;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 16px;
+}
+
+.loading {
+  color: rgba(255, 149, 0, 0.8);
+}
+
+.error {
+  color: #ff4444;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heatmap-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .legend {
+    flex-wrap: wrap;
+  }
+  
+  .calendar-table {
+    font-size: 11px;
+  }
+  
+  .ticker-filter {
+    width: 100%;
+  }
+}
