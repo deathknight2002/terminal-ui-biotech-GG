@@ -271,7 +271,7 @@ else:
 
 **17 Tests Passing:**
 ```
-TestIVSignalComputationLogic (9 tests)
+TestIVSignalComputationLogic (8 tests)
 ├─ test_backwardation_detection
 ├─ test_iv_rv_ratio_calculation
 ├─ test_skew_change_calculation
@@ -539,6 +539,6 @@ For issues or questions:
 
 ---
 
-**Last Updated:** October 27, 2025
+**Last Updated:** October 27, 2024
 **Version:** 1.0.0
 **Status:** Production Ready ✅
