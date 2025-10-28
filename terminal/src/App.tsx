@@ -26,6 +26,7 @@ import { IonisPMModePage } from './pages/IonisPMModePage';
 import { XBICompaniesPage } from './pages/XBICompaniesPage';
 import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 import { IVCatalystPage } from './pages/IVCatalystPage';
+import { CatalystEventsPage } from './pages/CatalystEventsPage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -113,6 +114,8 @@ export function App() {
             <Route path="/catalysts/alerts" element={<PlaceholderPage title="CATALYST ALERTS" />} />
             <Route path="/catalysts/iv" element={<IVCatalystPage />} />
             <Route path="/iv-catalyst" element={<IVCatalystPage />} />
+            <Route path="/catalysts/events" element={<CatalystEventsPage />} />
+            <Route path="/catalyst-events" element={<CatalystEventsPage />} />
 
             {/* Trials */}
             <Route path="/trials" element={<ClinicalTrialsPage />} />
