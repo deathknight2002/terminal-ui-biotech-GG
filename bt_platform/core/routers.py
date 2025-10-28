@@ -5,7 +5,7 @@ Main router setup for all API endpoints.
 """
 
 from fastapi import APIRouter
-from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol, intelligence, fda, trials, research, ml_endpoints, pipeline, evidence_graph, iv_catalyst
+from .endpoints import biotech, financial, market, analytics, search, news, insights, catalysts, competition, admin, loe, reports, evidence, therapeutic_areas, company_profile, science_events, catalysts_v2, kol, intelligence, fda, trials, research, ml_endpoints, pipeline, evidence_graph, iv_catalyst, catalyst_examples
 
 # Main API router
 api_router = APIRouter()
@@ -179,4 +179,11 @@ api_router.include_router(
     iv_catalyst.router,
     prefix="/iv",
     tags=["iv-catalyst"]
+)
+
+# Catalyst Examples endpoints - Detailed catalyst tracking with expectations/outcomes
+api_router.include_router(
+    catalyst_examples.router,
+    prefix="/catalysts",
+    tags=["catalyst-examples"]
 )

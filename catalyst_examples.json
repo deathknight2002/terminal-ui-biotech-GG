@@ -1,0 +1,879 @@
+[
+  {
+    "event_id": "01J920251028191737XX",
+    "as_of": "2025-10-27T14:30:00",
+    "company": {
+      "name": "Novartis",
+      "ticker": "NVS",
+      "exchange": "NYSE",
+      "logo_url": "https://example.com/logos/nvs.png"
+    },
+    "catalyst": {
+      "type": "M&A",
+      "subtype": "TenderOffer",
+      "program": "AOC platform",
+      "indication": "Neuromuscular RNA",
+      "geography": [
+        "Global"
+      ]
+    },
+    "expectations": {
+      "source": "sell_side",
+      "metrics": [
+        {
+          "name": "Deal Premium",
+          "unit": "%",
+          "expected": 30,
+          "band_low": 20,
+          "band_high": 40,
+          "what_matters": "Signal on RNA appetite and platform valuation"
+        },
+        {
+          "name": "EV/Sales (Target, NTM)",
+          "unit": "x",
+          "expected": null,
+          "band_low": null,
+          "band_high": null,
+          "what_matters": "R&D asset pricing for pre-revenue RNA therapeutics"
+        },
+        {
+          "name": "SpinCo Required",
+          "unit": "bool",
+          "expected": false,
+          "band_low": null,
+          "band_high": null,
+          "what_matters": "Deal complexity and regulatory approval timeline"
+        }
+      ]
+    },
+    "outcome": {
+      "metrics": [
+        {
+          "name": "Deal Premium",
+          "unit": "%",
+          "value": 46,
+          "window": "1D"
+        },
+        {
+          "name": "Consideration",
+          "unit": "$B",
+          "value": 12.0,
+          "window": "Total"
+        },
+        {
+          "name": "SpinCo Required",
+          "unit": "bool",
+          "value": true,
+          "window": "Deal Structure"
+        }
+      ]
+    },
+    "market_reaction": {
+      "rel_windows": [
+        "D-5",
+        "D-1",
+        "D0",
+        "D+1",
+        "D+5",
+        "D+10"
+      ],
+      "price": [
+        {
+          "window": "D-5",
+          "abs": 0.0,
+          "rel_vs_XBI": 0.0
+        },
+        {
+          "window": "D-1",
+          "abs": 0.5,
+          "rel_vs_XBI": 0.3
+        },
+        {
+          "window": "D0",
+          "abs": 3.0,
+          "rel_vs_XBI": 2.1,
+          "intraday_high_low": [
+            3.5,
+            2.8
+          ]
+        },
+        {
+          "window": "D+1",
+          "abs": 4.5,
+          "rel_vs_XBI": 3.2
+        },
+        {
+          "window": "D+5",
+          "abs": 3.8,
+          "rel_vs_XBI": 2.6
+        },
+        {
+          "window": "D+10",
+          "abs": 3.2,
+          "rel_vs_XBI": 2.0
+        }
+      ],
+      "iv": [
+        {
+          "tenor": "1m",
+          "window": "D0",
+          "iv": 28.1,
+          "zscore_vs_1y": 0.9
+        }
+      ],
+      "vol": [
+        {
+          "window": "D0",
+          "volume_multiple_vs_30d": 2.4
+        }
+      ]
+    },
+    "peers": {
+      "moat_axes": [
+        "MoA",
+        "Stage",
+        "Indication",
+        "Delivery",
+        "Target"
+      ],
+      "list": [
+        {
+          "ticker": "DYNE",
+          "reason_tag": "RNA muscle peer",
+          "weight": 0.5
+        },
+        {
+          "ticker": "PEPG",
+          "reason_tag": "AOC-adjacent",
+          "weight": 0.3
+        },
+        {
+          "ticker": "ARWR",
+          "reason_tag": "RNA therapeutics platform",
+          "weight": 0.2
+        }
+      ],
+      "comp_metrics": [
+        {
+          "metric": "1D move post-print",
+          "value": 2.8,
+          "peer_median": 4.2,
+          "peer_p75": 6.0,
+          "delta_to_median": -1.4
+        },
+        {
+          "metric": "Deal premium (historical RNA M&A)",
+          "value": 46,
+          "peer_median": 31,
+          "peer_p75": 38,
+          "delta_to_median": 15
+        }
+      ]
+    },
+    "sources": [
+      {
+        "title": "Reuters deal announcement",
+        "url": "https://reuters.com/novartis-avidity-2025",
+        "ts": "2025-10-27T14:30:00",
+        "type": "news"
+      },
+      {
+        "title": "Novartis press release",
+        "url": "https://novartis.com/news/avidity-acquisition",
+        "ts": "2025-10-27T14:15:00",
+        "type": "company_pr"
+      }
+    ]
+  },
+  {
+    "event_id": "01J920251028191737XX",
+    "as_of": "2025-10-15T07:00:00",
+    "company": {
+      "name": "BridgeBio Pharma",
+      "ticker": "BBIO",
+      "exchange": "NASDAQ",
+      "logo_url": "https://example.com/logos/bbio.png"
+    },
+    "catalyst": {
+      "type": "PH3_READOUT",
+      "subtype": "Interim",
+      "program": "BBP-418 FORTIFY",
+      "indication": "LGMD2I/R9",
+      "geography": [
+        "Global"
+      ]
+    },
+    "expectations": {
+      "source": "sell_side",
+      "metrics": [
+        {
+          "name": "\u03b1-DG glycosylation fold change",
+          "unit": "\u00d7",
+          "expected": 1.5,
+          "band_low": 1.3,
+          "band_high": 1.6,
+          "what_matters": "Biomarker target engagement and disease modification signal"
+        },
+        {
+          "name": "CK reduction",
+          "unit": "%",
+          "expected": 60,
+          "band_low": 50,
+          "band_high": 70,
+          "what_matters": "Muscle damage reduction, correlated with function"
+        },
+        {
+          "name": "Velocity \u0394 vs PBO",
+          "unit": "m/s",
+          "expected": 0.2,
+          "band_low": 0.1,
+          "band_high": 0.25,
+          "what_matters": "Functional endpoint, regulatory credibility"
+        },
+        {
+          "name": "FVC \u0394 vs PBO",
+          "unit": "pp",
+          "expected": 4,
+          "band_low": 2,
+          "band_high": 5,
+          "what_matters": "Respiratory function, key safety/efficacy measure"
+        }
+      ]
+    },
+    "outcome": {
+      "metrics": [
+        {
+          "name": "\u03b1-DG glycosylation fold change",
+          "unit": "\u00d7",
+          "value": 1.8,
+          "pvalue": 0.002,
+          "n": 48,
+          "window": "12 months"
+        },
+        {
+          "name": "CK reduction",
+          "unit": "%",
+          "value": 82,
+          "pvalue": 0.001,
+          "n": 48,
+          "window": "12 months"
+        },
+        {
+          "name": "Velocity \u0394 vs PBO",
+          "unit": "m/s",
+          "value": 0.27,
+          "pvalue": 0.015,
+          "n": 48,
+          "window": "12 months"
+        },
+        {
+          "name": "FVC \u0394 vs PBO",
+          "unit": "pp",
+          "value": 5.0,
+          "pvalue": 0.042,
+          "n": 48,
+          "window": "12 months"
+        }
+      ]
+    },
+    "market_reaction": {
+      "rel_windows": [
+        "D-5",
+        "D-1",
+        "D0",
+        "D+1",
+        "D+5",
+        "D+10"
+      ],
+      "price": [
+        {
+          "window": "D-5",
+          "abs": 0.0,
+          "rel_vs_XBI": 0.0
+        },
+        {
+          "window": "D-1",
+          "abs": 1.2,
+          "rel_vs_XBI": 0.8
+        },
+        {
+          "window": "D0",
+          "abs": 12.5,
+          "rel_vs_XBI": 11.2,
+          "intraday_high_low": [
+            15.0,
+            11.8
+          ]
+        },
+        {
+          "window": "D+1",
+          "abs": 14.2,
+          "rel_vs_XBI": 12.8
+        },
+        {
+          "window": "D+5",
+          "abs": 16.5,
+          "rel_vs_XBI": 14.2
+        },
+        {
+          "window": "D+10",
+          "abs": 18.3,
+          "rel_vs_XBI": 15.8
+        }
+      ],
+      "iv": [
+        {
+          "tenor": "1m",
+          "window": "D-1",
+          "iv": 65.2,
+          "zscore_vs_1y": 0.2
+        },
+        {
+          "tenor": "1m",
+          "window": "D0",
+          "iv": 72.5,
+          "zscore_vs_1y": 1.3
+        }
+      ],
+      "vol": [
+        {
+          "window": "D0",
+          "volume_multiple_vs_30d": 4.8
+        }
+      ]
+    },
+    "peers": {
+      "moat_axes": [
+        "MoA",
+        "Stage",
+        "Indication",
+        "Delivery"
+      ],
+      "list": [
+        {
+          "ticker": "SRPT",
+          "reason_tag": "Sarepta gene therapy DMD/muscular",
+          "weight": 0.4
+        },
+        {
+          "ticker": "DYNE",
+          "reason_tag": "Dyne FORCE DMD muscular",
+          "weight": 0.3
+        },
+        {
+          "ticker": "PEPG",
+          "reason_tag": "PepGen EDO platform muscular",
+          "weight": 0.3
+        }
+      ],
+      "comp_metrics": [
+        {
+          "metric": "1D CAR on Phase 3 data",
+          "value": 12.5,
+          "peer_median": 8.3,
+          "peer_p75": 11.2,
+          "delta_to_median": 4.2
+        }
+      ]
+    },
+    "sources": [
+      {
+        "title": "BridgeBio FORTIFY interim data press release",
+        "url": "https://bridgebio.com/fortify-interim-2025",
+        "ts": "2025-10-15T07:00:00",
+        "type": "company_pr"
+      },
+      {
+        "title": "MDA conference presentation",
+        "url": "https://mda.org/conference/2025/bridgebio",
+        "ts": "2025-10-15T09:30:00",
+        "type": "conference"
+      }
+    ]
+  },
+  {
+    "event_id": "01J920251028191737XX",
+    "as_of": "2025-10-20T16:45:00",
+    "company": {
+      "name": "Intellia Therapeutics",
+      "ticker": "NTLA",
+      "exchange": "NASDAQ",
+      "logo_url": "https://example.com/logos/ntla.png"
+    },
+    "catalyst": {
+      "type": "SAFETY_PAUSE",
+      "subtype": "Hold/Partial",
+      "program": "nex-z",
+      "indication": "ATTR amyloidosis",
+      "geography": [
+        "US"
+      ]
+    },
+    "expectations": {
+      "source": "consensus",
+      "metrics": [
+        {
+          "name": "Safety SAE Grade",
+          "unit": "CTCAE",
+          "expected": 0,
+          "band_low": 0,
+          "band_high": 2,
+          "what_matters": "In vivo editing safety profile, class-wide risk perception"
+        },
+        {
+          "name": "Pause duration",
+          "unit": "weeks",
+          "expected": null,
+          "band_low": 2,
+          "band_high": 8,
+          "what_matters": "Regulatory timeline impact and investor confidence"
+        },
+        {
+          "name": "Resumption probability",
+          "unit": "%",
+          "expected": 70,
+          "band_low": 60,
+          "band_high": 75,
+          "what_matters": "Program viability and risk mitigation feasibility"
+        }
+      ]
+    },
+    "outcome": {
+      "metrics": [
+        {
+          "name": "Safety SAE Grade",
+          "unit": "CTCAE",
+          "value": 4,
+          "window": "Event"
+        },
+        {
+          "name": "Signal Type",
+          "unit": "enum",
+          "value": "hepatotoxicity",
+          "window": "Event"
+        },
+        {
+          "name": "Enrollment Status",
+          "unit": "enum",
+          "value": "paused",
+          "window": "Event"
+        }
+      ]
+    },
+    "market_reaction": {
+      "rel_windows": [
+        "D-5",
+        "D-1",
+        "D0",
+        "D+1",
+        "D+5"
+      ],
+      "price": [
+        {
+          "window": "D-5",
+          "abs": 0.0,
+          "rel_vs_XBI": 0.0
+        },
+        {
+          "window": "D-1",
+          "abs": -0.3,
+          "rel_vs_XBI": -0.5
+        },
+        {
+          "window": "D0",
+          "abs": -18.2,
+          "rel_vs_XBI": -19.1,
+          "intraday_high_low": [
+            -15.5,
+            -22.3
+          ]
+        },
+        {
+          "window": "D+1",
+          "abs": -21.5,
+          "rel_vs_XBI": -22.8
+        },
+        {
+          "window": "D+5",
+          "abs": -16.3,
+          "rel_vs_XBI": -17.5
+        }
+      ],
+      "iv": [
+        {
+          "tenor": "1m",
+          "window": "D-1",
+          "iv": 55.3,
+          "zscore_vs_1y": 0.1
+        },
+        {
+          "tenor": "1m",
+          "window": "D0",
+          "iv": 88.7,
+          "zscore_vs_1y": 2.8
+        }
+      ],
+      "vol": [
+        {
+          "window": "D0",
+          "volume_multiple_vs_30d": 6.2
+        }
+      ]
+    },
+    "peers": {
+      "moat_axes": [
+        "MoA",
+        "Stage",
+        "Target"
+      ],
+      "list": [
+        {
+          "ticker": "CRSP",
+          "reason_tag": "CRISPR in vivo editing",
+          "weight": 0.4
+        },
+        {
+          "ticker": "BEAM",
+          "reason_tag": "Base editing in vivo",
+          "weight": 0.3
+        },
+        {
+          "ticker": "VERV",
+          "reason_tag": "In vivo editing liver target",
+          "weight": 0.3
+        }
+      ],
+      "comp_metrics": [
+        {
+          "metric": "1D CAR on safety event",
+          "value": -18.2,
+          "peer_median": -12.5,
+          "peer_p75": -8.3,
+          "delta_to_median": -5.7
+        },
+        {
+          "metric": "IV spike (z-score)",
+          "value": 2.8,
+          "peer_median": 1.9,
+          "peer_p75": 2.3,
+          "delta_to_median": 0.9
+        }
+      ]
+    },
+    "sources": [
+      {
+        "title": "Intellia 8-K filing - clinical hold",
+        "url": "https://sec.gov/intellia-8k-2025-10-20",
+        "ts": "2025-10-20T16:45:00",
+        "type": "sec_filing"
+      },
+      {
+        "title": "FDA safety alert",
+        "url": "https://fda.gov/safety-alerts/ntla-magnitude",
+        "ts": "2025-10-20T17:00:00",
+        "type": "regulatory"
+      }
+    ]
+  },
+  {
+    "event_id": "01J920251028191737XX",
+    "as_of": "2025-11-01T10:00:00",
+    "company": {
+      "name": "Bayer",
+      "ticker": "BAYRY",
+      "exchange": "OTC",
+      "logo_url": "https://example.com/logos/bayry.png"
+    },
+    "catalyst": {
+      "type": "APPROVAL",
+      "subtype": "FDA",
+      "program": "Elinzanetant",
+      "indication": "Menopause VMS",
+      "geography": [
+        "US"
+      ]
+    },
+    "expectations": {
+      "source": "consensus",
+      "metrics": [
+        {
+          "name": "VMS frequency reduction @4wk",
+          "unit": "episodes/day",
+          "expected": 2.5,
+          "band_low": 2.0,
+          "band_high": 3.0,
+          "what_matters": "Non-hormonal efficacy vs Veozah benchmark"
+        },
+        {
+          "name": "VMS frequency reduction @12wk",
+          "unit": "episodes/day",
+          "expected": 3.2,
+          "band_low": 2.8,
+          "band_high": 3.5,
+          "what_matters": "Durability and sustained efficacy"
+        },
+        {
+          "name": "Hepatic monitoring required",
+          "unit": "bool",
+          "expected": true,
+          "band_low": null,
+          "band_high": null,
+          "what_matters": "Access friction and physician adoption"
+        }
+      ]
+    },
+    "outcome": {
+      "metrics": [
+        {
+          "name": "VMS frequency reduction @4wk",
+          "unit": "episodes/day",
+          "value": 2.8,
+          "pvalue": 0.001,
+          "n": 412,
+          "window": "4 weeks"
+        },
+        {
+          "name": "VMS frequency reduction @12wk",
+          "unit": "episodes/day",
+          "value": 3.4,
+          "pvalue": 0.001,
+          "n": 412,
+          "window": "12 weeks"
+        },
+        {
+          "name": "Hepatic monitoring required",
+          "unit": "bool",
+          "value": true,
+          "window": "Label"
+        }
+      ]
+    },
+    "market_reaction": {
+      "rel_windows": [
+        "D-1",
+        "D0",
+        "D+1",
+        "D+5"
+      ],
+      "price": [
+        {
+          "window": "D-1",
+          "abs": 0.2,
+          "rel_vs_XBI": 0.1
+        },
+        {
+          "window": "D0",
+          "abs": 3.5,
+          "rel_vs_XBI": 2.8
+        },
+        {
+          "window": "D+1",
+          "abs": 4.2,
+          "rel_vs_XBI": 3.5
+        },
+        {
+          "window": "D+5",
+          "abs": 5.1,
+          "rel_vs_XBI": 4.2
+        }
+      ],
+      "iv": [],
+      "vol": [
+        {
+          "window": "D0",
+          "volume_multiple_vs_30d": 1.8
+        }
+      ]
+    },
+    "peers": {
+      "moat_axes": [
+        "MoA",
+        "Indication",
+        "Target"
+      ],
+      "list": [
+        {
+          "ticker": "ALPMY",
+          "reason_tag": "Astellas Veozah non-hormonal VMS",
+          "weight": 0.7
+        },
+        {
+          "ticker": "PFE",
+          "reason_tag": "Pfizer hormonal VMS franchise",
+          "weight": 0.3
+        }
+      ],
+      "comp_metrics": [
+        {
+          "metric": "VMS reduction @12wk vs Veozah",
+          "value": 3.4,
+          "peer_median": 3.1,
+          "peer_p75": 3.3,
+          "delta_to_median": 0.3
+        }
+      ]
+    },
+    "sources": [
+      {
+        "title": "FDA approval letter",
+        "url": "https://fda.gov/approvals/lynkuet-2025",
+        "ts": "2025-11-01T10:00:00",
+        "type": "regulatory"
+      },
+      {
+        "title": "Bayer press release",
+        "url": "https://bayer.com/news/lynkuet-approval",
+        "ts": "2025-11-01T10:15:00",
+        "type": "company_pr"
+      }
+    ]
+  },
+  {
+    "event_id": "01J920251028191737XX",
+    "as_of": "2025-11-10T08:30:00",
+    "company": {
+      "name": "Eli Lilly",
+      "ticker": "LLY",
+      "exchange": "NYSE",
+      "logo_url": "https://example.com/logos/lly.png"
+    },
+    "catalyst": {
+      "type": "LABEL_UPDATE",
+      "subtype": "sNDA",
+      "program": "Mirikizumab",
+      "indication": "Ulcerative Colitis",
+      "geography": [
+        "US"
+      ]
+    },
+    "expectations": {
+      "source": "mgmt_guide",
+      "metrics": [
+        {
+          "name": "Injections per month",
+          "unit": "count",
+          "expected": 1,
+          "band_low": 1,
+          "band_high": 1,
+          "what_matters": "Adherence improvement and competitive positioning"
+        },
+        {
+          "name": "Adherence uplift (PDC)",
+          "unit": "pp",
+          "expected": 8,
+          "band_low": 5,
+          "band_high": 10,
+          "what_matters": "Real-world efficacy translation"
+        },
+        {
+          "name": "Distribution timing",
+          "unit": "quarter",
+          "expected": "Q1'26",
+          "band_low": null,
+          "band_high": null,
+          "what_matters": "Launch timing and competitive window"
+        }
+      ]
+    },
+    "outcome": {
+      "metrics": [
+        {
+          "name": "Injections per month",
+          "unit": "count",
+          "value": 1,
+          "window": "Label"
+        },
+        {
+          "name": "Label approved",
+          "unit": "bool",
+          "value": true,
+          "window": "Event"
+        },
+        {
+          "name": "Distribution timing",
+          "unit": "quarter",
+          "value": "Q1'26",
+          "window": "Guidance"
+        }
+      ]
+    },
+    "market_reaction": {
+      "rel_windows": [
+        "D-1",
+        "D0",
+        "D+1"
+      ],
+      "price": [
+        {
+          "window": "D-1",
+          "abs": 0.1,
+          "rel_vs_XBI": 0.0
+        },
+        {
+          "window": "D0",
+          "abs": 1.2,
+          "rel_vs_XBI": 0.9
+        },
+        {
+          "window": "D+1",
+          "abs": 1.5,
+          "rel_vs_XBI": 1.1
+        }
+      ],
+      "iv": [],
+      "vol": [
+        {
+          "window": "D0",
+          "volume_multiple_vs_30d": 1.1
+        }
+      ]
+    },
+    "peers": {
+      "moat_axes": [
+        "MoA",
+        "Indication",
+        "Delivery"
+      ],
+      "list": [
+        {
+          "ticker": "ABBV",
+          "reason_tag": "AbbVie Skyrizi IL-23 UC",
+          "weight": 0.5
+        },
+        {
+          "ticker": "JNJ",
+          "reason_tag": "J&J Stelara/Tremfya IBD",
+          "weight": 0.3
+        },
+        {
+          "ticker": "TALS",
+          "reason_tag": "Takeda Entyvio UC self-inject",
+          "weight": 0.2
+        }
+      ],
+      "comp_metrics": [
+        {
+          "metric": "Adherence (PDC) vs peers",
+          "value": 78,
+          "peer_median": 70,
+          "peer_p75": 74,
+          "delta_to_median": 8
+        }
+      ]
+    },
+    "sources": [
+      {
+        "title": "FDA sNDA approval",
+        "url": "https://fda.gov/approvals/omvoh-single-injection",
+        "ts": "2025-11-10T08:30:00",
+        "type": "regulatory"
+      },
+      {
+        "title": "Lilly investor update",
+        "url": "https://lilly.com/news/omvoh-label-update",
+        "ts": "2025-11-10T09:00:00",
+        "type": "company_pr"
+      }
+    ]
+  }
+]

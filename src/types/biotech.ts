@@ -92,6 +92,132 @@ export interface Catalyst {
   marketDepth?: number;         // Payer appetite + population size + guideline friendliness (0-3)
 }
 
+// Extended Catalyst Types for Comprehensive Tracking
+export type CatalystType = "M&A" | "PH3_READOUT" | "SAFETY_PAUSE" | "APPROVAL" | "LABEL_UPDATE";
+export type CatalystSubtype = "TenderOffer" | "Interim" | "Hold/Partial" | "FDA" | "sNDA";
+export type ExpectationSource = "sell_side" | "mgmt_guide" | "consensus" | "internal";
+export type DeltaClass = "beat" | "inline" | "miss";
+export type Geography = "US" | "EU" | "Global" | "APAC";
+
+export interface CompanyInfo {
+  name: string;
+  ticker: string;
+  exchange?: string;
+  logo_url?: string;
+}
+
+export interface CatalystInfo {
+  type: CatalystType;
+  subtype: CatalystSubtype;
+  program: string;
+  indication: string;
+  geography: Geography[];
+}
+
+export interface ExpectationMetric {
+  name: string;
+  unit: string;
+  expected?: number | boolean | null;
+  band_low?: number | null;
+  band_high?: number | null;
+  what_matters: string;
+}
+
+export interface Expectations {
+  source: ExpectationSource;
+  metrics: ExpectationMetric[];
+}
+
+export interface OutcomeMetric {
+  name: string;
+  unit: string;
+  value: number | boolean | string;
+  pvalue?: number;
+  n?: number;
+  window?: string;
+}
+
+export interface Outcome {
+  metrics: OutcomeMetric[];
+}
+
+export interface PriceReaction {
+  window: string;  // "D-5", "D-1", "D0", "D+1", "D+5", "D+10"
+  abs: number;
+  rel_vs_XBI: number;
+  intraday_high_low?: [number, number];
+}
+
+export interface IVReaction {
+  tenor: string;  // "1m", "3m"
+  window: string;
+  iv: number;
+  zscore_vs_1y: number;
+}
+
+export interface VolumeReaction {
+  window: string;
+  volume_multiple_vs_30d: number;
+}
+
+export interface MarketReaction {
+  rel_windows: string[];
+  price: PriceReaction[];
+  iv: IVReaction[];
+  vol: VolumeReaction[];
+}
+
+export interface PeerInfo {
+  ticker: string;
+  reason_tag: string;
+  weight: number;
+}
+
+export interface PeerMetricComparison {
+  metric: string;
+  value: number;
+  peer_median: number;
+  peer_p75: number;
+  delta_to_median: number;
+}
+
+export interface Peers {
+  moat_axes: string[];
+  list: PeerInfo[];
+  comp_metrics: PeerMetricComparison[];
+}
+
+export interface EventSource {
+  title: string;
+  url: string;
+  ts: string;
+  type: string;
+}
+
+export interface CatalystEvent {
+  event_id: string;
+  as_of: string;
+  company: CompanyInfo;
+  catalyst: CatalystInfo;
+  expectations: Expectations;
+  outcome: Outcome;
+  market_reaction: MarketReaction;
+  peers: Peers;
+  sources: EventSource[];
+}
+
+export interface ExpectationDelta {
+  delta_class: DeltaClass;
+  magnitude: number;  // 0-1
+  badge_color: "success" | "info" | "error";
+  arrow: "↑" | "→" | "↓";
+  label: "Beat" | "In-line" | "Miss";
+  raw_delta?: number;
+  percent_delta?: number;
+  statistically_significant?: boolean;
+  explanation?: string;
+}
+
 export interface PipelineStage {
   name: string;
   progress: number; // 0-1
