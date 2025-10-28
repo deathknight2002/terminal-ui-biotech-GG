@@ -92,6 +92,129 @@ export interface Catalyst {
   marketDepth?: number;         // Payer appetite + population size + guideline friendliness (0-3)
 }
 
+// Enhanced Catalyst Event Types (for detailed catalyst tracking)
+export type CatalystEventType = "M&A" | "PH3_READOUT" | "SAFETY_PAUSE" | "APPROVAL" | "LABEL_UPDATE";
+export type CatalystSubtype = string; // e.g., "TenderOffer", "Interim", "Hold/Partial", "sNDA"
+export type ExpectationSource = "sell_side" | "mgmt_guide" | "consensus" | "internal";
+export type SourceType = "company_pr" | "sec_filing" | "press" | "analyst";
+
+export interface CompanyInfo {
+  name: string;
+  ticker: string;
+  exchange?: string;
+  logo_url?: string;
+}
+
+export interface CatalystInfo {
+  type: CatalystEventType;
+  subtype?: CatalystSubtype;
+  program: string;          // e.g., "AOC platform", "BBP-418 FORTIFY"
+  indication: string;       // e.g., "LGMD2I/R9", "Menopause VMS"
+  geography?: string[];     // ["US", "EU", "Global"]
+}
+
+export interface ExpectationMetric {
+  name: string;
+  unit: string;
+  expected?: number;
+  band_low?: number;
+  band_high?: number;
+  what_matters: string;
+}
+
+export interface CatalystExpectations {
+  source: ExpectationSource;
+  metrics: ExpectationMetric[];
+}
+
+export interface OutcomeMetric {
+  name: string;
+  unit: string;
+  value?: number;
+  value_str?: string;       // For non-numeric values like "true", "false"
+  pvalue?: number;
+  n?: number;               // Sample size
+  window?: string;          // Time window like "@3m", "@12m"
+}
+
+export interface CatalystOutcome {
+  metrics: OutcomeMetric[];
+}
+
+export interface PriceReaction {
+  window: string;           // "D-5", "D-1", "D0", "D+1", "D+5", "D+10"
+  abs: number;              // Absolute % return
+  rel_vs_XBI?: number;      // Relative to XBI
+  intraday_high_low?: string;
+}
+
+export interface IVReaction {
+  tenor: string;            // "1w", "1m", "3m"
+  window: string;
+  iv: number;               // Implied volatility %
+  zscore_vs_1y: number;
+}
+
+export interface VolumeReaction {
+  window: string;
+  volume_multiple_vs_30d: number;
+}
+
+export interface MarketReaction {
+  rel_windows: string[];    // ["D-5", "D-1", "D0", "D+1", "D+5", "D+10"]
+  price: PriceReaction[];
+  iv?: IVReaction[];
+  vol?: VolumeReaction[];
+}
+
+export interface PeerInfo {
+  ticker: string;
+  name?: string;
+  reason_tag: string;       // "RNA muscle peer", "AOC-adjacent", etc.
+  weight: number;           // Relevance weight 0-1
+}
+
+export interface PeerMetric {
+  metric: string;
+  value: number;
+  peer_median: number;
+  peer_p75: number;
+  delta_to_median: number;
+}
+
+export interface PeerAnalysis {
+  moat_axes: string[];      // ["MoA", "Stage", "Indication", "Delivery", "Target"]
+  list: PeerInfo[];
+  comp_metrics: PeerMetric[];
+}
+
+export interface CatalystSourceRef {
+  title: string;
+  url: string;
+  ts: string;               // ISO timestamp
+  type: SourceType;
+}
+
+export interface CatalystEvent {
+  event_id: string;         // ULID
+  as_of: string;            // UTC timestamp
+  company: CompanyInfo;
+  catalyst: CatalystInfo;
+  expectations: CatalystExpectations;
+  outcome: CatalystOutcome;
+  market_reaction?: MarketReaction;
+  peers?: PeerAnalysis;
+  sources: CatalystSourceRef[];
+}
+
+// Expectation Delta Calculation Result
+export type ExpectationClass = "beat" | "inline" | "miss";
+
+export interface ExpectationDelta {
+  class: ExpectationClass;
+  score: number;            // 0 to 1, magnitude of beat/miss
+}
+
 export interface PipelineStage {
   name: string;
   progress: number; // 0-1

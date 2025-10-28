@@ -38,6 +38,10 @@ async def seed_database():
         # Seed catalysts
         await seed_catalysts(db)
 
+        # Seed catalyst events (detailed examples)
+        from .seed_catalyst_events import seed_catalyst_events
+        seed_catalyst_events(db)
+
         # Seed market data
         await seed_market_data(db)
 
