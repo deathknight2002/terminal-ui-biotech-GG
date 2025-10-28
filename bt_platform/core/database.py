@@ -116,6 +116,137 @@ class Catalyst(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class CatalystExpectationBand(Base):
+    """Expectation bands for catalyst metrics (what the Street expected)"""
+    __tablename__ = "catalyst_expectation_bands"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    metric = Column(String, nullable=False, index=True)  # e.g., "α-DG glycosylation", "Deal Premium"
+    unit = Column(String)  # e.g., "%", "x", "$B"
+    expected = Column(Float)  # Expected value
+    band_low = Column(Float)  # Lower bound of expectation band
+    band_high = Column(Float)  # Upper bound of expectation band
+    source = Column(String, index=True)  # sell_side, mgmt_guide, consensus, internal
+    what_matters = Column(Text)  # Explanation of what this metric signals
+    collected_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_expectation_catalyst_metric', 'catalyst_id', 'metric'),
+    )
+
+
+class CatalystOutcomeMetric(Base):
+    """Actual outcome metrics for catalysts"""
+    __tablename__ = "catalyst_outcome_metrics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    metric = Column(String, nullable=False, index=True)
+    unit = Column(String)
+    value = Column(Float)  # Actual value
+    value_str = Column(String)  # For non-numeric values (e.g., "true", "false")
+    p_value = Column(Float)  # Statistical significance if applicable
+    n = Column(Integer)  # Sample size if applicable
+    window = Column(String)  # Time window (e.g., "@3m", "@12m")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_outcome_catalyst_metric', 'catalyst_id', 'metric'),
+    )
+
+
+class CatalystMarketReaction(Base):
+    """Market price and IV reactions to catalyst events"""
+    __tablename__ = "catalyst_market_reactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    ticker = Column(String, nullable=False, index=True)
+    
+    # Price reaction
+    window = Column(String, nullable=False, index=True)  # D-5, D-1, D0, D+1, D+5, D+10
+    abs_return = Column(Float)  # Absolute % return
+    rel_vs_xbi = Column(Float)  # Return relative to XBI
+    intraday_high_low = Column(String)  # Intraday high/low range as string
+    
+    # Volume
+    volume = Column(Integer)
+    volume_multiple_vs_30d = Column(Float)  # Volume as multiple of 30d average
+    
+    # Implied Volatility (if available)
+    iv_tenor = Column(String)  # 1w, 1m, 3m
+    iv = Column(Float)  # Implied volatility %
+    iv_zscore_vs_1y = Column(Float)  # Z-score vs 1-year IV
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_reaction_catalyst_ticker', 'catalyst_id', 'ticker', 'window'),
+    )
+
+
+class CatalystPeer(Base):
+    """Peer companies/assets for catalyst comparison"""
+    __tablename__ = "catalyst_peers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    peer_ticker = Column(String, nullable=False, index=True)
+    peer_name = Column(String)
+    reason_tag = Column(String, index=True)  # "RNA muscle peer", "AOC-adjacent", etc.
+    weight = Column(Float)  # Relevance weight (0-1)
+    
+    # Moat comparison axes
+    moat_moa = Column(Boolean, default=False)  # Similar mechanism of action
+    moat_stage = Column(Boolean, default=False)  # Similar development stage
+    moat_indication = Column(Boolean, default=False)  # Same indication
+    moat_delivery = Column(Boolean, default=False)  # Similar delivery method
+    moat_target = Column(Boolean, default=False)  # Same target
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_peer_catalyst_ticker', 'catalyst_id', 'peer_ticker'),
+    )
+
+
+class CatalystPeerMetric(Base):
+    """Comparative metrics for peers"""
+    __tablename__ = "catalyst_peer_metrics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    metric = Column(String, nullable=False, index=True)  # "1D move post-print", "EV/Sales"
+    value = Column(Float)  # Value for primary company
+    peer_median = Column(Float)  # Median value across peers
+    peer_p75 = Column(Float)  # 75th percentile value
+    delta_to_median = Column(Float)  # Difference from median
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_peer_metric_catalyst', 'catalyst_id', 'metric'),
+    )
+
+
+class CatalystSource(Base):
+    """Sources/references for catalyst data"""
+    __tablename__ = "catalyst_sources"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_id = Column(Integer, ForeignKey('catalysts.id'), nullable=False, index=True)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    timestamp = Column(DateTime(timezone=True), nullable=False)
+    source_type = Column(String, index=True)  # "company_pr", "sec_filing", "press", "analyst"
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_source_catalyst', 'catalyst_id'),
+    )
+
+
 class MarketData(Base):
     """Market data model for biotech stocks"""
     __tablename__ = "market_data"

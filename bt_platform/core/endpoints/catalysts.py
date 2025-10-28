@@ -11,7 +11,21 @@ from typing import Optional
 from datetime import datetime
 import logging
 
-from ..database import get_db, Catalyst
+from ..database import (
+    get_db, 
+    Catalyst,
+    CatalystExpectationBand,
+    CatalystOutcomeMetric,
+    CatalystMarketReaction,
+    CatalystPeer,
+    CatalystPeerMetric,
+    CatalystSource,
+)
+from ..services.catalyst_event_service import (
+    get_catalyst_event,
+    calculate_all_expectation_deltas,
+    get_peer_comparisons,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -161,3 +175,193 @@ async def get_past_catalysts(
     except Exception as e:
         logger.error(f"Error fetching past catalysts: {e}")
         return {"error": str(e), "catalysts": [], "count": 0}
+
+
+@router.get("/events/{catalyst_id}")
+async def get_detailed_catalyst_event(
+    catalyst_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get detailed catalyst event with expectations, outcomes, reactions, and peers.
+    
+    Returns full event structure following the global conventions:
+    - event_id, as_of, company, catalyst, expectations, outcome
+    - market_reaction, peers, sources
+    """
+    try:
+        event = get_catalyst_event(db, catalyst_id)
+        if not event:
+            return {"error": "Catalyst not found", "event": None}
+        
+        return {"event": event}
+    
+    except Exception as e:
+        logger.error(f"Error fetching catalyst event {catalyst_id}: {e}")
+        return {"error": str(e), "event": None}
+
+
+@router.get("/events/{catalyst_id}/expectations")
+async def get_catalyst_expectations(
+    catalyst_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get expectation bands for a catalyst event.
+    """
+    try:
+        expectations = db.query(CatalystExpectationBand).filter(
+            CatalystExpectationBand.catalyst_id == catalyst_id
+        ).all()
+        
+        result = []
+        for exp in expectations:
+            result.append({
+                "metric": exp.metric,
+                "unit": exp.unit,
+                "expected": exp.expected,
+                "band_low": exp.band_low,
+                "band_high": exp.band_high,
+                "source": exp.source,
+                "what_matters": exp.what_matters,
+                "collected_at": exp.collected_at.isoformat() if exp.collected_at else None,
+            })
+        
+        return {
+            "catalyst_id": catalyst_id,
+            "expectations": result,
+            "count": len(result)
+        }
+    
+    except Exception as e:
+        logger.error(f"Error fetching expectations for catalyst {catalyst_id}: {e}")
+        return {"error": str(e), "expectations": [], "count": 0}
+
+
+@router.get("/events/{catalyst_id}/deltas")
+async def get_expectation_deltas(
+    catalyst_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Calculate expectation deltas (beat/inline/miss) for all metrics.
+    
+    Returns:
+        - metric name
+        - expected value
+        - actual value
+        - delta class (beat/inline/miss)
+        - delta score (0-1)
+    """
+    try:
+        deltas = calculate_all_expectation_deltas(db, catalyst_id)
+        
+        return {
+            "catalyst_id": catalyst_id,
+            "deltas": deltas,
+            "count": len(deltas)
+        }
+    
+    except Exception as e:
+        logger.error(f"Error calculating deltas for catalyst {catalyst_id}: {e}")
+        return {"error": str(e), "deltas": [], "count": 0}
+
+
+@router.get("/events/{catalyst_id}/reactions")
+async def get_market_reactions(
+    catalyst_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Get market price and IV reactions for a catalyst event.
+    """
+    try:
+        reactions = db.query(CatalystMarketReaction).filter(
+            CatalystMarketReaction.catalyst_id == catalyst_id
+        ).all()
+        
+        price_reactions = []
+        iv_reactions = []
+        vol_reactions = []
+        
+        for react in reactions:
+            price_reactions.append({
+                "ticker": react.ticker,
+                "window": react.window,
+                "abs_return": react.abs_return,
+                "rel_vs_xbi": react.rel_vs_xbi,
+                "intraday_high_low": react.intraday_high_low,
+            })
+            
+            if react.iv is not None:
+                iv_reactions.append({
+                    "ticker": react.ticker,
+                    "tenor": react.iv_tenor,
+                    "window": react.window,
+                    "iv": react.iv,
+                    "zscore_vs_1y": react.iv_zscore_vs_1y,
+                })
+            
+            if react.volume_multiple_vs_30d is not None:
+                vol_reactions.append({
+                    "ticker": react.ticker,
+                    "window": react.window,
+                    "volume_multiple_vs_30d": react.volume_multiple_vs_30d,
+                })
+        
+        return {
+            "catalyst_id": catalyst_id,
+            "price": price_reactions,
+            "iv": iv_reactions,
+            "volume": vol_reactions,
+        }
+    
+    except Exception as e:
+        logger.error(f"Error fetching reactions for catalyst {catalyst_id}: {e}")
+        return {"error": str(e), "price": [], "iv": [], "volume": []}
+
+
+@router.get("/events/{catalyst_id}/peers")
+async def get_catalyst_peers(
+    catalyst_id: int,
+    indication: Optional[str] = Query(None),
+    moa: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    """
+    Get peer analysis for a catalyst event.
+    
+    Returns:
+        - Weighted peer list with moat axes
+        - Comparative metrics vs peers
+    """
+    try:
+        # Get peers
+        peers = get_peer_comparisons(db, catalyst_id, indication, moa)
+        
+        # Get peer metrics
+        peer_metrics = db.query(CatalystPeerMetric).filter(
+            CatalystPeerMetric.catalyst_id == catalyst_id
+        ).all()
+        
+        metrics = []
+        for pm in peer_metrics:
+            metrics.append({
+                "metric": pm.metric,
+                "value": pm.value,
+                "peer_median": pm.peer_median,
+                "peer_p75": pm.peer_p75,
+                "delta_to_median": pm.delta_to_median,
+            })
+        
+        return {
+            "catalyst_id": catalyst_id,
+            "peers": peers,
+            "peer_metrics": metrics,
+            "moat_axes": ["MoA", "Stage", "Indication", "Delivery", "Target"],
+        }
+    
+    except Exception as e:
+        logger.error(f"Error fetching peers for catalyst {catalyst_id}: {e}")
+        return {"error": str(e), "peers": [], "peer_metrics": []}
+
