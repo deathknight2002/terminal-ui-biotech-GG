@@ -92,6 +92,152 @@ export interface Catalyst {
   marketDepth?: number;         // Payer appetite + population size + guideline friendliness (0-3)
 }
 
+// ============================================================================
+// Catalyst Event Extensions Types
+// ============================================================================
+
+export type CatalystType = "M&A" | "PH3_READOUT" | "SAFETY_PAUSE" | "APPROVAL" | "LABEL_UPDATE" | "PDUFA_DATE" | "DATA_READOUT" | "ADCOM" | "PARTNERSHIP";
+export type ExpectationSource = "sell_side" | "mgmt_guide" | "consensus" | "internal";
+export type ExpectationClass = "beat" | "inline" | "miss";
+export type Geography = "US" | "EU" | "Global" | "ROW";
+
+export interface CompanyInfo {
+  name: string;
+  ticker: string;
+  exchange?: string;
+  logo_url?: string;
+}
+
+export interface CatalystInfo {
+  type: CatalystType;
+  subtype?: string;  // TenderOffer, Interim, Hold/Partial, sNDA
+  program?: string;  // AOC platform, BBP-418 FORTIFY, etc.
+  indication?: string;  // LGMD2I/R9, Menopause VMS, etc.
+  geography?: Geography[];
+}
+
+export interface ExpectationMetric {
+  name: string;
+  unit: string;
+  expected?: number;
+  band_low?: number;
+  band_high?: number;
+  what_matters?: string;
+}
+
+export interface Expectations {
+  source: ExpectationSource;
+  metrics: ExpectationMetric[];
+}
+
+export interface OutcomeMetric {
+  name: string;
+  unit: string;
+  value: number;
+  pvalue?: number;
+  n?: number;  // Sample size
+  window?: string;  // Time window
+}
+
+export interface Outcome {
+  metrics: OutcomeMetric[];
+}
+
+export interface PriceReaction {
+  window: string;  // D-5, D-1, D0, D+1, D+5, D+10
+  abs?: number;  // Absolute % change
+  rel_vs_XBI?: number;  // Relative to XBI
+  intraday_high_low?: { high: number; low: number };
+}
+
+export interface IVReaction {
+  tenor: string;  // 1w, 1m, 3m
+  window: string;  // D0, D+1, etc.
+  iv?: number;
+  zscore_vs_1y?: number;
+}
+
+export interface VolumeReaction {
+  window: string;
+  volume_multiple_vs_30d?: number;
+}
+
+export interface MarketReaction {
+  rel_windows: string[];  // ["D-5", "D-1", "D0", "D+1", "D+5", "D+10"]
+  price: PriceReaction[];
+  iv: IVReaction[];
+  vol: VolumeReaction[];
+}
+
+export interface PeerCompany {
+  ticker: string;
+  reason_tag: string;  // "RNA muscle peer", "AOC-adjacent"
+  weight: number;  // 0-1
+}
+
+export interface PeerMetric {
+  metric: string;
+  value: number;
+  peer_median?: number;
+  peer_p75?: number;
+  delta_to_median?: number;
+}
+
+export interface Peers {
+  moat_axes: string[];  // ["MoA", "Stage", "Indication", "Delivery", "Target"]
+  list: PeerCompany[];
+  comp_metrics: PeerMetric[];
+}
+
+export interface SourceInfo {
+  title: string;
+  url: string;
+  ts: string;  // ISO timestamp
+  type: string;  // company_pr, broker_note, press_wire, conference
+}
+
+export interface CatalystEventFull {
+  event_id: string;  // ULID
+  as_of: string;  // UTC timestamp
+  company: CompanyInfo;
+  catalyst: CatalystInfo;
+  expectations?: Expectations;
+  outcome?: Outcome;
+  market_reaction?: MarketReaction;
+  peers?: Peers;
+  sources: SourceInfo[];
+}
+
+export interface SafetyEventDetail {
+  event_id: string;
+  sae_grade?: number;  // CTCAE grade 1-5
+  signal_type?: string;  // hepatotoxicity, cytopenias, etc.
+  enrollment_status?: string;  // paused, halted, modified
+  expected_pause_duration_weeks?: number;
+  resumption_probability?: number;  // 0-1
+  class_risk_baseline?: number;
+  class_read_through?: string;
+  pause_date?: string;
+  resume_date?: string;
+}
+
+export interface MandADealDetail {
+  event_id: string;
+  acquirer: string;
+  target: string;
+  deal_premium?: number;  // % premium
+  consideration?: number;  // Deal value in billions
+  spinco_required?: boolean;
+  ev_sales_ntm?: number;  // EV/Sales NTM multiple
+  ev_rd_employee?: number;
+  ev_lead_asset_phase?: number;
+  platform_name?: string;
+  therapeutic_focus?: string;
+  announced_date?: string;
+  expected_close?: string;
+  actual_close?: string;
+}
+
 export interface PipelineStage {
   name: string;
   progress: number; // 0-1
