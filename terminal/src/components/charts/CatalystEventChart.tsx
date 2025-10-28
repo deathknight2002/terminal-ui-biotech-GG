@@ -8,7 +8,6 @@ import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 import type { 
   CatalystEvent, 
-  ExpectationDelta, 
   MetricData,
   QuadrantSlide 
 } from '../../../src/types/biotech';
@@ -37,7 +36,7 @@ export const ExpectationBandChart: React.FC<ExpectationBandChartProps> = ({
     // Create outcome lookup
     const outcomeMap = new Map(outcomes.map(o => [o.name, o.value]));
     
-    metrics.forEach((metric, index) => {
+    metrics.forEach((metric) => {
       if (metric.band_low !== undefined && metric.band_high !== undefined) {
         const actualValue = outcomeMap.get(metric.name);
         
