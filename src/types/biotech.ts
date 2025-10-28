@@ -92,6 +92,158 @@ export interface Catalyst {
   marketDepth?: number;         // Payer appetite + population size + guideline friendliness (0-3)
 }
 
+// Enhanced Catalyst Event Types (Expectation vs Outcome Framework)
+export type EnhancedCatalystType = "M&A" | "PH3_READOUT" | "SAFETY_PAUSE" | "APPROVAL" | "LABEL_UPDATE";
+export type CatalystSubtype = string; // "TenderOffer", "Interim", "Hold/Partial", "sNDA", etc.
+export type ExpectationSource = "sell_side" | "mgmt_guide" | "consensus" | "internal";
+export type DeltaClass = "beat" | "inline" | "miss" | "unknown";
+export type RelativeWindow = "D-5" | "D-1" | "D0" | "D+1" | "D+5" | "D+10" | "D+30";
+export type IVTenor = "1w" | "1m" | "2m" | "3m";
+export type MoatAxis = "MoA" | "Stage" | "Indication" | "Delivery" | "Target";
+
+export interface CompanyInfo {
+  name: string;
+  ticker: string;
+  exchange?: string;
+  logo_url?: string;
+}
+
+export interface CatalystDetails {
+  type: EnhancedCatalystType;
+  subtype: CatalystSubtype;
+  program: string;
+  indication: string;
+  geography: string[];
+}
+
+export interface ExpectationMetric {
+  name: string;
+  unit: string;
+  expected: number | null;
+  band_low: number | null;
+  band_high: number | null;
+  what_matters: string;
+}
+
+export interface ExpectationBand {
+  source: ExpectationSource;
+  metrics: ExpectationMetric[];
+}
+
+export interface OutcomeMetric {
+  name: string;
+  unit: string;
+  value: number;
+  pvalue?: number;
+  n?: number;
+  window?: string;
+  delta_class?: DeltaClass;
+  delta_score?: number;
+}
+
+export interface CatalystOutcome {
+  metrics: OutcomeMetric[];
+}
+
+export interface PriceReaction {
+  window: RelativeWindow;
+  abs: number;
+  rel_vs_XBI: number;
+  intraday_high?: number;
+  intraday_low?: number;
+}
+
+export interface IVReaction {
+  tenor: IVTenor;
+  window: RelativeWindow;
+  iv: number;
+  zscore_vs_1y?: number;
+  percentile_vs_1y?: number;
+}
+
+export interface VolumeReaction {
+  window: RelativeWindow;
+  volume_multiple_vs_30d: number;
+}
+
+export interface MarketReactionData {
+  rel_windows?: RelativeWindow[];
+  price?: PriceReaction[];
+  iv?: IVReaction[];
+  vol?: VolumeReaction[];
+}
+
+export interface PeerCompany {
+  ticker: string;
+  name?: string;
+  reason_tag: string;
+  weight: number;
+  moat_axis?: MoatAxis;
+}
+
+export interface PeerCompMetric {
+  metric: string;
+  value: number;
+  peer_median: number;
+  peer_p25?: number;
+  peer_p75?: number;
+  peer_min?: number;
+  peer_max?: number;
+  delta_to_median: number;
+  percentile_rank?: number;
+}
+
+export interface PeerAnalysis {
+  moat_axes: MoatAxis[];
+  list: PeerCompany[];
+  comp_metrics: PeerCompMetric[];
+}
+
+export interface CatalystSourceAttribution {
+  title: string;
+  url: string;
+  ts: string;
+  type: string;
+}
+
+export interface EnhancedCatalystEvent {
+  event_id: string; // ULID format
+  as_of: string; // UTC timestamp
+  company: CompanyInfo;
+  catalyst: CatalystDetails;
+  expectations: ExpectationBand;
+  outcome?: CatalystOutcome;
+  market_reaction?: MarketReactionData;
+  peers?: PeerAnalysis;
+  sources: CatalystSourceAttribution[];
+}
+
+// Quadrant Slide Layout Types
+export interface QuadrantSlideData {
+  headline: string;
+  tldr: string;
+  key_metrics: any[];
+  key_charts: string[]; // URLs or base64 encoded images
+  expectation_delta: {
+    metrics: Array<{
+      name: string;
+      expected: number;
+      actual: number;
+      delta: DeltaClass;
+      score: number;
+    }>;
+  };
+  stock_reaction: {
+    price_moves: PriceReaction[];
+    iv_spikes: IVReaction[];
+  };
+  competitive_readthrough: {
+    peers: PeerCompany[];
+    key_insights: string[];
+  };
+  next_steps: string[];
+}
+
 export interface PipelineStage {
   name: string;
   progress: number; // 0-1
