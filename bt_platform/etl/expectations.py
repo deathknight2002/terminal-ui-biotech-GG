@@ -156,8 +156,8 @@ def detect_outliers(
     q3 = sorted_values[3 * n // 4]
     iqr = q3 - q1
     
-    lower_bound = q1 - iqr_multiplier * iqr
-    upper_bound = q3 + iqr_multiplier * iqr
+    lower_bound = q1 - Decimal(str(iqr_multiplier)) * iqr
+    upper_bound = q3 + Decimal(str(iqr_multiplier)) * iqr
     
     return [v < lower_bound or v > upper_bound for v in values]
 
