@@ -1017,6 +1017,226 @@ class CompanyOwnership(Base):
 
 
 # ============================================================================
+# Enhanced Catalyst Event Tracking (Expectation vs Outcome Framework)
+# ============================================================================
+
+class ExpectationBand(Base):
+    """Street expectations for catalyst event metrics"""
+    __tablename__ = "expectation_bands"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+
+    # Metric details
+    metric = Column(String(255), index=True, nullable=False)  # e.g., "α-DG glycosylation", "Deal Premium"
+    unit = Column(String(50))  # %, x, m/s, pp, $B, bool
+    
+    # Expectation range
+    expected = Column(Numeric(12, 4))  # Point estimate
+    band_low = Column(Numeric(12, 4))  # Lower bound
+    band_high = Column(Numeric(12, 4))  # Upper bound
+    
+    # Context
+    what_matters = Column(Text)  # Why this metric matters
+    source = Column(String(100), index=True)  # sell_side, mgmt_guide, consensus, internal
+    
+    # Quality tracking
+    quality_flag = Column(String(50))  # VALIDATED, ESTIMATED, LOW_CONFIDENCE
+    
+    # Metadata
+    collected_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_expectation_catalyst', 'catalyst_event_id'),
+        Index('idx_expectation_metric', 'metric'),
+        Index('idx_expectation_source', 'source'),
+    )
+
+
+class CatalystOutcome(Base):
+    """Actual outcomes for catalyst event metrics"""
+    __tablename__ = "catalyst_outcomes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+
+    # Metric details
+    metric = Column(String(255), index=True, nullable=False)
+    unit = Column(String(50))
+    
+    # Actual value
+    value = Column(Numeric(12, 4), nullable=False)
+    
+    # Statistical context (if applicable)
+    pvalue = Column(Float)  # Statistical significance
+    n = Column(Integer)  # Sample size
+    window = Column(String(50))  # Time window (e.g., "@3m", "@12m")
+    
+    # Delta calculation (computed vs expectation)
+    delta_class = Column(String(20), index=True)  # beat, inline, miss
+    delta_score = Column(Float)  # Magnitude 0-1
+    
+    # Metadata
+    announced_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_outcome_catalyst', 'catalyst_event_id'),
+        Index('idx_outcome_metric', 'metric'),
+        Index('idx_outcome_delta', 'delta_class', 'delta_score'),
+    )
+
+
+class MarketReaction(Base):
+    """Market reaction data for catalyst events"""
+    __tablename__ = "market_reactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+    ticker = Column(String(10), index=True, nullable=False)
+    
+    # Relative window
+    rel_window = Column(String(10), index=True, nullable=False)  # D-5, D-1, D0, D+1, D+5, D+10
+    
+    # Price reaction
+    abs_return = Column(Float)  # Absolute return %
+    rel_vs_xbi = Column(Float)  # Relative to XBI
+    intraday_high = Column(Numeric(12, 4))
+    intraday_low = Column(Numeric(12, 4))
+    
+    # Volume
+    volume = Column(BigInteger)
+    volume_multiple_vs_30d = Column(Float)
+    
+    # Metadata
+    window_date = Column(Date, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_reaction_catalyst', 'catalyst_event_id'),
+        Index('idx_reaction_ticker_window', 'ticker', 'rel_window'),
+        Index('idx_reaction_date', 'window_date'),
+    )
+
+
+class ImpliedVolatilitySnapshot(Base):
+    """IV snapshots around catalyst events"""
+    __tablename__ = "iv_snapshots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+    ticker = Column(String(10), index=True, nullable=False)
+    
+    # Window timing
+    rel_window = Column(String(10), index=True, nullable=False)  # D-30, D-7, D0, D+7
+    
+    # IV by tenor
+    tenor = Column(String(10), index=True, nullable=False)  # 1w, 1m, 2m, 3m
+    iv = Column(Float, nullable=False)
+    
+    # Relative metrics
+    zscore_vs_1y = Column(Float)  # Z-score vs 1-year history
+    percentile_vs_1y = Column(Float)  # Percentile 0-100
+    
+    # Skew
+    call_skew = Column(Float)
+    put_skew = Column(Float)
+    
+    # Metadata
+    snapshot_date = Column(Date, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_iv_catalyst', 'catalyst_event_id'),
+        Index('idx_iv_ticker_tenor', 'ticker', 'tenor', 'rel_window'),
+        Index('idx_iv_date', 'snapshot_date'),
+    )
+
+
+class CatalystPeer(Base):
+    """Peer companies for competitive read-through"""
+    __tablename__ = "catalyst_peers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+    
+    # Peer identification
+    peer_ticker = Column(String(10), index=True, nullable=False)
+    peer_name = Column(String(255))
+    
+    # Peer relevance
+    reason_tag = Column(String(100), index=True)  # "RNA muscle peer", "AOC-adjacent", "Same MoA"
+    moat_axis = Column(String(50))  # MoA, Stage, Indication, Delivery, Target
+    weight = Column(Float)  # Relevance weight 0-1
+    
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_peer_catalyst', 'catalyst_event_id'),
+        Index('idx_peer_ticker', 'peer_ticker'),
+        Index('idx_peer_reason', 'reason_tag'),
+    )
+
+
+class CatalystPeerMetric(Base):
+    """Comparative metrics for peer analysis"""
+    __tablename__ = "catalyst_peer_metrics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+    
+    # Metric details
+    metric = Column(String(255), index=True, nullable=False)  # "1D move post-print", "Deal Premium"
+    value = Column(Numeric(12, 4))  # This event's value
+    
+    # Peer comparisons
+    peer_median = Column(Numeric(12, 4))
+    peer_p25 = Column(Numeric(12, 4))
+    peer_p75 = Column(Numeric(12, 4))
+    peer_min = Column(Numeric(12, 4))
+    peer_max = Column(Numeric(12, 4))
+    
+    # Delta
+    delta_to_median = Column(Numeric(12, 4))
+    percentile_rank = Column(Float)  # 0-100
+    
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_peer_metric_catalyst', 'catalyst_event_id'),
+        Index('idx_peer_metric_name', 'metric'),
+    )
+
+
+class CatalystSource(Base):
+    """Source attribution for catalyst event data"""
+    __tablename__ = "catalyst_sources"
+
+    id = Column(Integer, primary_key=True, index=True)
+    catalyst_event_id = Column(Integer, ForeignKey('catalyst_events.id'), nullable=False)
+    
+    # Source details
+    title = Column(String(500), nullable=False)
+    url = Column(String(1000))
+    source_type = Column(String(50), index=True)  # press_release, analyst_note, company_pr, reuters, bloomberg
+    
+    # Timing
+    published_at = Column(DateTime(timezone=True), index=True)
+    
+    # Metadata
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_source_catalyst', 'catalyst_event_id'),
+        Index('idx_source_type', 'source_type'),
+        Index('idx_source_published', 'published_at'),
+    )
+
+
+# ============================================================================
 # Utility Functions
 # ============================================================================
 
@@ -1046,5 +1266,12 @@ __all__ = [
     'CompanySource',
     'CompanyArticle',
     'CompanyOwnership',
+    'ExpectationBand',
+    'CatalystOutcome',
+    'MarketReaction',
+    'ImpliedVolatilitySnapshot',
+    'CatalystPeer',
+    'CatalystPeerMetric',
+    'CatalystSource',
     'init_db',
 ]

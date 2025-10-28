@@ -860,6 +860,216 @@ class CatalystEventListResponse(BaseModel):
 
 
 # ============================================================================
+# Enhanced Catalyst Event Contracts (Expectation vs Outcome Framework)
+# ============================================================================
+
+class ExpectationBandContract(BaseModel):
+    """Street expectations for catalyst metrics"""
+    metric: str = Field(..., min_length=1, max_length=255, description="Metric name")
+    unit: Optional[str] = Field(None, max_length=50, description="Unit of measurement")
+    expected: Optional[float] = Field(None, description="Point estimate")
+    band_low: Optional[float] = Field(None, description="Lower bound")
+    band_high: Optional[float] = Field(None, description="Upper bound")
+    what_matters: Optional[str] = Field(None, description="Why this metric matters")
+    source: str = Field(..., max_length=100, description="Source: sell_side, mgmt_guide, consensus, internal")
+    quality_flag: Optional[str] = Field(None, max_length=50, description="VALIDATED, ESTIMATED, LOW_CONFIDENCE")
+
+    @model_validator(mode="after")
+    def validate_band(self):
+        """Ensure band_low <= expected <= band_high"""
+        if self.band_low is not None and self.band_high is not None:
+            if self.band_low > self.band_high:
+                raise ValueError('band_low must be <= band_high')
+        if self.expected is not None:
+            if self.band_low is not None and self.expected < self.band_low:
+                raise ValueError('expected must be >= band_low')
+            if self.band_high is not None and self.expected > self.band_high:
+                raise ValueError('expected must be <= band_high')
+        return self
+
+
+class ExpectationBandResponse(ExpectationBandContract):
+    """Expectation band with metadata"""
+    id: int
+    catalyst_event_id: int
+    collected_at: datetime
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CatalystOutcomeContract(BaseModel):
+    """Actual outcomes for catalyst metrics"""
+    metric: str = Field(..., min_length=1, max_length=255)
+    unit: Optional[str] = Field(None, max_length=50)
+    value: float = Field(..., description="Actual value")
+    pvalue: Optional[float] = Field(None, ge=0, le=1, description="Statistical significance")
+    n: Optional[int] = Field(None, gt=0, description="Sample size")
+    window: Optional[str] = Field(None, max_length=50, description="Time window (e.g., @3m, @12m)")
+    announced_at: Optional[datetime] = None
+
+
+class CatalystOutcomeResponse(CatalystOutcomeContract):
+    """Catalyst outcome with delta calculations"""
+    id: int
+    catalyst_event_id: int
+    delta_class: Optional[str] = None  # beat, inline, miss
+    delta_score: Optional[float] = None  # Magnitude 0-1
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class MarketReactionContract(BaseModel):
+    """Market reaction data for catalyst events"""
+    ticker: str = Field(..., min_length=1, max_length=10)
+    rel_window: str = Field(..., pattern=r'^D[+-]?\d+$', description="Relative window: D-5, D0, D+1, etc.")
+    abs_return: Optional[float] = None
+    rel_vs_xbi: Optional[float] = None
+    intraday_high: Optional[float] = None
+    intraday_low: Optional[float] = None
+    volume: Optional[int] = Field(None, ge=0)
+    volume_multiple_vs_30d: Optional[float] = Field(None, ge=0)
+    window_date: Optional[date] = None
+
+
+class MarketReactionResponse(MarketReactionContract):
+    """Market reaction response with ID"""
+    id: int
+    catalyst_event_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class ImpliedVolatilitySnapshotContract(BaseModel):
+    """IV snapshot data"""
+    ticker: str = Field(..., min_length=1, max_length=10)
+    rel_window: str = Field(..., pattern=r'^D[+-]?\d+$')
+    tenor: str = Field(..., pattern=r'^\d+[wm]$', description="Tenor: 1w, 1m, 2m, 3m")
+    iv: float = Field(..., ge=0, description="Implied volatility")
+    zscore_vs_1y: Optional[float] = None
+    percentile_vs_1y: Optional[float] = Field(None, ge=0, le=100)
+    call_skew: Optional[float] = None
+    put_skew: Optional[float] = None
+    snapshot_date: Optional[date] = None
+
+
+class ImpliedVolatilitySnapshotResponse(ImpliedVolatilitySnapshotContract):
+    """IV snapshot response with ID"""
+    id: int
+    catalyst_event_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CatalystPeerContract(BaseModel):
+    """Peer company for competitive analysis"""
+    peer_ticker: str = Field(..., min_length=1, max_length=10)
+    peer_name: Optional[str] = Field(None, max_length=255)
+    reason_tag: str = Field(..., max_length=100, description="Why this peer is relevant")
+    moat_axis: Optional[str] = Field(None, max_length=50, description="MoA, Stage, Indication, Delivery, Target")
+    weight: float = Field(..., ge=0, le=1, description="Relevance weight")
+
+
+class CatalystPeerResponse(CatalystPeerContract):
+    """Catalyst peer response with ID"""
+    id: int
+    catalyst_event_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CatalystPeerMetricContract(BaseModel):
+    """Comparative metrics for peer analysis"""
+    metric: str = Field(..., min_length=1, max_length=255)
+    value: Optional[float] = None
+    peer_median: Optional[float] = None
+    peer_p25: Optional[float] = None
+    peer_p75: Optional[float] = None
+    peer_min: Optional[float] = None
+    peer_max: Optional[float] = None
+    delta_to_median: Optional[float] = None
+    percentile_rank: Optional[float] = Field(None, ge=0, le=100)
+
+
+class CatalystPeerMetricResponse(CatalystPeerMetricContract):
+    """Peer metric response with ID"""
+    id: int
+    catalyst_event_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CatalystSourceContract(BaseModel):
+    """Source attribution for catalyst data"""
+    title: str = Field(..., min_length=1, max_length=500)
+    url: Optional[str] = Field(None, max_length=1000)
+    source_type: str = Field(..., max_length=50, description="press_release, analyst_note, company_pr, reuters, bloomberg")
+    published_at: Optional[datetime] = None
+
+
+class CatalystSourceResponse(CatalystSourceContract):
+    """Catalyst source response with ID"""
+    id: int
+    catalyst_event_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class EnhancedCatalystEventContract(BaseModel):
+    """Complete catalyst event with expectations, outcomes, reactions, and peers"""
+    # Event identification (ULID format)
+    event_id: str = Field(..., pattern=r'^[0-9A-HJKMNP-TV-Z]{26}$', description="ULID identifier")
+    as_of: datetime = Field(..., description="UTC timestamp")
+    
+    # Company details
+    company: Dict[str, Any] = Field(..., description="Company info: name, ticker, exchange, logo_url")
+    
+    # Catalyst details
+    catalyst: Dict[str, Any] = Field(..., description="Type, subtype, program, indication, geography")
+    
+    # Expectations
+    expectations: Dict[str, Any] = Field(..., description="Source and metrics with bands")
+    
+    # Outcome (post-event)
+    outcome: Optional[Dict[str, Any]] = None
+    
+    # Market reaction
+    market_reaction: Optional[Dict[str, Any]] = None
+    
+    # Peers
+    peers: Optional[Dict[str, Any]] = None
+    
+    # Sources
+    sources: List[Dict[str, Any]] = Field(default_factory=list)
+
+    @field_validator('catalyst')
+    @classmethod
+    def validate_catalyst_structure(cls, v):
+        """Ensure catalyst has required fields"""
+        required = ['type', 'subtype', 'program', 'indication', 'geography']
+        for field in required:
+            if field not in v:
+                raise ValueError(f'catalyst must contain {field}')
+        valid_types = ["M&A", "PH3_READOUT", "SAFETY_PAUSE", "APPROVAL", "LABEL_UPDATE"]
+        if v['type'] not in valid_types:
+            raise ValueError(f'catalyst.type must be one of {valid_types}')
+        return v
+
+
+# ============================================================================
 # Export All Contracts
 # ============================================================================
 
@@ -892,6 +1102,22 @@ __all__ = [
     'CatalystEventUpdateContract',
     'CatalystEventDetailResponse',
     'CatalystEventListResponse',
+    # Enhanced catalyst framework
+    'ExpectationBandContract',
+    'ExpectationBandResponse',
+    'CatalystOutcomeContract',
+    'CatalystOutcomeResponse',
+    'MarketReactionContract',
+    'MarketReactionResponse',
+    'ImpliedVolatilitySnapshotContract',
+    'ImpliedVolatilitySnapshotResponse',
+    'CatalystPeerContract',
+    'CatalystPeerResponse',
+    'CatalystPeerMetricContract',
+    'CatalystPeerMetricResponse',
+    'CatalystSourceContract',
+    'CatalystSourceResponse',
+    'EnhancedCatalystEventContract',
     # Feature and prediction contracts
     'FeatureSnapshotContract',
     'PredictionContract',
