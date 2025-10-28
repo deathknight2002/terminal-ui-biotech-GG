@@ -20,6 +20,7 @@ from ..database import (
     Catalyst,
     Company
 )
+from ..utils.iv_sanity_checks import validate_iv_signal, adjust_for_sector_iv, get_xbi_iv_change
 
 logger = logging.getLogger(__name__)
 
@@ -518,15 +519,51 @@ async def compute_iv_signals(
             if signal_score >= 2:
                 days_to_event = (catalyst.event_date - today).days
                 
-                # Determine quality
+                # Run sanity checks before creating signal
+                is_valid, warnings = validate_iv_signal(
+                    db, ticker, catalyst.id, catalyst.event_date, today
+                )
+                
+                # Skip if critical checks failed
+                if not is_valid:
+                    logger.info(f"Signal for {ticker} failed validation: {', '.join(warnings)}")
+                    continue
+                
+                # Check for sector-wide volatility
+                xbi_change = get_xbi_iv_change(db, today, tenor_days=7, lookback_days=7)
+                adjusted_iv, is_sector_driven = adjust_for_sector_iv(
+                    iv7.iv_mid, xbi_change, threshold=5.0
+                )
+                
+                # Downgrade quality if sector-driven
+                base_quality = None
                 if signal_score >= 3 and iv7.iv_pctile_1y and iv7.iv_pctile_1y < 85:
-                    quality = "High"
+                    base_quality = "High"
                 elif signal_score >= 2:
-                    quality = "Medium"
+                    base_quality = "Medium"
                 else:
-                    quality = "Low"
+                    base_quality = "Low"
+                
+                # Apply sector adjustment to quality
+                if is_sector_driven:
+                    if base_quality == "High":
+                        quality = "Medium"
+                    elif base_quality == "Medium":
+                        quality = "Low"
+                    else:
+                        # Skip low-quality sector-driven signals
+                        logger.info(f"Skipping {ticker}: sector-driven with low base quality")
+                        continue
+                    logger.info(f"{ticker} quality downgraded due to sector-wide move")
+                else:
+                    quality = base_quality
                 
                 confidence = signal_score / 4.0
+                
+                # Reduce confidence if warnings present
+                if warnings:
+                    confidence = confidence * 0.9
+                    logger.info(f"{ticker} confidence reduced due to warnings: {', '.join(warnings)}")
                 
                 # Check if signal already exists for this ticker/catalyst
                 existing = db.query(IVCatalystSignal).filter(
