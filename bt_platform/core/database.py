@@ -1312,6 +1312,175 @@ class IVCatalystSignal(Base):
     )
 
 
+# ============================================================================
+# CATALYST EVENT TRACKING MODELS (Hyper-Granular)
+# ============================================================================
+
+class CatalystEvent(Base):
+    """
+    Comprehensive catalyst event tracking with expectations, outcomes, and market reactions
+    """
+    __tablename__ = "catalyst_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, unique=True, index=True, nullable=False)  # ULID
+    as_of = Column(DateTime(timezone=True), nullable=False, index=True)
+    
+    # Company information
+    company_name = Column(String, nullable=False, index=True)
+    company_ticker = Column(String, index=True)
+    company_exchange = Column(String)
+    company_logo_url = Column(String)
+    
+    # Catalyst details
+    catalyst_type = Column(String, nullable=False, index=True)  # M&A, PH3_READOUT, etc.
+    catalyst_subtype = Column(String, index=True)
+    program = Column(String, index=True)
+    indication = Column(String, index=True)
+    geography = Column(JSON)  # List of geographies ["US", "EU"]
+    
+    # Expectation data (JSON structure)
+    expectation_source = Column(String, index=True)  # sell_side, mgmt_guide, etc.
+    expectation_metrics = Column(JSON)  # List of MetricData objects
+    
+    # Outcome data (JSON structure)
+    outcome_metrics = Column(JSON)  # List of MetricData objects
+    
+    # Market reaction summary
+    market_reaction_data = Column(JSON)  # Full market reaction structure
+    
+    # Peer analysis
+    peer_analysis_data = Column(JSON)  # Full peer analysis structure
+    
+    # Sources (provenance)
+    sources = Column(JSON)  # List of DataSource objects
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    expectation_bands = relationship("ExpectationBand", back_populates="event", cascade="all, delete-orphan")
+    price_reactions = relationship("PriceReaction", back_populates="event", cascade="all, delete-orphan")
+    iv_reactions = relationship("IVReaction", back_populates="event", cascade="all, delete-orphan")
+    peer_comparisons = relationship("PeerComparison", back_populates="event", cascade="all, delete-orphan")
+
+    __table_args__ = (
+        Index('idx_catalyst_event_company_date', 'company_ticker', 'as_of'),
+        Index('idx_catalyst_event_type', 'catalyst_type'),
+        Index('idx_catalyst_event_program', 'program'),
+    )
+
+
+class ExpectationBand(Base):
+    """
+    Expectation bands for catalyst events (per metric)
+    """
+    __tablename__ = "expectation_bands"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, ForeignKey('catalyst_events.event_id'), nullable=False, index=True)
+    
+    metric = Column(String, nullable=False, index=True)
+    unit = Column(String)
+    expected = Column(Float)
+    band_low = Column(Float)
+    band_high = Column(Float)
+    what_matters = Column(Text)
+    
+    source = Column(String, nullable=False, index=True)  # sell_side, mgmt_guide, etc.
+    collected_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    event = relationship("CatalystEvent", back_populates="expectation_bands")
+
+    __table_args__ = (
+        Index('idx_expectation_event_metric', 'event_id', 'metric'),
+    )
+
+
+class PriceReaction(Base):
+    """
+    Price reactions for catalyst events (per window)
+    """
+    __tablename__ = "price_reactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, ForeignKey('catalyst_events.event_id'), nullable=False, index=True)
+    
+    window = Column(String, nullable=False, index=True)  # D-5, D-1, D0, D+1, etc.
+    abs_change = Column(Float)  # Absolute % change
+    rel_vs_xbi = Column(Float)  # Relative to XBI
+    intraday_high = Column(Float)
+    intraday_low = Column(Float)
+    
+    timestamp = Column(DateTime(timezone=True), nullable=False, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    event = relationship("CatalystEvent", back_populates="price_reactions")
+
+    __table_args__ = (
+        Index('idx_price_reaction_event_window', 'event_id', 'window'),
+    )
+
+
+class IVReaction(Base):
+    """
+    Implied volatility reactions for catalyst events
+    """
+    __tablename__ = "iv_reactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, ForeignKey('catalyst_events.event_id'), nullable=False, index=True)
+    
+    tenor = Column(String, nullable=False, index=True)  # 1w, 1m, 3m
+    window = Column(String, nullable=False, index=True)  # D0, D+1, etc.
+    iv = Column(Float)
+    zscore_vs_1y = Column(Float)
+    
+    timestamp = Column(DateTime(timezone=True), nullable=False, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    event = relationship("CatalystEvent", back_populates="iv_reactions")
+
+    __table_args__ = (
+        Index('idx_iv_reaction_event_tenor', 'event_id', 'tenor', 'window'),
+    )
+
+
+class PeerComparison(Base):
+    """
+    Peer comparison data for catalyst events
+    """
+    __tablename__ = "peer_comparisons"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, ForeignKey('catalyst_events.event_id'), nullable=False, index=True)
+    
+    peer_ticker = Column(String, nullable=False, index=True)
+    reason_tag = Column(String)  # "RNA muscle peer", "AOC-adjacent"
+    weight = Column(Float)  # 0-1 importance weight
+    
+    # Comparative metrics
+    metric = Column(String, index=True)
+    value = Column(Float)
+    peer_median = Column(Float)
+    peer_p75 = Column(Float)
+    delta_to_median = Column(Float)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    event = relationship("CatalystEvent", back_populates="peer_comparisons")
+
+    __table_args__ = (
+        Index('idx_peer_comparison_event_ticker', 'event_id', 'peer_ticker'),
+    )
+
+
 # Database initialization
 async def init_db():
     """Initialize database tables"""

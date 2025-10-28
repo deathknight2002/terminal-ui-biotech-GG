@@ -41,6 +41,9 @@ async def seed_database():
         # Seed market data
         await seed_market_data(db)
 
+        # Seed catalyst events (hyper-granular tracking)
+        await seed_catalyst_events_data(db)
+
         db.commit()
         logger.info("✅ Database seeded successfully")
 
@@ -1395,5 +1398,15 @@ async def seed_market_data(db: Session):
 
     for data_point in market_data_points:
         db.add(data_point)
+
+
+async def seed_catalyst_events_data(db: Session):
+    """Seed catalyst events with hyper-granular tracking"""
+    from .seed_catalyst_events import seed_catalyst_events
+    
+    logger.info("🎯 Seeding catalyst events...")
+    seed_catalyst_events(db)
+    logger.info("✅ Catalyst events seeded")
+
 
     logger.info(f"📈 Added {len(market_data_points)} market data points")

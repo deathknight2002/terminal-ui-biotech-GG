@@ -1298,3 +1298,261 @@ export interface CatalystTimelineEvent {
   proximity?: number;
   evDelta?: number;
 }
+
+// ============================================================================
+// CATALYST EVENT TRACKING SYSTEM (Hyper-Granular)
+// ============================================================================
+
+/**
+ * Catalyst event types following global conventions
+ */
+export type CatalystEventType = 
+  | "M&A" 
+  | "PH3_READOUT" 
+  | "SAFETY_PAUSE" 
+  | "APPROVAL" 
+  | "LABEL_UPDATE"
+  | "ADCOM"
+  | "PDUFA"
+  | "DATA_READOUT"
+  | "REGULATORY_DECISION"
+  | "CORPORATE_ACTION";
+
+export type CatalystSubtype = string; // Flexible: "TenderOffer", "Interim", "Hold/Partial", "sNDA", etc.
+
+export type Geography = "US" | "EU" | "Global" | "China" | "Japan" | "ROW";
+
+export type ExpectationSource = "sell_side" | "mgmt_guide" | "consensus" | "internal";
+
+export type RelativeWindow = "D-5" | "D-1" | "D0" | "D+1" | "D+5" | "D+10";
+
+export type PeerMoatAxis = "MoA" | "Stage" | "Indication" | "Delivery" | "Target";
+
+/**
+ * Company information for catalyst events
+ */
+export interface CatalystCompany {
+  name: string;
+  ticker: string;
+  exchange?: string;
+  logo_url?: string;
+}
+
+/**
+ * Catalyst details with program/indication/geography
+ */
+export interface CatalystDetails {
+  type: CatalystEventType;
+  subtype?: CatalystSubtype;
+  program?: string;
+  indication?: string;
+  geography?: Geography[];
+}
+
+/**
+ * Individual metric expectation or outcome
+ */
+export interface MetricData {
+  name: string;
+  unit: string;
+  expected?: number | string | boolean;
+  band_low?: number;
+  band_high?: number;
+  what_matters?: string;
+  value?: number | string | boolean;
+  pvalue?: number;
+  n?: number;
+  window?: string;
+}
+
+/**
+ * Expectation band with source and metrics
+ */
+export interface ExpectationBand {
+  source: ExpectationSource;
+  metrics: MetricData[];
+}
+
+/**
+ * Outcome metrics (actual results)
+ */
+export interface CatalystOutcome {
+  metrics: MetricData[];
+}
+
+/**
+ * Price movement data for a specific window
+ */
+export interface PriceWindow {
+  window: RelativeWindow;
+  abs: number; // Absolute % change
+  rel_vs_XBI?: number; // Relative to XBI index
+  intraday_high_low?: [number, number];
+}
+
+/**
+ * Implied volatility data
+ */
+export interface IVData {
+  tenor: string; // "1w", "1m", "3m"
+  window: RelativeWindow;
+  iv: number;
+  zscore_vs_1y?: number;
+}
+
+/**
+ * Volume data
+ */
+export interface VolumeData {
+  window: RelativeWindow;
+  volume_multiple_vs_30d: number;
+}
+
+/**
+ * Market reaction tracking (price, IV, volume)
+ */
+export interface MarketReaction {
+  rel_windows: RelativeWindow[];
+  price: PriceWindow[];
+  iv?: IVData[];
+  vol?: VolumeData[];
+}
+
+/**
+ * Peer/competitor information
+ */
+export interface PeerInfo {
+  ticker: string;
+  reason_tag: string; // "RNA muscle peer", "AOC-adjacent"
+  weight?: number; // 0-1, importance weight
+}
+
+/**
+ * Comparative metric for peer analysis
+ */
+export interface CompMetric {
+  metric: string;
+  value: number;
+  peer_median: number;
+  peer_p75: number;
+  delta_to_median: number;
+}
+
+/**
+ * Peer analysis structure
+ */
+export interface PeerAnalysis {
+  moat_axes: PeerMoatAxis[];
+  list: PeerInfo[];
+  comp_metrics?: CompMetric[];
+}
+
+/**
+ * Source citation for data provenance
+ */
+export interface DataSource {
+  title: string;
+  url: string;
+  ts: string; // ISO timestamp
+  type: "press_release" | "sec_filing" | "analyst_note" | "news" | "company_pr";
+}
+
+/**
+ * Complete catalyst event with all tracking data
+ */
+export interface CatalystEvent {
+  event_id: string; // ULID
+  as_of: string; // UTC timestamp
+  company: CatalystCompany;
+  catalyst: CatalystDetails;
+  expectations: ExpectationBand;
+  outcome?: CatalystOutcome;
+  market_reaction?: MarketReaction;
+  peers?: PeerAnalysis;
+  sources: DataSource[];
+}
+
+/**
+ * Expectation delta calculation result
+ */
+export interface ExpectationDelta {
+  class: "beat" | "inline" | "miss";
+  score: number; // 0-1, magnitude of delta
+}
+
+/**
+ * Quadrant slide data structure
+ */
+export interface QuadrantSlide {
+  event_id: string;
+  quadrants: {
+    q1: QuadrantHeadline;
+    q2: QuadrantMetrics;
+    q3: QuadrantStreetReaction;
+    q4: QuadrantCompetitive;
+  };
+  footer: {
+    sources: DataSource[];
+    generated_at: string;
+  };
+}
+
+/**
+ * Q1: Headline + TL;DR
+ */
+export interface QuadrantHeadline {
+  headline: string;
+  tldr: string;
+  company: CatalystCompany;
+}
+
+/**
+ * Q2: Key Metrics / Charts
+ */
+export interface QuadrantMetrics {
+  charts: ChartSpec[];
+  key_metrics: MetricData[];
+}
+
+/**
+ * Q3: Street vs Outcome + Stock Reaction
+ */
+export interface QuadrantStreetReaction {
+  expectation_deltas: Array<{
+    metric: string;
+    expected_band: [number, number];
+    actual: number;
+    delta: ExpectationDelta;
+  }>;
+  stock_reaction: {
+    price_panels: PriceWindow[];
+    iv_changes?: IVData[];
+  };
+}
+
+/**
+ * Q4: Competitive Read-through & Next Steps
+ */
+export interface QuadrantCompetitive {
+  landscape: string; // Narrative description
+  peers: PeerInfo[];
+  what_matters: string;
+  next_steps?: string[];
+  comp_chart?: ChartSpec;
+}
+
+/**
+ * Chart specification for transparent rendering
+ */
+export interface ChartSpec {
+  type: "bar" | "line" | "scatter" | "expectation_band" | "waterfall" | "heatmap";
+  title: string;
+  data: any; // Chart-specific data format
+  config?: {
+    transparent?: boolean;
+    width?: number;
+    height?: number;
+    theme?: "dark" | "light";
+  };
+  vega_spec?: any; // Vega-Lite JSON spec
+}
