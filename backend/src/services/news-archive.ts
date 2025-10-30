@@ -318,8 +318,7 @@ export class NewsArchiveService extends EventEmitter {
    * Predict upcoming events based on historical patterns
    */
   predictUpcomingEvents(
-    lookbackDays: number = 90,
-    predictionHorizon: string = '30 days'
+    lookbackDays: number = 90
   ): EventPrediction[] {
     const now = new Date();
     const startDate = new Date(now.getTime() - lookbackDays * 24 * 60 * 60 * 1000);

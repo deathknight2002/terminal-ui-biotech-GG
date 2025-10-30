@@ -108,12 +108,11 @@ router.get('/trends/:category', (req, res) => {
  */
 router.get('/predictions', (req, res) => {
   try {
-    const { lookbackDays = '90', predictionHorizon = '30 days' } = req.query;
+    const { lookbackDays = '90' } = req.query;
     
     const archive = getNewsArchive();
     const predictions = archive.predictUpcomingEvents(
-      parseInt(lookbackDays as string),
-      predictionHorizon as string
+      parseInt(lookbackDays as string)
     );
     
     res.json({
