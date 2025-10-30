@@ -70,17 +70,40 @@ Seeds the archive with real-world events:
 ### 3. REST API Endpoints
 **Location:** `backend/src/routes/news-intelligence.ts`
 
-Eight comprehensive endpoints:
+Eight comprehensive endpoints with query parameters:
 
 ```
-GET  /api/news-intelligence/archive       - Query archived events
-GET  /api/news-intelligence/stats         - Archive statistics
-GET  /api/news-intelligence/trends/:cat   - Trend analysis
-GET  /api/news-intelligence/predictions   - Predictive analytics
-GET  /api/news-intelligence/company/:co   - Company events
-GET  /api/news-intelligence/event/:id     - Specific event
-POST /api/news-intelligence/archive       - Archive new event
-POST /api/news-intelligence/seed          - Seed data
+GET  /api/news-intelligence/archive       
+     Query: limit, category, company, therapeuticArea, startDate, endDate
+     Returns: Filtered list of archived events
+     
+GET  /api/news-intelligence/stats         
+     Returns: Archive statistics (counts by category/importance, date range)
+     
+GET  /api/news-intelligence/trends/:cat   
+     Params: category (URL param)
+     Query: therapeuticArea, timeframe (week|month|quarter|year)
+     Returns: Trend analysis with momentum and top companies
+     
+GET  /api/news-intelligence/predictions   
+     Query: lookbackDays (default: 90), predictionHorizon (default: '30 days')
+     Returns: List of predicted upcoming events with probabilities
+     
+GET  /api/news-intelligence/company/:co   
+     Params: company name or ticker (case-insensitive, partial match)
+     Query: startDate, endDate
+     Returns: All events for specified company
+     
+GET  /api/news-intelligence/event/:id     
+     Params: event ID
+     Returns: Single event details
+     
+POST /api/news-intelligence/archive       
+     Body: Event object with title, category, importance, etc.
+     Returns: Archived event with generated ID
+     
+POST /api/news-intelligence/seed          
+     Returns: Seeded events statistics
 ```
 
 ### 4. Service Integration
@@ -186,7 +209,10 @@ Sources     scraping      categorizes       analyzes      queries
 
 ### Query Tectonic Events
 ```bash
+# Company name matching is case-insensitive and supports partial matches
 curl http://localhost:3001/api/news-intelligence/company/Tectonic
+# Or use ticker
+curl http://localhost:3001/api/news-intelligence/company/TECX
 ```
 
 ### Analyze M&A Trends
@@ -312,7 +338,7 @@ All major functionality tested:
 - `backend/src/index.ts` - Added route registration and seeding
 - `backend/src/services/news-monitor.ts` - Added archival integration
 
-**Total:** 6 new files, 2 modified, ~2,170 lines of code
+**Total:** 6 new files, 2 modified, ~2,590 lines of code
 
 ## Future Enhancements
 
