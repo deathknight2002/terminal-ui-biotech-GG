@@ -9,6 +9,8 @@ import { logger } from '../utils/logger.js';
 import { getScrapingManager } from '../scraping/scraping-manager.js';
 import { FierceBiotechArticle } from '../scraping/fierce-biotech-scraper.js';
 import { LRUCache } from '../scraping/lru-cache.js';
+import { getNewsArchive } from './news-archive.js';
+import { newsIntelligenceService } from './news-intelligence.js';
 
 export interface NewsArticle {
   id: string;
@@ -199,6 +201,7 @@ export class NewsMonitoringService extends EventEmitter {
     try {
       const scraper = this.scrapingManager.getFierceBiotechScraper();
       const articles = await scraper.getLatestNews(20);
+      const archive = getNewsArchive();
 
       let newCount = 0;
       for (const article of articles) {
@@ -207,6 +210,20 @@ export class NewsMonitoringService extends EventEmitter {
 
           const newsArticle = this.convertFierceBiotechArticle(article);
           const matched = this.matchesKeywords(newsArticle);
+
+          // Score and enrich with intelligence
+          const enrichedArticle = newsIntelligenceService.scoreNews({
+            id: newsArticle.id,
+            title: newsArticle.title,
+            summary: newsArticle.summary,
+            source: 'Fierce Biotech',
+            publishedAt: newsArticle.publishedDate,
+            companies: [newsArticle.author], // May need better extraction
+            keywords: newsArticle.tags,
+          });
+
+          // Archive the event for trend analysis
+          archive.archiveEvent(enrichedArticle);
 
           if (matched) {
             const alert: NewsAlert = {
@@ -234,7 +251,7 @@ export class NewsMonitoringService extends EventEmitter {
       }
 
       if (newCount > 0) {
-        logger.info(`📰 Fierce Biotech: ${newCount} new articles`);
+        logger.info(`📰 Fierce Biotech: ${newCount} new articles (archived)`);
       }
     } catch (error) {
       logger.error('Error checking Fierce Biotech:', error);

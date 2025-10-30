@@ -25,6 +25,8 @@ import { widgetRouter } from './routes/widgets.js';
 import { featureFlagsRouter } from './routes/feature-flags.js';
 import { rxdbRouter } from './routes/rxdb.js';
 import { getNewsMonitor } from './services/news-monitor.js';
+import newsIntelligenceRouter from './routes/news-intelligence.js';
+import { seedNewsArchive } from './services/news-seeder.js';
 
 async function startServer() {
   try {
@@ -43,6 +45,10 @@ async function startServer() {
     const newsMonitor = getNewsMonitor();
     newsMonitor.start();
     logger.info('News monitoring started');
+    
+    // Seed news archive with initial data
+    seedNewsArchive();
+    logger.info('News archive seeded with initial events');
 
     // Create Express app
     const app = express();
@@ -89,6 +95,7 @@ async function startServer() {
     app.use('/api/widgets', widgetRouter);
     app.use('/api/feature-flags', featureFlagsRouter);
     app.use('/api/rxdb', rxdbRouter);
+    app.use('/api/news-intelligence', newsIntelligenceRouter);
 
     // Setup WebSocket handlers
     setupWebSocket(io);
