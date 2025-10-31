@@ -5,7 +5,7 @@ Bayesian models for predicting the probability of positive outcomes
 for upcoming catalyst events.
 """
 
-from typing import Optional
+from typing import Optional, Dict, List
 
 
 def predict_catalyst_outcome(
