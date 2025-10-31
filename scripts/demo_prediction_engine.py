@@ -7,10 +7,13 @@ Shows timing, outcome, and momentum predictions for catalyst events.
 """
 
 import sys
+import os
 from datetime import datetime, timedelta, date
+from pathlib import Path
 
-# Add parent directory to path for imports
-sys.path.insert(0, '/home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG')
+# Add project root to path for imports
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 from bt_platform.core.prediction.timing_predictor import predict_quarterly_distribution
 from bt_platform.core.prediction.outcome_predictor import predict_outcome_bayesian

@@ -5,8 +5,10 @@ Calculate catalyst momentum scores for companies and therapeutic areas.
 Tracks the cadence and outcomes of recent catalysts to gauge momentum.
 """
 
+import math
 from datetime import datetime, timedelta, date
 from typing import Optional, Dict, List, Tuple
+from statistics import mean, pstdev
 
 
 def calculate_momentum_score(
@@ -221,10 +223,6 @@ def _determine_trend(overall_score: float, success_rate: float, streak: int) -> 
 # ============================================================================
 # Enhanced Momentum Scoring (from issue spec)
 # ============================================================================
-
-# Additional imports for enhanced functions
-import math
-from statistics import mean, pstdev
 
 HALF_LIFE_DAYS = 30.0  # Recency weighting decay
 STREAK_UNIT = 6.0       # Points per streak step (capped)

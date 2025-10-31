@@ -190,25 +190,30 @@ def quarterly_bins(start_from: date, quarters: int = 4) -> List[Tuple[date, date
         List of (start_date, end_date) tuples for each quarter
     """
     out = []
-    s = date(start_from.year, start_from.month, 1)
+    # Start at beginning of current quarter
+    current_quarter = ((start_from.month - 1) // 3)
+    s = date(start_from.year, current_quarter * 3 + 1, 1)
     
     for _ in range(quarters):
         # Calculate quarter boundaries
-        q = ((s.month - 1) // 3) + 1
-        end_month = q * 3
-        # End date is the last day of the quarter
+        q = ((s.month - 1) // 3)
+        end_month = (q + 1) * 3
+        
+        # Calculate end date (last day of the quarter)
         if end_month == 12:
             end_date = date(s.year, 12, 31)
+            next_year = s.year + 1
+            next_month = 1
         else:
+            # Last day of end_month
             end_date = date(s.year, end_month + 1, 1) - timedelta(days=1)
+            next_year = s.year
+            next_month = end_month + 1
         
         out.append((s, end_date))
         
         # Advance to next quarter
-        m = end_month + 1
-        y = s.year + (1 if m > 12 else 0)
-        m = 1 if m > 12 else m
-        s = date(y, m, 1)
+        s = date(next_year, next_month, 1)
     
     return out
 

@@ -73,9 +73,9 @@ def _map_phase(db_catalyst: DBCatalyst) -> Optional[PhaseType]:
         return None
     
     phase_str = str(phase).upper()
-    if "1" in phase_str or "I" in phase_str and "II" not in phase_str and "III" not in phase_str:
+    if "1" in phase_str or ("I" in phase_str and "II" not in phase_str and "III" not in phase_str):
         return "P1"
-    elif "2" in phase_str or "II" in phase_str and "III" not in phase_str:
+    elif "2" in phase_str or ("II" in phase_str and "III" not in phase_str):
         return "P2"
     elif "3" in phase_str or "III" in phase_str:
         return "P3"
@@ -302,13 +302,14 @@ def get_ta_outcomes(db: Session, lookback_days: int = 730) -> Dict[str, List[Tup
     """
     cutoff = dt.datetime.now() - dt.timedelta(days=lookback_days)
     
-    # Query all catalysts with outcomes
+    # Query all catalysts with outcomes, with proper filtering in SQL
     catalysts = (
         db.query(DBCatalyst)
         .filter(
             and_(
                 DBCatalyst.date >= cutoff,
                 DBCatalyst.status.notin_(["Upcoming", "Pending"]),
+                DBCatalyst.date.isnot(None),
             )
         )
         .all()
@@ -318,9 +319,6 @@ def get_ta_outcomes(db: Session, lookback_days: int = 730) -> Dict[str, List[Tup
     ta_map: Dict[str, List[Tuple[dt.date, int, float]]] = {}
     
     for cat in catalysts:
-        if not cat.date:
-            continue
-        
         # Get therapeutic area
         ta = getattr(cat, "therapeutic_area", None) or "Unknown"
         if not ta or ta == "Unknown":
