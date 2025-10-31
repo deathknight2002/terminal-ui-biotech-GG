@@ -378,3 +378,266 @@ async def get_upcoming_predictions(
     except Exception as e:
         logger.error(f"Error getting upcoming predictions: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to get predictions")
+
+
+# ============================================================================
+# Enhanced Prediction Endpoints (using adapter layer from issue spec)
+# ============================================================================
+
+@router.get("/v2/predict/timing/{catalyst_id}")
+async def predict_timing_v2(
+    catalyst_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Enhanced timing prediction using Weibull model with quarterly distributions.
+    
+    This version uses the adapter layer and returns quarterly probabilities
+    as specified in the issue requirements.
+    """
+    try:
+        from ..prediction.adapters import get_catalyst_by_id
+        from ..prediction.timing_predictor import predict_quarterly_distribution
+        
+        # Get catalyst via adapter
+        catalyst = get_catalyst_by_id(db, catalyst_id)
+        
+        # Run enhanced prediction
+        result = predict_quarterly_distribution(
+            catalyst_type=catalyst.catalyst_type,
+            phase=catalyst.phase,
+            anchor_date=catalyst.anchor_date,
+            pdufa_date=catalyst.pdufa_date,
+            therapeutic_area=catalyst.therapeutic_area,
+        )
+        
+        # Add catalyst context
+        result["catalyst"] = {
+            "id": catalyst.id,
+            "ticker": catalyst.ticker,
+            "company": catalyst.company,
+            "therapeutic_area": catalyst.therapeutic_area,
+        }
+        
+        return result
+        
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in v2 timing prediction: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Prediction failed")
+
+
+@router.get("/v2/predict/outcome/{catalyst_id}")
+async def predict_outcome_v2(
+    catalyst_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Enhanced outcome prediction using Bayesian model with odds-space stacking.
+    
+    This version uses the adapter layer and applies evidence multiplicatively
+    in odds space as specified in the issue requirements.
+    """
+    try:
+        from ..prediction.adapters import get_catalyst_by_id
+        from ..prediction.outcome_predictor import predict_outcome_bayesian
+        
+        # Get catalyst via adapter
+        catalyst = get_catalyst_by_id(db, catalyst_id)
+        
+        # Run enhanced prediction
+        result = predict_outcome_bayesian(
+            phase=catalyst.phase,
+            therapeutic_area=catalyst.therapeutic_area,
+            prior_phase_success=catalyst.prior_phase_success,
+            biomarker_enrichment=catalyst.biomarker_enrichment,
+            hard_endpoints=catalyst.hard_endpoints,
+            large_trial=catalyst.large_trial,
+        )
+        
+        # Add catalyst context
+        result["catalyst"] = {
+            "id": catalyst.id,
+            "ticker": catalyst.ticker,
+            "company": catalyst.company,
+            "therapeutic_area": catalyst.therapeutic_area,
+            "phase": catalyst.phase,
+        }
+        
+        return result
+        
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error in v2 outcome prediction: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Prediction failed")
+
+
+@router.get("/v2/momentum/company/{company_name}")
+async def get_company_momentum_v2(
+    company_name: str,
+    lookback_days: int = Query(730, ge=1, le=1460),
+    db: Session = Depends(get_db)
+):
+    """
+    Enhanced company momentum with decay, streaks, and TA comparison.
+    
+    This version uses the advanced momentum scorer with exponential decay,
+    streak detection, and therapeutic area z-score comparison.
+    """
+    try:
+        from ..prediction.adapters import get_company_outcomes, get_ta_outcomes
+        from ..prediction.momentum_scorer import score_company_advanced
+        
+        # Get company outcomes via adapter
+        company_events = get_company_outcomes(db, company_name, lookback_days)
+        
+        if not company_events:
+            return {
+                "company": company_name,
+                "momentum_score": 50.0,
+                "message": "No recent outcomes found",
+                "components": {"base": 0.0, "streak": 0.0, "ta_z": 0.0},
+            }
+        
+        # Get TA outcomes for comparison
+        ta_events_map = get_ta_outcomes(db, lookback_days)
+        
+        # Calculate advanced momentum
+        result = score_company_advanced(company_events, ta_events_map)
+        result["company"] = company_name
+        result["lookback_days"] = lookback_days
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error in v2 momentum calculation: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Momentum calculation failed")
+
+
+@router.get("/v2/momentum/therapeutic-areas")
+async def get_ta_momentum_v2(
+    lookback_days: int = Query(730, ge=1, le=1460),
+    db: Session = Depends(get_db)
+):
+    """
+    Enhanced therapeutic area momentum scores.
+    
+    Returns momentum scores for all therapeutic areas with advanced scoring.
+    """
+    try:
+        from ..prediction.adapters import get_ta_outcomes
+        from ..prediction.momentum_scorer import score_company_advanced, raw_momentum
+        
+        # Get TA outcomes
+        ta_events_map = get_ta_outcomes(db, lookback_days)
+        
+        # Calculate momentum for each TA
+        results = {}
+        ta_raw_scores = {}
+        
+        for ta, events in ta_events_map.items():
+            if events:
+                result = score_company_advanced(events, ta_events_map)
+                results[ta] = result
+                ta_raw_scores[ta] = raw_momentum(events)
+            else:
+                results[ta] = {
+                    "momentum_score": 50.0,
+                    "components": {"base": 0.0, "streak": 0.0, "ta_z": 0.0},
+                    "event_count": 0,
+                }
+        
+        # Add rankings
+        sorted_tas = sorted(
+            results.items(),
+            key=lambda x: x[1]["momentum_score"],
+            reverse=True
+        )
+        
+        for rank, (ta, score_dict) in enumerate(sorted_tas, 1):
+            results[ta]["rank"] = rank
+            results[ta]["percentile"] = round((1 - (rank - 1) / len(sorted_tas)) * 100, 1)
+        
+        return {
+            "lookback_days": lookback_days,
+            "therapeutic_areas": results,
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in v2 TA momentum: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="TA momentum calculation failed")
+
+
+@router.get("/v2/upcoming")
+async def get_upcoming_v2(
+    limit: int = Query(20, ge=1, le=100),
+    min_confidence: float = Query(0.6, ge=0.0, le=1.0),
+    db: Session = Depends(get_db)
+):
+    """
+    Enhanced upcoming catalyst predictions with adapter-based data access.
+    
+    Returns timing and outcome predictions for upcoming catalysts using
+    the enhanced prediction models.
+    """
+    try:
+        from ..prediction.adapters import list_upcoming_catalysts
+        from ..prediction.timing_predictor import predict_quarterly_distribution
+        from ..prediction.outcome_predictor import predict_outcome_bayesian
+        
+        # Get upcoming catalysts via adapter
+        catalysts = list_upcoming_catalysts(db, limit)
+        
+        predictions = []
+        
+        for catalyst in catalysts:
+            try:
+                # Timing prediction
+                timing = predict_quarterly_distribution(
+                    catalyst_type=catalyst.catalyst_type,
+                    phase=catalyst.phase,
+                    anchor_date=catalyst.anchor_date,
+                    pdufa_date=catalyst.pdufa_date,
+                    therapeutic_area=catalyst.therapeutic_area,
+                )
+                
+                # Filter by confidence
+                if timing.get("confidence", 0.0) < min_confidence:
+                    continue
+                
+                # Outcome prediction
+                outcome = predict_outcome_bayesian(
+                    phase=catalyst.phase,
+                    therapeutic_area=catalyst.therapeutic_area,
+                    prior_phase_success=catalyst.prior_phase_success,
+                    biomarker_enrichment=catalyst.biomarker_enrichment,
+                    hard_endpoints=catalyst.hard_endpoints,
+                    large_trial=catalyst.large_trial,
+                )
+                
+                predictions.append({
+                    "catalyst_id": catalyst.id,
+                    "ticker": catalyst.ticker,
+                    "company": catalyst.company,
+                    "therapeutic_area": catalyst.therapeutic_area,
+                    "catalyst_type": catalyst.catalyst_type,
+                    "phase": catalyst.phase,
+                    "timing": timing,
+                    "outcome": outcome,
+                })
+                
+            except Exception as e:
+                logger.warning(f"Failed to predict catalyst {catalyst.id}: {e}")
+                continue
+        
+        return {
+            "count": len(predictions),
+            "min_confidence": min_confidence,
+            "upcoming": predictions,
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in v2 upcoming predictions: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to get predictions")
