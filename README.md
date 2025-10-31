@@ -22,6 +22,7 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 🎨 **Bloomberg-style UI** - Professional terminal aesthetics
 - 📱 **Progressive Web App** - Install on iOS/Android like a native app
 - 🔒 **100% Free** - No paid APIs, all data from public sources
+- 🤖 **ML-Powered Predictions** - Catalyst timing & outcome predictions with momentum scoring (NEW!)
 
 ## 🆕 New Platform Features
 
@@ -30,8 +31,57 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 - 📊 **Observability** - Structured logging, Prometheus metrics, Sentry integration
 - 🔐 **API Authentication** - Optional token-based auth for write operations
 - 💾 **SQLite Storage** - High-performance database for Evidence Graph (replaces JSON)
+- 🔮 **Catalyst Predictions** - Statistical models for timing & outcome predictions (NEW!)
 
 📖 **[See Full Implementation Guide](./FEATURES_IMPLEMENTATION_GUIDE.md)** | **[Quick Reference](./FEATURES_QUICK_REFERENCE.md)**
+
+## 🔮 Catalyst Prediction Engine (NEW!)
+
+**ML-powered predictions** for biotech catalyst events using statistical models and Bayesian inference.
+
+### Key Capabilities
+- ⏰ **Timing Prediction** - Predict when events will occur using Weibull duration models
+- 🎯 **Outcome Prediction** - Bayesian models with industry priors + drug-specific evidence
+- 📈 **Momentum Scoring** - Track company/sector trends with 0-100 scoring
+- 🌍 **Therapeutic Area Analysis** - Compare momentum across therapeutic areas
+
+### Quick Demo
+```bash
+# Run the interactive demo
+poetry run python scripts/demo_predictions.py
+```
+
+### API Endpoints
+```bash
+# Predict timing for catalyst
+GET /api/v1/predictions/predict/timing/{catalyst_id}
+
+# Predict outcome probability
+GET /api/v1/predictions/predict/outcome/{catalyst_id}
+
+# Company momentum score
+GET /api/v1/predictions/momentum/company/{company_name}
+
+# Therapeutic area momentum
+GET /api/v1/predictions/momentum/therapeutic-areas
+```
+
+**Example Output:**
+```
+🎯 Phase 3 Trial with Positive Evidence
+   Success Probability: 81.0%
+   Boost vs Baseline: +33.0%
+
+   Evidence Factors:
+     • prior_phase_success: +15.0%
+       → 100% success in earlier phases
+     • biomarker_enrichment: +10%
+       → Genetic biomarker increases target population likelihood
+     • hard_endpoint: +5%
+       → Direct clinical benefit endpoint
+```
+
+📖 **[Complete Prediction Documentation](./docs/CATALYST_PREDICTION.md)**
 
 ## 🧬 Evidence Graph
 
