@@ -5,7 +5,7 @@ Bayesian models for predicting the probability of positive outcomes
 for upcoming catalyst events.
 """
 
-from typing import Optional
+from typing import Optional, Dict, List
 
 
 def predict_catalyst_outcome(
@@ -195,3 +195,119 @@ def _calculate_outcome_confidence(evidence_count: int, trial_design_factors: Opt
     design_boost = 0.1 if trial_design_factors and len(trial_design_factors) > 2 else 0
 
     return min(0.9, base_confidence + evidence_boost + design_boost)
+
+
+# ============================================================================
+# Enhanced Bayesian Outcome Prediction (from issue spec)
+# ============================================================================
+
+# Base priors from BIO 2016-2020 industry data
+PHASE_PRIORS = {
+    "P1": 0.63,
+    "P2": 0.30,
+    "P3": 0.48,
+    "FDA": 0.85,
+}
+
+# Therapeutic area absolute uplift (rare disease bonus)
+TA_UPLIFT_ABS = {
+    "Rare Disease": 0.14,
+}
+
+# Evidence impacts on odds (multiplicative in odds space)
+EVIDENCE_ODDS_MULT = {
+    "prior_phase_success": 1.15,  # +15% odds
+    "biomarker_enrichment": 1.10,  # +10% odds
+    "hard_endpoints": 1.05,        # +5% odds
+    "large_trial": 1.03,           # +3% odds
+}
+
+
+def p_to_odds(p: float) -> float:
+    """Convert probability to odds."""
+    p = max(1e-6, min(1 - 1e-6, p))
+    return p / (1.0 - p)
+
+
+def odds_to_p(o: float) -> float:
+    """Convert odds to probability."""
+    return o / (1.0 + o)
+
+
+def predict_outcome_bayesian(
+    phase: Optional[str] = None,
+    therapeutic_area: Optional[str] = None,
+    prior_phase_success: bool = False,
+    biomarker_enrichment: bool = False,
+    hard_endpoints: bool = False,
+    large_trial: bool = False,
+) -> Dict:
+    """
+    Enhanced Bayesian outcome prediction with evidence stacking in odds space.
+    
+    This is the improved Bayesian model from the issue spec that applies
+    evidence impacts multiplicatively in odds space for proper stacking.
+    
+    Args:
+        phase: Clinical phase ("P1", "P2", "P3", "FDA")
+        therapeutic_area: Therapeutic area
+        prior_phase_success: Whether prior phases succeeded
+        biomarker_enrichment: Whether trial uses biomarker enrichment
+        hard_endpoints: Whether trial uses hard clinical endpoints
+        large_trial: Whether trial has large sample size
+        
+    Returns:
+        Dict with probability_of_success, evidence_factors, prior_probability
+    """
+    # 1) Start with phase-based prior
+    prior = PHASE_PRIORS.get(phase or "P3", 0.48)
+    
+    # 2) Apply therapeutic area absolute uplift (in probability space first)
+    if therapeutic_area in TA_UPLIFT_ABS:
+        prior = min(0.999, max(0.001, prior + TA_UPLIFT_ABS[therapeutic_area]))
+    
+    # 3) Convert to odds for evidence stacking
+    odds = p_to_odds(prior)
+    
+    # 4) Apply evidence multipliers in odds space
+    factors_applied = []
+    
+    def apply_evidence(flag: bool, key: str):
+        nonlocal odds
+        if flag:
+            mult = EVIDENCE_ODDS_MULT[key]
+            odds *= mult
+            factors_applied.append({
+                "factor": key,
+                "impact": f"+{int((mult - 1) * 100)}%",
+                "description": _describe_evidence(key),
+            })
+    
+    apply_evidence(prior_phase_success, "prior_phase_success")
+    apply_evidence(biomarker_enrichment, "biomarker_enrichment")
+    apply_evidence(hard_endpoints, "hard_endpoints")
+    apply_evidence(large_trial, "large_trial")
+    
+    # 5) Convert back to probability
+    p = odds_to_p(odds)
+    
+    # 6) Clamp to reasonable bounds
+    p = max(0.01, min(0.97, p))
+    
+    return {
+        "probability_of_success": round(p, 4),
+        "evidence_factors": factors_applied,
+        "prior_probability": round(PHASE_PRIORS.get(phase or "P3", 0.48), 4),
+        "model": "bayesian_odds",
+    }
+
+
+def _describe_evidence(key: str) -> str:
+    """Provide human-readable description of evidence factor."""
+    descriptions = {
+        "prior_phase_success": "Prior phase(s) met endpoints",
+        "biomarker_enrichment": "Genetic/biomarker enrichment increases target likelihood",
+        "hard_endpoints": "Hard clinical endpoints vs surrogate markers",
+        "large_trial": "Well-powered trial with large sample size",
+    }
+    return descriptions.get(key, "")

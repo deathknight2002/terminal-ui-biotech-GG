@@ -5,8 +5,10 @@ Calculate catalyst momentum scores for companies and therapeutic areas.
 Tracks the cadence and outcomes of recent catalysts to gauge momentum.
 """
 
-from datetime import datetime, timedelta
-from typing import Optional
+import math
+from datetime import datetime, timedelta, date
+from typing import Optional, Dict, List, Tuple
+from statistics import mean, pstdev
 
 
 def calculate_momentum_score(
@@ -216,3 +218,145 @@ def _determine_trend(overall_score: float, success_rate: float, streak: int) -> 
         return "negative"
     else:
         return "neutral"
+
+
+# ============================================================================
+# Enhanced Momentum Scoring (from issue spec)
+# ============================================================================
+
+HALF_LIFE_DAYS = 30.0  # Recency weighting decay
+STREAK_UNIT = 6.0       # Points per streak step (capped)
+TA_Z_WEIGHT = 0.35      # TA comparison contribution
+
+
+def decay_weight(days_ago: float) -> float:
+    """Exponential decay weight based on half-life."""
+    return 0.5 ** (days_ago / HALF_LIFE_DAYS)
+
+
+def raw_momentum(events: list) -> float:
+    """
+    Calculate raw momentum from event history.
+    
+    Args:
+        events: List of (date, polarity:+1/-1, importance_weight)
+        
+    Returns:
+        Raw momentum score (can be negative)
+    """
+    if not events:
+        return 0.0
+    
+    today = date.today()
+    s = 0.0
+    
+    for (d, pol, w) in events:
+        # Calculate days since event
+        if isinstance(d, datetime):
+            d = d.date()
+        age = (today - d).days
+        
+        # Apply exponential decay weighting
+        s += pol * w * decay_weight(max(0, age))
+    
+    return s
+
+
+def streak_boost(events: list) -> float:
+    """
+    Calculate streak momentum boost.
+    
+    Args:
+        events: List of (date, polarity:+1/-1, importance_weight)
+        
+    Returns:
+        Streak boost (positive for winning streak, negative for losing)
+    """
+    if not events:
+        return 0.0
+    
+    # Sort by date ascending
+    arr = sorted(events, key=lambda x: x[0])
+    
+    last_pol = 0
+    streak = 0
+    
+    for (_, pol, _) in arr:
+        if pol == last_pol and pol != 0:
+            streak += 1
+        else:
+            streak = 1
+            last_pol = pol
+    
+    # Cap streak contribution to prevent domination
+    capped_streak = min(5, streak)
+    return STREAK_UNIT * capped_streak * (1 if last_pol > 0 else -1)
+
+
+def ta_zscore(company_score: float, ta_scores: list) -> float:
+    """
+    Calculate z-score of company vs therapeutic area peers.
+    
+    Args:
+        company_score: Raw momentum score for company
+        ta_scores: List of raw momentum scores for TA peers
+        
+    Returns:
+        Z-score (standard deviations from mean)
+    """
+    if not ta_scores:
+        return 0.0
+    
+    m = mean(ta_scores)
+    s = pstdev(ta_scores) or 1.0
+    
+    return (company_score - m) / s
+
+
+def score_company_advanced(
+    company_events: list,
+    ta_events_map: dict = None,
+) -> Dict:
+    """
+    Advanced momentum scoring with decay, streaks, and TA comparison.
+    
+    This is the enhanced momentum scorer from the issue spec with:
+    - Exponential recency decay (30-day half-life)
+    - Streak detection and boosting
+    - Therapeutic area z-score comparison
+    - 0-100 scaling via tanh
+    
+    Args:
+        company_events: List of (date, polarity:+1/-1, weight) for company
+        ta_events_map: Dict of therapeutic_area -> list of events for comparison
+        
+    Returns:
+        Dict with momentum_score (0-100) and component breakdown
+    """
+    # Calculate base momentum with recency decay
+    base = raw_momentum(company_events)
+    
+    # Calculate streak boost
+    streak = streak_boost(company_events)
+    
+    # Calculate TA comparison z-score
+    z = 0.0
+    if ta_events_map:
+        ta_scores = [raw_momentum(events) for events in ta_events_map.values()]
+        z = ta_zscore(base, ta_scores)
+    
+    # Combine components
+    combined = base + streak + TA_Z_WEIGHT * z
+    
+    # Scale to 0-100 using tanh
+    scaled = 50 + 50 * math.tanh(0.25 * combined)
+    
+    return {
+        "momentum_score": round(scaled, 1),
+        "components": {
+            "base": round(base, 3),
+            "streak": round(streak, 3),
+            "ta_z": round(z, 3),
+        },
+        "event_count": len(company_events),
+    }
