@@ -1,0 +1,380 @@
+"""
+Catalyst Prediction API Endpoints
+
+Exposes prediction models for catalyst timing, outcomes, and momentum.
+"""
+
+from fastapi import APIRouter, Depends, Query, HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy import and_, desc
+from typing import Optional, List
+from datetime import datetime, timedelta
+import logging
+
+from ..database import get_db, Catalyst, Company
+from ..prediction import (
+    predict_catalyst_timing,
+    predict_catalyst_outcome,
+    calculate_momentum_score,
+)
+
+logger = logging.getLogger(__name__)
+
+router = APIRouter()
+
+
+@router.get("/predict/timing/{catalyst_id}")
+async def predict_timing(
+    catalyst_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Predict the timing of a catalyst event using statistical models.
+    
+    Returns predicted date with confidence intervals and quarterly probabilities.
+    """
+    try:
+        # Get catalyst from database
+        catalyst = db.query(Catalyst).filter(Catalyst.id == catalyst_id).first()
+        
+        if not catalyst:
+            raise HTTPException(status_code=404, detail="Catalyst not found")
+        
+        # Extract relevant fields
+        catalyst_type = catalyst.kind or catalyst.catalyst_type or "Unknown"
+        phase = getattr(catalyst, "phase", None)
+        indication = getattr(catalyst, "indication", None)
+        
+        # Get last milestone date (if available)
+        last_milestone_date = None
+        if hasattr(catalyst, "trial_start_date") and catalyst.trial_start_date:
+            last_milestone_date = catalyst.trial_start_date
+        elif catalyst.created_at:
+            last_milestone_date = catalyst.created_at
+        
+        # Run prediction
+        prediction = predict_catalyst_timing(
+            catalyst_type=catalyst_type,
+            phase=phase,
+            indication=indication,
+            last_milestone_date=last_milestone_date,
+        )
+        
+        # Add catalyst context
+        prediction["catalyst"] = {
+            "id": catalyst.id,
+            "company": catalyst.company,
+            "drug_name": getattr(catalyst, "drug_name", None),
+            "description": catalyst.description,
+        }
+        
+        return prediction
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error predicting catalyst timing: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Prediction failed")
+
+
+@router.get("/predict/outcome/{catalyst_id}")
+async def predict_outcome(
+    catalyst_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Predict the probability of a positive outcome for a catalyst event.
+    
+    Uses Bayesian models with industry base rates and drug-specific evidence.
+    """
+    try:
+        # Get catalyst from database
+        catalyst = db.query(Catalyst).filter(Catalyst.id == catalyst_id).first()
+        
+        if not catalyst:
+            raise HTTPException(status_code=404, detail="Catalyst not found")
+        
+        # Extract relevant fields
+        catalyst_type = catalyst.kind or catalyst.catalyst_type or "Unknown"
+        phase = getattr(catalyst, "phase", None)
+        indication = getattr(catalyst, "indication", None)
+        
+        # Get prior phase outcomes (if available)
+        prior_outcomes = None
+        if hasattr(catalyst, "drug_id") and catalyst.drug_id:
+            # Query previous catalysts for this drug
+            prior_catalysts = (
+                db.query(Catalyst)
+                .filter(
+                    and_(
+                        Catalyst.drug_id == catalyst.drug_id,
+                        Catalyst.id < catalyst.id,
+                        Catalyst.outcome.isnot(None)
+                    )
+                )
+                .order_by(Catalyst.date)
+                .all()
+            )
+            
+            if prior_catalysts:
+                prior_outcomes = [c.outcome for c in prior_catalysts]
+        
+        # Get trial design factors (if available)
+        trial_design_factors = {}
+        if hasattr(catalyst, "biomarker_enrichment"):
+            trial_design_factors["biomarker_enrichment"] = catalyst.biomarker_enrichment
+        if hasattr(catalyst, "endpoint_type"):
+            trial_design_factors["hard_endpoint"] = (
+                catalyst.endpoint_type in ["MACE", "Mortality", "Disease Progression"]
+            )
+        if hasattr(catalyst, "trial_size"):
+            trial_design_factors["trial_size"] = catalyst.trial_size
+        
+        # Run prediction
+        prediction = predict_catalyst_outcome(
+            catalyst_type=catalyst_type,
+            phase=phase,
+            indication=indication,
+            prior_phase_outcomes=prior_outcomes,
+            trial_design_factors=trial_design_factors if trial_design_factors else None,
+        )
+        
+        # Add catalyst context
+        prediction["catalyst"] = {
+            "id": catalyst.id,
+            "company": catalyst.company,
+            "drug_name": getattr(catalyst, "drug_name", None),
+            "description": catalyst.description,
+        }
+        
+        return prediction
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error predicting catalyst outcome: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Prediction failed")
+
+
+@router.get("/momentum/company/{company_name}")
+async def get_company_momentum(
+    company_name: str,
+    lookback_months: int = Query(6, ge=1, le=24),
+    db: Session = Depends(get_db)
+):
+    """
+    Calculate momentum score for a company based on recent catalyst outcomes.
+    
+    Returns overall score (0-100), trend, and key metrics.
+    """
+    try:
+        # Get recent catalysts for this company
+        cutoff_date = datetime.now() - timedelta(days=lookback_months * 30)
+        
+        catalysts = (
+            db.query(Catalyst)
+            .filter(
+                and_(
+                    Catalyst.company == company_name,
+                    Catalyst.date >= cutoff_date,
+                    Catalyst.outcome.isnot(None)
+                )
+            )
+            .order_by(desc(Catalyst.date))
+            .all()
+        )
+        
+        if not catalysts:
+            return {
+                "company": company_name,
+                "overall_score": 50,
+                "trend": "neutral",
+                "catalyst_count": 0,
+                "message": "No recent catalysts found"
+            }
+        
+        # Convert to dict format for momentum calculation
+        catalyst_dicts = [
+            {
+                "date": c.date.isoformat() if c.date else None,
+                "outcome": c.outcome,
+                "type": c.kind or c.catalyst_type,
+            }
+            for c in catalysts
+        ]
+        
+        # Calculate momentum
+        momentum = calculate_momentum_score(
+            catalyst_dicts,
+            lookback_months=lookback_months,
+            weight_recent=True,
+        )
+        
+        momentum["company"] = company_name
+        
+        return momentum
+        
+    except Exception as e:
+        logger.error(f"Error calculating company momentum: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Momentum calculation failed")
+
+
+@router.get("/momentum/therapeutic-areas")
+async def get_therapeutic_area_momentum(
+    lookback_months: int = Query(6, ge=1, le=24),
+    db: Session = Depends(get_db)
+):
+    """
+    Calculate momentum scores for all therapeutic areas.
+    
+    Returns comparative momentum scores and rankings.
+    """
+    try:
+        cutoff_date = datetime.now() - timedelta(days=lookback_months * 30)
+        
+        # Get all recent catalysts with therapeutic area
+        catalysts = (
+            db.query(Catalyst)
+            .filter(
+                and_(
+                    Catalyst.date >= cutoff_date,
+                    Catalyst.outcome.isnot(None)
+                )
+            )
+            .all()
+        )
+        
+        if not catalysts:
+            return {
+                "message": "No recent catalysts found",
+                "areas": {}
+            }
+        
+        # Group by therapeutic area
+        from collections import defaultdict
+        catalysts_by_area = defaultdict(list)
+        
+        for catalyst in catalysts:
+            # Try to extract therapeutic area
+            area = "Unknown"
+            if hasattr(catalyst, "therapeutic_area") and catalyst.therapeutic_area:
+                area = catalyst.therapeutic_area
+            elif hasattr(catalyst, "indication") and catalyst.indication:
+                # Map indication to therapeutic area
+                indication_lower = catalyst.indication.lower()
+                if any(term in indication_lower for term in ["cancer", "oncology", "tumor"]):
+                    area = "Oncology"
+                elif any(term in indication_lower for term in ["cardio", "heart", "cv"]):
+                    area = "Cardiology"
+                elif any(term in indication_lower for term in ["neuro", "alzheimer", "parkinson"]):
+                    area = "Neurology"
+                elif any(term in indication_lower for term in ["rare", "orphan"]):
+                    area = "Rare Disease"
+                else:
+                    area = "Other"
+            
+            catalysts_by_area[area].append({
+                "date": catalyst.date.isoformat() if catalyst.date else None,
+                "outcome": catalyst.outcome,
+                "type": catalyst.kind or catalyst.catalyst_type,
+            })
+        
+        # Calculate momentum for each area
+        from ..prediction.momentum_scorer import calculate_therapeutic_area_momentum
+        
+        momentum_scores = calculate_therapeutic_area_momentum(
+            dict(catalysts_by_area),
+            lookback_months=lookback_months,
+        )
+        
+        return {
+            "lookback_months": lookback_months,
+            "total_catalysts": len(catalysts),
+            "areas": momentum_scores,
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating therapeutic area momentum: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Momentum calculation failed")
+
+
+@router.get("/predictions/upcoming")
+async def get_upcoming_predictions(
+    limit: int = Query(20, ge=1, le=100),
+    min_confidence: float = Query(0.0, ge=0.0, le=1.0),
+    db: Session = Depends(get_db)
+):
+    """
+    Get predictions for all upcoming catalysts.
+    
+    Returns timing and outcome predictions for future events.
+    """
+    try:
+        # Get upcoming catalysts (those without outcomes yet)
+        upcoming = (
+            db.query(Catalyst)
+            .filter(
+                and_(
+                    Catalyst.outcome.is_(None),
+                    Catalyst.date >= datetime.now()
+                )
+            )
+            .order_by(Catalyst.date)
+            .limit(limit)
+            .all()
+        )
+        
+        if not upcoming:
+            return {
+                "message": "No upcoming catalysts found",
+                "predictions": []
+            }
+        
+        predictions = []
+        
+        for catalyst in upcoming:
+            try:
+                # Generate both timing and outcome predictions
+                catalyst_type = catalyst.kind or catalyst.catalyst_type or "Unknown"
+                phase = getattr(catalyst, "phase", None)
+                indication = getattr(catalyst, "indication", None)
+                
+                timing = predict_catalyst_timing(
+                    catalyst_type=catalyst_type,
+                    phase=phase,
+                    indication=indication,
+                    last_milestone_date=catalyst.created_at,
+                )
+                
+                outcome = predict_catalyst_outcome(
+                    catalyst_type=catalyst_type,
+                    phase=phase,
+                    indication=indication,
+                )
+                
+                # Filter by confidence if requested
+                if timing["confidence_score"] < min_confidence:
+                    continue
+                
+                predictions.append({
+                    "catalyst_id": catalyst.id,
+                    "company": catalyst.company,
+                    "drug_name": getattr(catalyst, "drug_name", None),
+                    "description": catalyst.description,
+                    "scheduled_date": catalyst.date.isoformat() if catalyst.date else None,
+                    "timing_prediction": timing,
+                    "outcome_prediction": outcome,
+                })
+                
+            except Exception as e:
+                logger.warning(f"Failed to predict catalyst {catalyst.id}: {e}")
+                continue
+        
+        return {
+            "count": len(predictions),
+            "predictions": predictions,
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting upcoming predictions: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to get predictions")
