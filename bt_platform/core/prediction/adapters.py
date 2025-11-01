@@ -415,3 +415,49 @@ def list_upcoming_catalysts(db: Session, limit: int = 20) -> List[Catalyst]:
             result.append(get_catalyst_by_id(db, f"upcoming-{i}"))
     
     return result
+
+
+def get_reaction_samples(
+    company: str,
+    ta: str,
+    catal_type: str,
+    direction: str
+) -> List[float]:
+    """
+    Return list of historical next-day (or 3-day) returns for similar events.
+    
+    Priority hierarchy:
+      1) Same company + catalyst type
+      2) Same TA + catalyst type
+      3) Global baseline by catalyst type
+    
+    Args:
+        company: Company name
+        ta: Therapeutic area
+        catal_type: Catalyst type (PDUFA, TRIAL_READOUT, etc.)
+        direction: "up" for positive reactions, "down" for negative reactions
+        
+    Returns:
+        List of historical return percentages (as decimals, e.g., 0.12 for +12%)
+        Positive values for "up" samples, negative for "down" samples
+    
+    TODO_DB: Implement from your event-price join table.
+    Current implementation returns mock data for development.
+    
+    In production, this should:
+    - Query historical catalyst events from the database
+    - Join with price data to calculate next-day/3-day returns
+    - Filter by company/TA/catalyst type and outcome direction
+    - Return the list of observed returns
+    """
+    # Mock fallback data for development
+    # These are realistic ranges based on biotech event studies
+    
+    if direction == "up":
+        # Positive reaction samples (successful outcomes)
+        # Typical range: +5% to +25%, with outliers up to +50%
+        return [0.08, 0.12, 0.22, 0.15, 0.18, 0.10, 0.25, 0.14]
+    else:
+        # Negative reaction samples (failed outcomes)
+        # Typical range: -10% to -30%, with outliers down to -50%
+        return [-0.10, -0.20, -0.25, -0.15, -0.18, -0.22, -0.12, -0.28]
