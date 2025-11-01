@@ -129,7 +129,7 @@ try:
 
     from .dash_integration import DASH_ROUTE, create_dash_app
 
-    dash_app = create_dash_app(app, url_base_pathname=f"{DASH_ROUTE}/")
+    dash_app = create_dash_app(url_base_pathname=f"{DASH_ROUTE}/")
     app.mount(DASH_ROUTE, WSGIMiddleware(dash_app.server))
 
     logger.info(

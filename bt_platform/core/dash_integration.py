@@ -21,12 +21,11 @@ DASH_ROUTE = "/dash"
 ASSETS_FOLDER = os.path.join(os.path.dirname(__file__), "assets")
 
 
-def create_dash_app(server, url_base_pathname: str = "/dash/") -> Dash:
+def create_dash_app(url_base_pathname: str = "/dash/") -> Dash:
     """
     Create and configure Dash application.
 
     Args:
-        server: FastAPI app instance
         url_base_pathname: Base path for Dash routes
 
     Returns:
@@ -34,7 +33,6 @@ def create_dash_app(server, url_base_pathname: str = "/dash/") -> Dash:
     """
     dash_app = Dash(
         __name__,
-        server=server,
         url_base_pathname=url_base_pathname,
         suppress_callback_exceptions=True,
         assets_folder=ASSETS_FOLDER if os.path.exists(ASSETS_FOLDER) else None,
