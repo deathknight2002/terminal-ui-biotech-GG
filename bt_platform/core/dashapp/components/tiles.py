@@ -89,7 +89,7 @@ def render_kpi_tile(
             "border": "1px solid #334155",
             "borderRadius": "8px",
             "padding": "20px",
-            "transition": "all 0.25s cubic-in-out",
+            "transition": "all 0.25s ease-in-out",
             "cursor": "pointer",
         },
     )
@@ -193,7 +193,7 @@ def render_kpi_tiles(kpi_data: Dict) -> html.Div:
                 "border": "1px solid #334155",
                 "borderRadius": "8px",
                 "padding": "20px",
-                "transition": "all 0.25s cubic-in-out",
+                "transition": "all 0.25s ease-in-out",
             },
         ),
     ]
