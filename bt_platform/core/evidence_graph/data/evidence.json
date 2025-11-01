@@ -23,19 +23,6 @@
       "reason": "Strong Phase 3 data supports approval; PDUFA catalyst approaching",
       "relation": "catalyst_for",
       "to": "thesis:IONIS-ATTR"
-    },
-    {
-      "confidence": 0.5,
-      "created_at": "2025-10-26T14:11:53Z",
-      "delta": {
-        "pos": 0.01,
-        "sentiment": null,
-        "tam": null
-      },
-      "from": "test:smoke-test-node",
-      "reason": "Smoke test edge",
-      "relation": "updates",
-      "to": "test:smoke-test-node"
     }
   ],
   "nodes": [
@@ -84,14 +71,14 @@
     {
       "asset": null,
       "catalyst_type": null,
-      "company": null,
+      "company": "Test Co",
       "date": null,
-      "id": "test:smoke-test-node",
+      "id": "test-node-123",
       "indication": null,
-      "notes": "Smoke test node",
+      "notes": null,
       "phase": null,
-      "pos_estimate": null,
-      "sentiment": null,
+      "pos_estimate": 0.5,
+      "sentiment": 0.7,
       "source_url": null,
       "type": "thesis"
     }
