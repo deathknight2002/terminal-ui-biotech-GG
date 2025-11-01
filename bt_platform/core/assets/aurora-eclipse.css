@@ -1,0 +1,177 @@
+/* Aurora Eclipse CSS Theme for Dash Evidence Graph */
+
+/* Global theme variables */
+:root {
+    --bg-terminal: #0a0e27;
+    --bg-panel: #1e293b;
+    --accent-primary: #00ff9f;
+    --accent-secondary: #3b82f6;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    --hover-bg: rgba(0, 255, 159, 0.1);
+}
+
+/* Body styling */
+body {
+    background-color: var(--bg-terminal) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Monaco', 'Courier New', monospace !important;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--accent-primary) !important;
+    font-family: 'Monaco', 'Courier New', monospace !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Dropdowns */
+.Select-control {
+    background-color: var(--bg-panel) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.Select-menu-outer {
+    background-color: var(--bg-panel) !important;
+    border: 1px solid var(--accent-primary) !important;
+}
+
+.Select-option {
+    background-color: var(--bg-panel) !important;
+    color: var(--text-primary) !important;
+}
+
+.Select-option:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+.Select-value-label {
+    color: var(--text-primary) !important;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="number"] {
+    background-color: var(--bg-panel) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Courier New', monospace !important;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: var(--accent-primary) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 255, 159, 0.2);
+}
+
+/* Labels */
+label {
+    color: var(--text-secondary) !important;
+    font-family: 'Monaco', 'Courier New', monospace !important;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* Graph container */
+.js-plotly-plot {
+    background-color: var(--bg-terminal) !important;
+}
+
+/* Plotly modebar (toolbar) */
+.modebar {
+    background-color: var(--bg-panel) !important;
+}
+
+.modebar-btn {
+    color: var(--text-secondary) !important;
+}
+
+.modebar-btn:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--accent-primary) !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-terminal);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+/* Loading spinner */
+._dash-loading {
+    color: var(--accent-primary) !important;
+}
+
+/* Corner brackets effect (Bloomberg Terminal style) */
+.panel-with-brackets {
+    position: relative;
+    border: 1px solid var(--accent-primary);
+    padding: 20px;
+}
+
+.panel-with-brackets::before,
+.panel-with-brackets::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--accent-primary);
+}
+
+.panel-with-brackets::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.panel-with-brackets::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Tooltip styling */
+.dash-tooltip {
+    background-color: var(--bg-panel) !important;
+    border: 1px solid var(--accent-primary) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Monaco', 'Courier New', monospace !important;
+}
