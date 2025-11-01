@@ -1,0 +1,382 @@
+/* Aurora CSS - Bloomberg-clean x Aurora-lava Theme */
+/* Imports theme variables */
+@import url('./aurora-vars.css');
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg) !important;
+    color: var(--ink) !important;
+    font-family: var(--font-mono) !important;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* WebGL Canvas Background */
+#lava-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+/* Main Content Container */
+._dash-app-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+}
+
+/* Headers - Bloomberg Terminal Style */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--accent) !important;
+    font-family: var(--font-mono) !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.1rem; }
+
+/* Mantine Component Overrides */
+.mantine-Select-root,
+.mantine-TextInput-root,
+.mantine-NumberInput-root {
+    font-family: var(--font-mono) !important;
+}
+
+.mantine-Select-input,
+.mantine-TextInput-input,
+.mantine-NumberInput-input {
+    background-color: var(--panel) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--ink) !important;
+    border-radius: var(--radius-sm);
+    transition: border-color var(--transition-normal) var(--easing);
+    font-family: var(--font-mono) !important;
+}
+
+.mantine-Select-input:focus,
+.mantine-TextInput-input:focus,
+.mantine-NumberInput-input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: var(--ring);
+}
+
+.mantine-Select-dropdown {
+    background-color: var(--panel) !important;
+    border: 1px solid var(--accent) !important;
+    border-radius: var(--radius-sm);
+}
+
+.mantine-Select-item {
+    color: var(--ink) !important;
+    border-radius: var(--radius-sm);
+}
+
+.mantine-Select-item:hover {
+    background-color: var(--hover-bg) !important;
+}
+
+/* Cards/Panels - Glass Effect */
+.mantine-Card-root,
+.dashboard-panel {
+    background: rgba(11, 16, 36, 0.8) !important;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(10px);
+    transition: border-color var(--transition-normal) var(--easing),
+                box-shadow var(--transition-normal) var(--easing);
+}
+
+.dashboard-panel:hover {
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+}
+
+/* Corner Brackets (Bloomberg Style) */
+.panel-with-brackets {
+    position: relative;
+    padding: var(--spacing-lg);
+}
+
+.panel-with-brackets::before,
+.panel-with-brackets::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--accent);
+}
+
+.panel-with-brackets::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.panel-with-brackets::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Labels */
+label,
+.mantine-InputWrapper-label {
+    color: var(--text-secondary) !important;
+    font-family: var(--font-mono) !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Buttons */
+.mantine-Button-root {
+    font-family: var(--font-mono) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-normal) var(--easing);
+}
+
+.mantine-Button-root:hover {
+    box-shadow: var(--glow);
+}
+
+/* Badges/Pills */
+.mantine-Badge-root,
+.status-pill {
+    font-family: var(--font-mono) !important;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    border-radius: 12px;
+    padding: 4px 12px;
+}
+
+.status-pill.success {
+    background: rgba(41, 211, 68, 0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.status-pill.warning {
+    background: rgba(255, 204, 0, 0.2);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+.status-pill.error {
+    background: rgba(255, 90, 95, 0.2);
+    color: var(--error);
+    border: 1px solid var(--error);
+}
+
+.status-pill.info {
+    background: rgba(0, 217, 255, 0.2);
+    color: var(--info);
+    border: 1px solid var(--info);
+}
+
+/* Plotly Graph Container */
+.js-plotly-plot {
+    background-color: transparent !important;
+}
+
+.plotly .modebar {
+    background-color: var(--panel) !important;
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-xs);
+}
+
+.plotly .modebar-btn {
+    color: var(--text-secondary) !important;
+}
+
+.plotly .modebar-btn:hover {
+    background-color: var(--hover-bg) !important;
+    color: var(--accent) !important;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Loading States */
+._dash-loading {
+    color: var(--accent) !important;
+}
+
+.skeleton-loader {
+    background: linear-gradient(
+        90deg,
+        var(--panel) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        var(--panel) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Glow Animation */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 159, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 159, 0.4);
+    }
+}
+
+.glow-pulse {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* KPI Tile Styles */
+.kpi-tile {
+    background: var(--panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    transition: all var(--transition-normal) var(--easing);
+}
+
+.kpi-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+    border-color: var(--accent);
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--accent);
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.kpi-delta {
+    font-size: 0.875rem;
+    margin-top: var(--spacing-xs);
+}
+
+.kpi-delta.positive {
+    color: var(--success);
+}
+
+.kpi-delta.negative {
+    color: var(--error);
+}
+
+/* Toast/Notification Styles */
+.mantine-Notification-root {
+    background: var(--panel) !important;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono) !important;
+}
+
+.mantine-Notification-title {
+    color: var(--ink) !important;
+    font-weight: 700;
+}
+
+.mantine-Notification-description {
+    color: var(--text-secondary) !important;
+}
+
+/* Grid Layout */
+.dashboard-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.25rem; }
+    
+    .dashboard-grid {
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Tooltip styling */
+.mantine-Tooltip-tooltip {
+    background-color: var(--panel) !important;
+    border: 1px solid var(--accent) !important;
+    color: var(--ink) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.875rem;
+}
