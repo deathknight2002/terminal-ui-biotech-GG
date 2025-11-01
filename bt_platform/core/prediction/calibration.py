@@ -8,6 +8,7 @@ This module provides reliability calibration for probability predictions,
 ensuring that predicted probabilities match observed frequencies.
 """
 
+import math
 from typing import List, Tuple, Dict
 
 
@@ -137,15 +138,6 @@ def calibration_metrics(p_pred: List[float], y_true: List[int], calib: Dict = No
     
     # Log loss (cross-entropy)
     # Clamp probabilities to avoid log(0)
-    log_loss = 0.0
-    for p, y in zip(p_pred, y_true):
-        p_clamped = max(1e-7, min(1 - 1e-7, p))
-        if y == 1:
-            log_loss += -1.0 * (1.0 if y else 0.0) * (0.0 if not y else 1.0) if y else 0.0
-            log_loss -= (1.0 if y == 1 else 0.0) * (sum([1.0 if y == 1 else 0.0 for y in [y]]) * sum([p_clamped if y == 1 else 0.0 for p in [p_clamped]]))
-    
-    # Simplified log loss calculation
-    import math
     log_loss = 0.0
     for p, y in zip(p_pred, y_true):
         p_clamped = max(1e-7, min(1 - 1e-7, p))

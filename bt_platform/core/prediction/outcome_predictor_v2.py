@@ -10,6 +10,7 @@ Bayesian outcome prediction with:
 All computations use stdlib only.
 """
 
+import math
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
@@ -104,7 +105,7 @@ def predict_outcome_bayesian_v2(
         nonlocal odds
         if flag:
             # Multiply odds by e^(log_odds[key])
-            mult = 2.718281828 ** lo[key]  # e^x
+            mult = math.exp(lo[key])
             odds *= mult
             
             # Record impact as percentage increase in odds
