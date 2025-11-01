@@ -121,7 +121,7 @@ def create_dash_app(url_base_pathname: str = "/dash/") -> Dash:
         Input("ticker", "value"),
         Input("refresh", "n_intervals"),
     )
-    def update_chart(series: str, ticker: str, _n: int) -> Dict[str, Any]:
+    def update_chart(series: str, ticker: str, _n: int):
         """
         Update evidence chart with latest PoS and volatility data.
 
@@ -133,9 +133,12 @@ def create_dash_app(url_base_pathname: str = "/dash/") -> Dash:
         Returns:
             Plotly figure dictionary
         """
+        # Get base URL from environment or use localhost
+        base_url = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+
         # Pull live data from FastAPI endpoints
         try:
-            with httpx.Client(base_url="http://127.0.0.1:8000", timeout=10) as cx:
+            with httpx.Client(base_url=base_url, timeout=10) as cx:
                 pos_response = cx.get("/api/v1/evidence/pos", params={"series": series})
                 vol_response = cx.get("/api/v1/evidence/vol", params={"ticker": ticker})
 

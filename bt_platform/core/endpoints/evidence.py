@@ -10,14 +10,32 @@ API endpoints for science-first biotech intelligence:
 """
 
 from datetime import datetime, timedelta
+from enum import Enum
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from ..database import get_db
 
 router = APIRouter()
+
+
+# Valid series and ticker values for validation
+class SeriesType(str, Enum):
+    """Valid series identifiers for PoS data"""
+
+    SRRK_SMA = "SRRK_SMA"
+    IONIS_ATTR = "IONIS_ATTR"
+    KRYS_CF = "KRYS_CF"
+
+
+class TickerType(str, Enum):
+    """Valid ticker symbols for IV data"""
+
+    SRRK = "SRRK"
+    IONIS = "IONIS"
+    KRYS = "KRYS"
 
 
 @router.get("/evidence-journal")
@@ -1006,46 +1024,60 @@ async def create_journal_entry(
 
 
 @router.get("/pos")
-async def get_pos(series: str = "SRRK_SMA"):
+async def get_pos(series: SeriesType = Query(SeriesType.SRRK_SMA)):
     """
     Get Probability of Success (PoS) time series data.
 
     Returns PoS curve data for Evidence Graph visualization with delta tracking.
 
     Args:
-        series: Series identifier (e.g., "SRRK_SMA", "IONIS_ATTR", "KRYS_CF")
+        series: Series identifier (validated enum: SRRK_SMA, IONIS_ATTR, KRYS_CF)
 
     Returns:
         List of time-series data points with timestamp and PoS value
     """
-    # Generate mock PoS time series data
+    # Generate mock PoS time series data with dynamic dates
     # In production, this would query from the Evidence Graph database
     # tracking actual probability of success deltas over time
 
+    # Use current date as base, go back 20 days
+    base_date = datetime.utcnow()
     pos_data = [
-        {"t": f"2025-10-{d:02d}", "pos": 0.35 + d * 0.003} for d in range(1, 21)
+        {
+            "t": (base_date - timedelta(days=20 - d)).strftime("%Y-%m-%d"),
+            "pos": round(0.35 + d * 0.003, 3),
+        }
+        for d in range(1, 21)
     ]
 
     return pos_data
 
 
 @router.get("/vol")
-async def get_vol(ticker: str = "SRRK"):
+async def get_vol(ticker: TickerType = Query(TickerType.SRRK)):
     """
     Get Implied Volatility (IV) time series data.
 
     Returns IV data for overlay visualization with PoS curves.
 
     Args:
-        ticker: Stock ticker symbol (e.g., "SRRK", "IONIS", "KRYS")
+        ticker: Stock ticker symbol (validated enum: SRRK, IONIS, KRYS)
 
     Returns:
         List of time-series data points with timestamp and IV value
     """
-    # Generate mock IV time series data
+    # Generate mock IV time series data with dynamic dates
     # In production, this would integrate with the iv_catalyst endpoints
     # or query actual options data from the database
 
-    iv_data = [{"t": f"2025-10-{d:02d}", "iv": 45 + d * 0.6} for d in range(1, 21)]
+    # Use current date as base, go back 20 days
+    base_date = datetime.utcnow()
+    iv_data = [
+        {
+            "t": (base_date - timedelta(days=20 - d)).strftime("%Y-%m-%d"),
+            "iv": round(45 + d * 0.6, 1),
+        }
+        for d in range(1, 21)
+    ]
 
     return iv_data
