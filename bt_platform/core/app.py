@@ -5,25 +5,25 @@ FastAPI-based biotech data platform with providers, extensions,
 and real-time analytics.
 """
 
-from fastapi import FastAPI, HTTPException
+import logging
+from contextlib import asynccontextmanager
+
+import uvicorn
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
-import logging
-from typing import Dict, Any
-import uvicorn
 
 from .config import settings
 from .database import init_db
-from .routers import api_router
-from .websocket import websocket_router
-from .middleware.caching import CachingMiddleware
 from .middleware.auth import APITokenAuthMiddleware
+from .middleware.caching import CachingMiddleware
+from .routers import api_router
 from .utils.logging import setup_structured_logging
+from .utils.metrics import MetricsMiddleware
+from .utils.metrics import router as metrics_router
 from .utils.sentry import init_sentry
-from .utils.metrics import router as metrics_router, MetricsMiddleware
-
+from .websocket import websocket_router
 
 # Configure structured logging
 setup_structured_logging(
@@ -123,6 +123,26 @@ if settings.METRICS_ENABLED:
     app.include_router(metrics_router)
 
 
+# Mount Dash app for Evidence Graph visualization
+try:
+    from starlette.middleware.wsgi import WSGIMiddleware
+
+    from .dash_integration import DASH_ROUTE, create_dash_app
+
+    dash_app = create_dash_app(app, url_base_pathname=f"{DASH_ROUTE}/")
+    app.mount(DASH_ROUTE, WSGIMiddleware(dash_app.server))
+
+    logger.info(
+        f"📊 Dash Evidence Graph mounted at {DASH_ROUTE}",
+        extra={"event_type": "dash_mounted", "route": DASH_ROUTE}
+    )
+except Exception as e:
+    logger.warning(
+        f"⚠️ Failed to mount Dash app: {e}",
+        extra={"event_type": "dash_mount_failed", "error": str(e)}
+    )
+
+
 # Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
@@ -145,7 +165,7 @@ async def global_exception_handler(request, exc):
             "method": request.method,
             "headers": dict(request.headers)
         })
-    except:
+    except Exception:
         pass  # Don't fail if Sentry capture fails
 
     return JSONResponse(
