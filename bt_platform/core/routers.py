@@ -10,7 +10,7 @@ from .endpoints import (
     catalysts, competition, admin, loe, reports, evidence, 
     therapeutic_areas, company_profile, science_events, catalysts_v2, 
     kol, intelligence, fda, trials, research, ml_endpoints, pipeline, 
-    evidence_graph, iv_catalyst, predictions, predictions_v2
+    evidence_graph, iv_catalyst, predictions, predictions_v2, mvm_scores
 )
 
 # Main API router
@@ -199,4 +199,11 @@ api_router.include_router(
     predictions_v2.router,
     prefix="/predictions",
     tags=["predictions-v2"]
+)
+
+# MVM (Market-Moving) Scoring endpoints - Alpha-oriented catalyst event scoring
+api_router.include_router(
+    mvm_scores.router,
+    prefix="/scores",
+    tags=["mvm-scores"]
 )
