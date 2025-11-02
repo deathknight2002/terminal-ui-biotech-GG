@@ -165,11 +165,11 @@ class MVMFeatureEnhancer:
         liquidity_threshold = 1_000_000
         liquidity_adj = min(1.0, liquidity / liquidity_threshold)
         
-        # Apply half-Kelly for safety (standard practice)
-        half_kelly = kelly_f * 0.5
+        # Apply quarter-Kelly for extra safety (conservative for biotech catalyst plays)
+        quarter_kelly = kelly_f * 0.25
         
-        # Final position with all adjustments
-        final_position = half_kelly * volatility_adj * liquidity_adj
+        # Final position with all adjustments, capped at 8% for safety
+        final_position = min(quarter_kelly * volatility_adj * liquidity_adj, 0.08)
         
         # Calculate dollar amounts
         position_dollars = final_position * portfolio_size
@@ -177,7 +177,7 @@ class MVMFeatureEnhancer:
         
         return {
             "kelly_fraction": round(kelly_f, 4),
-            "half_kelly": round(half_kelly, 4),
+            "quarter_kelly": round(quarter_kelly, 4),
             "volatility_adjustment": round(volatility_adj, 3),
             "liquidity_adjustment": round(liquidity_adj, 3),
             "recommended_position": round(final_position, 4),

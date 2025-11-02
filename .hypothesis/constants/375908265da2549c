@@ -1,0 +1,4 @@
+# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/prediction/timing_predictor_v2.py
+# hypothesis_version: 6.144.0
+
+[0.0, 0.1, 0.5, 0.6, 0.9, 1.0, 1.05, 1.1, 1.2, 1.4, 1.6, 2.0, 180.0, 300.0, 360.0, 540.0, 'Cardiovascular', 'FDA', 'Neurology', 'Oncology', 'P1', 'P2', 'P3', 'PDUFA', 'PDUFA-fixed(90%)', 'Rare Disease', 'TRIAL_READOUT', 'bins', 'catalyst_id', 'outside_window', 'reference', 'type']
