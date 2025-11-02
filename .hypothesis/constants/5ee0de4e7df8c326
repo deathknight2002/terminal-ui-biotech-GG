@@ -1,4 +1,0 @@
-# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/prediction/momentum_scorer.py
-# hypothesis_version: 6.144.0
-
-[0.0, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6, 0.7, 1.0, 6.0, 30.0, 100, '+00:00', 'Z', 'approved', 'base', 'cadence', 'catalyst_count', 'components', 'date', 'event_count', 'failure', 'failure_count', 'key_metrics', 'momentum_score', 'negative', 'neutral', 'outcome', 'overall_score', 'percentile', 'positive', 'rank', 'rejected', 'streak', 'strong_negative', 'strong_positive', 'success', 'success_count', 'success_rate', 'ta_z', 'trend']

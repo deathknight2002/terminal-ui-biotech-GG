@@ -1,4 +1,0 @@
-# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/features/mvm_feature_enhancer.py
-# hypothesis_version: 6.144.0
-
-[-5.0, -2.0, 0.0, 0.01, 0.08, 0.1, 0.12, 0.15, 0.2, 0.25, 0.8, 0.93, 0.97, 1.0, 1.03, 3.0, 15.5, 25.0, 30.0, 45.0, 52.0, 65.0, 88.5, 100.0, 100000.0, 100, 1000000, 2000000, 5000000, 10000000, '-', '=', 'Low', 'Medium', 'Medium-High', 'Medium-Low', '__main__', 'adjusted_score', 'adjustment', 'adjustment_factor', 'confidence_interval', 'expected_move', 'high_volatility', 'kelly_fraction', 'liquidity_adjustment', 'low_volatility', 'market_regime', 'max_dollars', 'max_position', 'max_position_pct', 'moderate_volatility', 'normal', 'original_score', 'position_size_pct', 'probability_success', 'quarter_kelly', 'recommendation', 'recommended_dollars', 'recommended_position', 'regime', 'risk_level']

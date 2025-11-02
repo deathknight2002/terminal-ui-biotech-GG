@@ -1,4 +1,0 @@
-# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/prediction/timing_predictor.py
-# hypothesis_version: 6.144.0
-
-[0.0, 0.1, 0.5, 0.55, 0.6, 0.7, 0.8, 0.85, 0.9, 1.0, 1.05, 1.1, 1.2, 1.4, 1.6, 2.0, 180.0, 300.0, 360.0, 540.0, 180, 210, 330, 365, 730, 1095, 'Advisory Committee', 'Cardiovascular', 'FDA', 'FDA Decision', 'Neurology', 'Oncology', 'P1', 'P2', 'P3', 'PDUFA', 'PDUFA-fixed', 'Phase 1 Readout', 'Phase 2 Readout', 'Phase 3 Readout', 'Rare Disease', 'bins', 'catalyst_type', 'confidence', 'confidence_score', 'early_date', 'late_date', 'model', 'oncology', 'outside_window', 'phase', 'predicted_date', 'reference', 'sNDA Filing', 'weibull_duration']
