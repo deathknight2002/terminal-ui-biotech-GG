@@ -127,7 +127,15 @@ if settings.METRICS_ENABLED:
 try:
     from starlette.middleware.wsgi import WSGIMiddleware
 
-    from .dash_integration import DASH_ROUTE, create_dash_app
+    # Try new Aurora Lava dashboard first
+    try:
+        from .dashapp import create_dash_app
+        DASH_ROUTE = "/dash"
+        logger.info("Using Aurora Lava dashboard")
+    except ImportError:
+        # Fallback to old dash integration
+        from .dash_integration import DASH_ROUTE, create_dash_app
+        logger.info("Using legacy dash integration")
 
     dash_app = create_dash_app(url_base_pathname=f"{DASH_ROUTE}/")
     app.mount(DASH_ROUTE, WSGIMiddleware(dash_app.server))
