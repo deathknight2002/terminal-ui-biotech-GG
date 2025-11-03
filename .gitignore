@@ -101,3 +101,6 @@ backend/.env
 # Evidence Graph backups
 *.backup.*.json
 .env
+
+# Hypothesis test artifacts
+.hypothesis/
