@@ -389,11 +389,16 @@ class CalibrationEvaluator:
         
         # Calculate calibration slope and intercept
         # Perfect calibration: slope=1, intercept=0
-        from sklearn.linear_model import LinearRegression
-        lr = LinearRegression()
-        lr.fit(y_prob.reshape(-1, 1), y_true)
-        slope = lr.coef_[0]
-        intercept = lr.intercept_
+        try:
+            from sklearn.linear_model import LinearRegression
+            lr = LinearRegression()
+            lr.fit(y_prob.reshape(-1, 1), y_true)
+            slope = lr.coef_[0]
+            intercept = lr.intercept_
+        except ImportError:
+            # Fallback to simple linear regression
+            slope = np.corrcoef(y_prob, y_true)[0, 1] * (np.std(y_true) / np.std(y_prob)) if np.std(y_prob) > 0 else 0
+            intercept = np.mean(y_true) - slope * np.mean(y_prob)
         
         return CalibrationMetrics(
             brier_score=brier,
