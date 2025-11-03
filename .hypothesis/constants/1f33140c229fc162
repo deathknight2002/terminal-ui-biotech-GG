@@ -1,0 +1,4 @@
+# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/validation/metrics.py
+# hypothesis_version: 6.144.0
+
+[0.0, 1e-15, 0.5, 252, 'deflated_sharpe', 'inf', 'max_drawdown', 'n_observations', 'n_trials', 'p_value', 'peak_idx', 'pearson', 'sharpe_ratio', 'spearman', 'trough_idx']

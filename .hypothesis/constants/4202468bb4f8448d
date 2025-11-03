@@ -1,0 +1,4 @@
+# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/monitoring/drift.py
+# hypothesis_version: 6.144.0
+
+[0.0, 1e-06, 0.05, 0.08, 0.1, 0.15, 0.2, 100, 'All systems nominal', 'action', 'alert', 'calibration_drift', 'drawdown_critical', 'drawdown_elevated', 'drift_detected', 'flatline', 'interpretation', 'ks_statistic', 'message', 'none', 'p_value', 'psi', 'reason', 'reduce_50', 'significant_drift', 'small_change', 'stable', 'triggered']

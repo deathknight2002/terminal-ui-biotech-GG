@@ -1,0 +1,4 @@
+# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/features/calibration.py
+# hypothesis_version: 6.144.0
+
+[0.0, 1.0, 100.0, 1000, 'auto', 'bin_end', 'bin_idx', 'bin_start', 'brier_score', 'clip', 'count', 'ece', 'empirical_frequency', 'isotonic', 'log_loss', 'mean_predicted', 'method', 'platt', 'reliability_diagram']

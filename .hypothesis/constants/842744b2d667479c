@@ -1,0 +1,4 @@
+# file: /home/runner/work/terminal-ui-biotech-GG/terminal-ui-biotech-GG/bt_platform/core/risk/position.py
+# hypothesis_version: 6.144.0
+
+[0.0, 0.03, 0.08, 0.1, 0.2, 0.5, 0.6, 1.0, 4.0, 100, 500000, 1000000, 'adv_pct', 'base_size', 'constraints_applied', 'drawdown', 'drawdown_throttle', 'extreme', 'high', 'high_volatility', 'liquidity', 'low', 'no_borrow', 'portfolio_pct', 'position_size', 'position_size_pct', 'risk_factors', 'volatility']
