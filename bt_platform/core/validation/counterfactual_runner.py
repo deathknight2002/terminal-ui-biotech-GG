@@ -185,7 +185,9 @@ class CounterfactualRunner:
         # Combine all counterfactuals
         all_cfs = [skip_cf] + alt_catalysts + propensity_alts
 
-        # Calculate edge
+        # Calculate edge using the configured horizon (default T+5)
+        # Note: Currently uses T+5 as the primary horizon for consistency.
+        # Multi-horizon edge calculation could be added if needed.
         cf_pnls = [cf["pnl_bp_t5"] for cf in all_cfs if cf["pnl_bp_t5"] is not None]
         cf_median_pnl = np.median(cf_pnls) if cf_pnls else 0.0
         edge = (
@@ -333,9 +335,10 @@ class CounterfactualRunner:
         if not candidates:
             return []
 
-        # Randomly sample up to n candidates
+        # Randomly sample up to n candidates using indices
         sample_size = min(n, len(candidates))
-        sampled = np.random.choice(candidates, size=sample_size, replace=False)
+        indices = np.random.choice(len(candidates), size=sample_size, replace=False)
+        sampled = [candidates[i] for i in indices]
 
         alternatives = []
         for alt_event in sampled:
@@ -429,8 +432,12 @@ class CounterfactualRunner:
 
         tau, p_value = stats.kendalltau(scores, edges)
 
+        # Drift is detected when correlation is NOT significant (p_value > 0.05)
+        # i.e., when the score no longer reliably predicts edge
+        drift_detected = p_value > 0.05
+
         return {
-            "drift_detected": p_value > 0.05,  # No significant correlation
+            "drift_detected": drift_detected,
             "psi": None,  # To be implemented with feature distributions
             "kendall_tau": float(tau),
             "p_value": float(p_value),
