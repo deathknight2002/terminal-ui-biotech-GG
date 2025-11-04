@@ -1443,6 +1443,142 @@ class IVCatalystSignal(Base):
     )
 
 
+# ============================================================================
+# COUNTERFACTUAL VALIDATION MODELS
+# ============================================================================
+
+class CounterfactualEvent(Base):
+    """Events for counterfactual validation tracking"""
+    __tablename__ = "counterfactual_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, unique=True, index=True, nullable=False)  # Unique event identifier
+    ticker = Column(String, index=True, nullable=False)
+    dt_announce_est = Column(DateTime, index=True, nullable=False)  # Announcement datetime EST
+    dt_trade = Column(DateTime, index=True, nullable=False)  # Trade entry datetime
+    score = Column(Float, nullable=False)  # MVM alpha score
+    conf = Column(Float)  # Confidence level
+    catalyst_type = Column(String, index=True)  # Type of catalyst
+    features_json = Column(JSON)  # Feature vector as JSON
+    
+    # Market context at prediction time
+    therapeutic_area = Column(String, index=True)
+    mechanism_of_action = Column(String)
+    market_cap_decile = Column(Integer)  # 1-10 decile by market cap
+    liquidity_bucket = Column(String)  # high, medium, low
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_cfe_ticker_date', 'ticker', 'dt_trade'),
+        Index('idx_cfe_score', 'score'),
+    )
+
+
+class RealizedOutcome(Base):
+    """Realized outcomes for actual trading paths"""
+    __tablename__ = "realized_outcomes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(String, ForeignKey('counterfactual_events.event_id'), nullable=False, index=True)
+    
+    # Pre-event metrics
+    iv30_pre = Column(Float)  # 30-day IV before event
+    close_pre = Column(Float)  # Close price before event
+    
+    # Post-event metrics at different horizons (T+1, T+3, T+5 days)
+    iv30_post_t1 = Column(Float)
+    iv30_post_t3 = Column(Float)
+    iv30_post_t5 = Column(Float)
+    close_post_t1 = Column(Float)
+    close_post_t3 = Column(Float)
+    close_post_t5 = Column(Float)
+    
+    # PnL and risk metrics (in basis points)
+    pnl_bp_t1 = Column(Float)  # PnL at T+1 in basis points
+    pnl_bp_t3 = Column(Float)
+    pnl_bp_t5 = Column(Float)
+    dd_bp = Column(Float)  # Maximum drawdown in basis points
+    
+    # Execution quality
+    slippage_bp = Column(Float)  # Slippage in basis points
+    borrow_cost_bp = Column(Float)  # Borrow cost in basis points
+    
+    # Time to alpha
+    days_to_peak_pnl = Column(Integer)
+    days_to_peak_iv = Column(Integer)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_realized_event', 'event_id'),
+    )
+
+
+class CounterfactualOutcome(Base):
+    """Counterfactual outcomes for alternative paths"""
+    __tablename__ = "counterfactual_outcomes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    cf_id = Column(String, unique=True, index=True, nullable=False)  # Unique counterfactual ID
+    event_id = Column(String, ForeignKey('counterfactual_events.event_id'), nullable=False, index=True)
+    
+    # Counterfactual type and selection
+    cf_type = Column(String, index=True, nullable=False)  # skip, alt_name, alt_ticker
+    selection_rule = Column(String, index=True)  # noop, nearest_name_match, propensity_match
+    seed = Column(Integer)  # Random seed for reproducibility (for randomized alternatives)
+    
+    # Alternative event details (if applicable)
+    alt_ticker = Column(String, index=True)
+    alt_event_date = Column(DateTime)
+    alt_score = Column(Float)
+    
+    # Realized counterfactual metrics (stored as JSON for flexibility)
+    realized_cf_metrics_json = Column(JSON)
+    
+    # Summary metrics for quick access
+    cf_pnl_bp_t5 = Column(Float)  # Counterfactual PnL at T+5
+    cf_iv30_delta = Column(Float)  # Delta IV from pre to T+5
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_cf_event', 'event_id'),
+        Index('idx_cf_type', 'cf_type'),
+    )
+
+
+class RegimeContext(Base):
+    """Market regime context for performance attribution"""
+    __tablename__ = "regime_context"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(DateTime, unique=True, index=True, nullable=False)
+    
+    # Volatility regime
+    vix = Column(Float)
+    vix_bucket = Column(String, index=True)  # <20, 20-30, >30
+    
+    # Biotech market context
+    xbi_ret = Column(Float)  # XBI daily return
+    xbi_quartile = Column(String, index=True)  # Q1, Q2, Q3, Q4
+    
+    # Liquidity conditions
+    liq_bucket = Column(String, index=True)  # tight, normal, stressed
+    spread_bp = Column(Float)  # Average bid-ask spread in basis points
+    
+    # Broader market context
+    spx_ret = Column(Float)  # S&P 500 daily return
+    rates_10y = Column(Float)  # 10-year treasury yield
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        Index('idx_regime_date', 'date'),
+        Index('idx_regime_vix_bucket', 'vix_bucket'),
+    )
+
+
 # Database initialization
 async def init_db():
     """Initialize database tables"""

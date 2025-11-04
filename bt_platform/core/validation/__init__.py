@@ -59,6 +59,13 @@ from .production_validator import (
     ProductionValidationResult,
     GitLineage
 )
+from .counterfactual_runner import (
+    CounterfactualRunner,
+    CounterfactualConfig,
+    EdgeMetrics,
+    RegimeMetrics,
+    create_counterfactual_id
+)
 
 __all__ = [
     # Existing
@@ -99,6 +106,13 @@ __all__ = [
     'ProductionValidator',
     'ProductionValidationResult',
     'GitLineage',
+    
+    # Counterfactual Validation
+    'CounterfactualRunner',
+    'CounterfactualConfig',
+    'EdgeMetrics',
+    'RegimeMetrics',
+    'create_counterfactual_id',
 ]
 
-__version__ = '2.0.0'
+__version__ = '2.1.0'
