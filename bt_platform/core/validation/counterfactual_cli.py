@@ -42,8 +42,7 @@ from bt_platform.core.validation.counterfactual_runner import (
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -51,10 +50,10 @@ logger = logging.getLogger(__name__)
 def parse_date_window(window_str: str) -> tuple[str, str]:
     """Parse date window string like '2020-01-01:2025-10-31'"""
     try:
-        start, end = window_str.split(':')
+        start, end = window_str.split(":")
         # Validate dates
-        datetime.strptime(start, '%Y-%m-%d')
-        datetime.strptime(end, '%Y-%m-%d')
+        datetime.strptime(start, "%Y-%m-%d")
+        datetime.strptime(end, "%Y-%m-%d")
         return start, end
     except ValueError as e:
         raise argparse.ArgumentTypeError(
@@ -65,7 +64,7 @@ def parse_date_window(window_str: str) -> tuple[str, str]:
 def parse_horizons(horizons_str: str) -> list[int]:
     """Parse horizons string like '1,3,5'"""
     try:
-        horizons = [int(h.strip()) for h in horizons_str.split(',')]
+        horizons = [int(h.strip()) for h in horizons_str.split(",")]
         if not all(h > 0 for h in horizons):
             raise ValueError("All horizons must be positive")
         return horizons
@@ -79,15 +78,15 @@ def parse_vix_buckets(buckets_str: str) -> list[tuple[float, float]]:
     """Parse VIX buckets string like '0-20,20-30,30+'"""
     buckets = []
     try:
-        for bucket in buckets_str.split(','):
+        for bucket in buckets_str.split(","):
             bucket = bucket.strip()
-            if '+' in bucket:
+            if "+" in bucket:
                 # Handle open-ended bucket like '30+'
-                lower = float(bucket.replace('+', '').strip())
+                lower = float(bucket.replace("+", "").strip())
                 buckets.append((lower, 100.0))
             else:
                 # Handle range like '20-30'
-                lower, upper = bucket.split('-')
+                lower, upper = bucket.split("-")
                 buckets.append((float(lower.strip()), float(upper.strip())))
         return buckets
     except ValueError as e:
@@ -99,77 +98,68 @@ def parse_vix_buckets(buckets_str: str) -> list[tuple[float, float]]:
 def parse_args():
     """Parse command-line arguments"""
     parser = argparse.ArgumentParser(
-        description='Run counterfactual validation for MVM Alpha scoring',
+        description="Run counterfactual validation for MVM Alpha scoring",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
+        epilog=__doc__,
     )
 
     parser.add_argument(
-        '--window',
+        "--window",
         type=parse_date_window,
-        default='2020-01-01:2025-10-31',
-        help='Date window for validation (format: YYYY-MM-DD:YYYY-MM-DD)'
+        default="2020-01-01:2025-10-31",
+        help="Date window for validation (format: YYYY-MM-DD:YYYY-MM-DD)",
     )
 
     parser.add_argument(
-        '--horizons',
+        "--horizons",
         type=parse_horizons,
-        default='1,3,5',
-        help='Horizons in days for outcome measurement (comma-separated)'
+        default="1,3,5",
+        help="Horizons in days for outcome measurement (comma-separated)",
     )
 
     parser.add_argument(
-        '--vix-buckets',
+        "--vix-buckets",
         type=parse_vix_buckets,
-        default='0-20,20-30,30+',
-        help='VIX buckets for regime analysis (format: 0-20,20-30,30+)'
+        default="0-20,20-30,30+",
+        help="VIX buckets for regime analysis (format: 0-20,20-30,30+)",
     )
 
     parser.add_argument(
-        '--alts',
+        "--alts",
         type=int,
         default=3,
-        help='Number of propensity-matched alternatives per event'
+        help="Number of propensity-matched alternatives per event",
     )
 
     parser.add_argument(
-        '--seed',
-        type=int,
-        default=42,
-        help='Random seed for reproducibility'
+        "--seed", type=int, default=42, help="Random seed for reproducibility"
     )
 
     parser.add_argument(
-        '--matching-window',
+        "--matching-window",
         type=int,
         default=3,
-        help='Window in days for finding alternative catalysts'
+        help="Window in days for finding alternative catalysts",
     )
 
     parser.add_argument(
-        '--output',
+        "--output",
         type=str,
-        default='counterfactual_validation_report.md',
-        help='Output path for validation report'
+        default="counterfactual_validation_report.md",
+        help="Output path for validation report",
     )
 
     parser.add_argument(
-        '--persist',
-        action='store_true',
-        help='Persist results to database (in addition to report)'
+        "--persist",
+        action="store_true",
+        help="Persist results to database (in addition to report)",
     )
 
     parser.add_argument(
-        '--parquet',
-        type=str,
-        help='Save results snapshot as parquet file'
+        "--parquet", type=str, help="Save results snapshot as parquet file"
     )
 
-    parser.add_argument(
-        '--verbose',
-        action='store_true',
-        help='Enable verbose logging'
-    )
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
 
     return parser.parse_args()
 
@@ -227,15 +217,15 @@ async def run_validation(args):
         logger.info(f"📊 Report saved to: {args.output}")
 
         # Print summary
-        summary = results['summary']
-        print("\n" + "="*60)
+        summary = results["summary"]
+        print("\n" + "=" * 60)
         print("VALIDATION SUMMARY")
-        print("="*60)
+        print("=" * 60)
         print(f"Events analyzed: {summary['n_events']}")
         print(f"Average edge: {summary['avg_edge']:.2f} bp")
         print(f"Overall Sharpe: {summary['overall_sharpe']:.2f}")
         print(f"Hit rate: {summary['overall_hit_rate']:.2%}")
-        print("="*60 + "\n")
+        print("=" * 60 + "\n")
 
         return 0
 
@@ -260,16 +250,16 @@ def save_parquet_snapshot(results, path):
 
     # Convert results to DataFrame
     rows = []
-    for item in results['raw_results']:
+    for item in results["raw_results"]:
         row = {
-            'event_id': item['event_id'],
-            'ticker': item['ticker'],
-            'score': item['score'],
-            'dt_trade': item['dt_trade'],
-            'edge': item['edge'],
-            'cf_median_pnl': item['cf_median_pnl'],
-            'realized_pnl_t5': item['realized']['pnl_bp_t5'],
-            'n_counterfactuals': len(item['counterfactuals']),
+            "event_id": item["event_id"],
+            "ticker": item["ticker"],
+            "score": item["score"],
+            "dt_trade": item["dt_trade"],
+            "edge": item["edge"],
+            "cf_median_pnl": item["cf_median_pnl"],
+            "realized_pnl_t5": item["realized"]["pnl_bp_t5"],
+            "n_counterfactuals": len(item["counterfactuals"]),
         }
         rows.append(row)
 
@@ -287,5 +277,5 @@ def main():
     sys.exit(exit_code)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
