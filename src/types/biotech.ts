@@ -1421,3 +1421,218 @@ export interface CatalystTimelineEvent {
   proximity?: number;
   evDelta?: number;
 }
+
+// ============================================================================
+// Distressed Biotech Catalyst Tracker Types
+// For Natalie's Special Situations Dashboard
+// ============================================================================
+
+/**
+ * Types of FDA Complete Response Letters by solvability
+ */
+export type CRLType = 
+  | "Manufacturing"      // High solvability - CMC/process issues
+  | "Trial Design"       // Medium solvability - protocol amendments needed
+  | "Efficacy"          // Low solvability - fundamental efficacy questions
+  | "Safety";           // Case-by-case - risk management possible
+
+/**
+ * Solvability assessment for regulatory issues
+ */
+export type Solvability = "High" | "Medium" | "Low" | "Case-by-Case";
+
+/**
+ * FDA meeting types for regulatory resolution
+ */
+export type FDAMeetingType = "Type A" | "Type B" | "Type C" | "Pre-BLA" | "Pre-NDA" | "Other";
+
+/**
+ * FDA divisions for tracking regulatory patterns
+ */
+export type FDADivision = "CBER" | "CDER" | "CDRH" | "Other";
+
+/**
+ * Regulatory status of a distressed company
+ */
+export type RegulatoryStatus = 
+  | "CRL Received"
+  | "Clinical Hold"
+  | "Working with FDA"
+  | "Awaiting FDA Response"
+  | "Protocol Amendment Submitted"
+  | "Meeting Scheduled"
+  | "Resolution Pending"
+  | "Resolved";
+
+/**
+ * Catalyst tier for importance classification
+ * Based on expected stock movement magnitude
+ */
+export type CatalystTier = 
+  | "Tier 1"  // Binary outcomes: ±50%+ (ADCOM, CRL responses, clinical holds)
+  | "Tier 2"  // De-risking: ±20-40% (Type A meetings, protocol amendments)
+  | "Tier 3"; // Incremental: ±10-20% (announcements, manufacturing updates)
+
+/**
+ * Confidence level for regulatory resolution probability
+ */
+export type ConfidenceLevel = "High" | "Medium" | "Low";
+
+/**
+ * Regulatory resolution path tracking
+ */
+export interface RegulatoryResolutionPath {
+  meetingType?: FDAMeetingType;
+  meetingDate?: string;
+  fdaDivision: FDADivision;
+  keyStakeholders: string[];
+  precedents: string[];  // Similar resolved situations
+  managementFDAExperience: "Strong" | "Moderate" | "Limited";
+}
+
+/**
+ * Cash runway vs regulatory timeline tracking
+ */
+export interface CashRunwayAnalysis {
+  cashOnHand: number;              // $ millions
+  burnRate: number;                // $ millions per month
+  runwayMonths: number;            // Calculated months of cash
+  regulatoryTimelineMonths: number; // Expected months to resolution
+  fundingGap: boolean;             // True if runway < timeline + 3 months
+  nextFinancingWindow?: string;    // Expected date for financing
+  managementFundingStrategy?: string;
+}
+
+/**
+ * Asymmetric opportunity matrix
+ */
+export interface AsymmetricOpportunity {
+  upsidePercent: number;    // Expected upside if resolved (100-300%)
+  downsidePercent: number;  // Expected downside if fails (20-40%)
+  asymmetryScore: number;   // Upside / Downside ratio
+}
+
+/**
+ * FDA language sentiment analysis
+ */
+export interface RegulatoryLanguageAnalysis {
+  evidenceStrength: "Substantial" | "Adequate" | "Insufficient";
+  clinicalMeaningfulness: "Clearly Meaningful" | "Borderline" | "Unclear";
+  unmetNeedStrength: "Strong" | "Moderate" | "Weak";
+}
+
+/**
+ * Management response quality tracking
+ */
+export interface ManagementResponseQuality {
+  responseSpeed: "Fast" | "Moderate" | "Slow";  // Days to CRL response
+  pathForwardClarity: "Clear" | "Moderate" | "Unclear";
+  previousResolutionRecord: number; // 0-5 successful resolutions
+}
+
+/**
+ * Historical precedent for similar regulatory situations
+ */
+export interface RegulatoryPrecedent {
+  id: string;
+  company: string;
+  ticker: string;
+  crlType: CRLType;
+  resolutionTimeline: number; // Months to resolution
+  fdaDivision: FDADivision;
+  outcome: "Approved" | "Second CRL" | "Withdrawn";
+  marketReaction: {
+    crlDrop: number;      // % drop on CRL
+    recoveryPercent: number; // % recovery after resolution
+    daysToRecover: number;
+  };
+}
+
+/**
+ * Main distressed company tracking interface
+ * Focus on regulatory arbitrage opportunities
+ */
+export interface DistressedCompany {
+  id: string;
+  ticker: string;
+  company: string;
+  
+  // Regulatory Situation
+  regulatorySituation: string;        // Brief description of the issue
+  currentStatus: RegulatoryStatus;
+  crlType?: CRLType;
+  solvability?: Solvability;
+  crlDate?: string;
+  
+  // Market Analysis
+  marketCap: number;                  // Current market cap in millions
+  marketOverreactionThesis: string;   // Why the market overreacted
+  platformValue: number;              // Estimated platform value if resolved
+  
+  // Catalyst & Timeline
+  resolutionCatalyst: string;         // Next key catalyst
+  catalystDate?: string;              // Expected date (Q1 2026, etc.)
+  timelineQuarter?: string;           // Q1 2026, Q4 2025, etc.
+  probability: number;                // 0-100% success probability
+  confidenceLevel?: ConfidenceLevel;
+  
+  // Opportunity Metrics
+  asymmetricOpportunity: AsymmetricOpportunity;
+  regulatoryOverhangScore?: number;   // 1-10 composite score
+  
+  // Additional Intelligence
+  resolutionPath?: RegulatoryResolutionPath;
+  cashRunway?: CashRunwayAnalysis;
+  languageAnalysis?: RegulatoryLanguageAnalysis;
+  managementResponse?: ManagementResponseQuality;
+  
+  // Tracking
+  lastUpdated: string;
+  notes?: string;
+}
+
+/**
+ * Regulatory catalyst event with tiered importance
+ */
+export interface RegulatoryDistressedCatalyst {
+  id: string;
+  ticker: string;
+  company: string;
+  
+  // Catalyst Details
+  catalystType: string;               // "CRL Response", "Type A Meeting", etc.
+  tier: CatalystTier;
+  date?: string;
+  dateRange?: string;                 // "Q1 2026" for uncertain dates
+  
+  // Impact Assessment
+  expectedImpact: ImpactLevel;
+  expectedMove: string;               // "±50%+", "±20-40%", etc.
+  probability: number;                // 0-100%
+  confidenceLevel: ConfidenceLevel;
+  
+  // Context
+  description: string;
+  reguatorySituation: string;
+  keyFactors: string[];               // What makes this important
+  
+  // Tracking
+  status: "Scheduled" | "Announced" | "Completed" | "Delayed";
+  lastUpdated: string;
+}
+
+/**
+ * Catalyst clustering for identifying super weeks
+ */
+export interface CatalystCluster {
+  startDate: string;
+  endDate: string;
+  catalystCount: number;
+  tier1Count: number;
+  tier2Count: number;
+  tier3Count: number;
+  companies: string[];
+  fdaDivision?: FDADivision;
+  clusterType: "Super Week" | "Division Focus" | "Thematic Resolution";
+  description: string;
+}
