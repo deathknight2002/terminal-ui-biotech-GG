@@ -26,6 +26,7 @@ import { IonisPMModePage } from './pages/IonisPMModePage';
 import { XBICompaniesPage } from './pages/XBICompaniesPage';
 import { EvidenceGraphPage } from './pages/EvidenceGraphPage';
 import { IVCatalystPage } from './pages/IVCatalystPage';
+import { Molecule3DDemoPage } from './pages/Molecule3DDemoPage';
 
 // Import Financials pages
 import { FinancialsOverviewPage } from './pages/financials/FinancialsOverviewPage';
@@ -82,6 +83,7 @@ export function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/demo" element={<TerminalFeaturesDemo />} />
             <Route path="/enhanced-demo" element={<EnhancedFeaturesDemo />} />
+            <Route path="/3d-molecules" element={<Molecule3DDemoPage />} />
             <Route path="/recents" element={<PlaceholderPage title="RECENTS" />} />
             <Route path="/favorites" element={<PlaceholderPage title="FAVORITES" />} />
 

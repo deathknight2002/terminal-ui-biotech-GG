@@ -69,3 +69,29 @@ export type {
   ModelMetrics,
   PerformanceHistory
 } from './organisms/ModelAnalyticsDashboard';
+
+// 3D Interactive Molecular Visualizations
+export { Molecule3DViewer } from './organisms/Molecule3DViewer';
+export type {
+  Molecule3DViewerProps,
+  MoleculeData,
+  Atom,
+  Bond
+} from './organisms/Molecule3DViewer';
+
+export { MoleculeBindingVisualizer } from './organisms/MoleculeBindingVisualizer';
+export type {
+  MoleculeBindingVisualizerProps,
+  BindingSite,
+  TargetProtein,
+  DrugMolecule,
+  BindingType,
+  Modality
+} from './organisms/MoleculeBindingVisualizer';
+
+export { CompanyMoleculeSearch } from './organisms/CompanyMoleculeSearch';
+export type {
+  CompanyMoleculeSearchProps,
+  CompanyMolecule,
+  Company
+} from './organisms/CompanyMoleculeSearch';
