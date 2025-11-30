@@ -1,0 +1,432 @@
+.companyMoleculeSearch {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+/* Search Container */
+.searchContainer {
+  position: relative;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 0 16px;
+  transition: all 0.2s ease;
+}
+
+.searchInputWrapper:focus-within {
+  border-color: rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+.searchIcon {
+  font-size: 16px;
+  margin-right: 12px;
+  opacity: 0.6;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 14px 0;
+  font-family: inherit;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.clearButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 100;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdownSection {
+  padding: 8px 0;
+}
+
+.dropdownSection:not(:last-child) {
+  border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.sectionHeader {
+  padding: 8px 16px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(6, 182, 212, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.companyIcon,
+.moleculeIcon {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.itemContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemName {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.itemTicker {
+  font-size: 11px;
+  color: rgba(139, 92, 246, 0.9);
+}
+
+.itemCompany {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.itemType,
+.itemPhase {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(16, 185, 129, 0.9);
+  padding: 4px 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* Company Panel */
+.companyPanel {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.companyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.companyName {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+.companyTicker {
+  font-size: 12px;
+  color: rgba(139, 92, 246, 0.9);
+  padding: 4px 8px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 4px;
+}
+
+.companyType {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Molecule Grid */
+.moleculeGrid {
+  padding: 16px;
+}
+
+.gridHeader {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(6, 182, 212, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.moleculeCard {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.moleculeCard:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateX(4px);
+}
+
+.moleculeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.moleculeName {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.moleculePhase {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.phasePreclinical {
+  background: rgba(156, 163, 175, 0.2);
+  color: rgba(156, 163, 175, 0.9);
+}
+
+.phasePhaseI,
+.phasePhase1 {
+  background: rgba(96, 165, 250, 0.2);
+  color: rgba(96, 165, 250, 0.9);
+}
+
+.phasePhaseII,
+.phasePhase2 {
+  background: rgba(139, 92, 246, 0.2);
+  color: rgba(139, 92, 246, 0.9);
+}
+
+.phasePhaseIII,
+.phasePhase3 {
+  background: rgba(245, 158, 11, 0.2);
+  color: rgba(245, 158, 11, 0.9);
+}
+
+.phaseFiled,
+.phaseApproved {
+  background: rgba(16, 185, 129, 0.2);
+  color: rgba(16, 185, 129, 0.9);
+}
+
+.moleculeDetails {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+}
+
+.moleculeTarget {
+  color: rgba(139, 92, 246, 0.8);
+}
+
+.moleculeModality {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Visualization Panel */
+.visualizationPanel {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.vizHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.vizInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vizName {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+}
+
+.vizCompany {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.vizTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.vizTab {
+  padding: 8px 16px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vizTab:hover {
+  background: rgba(139, 92, 246, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.vizTab.active {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.vizContent {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  min-height: 350px;
+}
+
+/* Molecule Meta Panel */
+.moleculeMetaPanel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(15, 23, 42, 0.5);
+  border-top: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metaLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(6, 182, 212, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metaValue {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Scrollbar styling */
+.dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.4);
+  border-radius: 4px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .searchInputWrapper,
+  .clearButton,
+  .dropdownItem,
+  .moleculeCard,
+  .vizTab {
+    transition: none;
+  }
+}
