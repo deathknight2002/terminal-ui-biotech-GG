@@ -24,7 +24,6 @@ interface EvidenceGraphProps {
   width?: number;
   height?: number;
   onNodeClick?: (node: NodeBase) => void;
-  onEdgeClick?: (edge: Edge) => void;
 }
 
 export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
@@ -33,7 +32,6 @@ export const EvidenceGraph: React.FC<EvidenceGraphProps> = ({
   width = 800,
   height = 600,
   onNodeClick,
-  onEdgeClick,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [graphNodes, setGraphNodes] = useState<GraphNode[]>([]);

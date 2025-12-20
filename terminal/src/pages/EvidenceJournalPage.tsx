@@ -1,112 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel';
-import { RefreshModeToggle } from '../../../frontend-components/src/terminal/molecules/RefreshModeToggle/RefreshModeToggle';
-import type { RefreshMode } from '../../../src/types/biotech';
-import { API_ENDPOINTS, apiFetch } from '../config/api';
-import './EvidenceJournalPage.css';
+import React, { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Panel } from '../../../frontend-components/src/terminal/organisms/Panel/Panel'
+import { RefreshModeToggle } from '../../../frontend-components/src/terminal/molecules/RefreshModeToggle/RefreshModeToggle'
+import type { RefreshMode } from '../../../src/types/biotech'
+import './EvidenceJournalPage.css'
+import { previewEvidence } from '../data/previewData'
 
-/**
- * Evidence Journal Page
- *
- * A science-first evidence journal that ranks companies and assets by mechanistic
- * differentiation and surfaces near-term catalysts with transparent evidence trails.
- *
- * Features:
- * - Manual/Scheduled/Live refresh modes
- * - Today's Evidence updates
- * - Catalyst Board (90-180 day timeline)
- * - MoA Explorer (mechanism differentiation)
- * - Company Scorecard (evidence stack)
- * - Journal notebook (pinned notes + evidence stream)
- *
- * Routes:
- * - /evidence → Today's Evidence
- * - /catalysts → Catalyst Board
- * - /moa → MoA Explorer
- * - /companies/:id → Company Scorecard
- * - /journal → Journal Notebook
- */
 export function EvidenceJournalPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [refreshMode, setRefreshMode] = useState<RefreshMode>('manual');
-  const [lastRefreshed, setLastRefreshed] = useState<string>(new Date().toISOString());
-  const [evidenceData, setEvidenceData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [refreshMode, setRefreshMode] = useState<RefreshMode>('manual')
+  const [lastRefreshed, setLastRefreshed] = useState<string>(new Date().toISOString())
+  const [evidenceData, setEvidenceData] = useState<any>(previewEvidence)
 
-  // Determine active tab from route
   const getActiveTabFromRoute = (): 'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal' => {
-    const path = location.pathname;
-    if (path.includes('/catalysts')) return 'catalysts';
-    if (path.includes('/moa')) return 'moa';
-    if (path.includes('/companies/')) return 'scorecard';
-    if (path.includes('/journal')) return 'journal';
-    return 'today'; // default for /evidence or /science/evidence-journal
-  };
+    const path = location.pathname
+    if (path.includes('/catalysts')) return 'catalysts'
+    if (path.includes('/moa')) return 'moa'
+    if (path.includes('/companies/')) return 'scorecard'
+    if (path.includes('/journal')) return 'journal'
+    return 'today'
+  }
 
-  const [activeTab, setActiveTab] = useState<'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal'>(getActiveTabFromRoute());
+  const [activeTab, setActiveTab] = useState<'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal'>(
+    getActiveTabFromRoute(),
+  )
 
-  // Fetch evidence journal data from backend
   useEffect(() => {
-    const fetchEvidenceData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await apiFetch(API_ENDPOINTS.EVIDENCE.JOURNAL);
-        setEvidenceData(data);
-        setLastRefreshed(new Date().toISOString());
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load evidence data');
-        console.error('Error loading evidence journal:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setEvidenceData(previewEvidence)
+    setLastRefreshed(new Date().toISOString())
+  }, [])
 
-    fetchEvidenceData();
-  }, []);
-
-  // Update active tab when route changes
   useEffect(() => {
-    setActiveTab(getActiveTabFromRoute());
-  }, [location.pathname]);
+    setActiveTab(getActiveTabFromRoute())
+  }, [location.pathname])
 
-  // Navigate when tab changes
   const handleTabChange = (tab: 'today' | 'catalysts' | 'moa' | 'scorecard' | 'journal') => {
-    setActiveTab(tab);
+    setActiveTab(tab)
     const routes = {
       today: '/evidence',
       catalysts: '/catalysts',
       moa: '/moa',
-      scorecard: '/companies/example', // TODO: Get actual company ID
-      journal: '/journal'
-    };
-    navigate(routes[tab]);
-  };
+      scorecard: '/companies/example',
+      journal: '/journal',
+    }
+    navigate(routes[tab])
+  }
 
   return (
     <div className="evidence-journal-page">
       <div className="page-header">
         <h1 className="page-title">EVIDENCE JOURNAL</h1>
-        <p className="page-subtitle">
-          Science-first biotech intelligence • Mechanism → Evidence → Catalysts
-        </p>
+        <p className="page-subtitle">Science-first biotech intelligence • Mechanism → Evidence → Catalysts</p>
       </div>
 
       <RefreshModeToggle
         mode={refreshMode}
-        onChange={setRefreshMode}
+        onChange={(mode) => {
+          setRefreshMode(mode)
+          setLastRefreshed(new Date().toISOString())
+        }}
         lastRefreshed={lastRefreshed}
         scheduledInterval={10}
       />
 
       <div className="journal-tabs">
-        <button
-          className={`tab-button ${activeTab === 'today' ? 'active' : ''}`}
-          onClick={() => handleTabChange('today')}
-        >
+        <button className={`tab-button ${activeTab === 'today' ? 'active' : ''}`} onClick={() => handleTabChange('today')}>
           TODAY'S EVIDENCE
         </button>
         <button
@@ -115,10 +74,7 @@ export function EvidenceJournalPage() {
         >
           CATALYST BOARD
         </button>
-        <button
-          className={`tab-button ${activeTab === 'moa' ? 'active' : ''}`}
-          onClick={() => handleTabChange('moa')}
-        >
+        <button className={`tab-button ${activeTab === 'moa' ? 'active' : ''}`} onClick={() => handleTabChange('moa')}>
           MOA EXPLORER
         </button>
         <button
@@ -127,34 +83,23 @@ export function EvidenceJournalPage() {
         >
           COMPANY SCORECARD
         </button>
-        <button
-          className={`tab-button ${activeTab === 'journal' ? 'active' : ''}`}
-          onClick={() => handleTabChange('journal')}
-        >
+        <button className={`tab-button ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => handleTabChange('journal')}>
           JOURNAL
         </button>
       </div>
 
       <div className="journal-content">
-        {loading && <div className="loading-message">Loading evidence data...</div>}
-        {error && <div className="error-message">Error: {error}</div>}
-        {!loading && !error && (
-          <>
-            {activeTab === 'today' && <TodaysEvidenceView refreshMode={refreshMode} evidenceData={evidenceData} />}
-            {activeTab === 'catalysts' && <CatalystBoardView evidenceData={evidenceData} />}
-            {activeTab === 'moa' && <MoaExplorerView evidenceData={evidenceData} />}
-            {activeTab === 'scorecard' && <CompanyScorecardView evidenceData={evidenceData} />}
-            {activeTab === 'journal' && <JournalNotebookView evidenceData={evidenceData} />}
-          </>
-        )}
+        {activeTab === 'today' && <TodaysEvidenceView refreshMode={refreshMode} />}
+        {activeTab === 'catalysts' && <CatalystBoardView />}
+        {activeTab === 'moa' && <MoaExplorerView />}
+        {activeTab === 'scorecard' && <CompanyScorecardView />}
+        {activeTab === 'journal' && <JournalNotebookView evidenceData={evidenceData} />}
       </div>
     </div>
-  );
+  )
 }
 
-// Today's Evidence View
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: RefreshMode; evidenceData: any }) {
+function TodaysEvidenceView({ refreshMode }: { refreshMode: RefreshMode }) {
   return (
     <div className="todays-evidence-view">
       <Panel title="TODAY'S EVIDENCE" cornerBrackets>
@@ -178,7 +123,7 @@ function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: Refres
               {
                 label: 'FDA Guidance',
                 detail: 'Heart Failure endpoints - functional capacity now approvable',
-                badge: 'FDA'
+                badge: 'FDA',
               },
             ]}
           />
@@ -215,19 +160,17 @@ function TodaysEvidenceView({ refreshMode, evidenceData }: { refreshMode: Refres
         )}
       </Panel>
     </div>
-  );
+  )
 }
 
-// Catalyst Board View
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function CatalystBoardView({ evidenceData }: { evidenceData: any }) {
+function CatalystBoardView() {
   return (
     <div className="catalyst-board-view">
       <Panel title="CATALYST BOARD" subtitle="Next 90-180 days" cornerBrackets>
         <div className="timeline-notice">
           <p>
-            <strong>Catalyst Timeline:</strong> PDUFA dates, AdComm meetings, trial readouts,
-            CHMP opinions. Color-coded by confidence level. Click for detailed dossier.
+            <strong>Catalyst Timeline:</strong> PDUFA dates, AdComm meetings, trial readouts, CHMP opinions. Color-coded by
+            confidence level. Click for detailed dossier.
           </p>
         </div>
 
@@ -238,276 +181,156 @@ function CatalystBoardView({ evidenceData }: { evidenceData: any }) {
             drug="Drug A"
             company="Company X"
             confidence="High"
-            source="FDA Advisory Committee Calendar"
+            expectedImpact="Upside"
           />
-          <CatalystCard
-            date="2026-05-20"
-            type="PDUFA"
-            drug="Drug B"
-            company="Company Y"
-            confidence="High"
-            source="FDA Drugs@FDA"
-          />
-          <CatalystCard
-            date="2026-06-15 to 2026-07-15"
-            type="Readout"
-            drug="Drug C"
-            company="Company Z"
-            confidence="Medium"
-            source="ClinicalTrials.gov + Company 8-K"
-          />
+          <CatalystCard date="2026-05-10" type="CHMP" drug="Drug B" company="Company Y" confidence="Medium" expectedImpact="Inline" />
+          <CatalystCard date="2026-06-01" type="Readout" drug="Drug C" company="Company Z" confidence="Medium" expectedImpact="Binary" />
         </div>
       </Panel>
     </div>
-  );
+  )
 }
 
-// MoA Explorer View
 function MoaExplorerView() {
   return (
-    <div className="moa-explorer-view">
-      <Panel title="MOA EXPLORER" subtitle="Mechanism-centric differentiation" cornerBrackets>
-        <div className="moa-search">
-          <input
-            type="text"
-            placeholder="Search targets: IL-23, TL1A, Factor XI, Lp(a)..."
-            className="moa-search-input"
-          />
-        </div>
-
-        <div className="moa-results">
-          <MoaCard
-            target="IL-23"
-            geneticScore={0.85}
-            benchPotency="IC50 < 10nM"
-            competitors={['Drug A (Phase III)', 'Drug B (Phase II)', 'Drug C (Filed)']}
-            differentiationScore={78}
-          />
-          <MoaCard
-            target="TL1A/DR3"
-            geneticScore={0.72}
-            benchPotency="IC50 15nM"
-            competitors={['Drug D (Phase II)', 'Drug E (Preclinical)']}
-            differentiationScore={82}
-          />
-          <MoaCard
-            target="Factor XI"
-            geneticScore={0.91}
-            benchPotency="Ki < 5nM"
-            competitors={['Drug F (Phase III)', 'Drug G (Phase II)']}
-            differentiationScore={88}
-          />
-        </div>
-      </Panel>
-    </div>
-  );
+    <Panel title="MOA EXPLORER" subtitle="Mechanism differentiation" cornerBrackets>
+      <div className="moa-grid">
+        <MoaCard
+          mechanism="Base Editing"
+          companies="VERV | BEAM"
+          differentiation="Single-dose LDL lowering; delivery vs fidelity tradeoff"
+        />
+        <MoaCard mechanism="ASO" companies="IONS | WVE" differentiation="Chemistry and tissue targeting drive durability" />
+        <MoaCard mechanism="GLP-1" companies="NVO | LLY" differentiation="Weight loss + renal/cardiac outcomes drive upside" />
+      </div>
+    </Panel>
+  )
 }
 
-// Company Scorecard View
 function CompanyScorecardView() {
   return (
-    <div className="company-scorecard-view">
-      <Panel title="COMPANY SCORECARD" subtitle="Evidence stack + runway + catalysts" cornerBrackets>
-        <div className="company-select">
-          <select className="company-selector">
-            <option>Select company...</option>
-            <option>Company X (Ticker: XYZ)</option>
-            <option>Company Y (Ticker: ABC)</option>
-            <option>Company Z (Ticker: DEF)</option>
-          </select>
-        </div>
-
-        <div className="scorecard-content">
-          <div className="evidence-pyramid">
-            <h3>EVIDENCE STACK</h3>
-            <div className="pyramid-level genetic">
-              <strong>Genetic:</strong> Open Targets score 0.85 (IL-23 → IBD association)
-            </div>
-            <div className="pyramid-level translational">
-              <strong>Translational:</strong> Biomarker alignment confirmed in Phase I
-            </div>
-            <div className="pyramid-level clinical">
-              <strong>Clinical:</strong> Phase II data: 45% remission (MMS), p&lt;0.001
-            </div>
-          </div>
-
-          <div className="runway-catalysts">
-            <div className="runway-widget">
-              <h4>CASH RUNWAY</h4>
-              <p className="runway-months">18 months</p>
-              <p className="runway-detail">Based on Q4 2025 10-K filing</p>
-            </div>
-
-            <div className="near-catalysts-widget">
-              <h4>NEAR CATALYSTS</h4>
-              <ul className="catalyst-list">
-                <li>Phase III readout: Q2 2026</li>
-                <li>FDA AdComm: April 15, 2026</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </Panel>
-    </div>
-  );
-}
-
-// Journal Notebook View
-function JournalNotebookView() {
-  return (
-    <div className="journal-notebook-view">
-      <div className="journal-layout">
-        <div className="pinned-notes">
-          <Panel title="PINNED NOTES" cornerBrackets>
-            <div className="note-item">
-              <h4>IL-23 vs TL1A in IBD</h4>
-              <p>
-                <strong>So what?</strong> IL-23 has broader genetic support but TL1A may offer
-                better endoscopic remission rates. Watch for combo studies.
-              </p>
-              <div className="note-sources">
-                <span className="source-badge">Open Targets</span>
-                <span className="source-badge">CT.gov NCT12345</span>
-              </div>
-            </div>
-
-            <div className="note-item">
-              <h4>DMD: Elevidys vs Next-Gen</h4>
-              <p>
-                <strong>So what?</strong> First-mover advantage vs better expression profile.
-                Safety durability is the key differentiator.
-              </p>
-              <div className="note-sources">
-                <span className="source-badge">FDA Label</span>
-                <span className="source-badge">8-K Filing</span>
-              </div>
-            </div>
-          </Panel>
-        </div>
-
-        <div className="evidence-stream">
-          <Panel title="EVIDENCE STREAM" subtitle="Source-linked snippets" cornerBrackets>
-            <div className="stream-item">
-              <div className="stream-header">
-                <span className="evidence-class">Genetic</span>
-                <span className="evidence-source">Open Targets</span>
-                <span className="evidence-date">2026-01-10</span>
-              </div>
-              <p className="evidence-snippet">
-                IL-23 → Crohn's disease association score: 0.85 (top decile for IBD genetics)
-              </p>
-              <a href="#" className="evidence-link">View source →</a>
-              <button className="add-to-journal">Add to Journal</button>
-            </div>
-
-            <div className="stream-item">
-              <div className="stream-header">
-                <span className="evidence-class">Clinical</span>
-                <span className="evidence-source">ClinicalTrials.gov</span>
-                <span className="evidence-date">2026-01-09</span>
-              </div>
-              <p className="evidence-snippet">
-                NCT12345: Phase II IBD trial, endpoint = MMS (Mayo score), multiplicity-controlled,
-                N=250, powered for superiority
-              </p>
-              <a href="#" className="evidence-link">View NCT12345 →</a>
-              <button className="add-to-journal">Add to Journal</button>
-            </div>
-          </Panel>
-        </div>
+    <Panel title="COMPANY SCORECARD" subtitle="Evidence stack" cornerBrackets>
+      <div className="scorecard-grid">
+        <ScorecardRow label="Mechanism Strength" score={0.82} trend="up" note="In vivo LDL durability" />
+        <ScorecardRow label="Execution" score={0.74} trend="neutral" note="On-time data drops" />
+        <ScorecardRow label="Financing" score={0.69} trend="down" note="Runway into 2027" />
       </div>
-    </div>
-  );
+    </Panel>
+  )
 }
 
-// Helper Components
-interface EvidenceCardProps {
-  title: string;
-  count: number;
-  description: string;
-  items: Array<{ label: string; detail: string; badge: string }>;
+function JournalNotebookView({ evidenceData }: { evidenceData: any }) {
+  return (
+    <Panel title="JOURNAL" subtitle={evidenceData?.notebookTitle} cornerBrackets>
+      <div className="journal-grid">
+        <JournalEntry title="Why base editing matters" tag="Research" updated="Today" />
+        <JournalEntry title="GLP-1 renal optionality" tag="Clinical" updated="2h ago" />
+        <JournalEntry title="SMA durability tracker" tag="Trial" updated="1d ago" />
+      </div>
+    </Panel>
+  )
 }
 
-function EvidenceCard({ title, count, description, items }: EvidenceCardProps) {
+function EvidenceCard({
+  title,
+  count,
+  description,
+  items,
+}: {
+  title: string
+  count: number
+  description: string
+  items: { label: string; detail: string; badge: string }[]
+}) {
   return (
     <div className="evidence-card">
-      <div className="card-header">
-        <h3>{title}</h3>
-        <span className="count-badge">{count}</span>
+      <div className="evidence-card-header">
+        <div>
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+        <div className="count-pill">{count}</div>
       </div>
-      <p className="card-description">{description}</p>
-      <div className="card-items">
-        {items.map((item, idx) => (
-          <div key={idx} className="evidence-item">
-            <div className="item-header">
-              <strong>{item.label}</strong>
-              <span className={`source-badge ${item.badge.toLowerCase()}`}>{item.badge}</span>
+      <ul className="evidence-list">
+        {items.map((item) => (
+          <li key={item.label}>
+            <span className="badge">{item.badge}</span>
+            <div>
+              <div className="item-label">{item.label}</div>
+              <div className="item-detail">{item.detail}</div>
             </div>
-            <p className="item-detail">{item.detail}</p>
-            <button className="add-button">Add to Journal</button>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
-  );
+  )
 }
 
-interface CatalystCardProps {
-  date: string;
-  type: string;
-  drug: string;
-  company: string;
-  confidence: string;
-  source: string;
-}
-
-function CatalystCard({ date, type, drug, company, confidence, source }: CatalystCardProps) {
+function CatalystCard({
+  date,
+  type,
+  drug,
+  company,
+  confidence,
+  expectedImpact,
+}: {
+  date: string
+  type: string
+  drug: string
+  company: string
+  confidence: 'High' | 'Medium' | 'Low'
+  expectedImpact: string
+}) {
   return (
-    <div className={`catalyst-card confidence-${confidence.toLowerCase()}`}>
-      <div className="catalyst-date">{date}</div>
-      <div className="catalyst-type">{type}</div>
-      <div className="catalyst-drug">{drug} ({company})</div>
-      <div className="catalyst-confidence">Confidence: {confidence}</div>
-      <div className="catalyst-source">Source: {source}</div>
-      <button className="promote-watchlist">Promote to Watchlist</button>
+    <div className="mini-card">
+      <div className="mini-card-header">
+        <span className="badge ghost">{type}</span>
+        <span className={`badge ${confidence === 'High' ? 'success' : confidence === 'Medium' ? 'warning' : 'error'}`}>
+          {confidence}
+        </span>
+      </div>
+      <div className="mini-card-date">{new Date(date).toLocaleDateString()}</div>
+      <h4>{drug}</h4>
+      <p>{company}</p>
+      <p className="muted">{expectedImpact}</p>
     </div>
-  );
+  )
 }
 
-interface MoaCardProps {
-  target: string;
-  geneticScore: number;
-  benchPotency: string;
-  competitors: string[];
-  differentiationScore: number;
-}
-
-function MoaCard({ target, geneticScore, benchPotency, competitors, differentiationScore }: MoaCardProps) {
+function MoaCard({ mechanism, companies, differentiation }: { mechanism: string; companies: string; differentiation: string }) {
   return (
-    <div className="moa-card">
-      <h3 className="moa-target">{target}</h3>
-      <div className="moa-metrics">
-        <div className="metric-item">
-          <span className="metric-label">Genetic Evidence:</span>
-          <span className="metric-value">{(geneticScore * 100).toFixed(0)}/100</span>
-        </div>
-        <div className="metric-item">
-          <span className="metric-label">Bench Potency:</span>
-          <span className="metric-value">{benchPotency}</span>
-        </div>
-        <div className="metric-item">
-          <span className="metric-label">Differentiation:</span>
-          <span className="metric-value score-high">{differentiationScore}/100</span>
-        </div>
+    <div className="mini-card">
+      <div className="mini-card-header">
+        <span className="badge ghost">MOA</span>
+        <span className="badge">{mechanism}</span>
       </div>
-      <div className="competitors-section">
-        <h4>Competitors:</h4>
-        <ul>
-          {competitors.map((comp, idx) => (
-            <li key={idx}>{comp}</li>
-          ))}
-        </ul>
+      <h4>{companies}</h4>
+      <p className="muted">{differentiation}</p>
+    </div>
+  )
+}
+
+function ScorecardRow({ label, score, trend, note }: { label: string; score: number; trend: 'up' | 'down' | 'neutral'; note: string }) {
+  return (
+    <div className="scorecard-row">
+      <div className="scorecard-label">{label}</div>
+      <div className="scorecard-score">
+        <span>{Math.round(score * 100)}%</span>
+        <span className={`trend ${trend}`}>{trend === 'up' ? '↑' : trend === 'down' ? '↓' : '•'}</span>
+      </div>
+      <div className="scorecard-note">{note}</div>
+    </div>
+  )
+}
+
+function JournalEntry({ title, tag, updated }: { title: string; tag: string; updated: string }) {
+  return (
+    <div className="journal-entry">
+      <div className="journal-title">{title}</div>
+      <div className="journal-meta">
+        <span className="badge ghost">{tag}</span>
+        <span className="muted">Updated {updated}</span>
       </div>
     </div>
-  );
+  )
 }
