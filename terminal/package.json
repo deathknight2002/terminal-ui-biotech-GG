@@ -17,13 +17,13 @@
   },
   "dependencies": {
     "@biotech-terminal/frontend-components": "file:../frontend-components",
+    "@tanstack/react-query": "^5.12.2",
+    "axios": "^1.6.2",
+    "date-fns": "^2.30.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^6.20.1",
-    "@tanstack/react-query": "^5.12.2",
-    "axios": "^1.6.2",
-    "zustand": "^4.4.7",
-    "date-fns": "^2.30.0"
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/react": "^19.1.16",
@@ -34,7 +34,9 @@
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
+    "globals": "^16.5.0",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.50.0",
     "vite": "^7.1.7",
     "vitest": "^3.2.4"
   }

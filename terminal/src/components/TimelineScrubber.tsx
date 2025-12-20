@@ -79,8 +79,6 @@ export const TimelineScrubber: React.FC<TimelineScrubberProps> = ({
           {timeline.timeline.map((entry, index) => {
             const x = 40 + ((index / (timeline.timeline.length - 1 || 1)) * (100 - 80));
             const isSelected = index === selectedIndex;
-            const cumPos = entry.cumulative?.pos || 0;
-            const cumSentiment = entry.cumulative?.sentiment || 0;
 
             return (
               <g key={index} onClick={() => handlePointClick(index)}>
