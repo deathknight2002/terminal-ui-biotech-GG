@@ -1,0 +1,122 @@
+services:
+  # PostgreSQL Database (Production-ready)
+  postgres:
+    image: postgres:15-alpine
+    container_name: biotech-terminal-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-biotech_terminal}
+      POSTGRES_USER: ${POSTGRES_USER:-biotech}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-biotech}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache (Optional, for session/caching)
+  redis:
+    image: redis:7-alpine
+    container_name: biotech-terminal-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes
+
+  # Biotech Terminal Application
+  biotech-terminal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: biotech-terminal-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      # Database
+      DATABASE_URL: postgresql://${POSTGRES_USER:-biotech}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-biotech_terminal}
+      
+      # Redis
+      REDIS_URL: redis://redis:6379
+      
+      # Application
+      DEBUG: ${DEBUG:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      API_VERSION: v1
+      
+      # Security
+      SECRET_KEY: ${SECRET_KEY:-change-this-in-production}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      API_TOKEN: ${API_TOKEN:-}
+      API_TOKEN_ENABLED: ${API_TOKEN_ENABLED:-false}
+      
+      # CORS
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:8000}
+      
+      # External APIs (optional)
+      FDA_API_KEY: ${FDA_API_KEY:-}
+      CLINICALTRIALS_API_KEY: ${CLINICALTRIALS_API_KEY:-}
+      PUBMED_API_KEY: ${PUBMED_API_KEY:-}
+      
+      # Observability
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      PROMETHEUS_ENABLED: ${PROMETHEUS_ENABLED:-true}
+    volumes:
+      # Persist database file (if using SQLite instead of PostgreSQL)
+      - app_data:/app/data
+      # Persist logs
+      - app_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Nginx Reverse Proxy (Optional, for production)
+  nginx:
+    image: nginx:alpine
+    container_name: biotech-terminal-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infrastructure/nginx/ssl:/etc/nginx/ssl:ro
+      - ./terminal/dist:/usr/share/nginx/html:ro
+    depends_on:
+      - biotech-terminal
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  app_data:
+    driver: local
+  app_logs:
+    driver: local
+
+networks:
+  default:
+    name: biotech-terminal-network

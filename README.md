@@ -248,6 +248,68 @@ cd backend/python-scrapers && python biotech_scraper.py
 # Backend will automatically serve new data on next request
 ```
 
+## 🚢 Production Deployment
+
+### Quick Deploy with Docker (Recommended)
+
+**Fastest way to deploy in any environment:**
+
+```bash
+# 1. Clone repository
+git clone https://github.com/deathknight2002/terminal-ui-biotech-GG.git
+cd terminal-ui-biotech-GG
+
+# 2. Run automated deployment
+chmod +x deploy.sh
+./deploy.sh
+
+# 3. Access your platform
+# API: http://localhost:8000
+# Docs: http://localhost:8000/docs
+```
+
+**Or manually with Docker Compose:**
+
+```bash
+# Configure environment
+cp .env.example .env
+# Edit .env with production settings
+
+# Start all services (PostgreSQL + Redis + App)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+### Enterprise Integration
+
+**Bloomberg Terminal Integration:**
+```env
+BLOOMBERG_ENABLED=true
+BLOOMBERG_API_HOST=your-bloomberg-api.com
+BLOOMBERG_API_KEY=your-api-key
+```
+
+**AlphaSense Integration:**
+```env
+ALPHASENSE_ENABLED=true
+ALPHASENSE_API_KEY=your-alphasense-key
+```
+
+**Corporate Network Setup:**
+```env
+HTTP_PROXY=http://proxy.yourcompany.com:8080
+HTTPS_PROXY=http://proxy.yourcompany.com:8080
+```
+
+### Documentation
+
+- 📖 **[Complete Deployment Guide](DEPLOYMENT_GUIDE.md)** - Full enterprise deployment instructions
+- ⚡ **[Quick Deploy Reference](QUICK_DEPLOY.md)** - One-page quick reference
+- 🔧 **[Troubleshooting Guide](TROUBLESHOOTING.md)** - Common issues and solutions
+- ✅ **[Production Checklist](docs/PRODUCTION_DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
+
 ## 📱 iOS Progressive Web App (PWA)
 
 The Biotech Terminal is optimized for iOS 26 as a Progressive Web App. Install it on your iPhone/iPad for a native app experience.
