@@ -55,9 +55,11 @@ async function startServer() {
     const server = createServer(app);
 
     // Setup Socket.IO
+    const allowedOrigins = config.corsOrigin === '*' ? true : config.corsOrigin;
+
     const io = new SocketServer(server, {
       cors: {
-        origin: config.corsOrigin,
+        origin: allowedOrigins,
         methods: ['GET', 'POST']
       }
     });
@@ -65,8 +67,8 @@ async function startServer() {
     // Middleware
     app.use(helmet());
     app.use(cors({
-      origin: config.corsOrigin,
-      credentials: true
+      origin: allowedOrigins,
+      credentials: true,
     }));
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true }));

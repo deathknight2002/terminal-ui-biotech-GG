@@ -6,6 +6,14 @@ A comprehensive **React/TypeScript frontend** + **Python FastAPI backend** platf
 
 **🆓 100% Free Data Sources** - No paid APIs, no rate limits, no account sign-ups required!
 
+## 🚀 Local preview (desktop + mobile)
+
+1. **Install once**: `npm run setup` (installs Node + Python dependencies)
+2. **Start everything**: `npm run start:dev`
+3. **Preview on any device**: open `http://<your-lan-ip>:3000` on your PC or phone (Node API on port 3001, Python API on 8000)
+
+All services bind to `0.0.0.0` and allow LAN origins by default, so mobile devices on the same network can reach the APIs without extra configuration.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 18+](https://img.shields.io/badge/node.js-18+-green.svg)](https://nodejs.org/)
