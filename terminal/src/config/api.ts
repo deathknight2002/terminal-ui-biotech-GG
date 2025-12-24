@@ -8,13 +8,33 @@
  * - Contains all biotech intelligence APIs
  */
 
-// Get API base URL from environment or use defaults
+const DEFAULT_NODE_PORT = 3001;
+const DEFAULT_PYTHON_PORT = 8000;
+
+// Auto-detect host for mobile/preview scenarios where localhost won't resolve
+const resolveDefaultBaseUrl = (port: number) => {
+  if (typeof window === 'undefined') {
+    return `http://localhost:${port}`;
+  }
+
+  const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+  const hostname = window.location.hostname || 'localhost';
+
+  // If running on a LAN IP (e.g., 192.168.x.x) reuse that host so mobile devices can reach the API
+  if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    return `${protocol}//${hostname}:${port}`;
+  }
+
+  return `${protocol}//localhost:${port}`;
+};
+
+// Get API base URL from environment or use runtime-resolved defaults
 export const API_CONFIG = {
   // Node.js Express backend (real-time biotech data)
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  BASE_URL: import.meta.env.VITE_API_URL || resolveDefaultBaseUrl(DEFAULT_NODE_PORT),
   VERSION: '/api',
   // Python FastAPI backend (evidence graph, core APIs)
-  PYTHON_BASE_URL: import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000',
+  PYTHON_BASE_URL: import.meta.env.VITE_PYTHON_API_URL || resolveDefaultBaseUrl(DEFAULT_PYTHON_PORT),
   PYTHON_VERSION: '/api/v1',
 };
 

@@ -19,7 +19,7 @@ const envSchema = z.object({
   WS_PORT: z.string().transform(Number).default(3002),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   JWT_SECRET: z.string().min(32),
-  CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  CORS_ORIGIN: z.string().default('*'),
 
   // External APIs
   OPENBB_API_KEY: z.string().optional(),
@@ -68,6 +68,19 @@ const parseEnv = () => {
 
 const env = parseEnv();
 
+const parseCorsOrigins = (value: string): string[] | '*' => {
+  if (!value || value.trim() === '*') return '*';
+
+  const origins = value
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
+
+  return origins.length > 0 ? origins : '*';
+};
+
+const corsOrigin = parseCorsOrigins(env.CORS_ORIGIN);
+
 export const config = {
   // Database connections
   database: {
@@ -86,7 +99,7 @@ export const config = {
   wsPort: env.WS_PORT,
   nodeEnv: env.NODE_ENV,
   jwtSecret: env.JWT_SECRET,
-  corsOrigin: env.CORS_ORIGIN,
+  corsOrigin,
 
   // External APIs
   externalApis: {

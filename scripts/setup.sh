@@ -129,20 +129,43 @@ EOF
 start_services() {
     echo "🚀 Starting services..."
 
-    # Start backend in background
-    echo "🔧 Starting backend platform..."
-    poetry run uvicorn bt_platform.core.app:app --reload --port 8000 &
-    BACKEND_PID=$!
+    # Start Node backend (primary API)
+    echo "🔧 Starting Node backend (real-time API)..."
+    export API_PORT=${API_PORT:-3001}
+    export CORS_ORIGIN=${CORS_ORIGIN:-"*"}
+    export JWT_SECRET=${JWT_SECRET:-"dev-secret-key-change-me-please-32-chars"}
+
+    cd backend
+    npm run dev > ../.dev-node.log 2>&1 &
+    NODE_BACKEND_PID=$!
+    cd ..
+
+    sleep 5
+
+    # Check if Node backend started successfully
+    if curl -s http://localhost:${API_PORT}/health > /dev/null; then
+        echo "✅ Node backend running at http://localhost:${API_PORT}"
+    else
+        echo "❌ Node backend failed to start (see .dev-node.log for details)"
+        kill $NODE_BACKEND_PID 2>/dev/null || true
+        exit 1
+    fi
+
+    # Start Python backend in background
+    echo "🐍 Starting Python backend (evidence graph API)..."
+    poetry run uvicorn bt_platform.core.app:app --reload --host 0.0.0.0 --port 8000 > .dev-python.log 2>&1 &
+    PY_BACKEND_PID=$!
 
     sleep 3
 
-    # Check if backend started successfully
+    # Check if Python backend started successfully
     if curl -s http://localhost:8000/health > /dev/null; then
-        echo "✅ Backend platform running at http://localhost:8000"
+        echo "✅ Python backend running at http://localhost:8000"
         echo "📖 API documentation at http://localhost:8000/docs"
     else
-        echo "❌ Backend failed to start"
-        kill $BACKEND_PID 2>/dev/null || true
+        echo "❌ Python backend failed to start (see .dev-python.log for details)"
+        kill $NODE_BACKEND_PID 2>/dev/null || true
+        kill $PY_BACKEND_PID 2>/dev/null || true
         exit 1
     fi
 
@@ -159,7 +182,8 @@ start_services() {
     # Cleanup function
     cleanup() {
         echo "🔄 Shutting down services..."
-        kill $BACKEND_PID 2>/dev/null || true
+        kill $NODE_BACKEND_PID 2>/dev/null || true
+        kill $PY_BACKEND_PID 2>/dev/null || true
         kill $FRONTEND_PID 2>/dev/null || true
         exit 0
     }
@@ -170,8 +194,10 @@ start_services() {
     echo ""
     echo "🎉 Biotech Terminal Platform is running!"
     echo ""
-    echo "📊 Backend API: http://localhost:8000"
-    echo "📖 API Docs: http://localhost:8000/docs"
+    echo "📊 Node API: http://localhost:${API_PORT}"
+    echo "📖 Node health: http://localhost:${API_PORT}/health"
+    echo "📊 Python API: http://localhost:8000"
+    echo "📖 Python docs: http://localhost:8000/docs"
     echo "🖥️ Terminal App: http://localhost:3000"
     echo ""
     echo "Press Ctrl+C to stop all services"
